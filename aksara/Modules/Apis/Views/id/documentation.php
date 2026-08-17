@@ -11,35 +11,33 @@ $groupCollector = [];
 $accessToken = false;
 $method = [];
 
-if (! in_array($responseType, ['simple', 'complete'])) {
-    $responseType = 'simple';
+if (!in_array($responseType, ['simple', 'complete'])) {
+  $responseType = 'simple';
 }
 
 if ($permission->groups) {
-    $groups = null;
-    $privileges = [];
+  $groups = null;
+  $privileges = [];
 
-    foreach ($permission->groups as $key => $val)
-    {
-        $groupCollector[] = $val->group_id;
-        $actions = null;
-        $extractPrivileges = json_decode($val->group_privileges);
+  foreach ($permission->groups as $key => $val) {
+    $groupCollector[] = $val->group_id;
+    $actions = null;
+    $extractPrivileges = json_decode($val->group_privileges);
 
-        if (isset($extractPrivileges->$active)) {
-            foreach ($extractPrivileges->$active as $_key => $_val)
-            {
-                $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
-            }
-        }
-
-        if ($val->group_id) {
-            $accessToken = true;
-        }
-
-        $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
-
-        $privileges[$selected] = $actions;
+    if (isset($extractPrivileges->$active)) {
+      foreach ($extractPrivileges->$active as $_key => $_val) {
+        $actions .= '<a href="#--method-' . $_val . '"><span class="badge bg-success"><i class="mdi mdi-link"></i> ' . phrase($_val) . '</span></a>&nbsp;';
+      }
     }
+
+    if ($val->group_id) {
+      $accessToken = true;
+    }
+
+    $groups .= '<option value="' . $val->group_id . '"' . ($val->group_id == $selected ? ' selected' : null) . '>' . $val->group_name . '</option>';
+
+    $privileges[$selected] = $actions;
+  }
 }
 ?>
 <div class="container-fluid py-3">
@@ -47,23 +45,27 @@ if ($permission->groups) {
         <div class="col-md-3">
             <div class="sticky-top --api-documentation-sidebar">
                 <div class="pretty-scrollbar --api-documentation-list">
-                    <a href="<?= base_url('apis/documentation'); ?>" class="<?= (! $active ? 'text-primary fw-bold' : null); ?> --xhr">
-                        <?= phrase('Getting Started'); ?>
+                    <a href="<?= base_url('apis/documentation') ?>" class="<?= !$active ? 'text-primary fw-bold' : null ?> --xhr">
+                        <?= phrase('Getting Started') ?>
                     </a>
                     <br />
 
-                    <?php
-                    if ($modules) {
-                        foreach ($modules as $key => $val) {
-                            echo '
-                                <a href="' . current_page(null, ['slug' => $val, 'group' => null]) . '" class="' . ($val == $active ? ' text-primary fw-bold' : null) . ' --xhr">
-                                    ' . str_replace('/', ' &gt; ', $val) . '
+                    <?php if ($modules) {
+                      foreach ($modules as $key => $val) {
+                        echo '
+                                <a href="' .
+                          current_page(null, ['slug' => $val, 'group' => null]) .
+                          '" class="' .
+                          ($val == $active ? ' text-primary fw-bold' : null) .
+                          ' --xhr">
+                                    ' .
+                          str_replace('/', ' &gt; ', $val) .
+                          '
                                 </a>
                                 <br />
                             ';
-                        }
-                    }
-                    ?>
+                      }
+                    } ?>
                 </div>
             </div>
         </div>
@@ -73,66 +75,66 @@ if ($permission->groups) {
                     <?php if ($permission->groups): ?>
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-3 --title"><?= $active; ?></h4>
+                                <h4 class="mb-3 --title"><?= $active ?></h4>
                             </div>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm">
                                 <thead>
                                     <tr>
-                                        <th><?= phrase('Group Name'); ?></th>
-                                        <th><?= phrase('Privileges'); ?></th>
+                                        <th><?= phrase('Group Name') ?></th>
+                                        <th><?= phrase('Privileges') ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td width="250">
-                                            <form action="<?= current_page(); ?>" method="GET">
+                                            <form action="<?= current_page() ?>" method="GET">
                                                 <select name="group" class="form-control form-control-sm">
-                                                    <?= $groups; ?>
+                                                    <?= $groups ?>
                                                 </select>
                                             </form>
                                         </td>
-                                        <td><?= (isset($privileges[$selected]) ? $privileges[$selected] : null); ?></td>
+                                        <td><?= $privileges[$selected] ?? null ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="mb-3">
-                            <h5 class="mt-3"><?= phrase('Response Type'); ?></h5>
-                            <div class="btn-group" role="group" aria-label="<?= phrase('Response Type'); ?>">
-                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-simple" value="simple" autocomplete="off"<?= ('simple' == $responseType ? ' checked' : null); ?> />
-                                <label class="btn btn-outline-primary btn-sm" for="--response-type-simple"><?= phrase('Simple'); ?></label>
+                            <h5 class="mt-3"><?= phrase('Response Type') ?></h5>
+                            <div class="btn-group" role="group" aria-label="<?= phrase('Response Type') ?>">
+                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-simple" value="simple" autocomplete="off"<?= 'simple' == $responseType ? ' checked' : null ?> />
+                                <label class="btn btn-outline-primary btn-sm" for="--response-type-simple"><?= phrase('Simple') ?></label>
 
-                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-complete" value="complete" autocomplete="off"<?= ('complete' == $responseType ? ' checked' : null); ?> />
-                                <label class="btn btn-outline-primary btn-sm" for="--response-type-complete"><?= phrase('Complete'); ?></label>
+                                <input type="radio" class="btn-check --response-type" name="response_type" id="--response-type-complete" value="complete" autocomplete="off"<?= 'complete' == $responseType ? ' checked' : null ?> />
+                                <label class="btn btn-outline-primary btn-sm" for="--response-type-complete"><?= phrase('Complete') ?></label>
                             </div>
                         </div>
 
-                        <h5 class="mt-3"><?= phrase('Request Method'); ?></h5>
+                        <h5 class="mt-3"><?= phrase('Request Method') ?></h5>
                     <?php endif; ?>
                     <?php if ($permission->privileges): ?>
                         <?php foreach ($permission->privileges as $key => $val): ?>
                             <?php $method[] = $val; ?>
-                            <div class="mb-3" id="--method-<?= $val; ?>">
+                            <div class="mb-3" id="--method-<?= $val ?>">
                                 <h5 class="mb-1">
                                     <span class="badge bg-primary bg-md">
-                                        <?= (in_array($val, ['create', 'update']) ? 'POST' : (in_array($val, ['delete']) ? 'DELETE' : 'GET')); ?>
+                                        <?= in_array($val, ['create', 'update']) ? 'POST' : (in_array($val, ['delete']) ? 'DELETE' : 'GET') ?>
                                     </span>
                                 </h5>
                                 <div class="rounded pt-2 pe-3 pb-2 ps-3 bg-dark">
-                                    <code class="text-light"><?= base_url(('index' !== $val ? $active . '/' . $val : $active)); ?></code>
+                                    <code class="text-light"><?= base_url('index' !== $val ? $active . '/' . $val : $active) ?></code>
                                 </div>
                             </div>
-                            <h5 class="mt-3"><?= phrase('Header'); ?></h5>
+                            <h5 class="mt-3"><?= phrase('Header') ?></h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-sm">
                                     <thead>
                                         <tr>
-                                            <th><?= phrase('Field'); ?></th>
-                                            <th><?= phrase('Type'); ?></th>
-                                            <th><?= phrase('Description'); ?></th>
-                                            <th width="100" class="text-center"><?= phrase('Required'); ?></th>
+                                            <th><?= phrase('Field') ?></th>
+                                            <th><?= phrase('Type') ?></th>
+                                            <th><?= phrase('Description') ?></th>
+                                            <th width="100" class="text-center"><?= phrase('Required') ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -143,10 +145,10 @@ if ($permission->groups) {
                                                 </code>
                                             </td>
                                             <td>String</td>
-                                            <td><?= phrase('Valid API Key added in API Service'); ?></td>
+                                            <td><?= phrase('Valid API Key added in API Service') ?></td>
                                             <td class="text-center">
                                                 <span class="badge bg-danger">
-                                                    <?= phrase('Required'); ?>
+                                                    <?= phrase('Required') ?>
                                                 </span>
                                             </td>
                                         </tr>
@@ -160,7 +162,7 @@ if ($permission->groups) {
                                             <td>String</td>
                                             <td>Diisi dengan <code>username:password</code> yang dikodekan dalam format base64</td>
                                             <td class="text-center">
-                                                <span class="badge bg-danger"><?= phrase('Required'); ?></span>
+                                                <span class="badge bg-danger"><?= phrase('Required') ?></span>
                                             </td>
                                         </tr>
                                         <?php endif; ?>
@@ -170,16 +172,16 @@ if ($permission->groups) {
                             <div class="text-center --spinner">
                                 <div class="spinner-border" role="status"></div>
                             </div>
-                            <div class="--query-<?= $val; ?> d-none">
-                                <h5 class="mt-3"><?= phrase('Query String'); ?></h5>
+                            <div class="--query-<?= $val ?> d-none">
+                                <h5 class="mt-3"><?= phrase('Query String') ?></h5>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-sm">
                                         <thead>
                                             <tr>
-                                                <th><?= phrase('Field'); ?></th>
-                                                <th><?= phrase('Type'); ?></th>
-                                                <th><?= phrase('Description'); ?></th>
-                                                <th width="100" class="text-center"><?= phrase('Required'); ?></th>
+                                                <th><?= phrase('Field') ?></th>
+                                                <th><?= phrase('Type') ?></th>
+                                                <th><?= phrase('Description') ?></th>
+                                                <th width="100" class="text-center"><?= phrase('Required') ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -187,17 +189,17 @@ if ($permission->groups) {
                                     </table>
                                 </div>
                             </div>
-                            <div class="--parameter-<?= $val; ?> d-none">
-                                <h5 class="mt-3"><?= phrase('Parameter'); ?></h5>
+                            <div class="--parameter-<?= $val ?> d-none">
+                                <h5 class="mt-3"><?= phrase('Parameter') ?></h5>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-sm">
                                         <thead>
                                             <tr>
-                                                <th><?= phrase('Field'); ?></th>
-                                                <th><?= phrase('Type'); ?></th>
-                                                <th><?= phrase('Max Length'); ?></th>
-                                                <th><?= phrase('Description'); ?></th>
-                                                <th width="100" class="text-center"><?= phrase('Required'); ?></th>
+                                                <th><?= phrase('Field') ?></th>
+                                                <th><?= phrase('Type') ?></th>
+                                                <th><?= phrase('Max Length') ?></th>
+                                                <th><?= phrase('Description') ?></th>
+                                                <th width="100" class="text-center"><?= phrase('Required') ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -206,12 +208,12 @@ if ($permission->groups) {
                                     </table>
                                 </div>
                             </div>
-                            <div class="--response-success-<?= $val; ?> d-none">
-                                <h5 class="mt-3"><?= phrase('Success Response'); ?></h5>
+                            <div class="--response-success-<?= $val ?> d-none">
+                                <h5 class="mt-3"><?= phrase('Success Response') ?></h5>
                                 <pre class="language-javascript rounded mt-0"><code>{}</code></pre>
                             </div>
-                            <div class="--response-error-<?= $val; ?> d-none">
-                                <h5 class="mt-3"><?= phrase('Error Response'); ?></h5>
+                            <div class="--response-error-<?= $val ?> d-none">
+                                <h5 class="mt-3"><?= phrase('Error Response') ?></h5>
                                 <pre class="language-javascript rounded mt-0"><code>{}</code></pre>
                             </div>
                             <br />
@@ -236,7 +238,9 @@ if ($permission->groups) {
                         Memulai
                     </h4>
                     <p>
-                        Untuk dapat menggunakan fitur API, Anda perlu menambahkan kunci API dari menu <a href="<?= go_to('../services'); ?>" class="text-primary"><b>Pengelola Layanan API</b></a>. Tentukan metode permintaan yang diizinkan, rentang IP yang diizinkan, dan juga tanggal kedaluwarsa kunci API yang dibuat.
+                        Untuk dapat menggunakan fitur API, Anda perlu menambahkan kunci API dari menu <a href="<?= go_to(
+                          '../services',
+                        ) ?>" class="text-primary"><b>Pengelola Layanan API</b></a>. Tentukan metode permintaan yang diizinkan, rentang IP yang diizinkan, dan juga tanggal kedaluwarsa kunci API yang dibuat.
                     </p>
                     <p>
                         Gunakan kunci API yang dihasilkan pada properti HEADER saat membuat permintaan.
@@ -245,10 +249,10 @@ if ($permission->groups) {
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
-                                    <th><?= phrase('Field'); ?></th>
-                                    <th><?= phrase('Type'); ?></th>
-                                    <th><?= phrase('Description'); ?></th>
-                                    <th width="100" class="text-center"><?= phrase('Required'); ?></th>
+                                    <th><?= phrase('Field') ?></th>
+                                    <th><?= phrase('Type') ?></th>
+                                    <th><?= phrase('Description') ?></th>
+                                    <th width="100" class="text-center"><?= phrase('Required') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -259,10 +263,10 @@ if ($permission->groups) {
                                         </code>
                                     </td>
                                     <td>String</td>
-                                    <td><?= phrase('Valid API Key added in API Service'); ?></td>
+                                    <td><?= phrase('Valid API Key added in API Service') ?></td>
                                     <td class="text-center">
                                         <span class="badge bg-danger">
-                                            <?= phrase('Required'); ?>
+                                            <?= phrase('Required') ?>
                                         </span>
                                     </td>
                                 </tr>
@@ -276,10 +280,10 @@ if ($permission->groups) {
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
-                                    <th><?= phrase('Field'); ?></th>
-                                    <th><?= phrase('Type'); ?></th>
-                                    <th><?= phrase('Description'); ?></th>
-                                    <th width="100" class="text-center"><?= phrase('Required'); ?></th>
+                                    <th><?= phrase('Field') ?></th>
+                                    <th><?= phrase('Type') ?></th>
+                                    <th><?= phrase('Description') ?></th>
+                                    <th width="100" class="text-center"><?= phrase('Required') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -293,7 +297,7 @@ if ($permission->groups) {
                                     <td>Diisi dengan <code>username:password</code> yang dikodekan dalam format base64</td>
                                     <td class="text-center">
                                         <span class="badge bg-danger">
-                                            <?= phrase('Required'); ?>
+                                            <?= phrase('Required') ?>
                                         </span>
                                     </td>
                                 </tr>
@@ -319,9 +323,9 @@ if ($permission->groups) {
                         <table class="table table-bordered table-sm">
                             <thead>
                                 <tr>
-                                    <th><?= phrase('Key'); ?></th>
-                                    <th><?= phrase('Type'); ?></th>
-                                    <th><?= phrase('Description'); ?></th>
+                                    <th><?= phrase('Key') ?></th>
+                                    <th><?= phrase('Type') ?></th>
+                                    <th><?= phrase('Description') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -457,14 +461,14 @@ if ($permission->groups) {
             $('[class*="--response-success-"] pre code, [class*="--response-error-"] pre code').text('{}');
 
             $.ajax({
-                url: '<?= current_page(); ?>',
+                url: '<?= current_page() ?>',
                 context: this,
                 method: 'POST',
                 data: {
                     mode: 'fetch',
-                    group: '<?= ($selected ? $selected : (isset($groupCollector[0]) ? $groupCollector[0] : 0)); ?>',
+                    group: '<?= $selected ? $selected : $groupCollector[0] ?? 0 ?>',
                     response_type: $('.--response-type:checked').val(),
-                    method: JSON.parse('<?= json_encode($method); ?>')
+                    method: JSON.parse('<?= json_encode($method) ?>')
                 },
                 beforeSend: function() {
                 }
@@ -484,7 +488,7 @@ if ($permission->groups) {
                             .append($('<td />').append($('<code />').text(_key)))
                             .append($('<td />').text('mixed'))
                             .append($('<td />').text('-'))
-                            .append($('<td />').addClass('text-center').append($('<span />').addClass('badge bg-danger').text('<?= phrase('Required'); ?>')))
+                            .append($('<td />').addClass('text-center').append($('<span />').addClass('badge bg-danger').text('<?= phrase('Required') ?>')))
                             .appendTo('.--query-' + key + ' tbody')
                         })
                     }
@@ -500,7 +504,7 @@ if ($permission->groups) {
                             .append($('<td />').text(_val.type))
                             .append($('<td />').text(_val.maxlength))
                             .append($('<td />').text(_val.label))
-                            .append($('<td />').addClass('text-center').append(_val.required ? $('<span />').addClass('badge bg-danger').text('<?= phrase('Required'); ?>') : ''))
+                            .append($('<td />').addClass('text-center').append(_val.required ? $('<span />').addClass('badge bg-danger').text('<?= phrase('Required') ?>') : ''))
                             .appendTo('.--parameter-' + key + ' tbody')
                         })
                     }

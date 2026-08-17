@@ -6,15 +6,15 @@
 $driverList = null;
 
 foreach ($drivers as $key => $val) {
-    $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
+  $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
 }
 ?>
-<form action="<?= site_url('security'); ?>" method="POST" class="--validate-form">
+<form action="<?= site_url('security') ?>" method="POST" class="--validate-form">
     <h4>
-        <?= phrase('Database Configuration'); ?>
+        <?= phrase('Database Configuration') ?>
     </h4>
     <p>
-        <?= phrase('Fill the requested fields below with your database connection.'); ?>
+        <?= phrase('Fill the requested fields below with your database connection.') ?>
     </p>
     <div class="text-muted opacity-50">
         <hr class="row" />
@@ -23,20 +23,20 @@ foreach ($drivers as $key => $val) {
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_driver_input">
-                    <?= phrase('Database Driver'); ?>
+                    <?= phrase('Database Driver') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <select name="database_driver" class="form-select form-select-sm rounded-pill" id="database_driver_input" aria-label="<?= phrase('Database Driver'); ?>">
-                    <?= $driverList; ?>
+                <select name="database_driver" class="form-select form-select-sm rounded-pill" id="database_driver_input" aria-label="<?= phrase('Database Driver') ?>">
+                    <?= $driverList ?>
                 </select>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_dsn_input">
-                    <?= phrase('DSN'); ?> (<?= phrase('Optional'); ?>)
+                    <?= phrase('DSN') ?> (<?= phrase('Optional') ?>)
                 </label>
-                <input type="text" name="database_dsn" class="form-control form-control-sm rounded-pill" id="database_dsn_input" placeholder="e.g: dblib:host=localhost;" value="<?= session()->get('database_dsn'); ?>" />
+                <input type="text" name="database_dsn" class="form-control form-control-sm rounded-pill" id="database_dsn_input" placeholder="e.g: dblib:host=localhost;" value="<?= session()->get('database_dsn') ?>" />
             </div>
         </div>
     </div>
@@ -44,19 +44,19 @@ foreach ($drivers as $key => $val) {
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_hostname_input">
-                    <?= phrase('Hostname'); ?>
+                    <?= phrase('Hostname') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="database_hostname" class="form-control form-control-sm rounded-pill" id="database_hostname_input" placeholder="e.g: localhost" value="<?= session()->get('database_hostname') ?? 'localhost'; ?>" />
+                <input type="text" name="database_hostname" class="form-control form-control-sm rounded-pill" id="database_hostname_input" placeholder="e.g: localhost" value="<?= session()->get('database_hostname') ?? 'localhost' ?>" />
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_port_input">
-                    <?= phrase('Port'); ?>
+                    <?= phrase('Port') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="number" name="database_port" class="form-control form-control-sm rounded-pill" id="database_port_input" placeholder="e.g: 3306" value="<?= session()->get('database_port') ?? 3306; ?>" />
+                <input type="number" name="database_port" class="form-control form-control-sm rounded-pill" id="database_port_input" placeholder="e.g: 3306" value="<?= session()->get('database_port') ?? 3306 ?>" />
             </div>
         </div>
     </div>
@@ -64,18 +64,18 @@ foreach ($drivers as $key => $val) {
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_username_input">
-                    <?= phrase('Username'); ?>
+                    <?= phrase('Username') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="database_username" class="form-control form-control-sm rounded-pill" id="database_username_input" placeholder="e.g: root" value="<?= session()->get('database_username'); ?>" />
+                <input type="text" name="database_username" class="form-control form-control-sm rounded-pill" id="database_username_input" placeholder="e.g: root" value="<?= session()->get('database_username') ?>" />
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_password_input">
-                    <?= phrase('Password'); ?>
+                    <?= phrase('Password') ?>
                 </label>
-                <input type="password" name="database_password" class="form-control form-control-sm rounded-pill" id="database_password_input" value="<?= session()->get('database_password'); ?>" />
+                <input type="password" name="database_password" class="form-control form-control-sm rounded-pill" id="database_password_input" value="<?= session()->get('database_password') ?>" />
             </div>
         </div>
     </div>
@@ -83,10 +83,10 @@ foreach ($drivers as $key => $val) {
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="database_initial_input">
-                    <?= phrase('Database Initial'); ?>
+                    <?= phrase('Database Initial') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="database_initial" class="form-control form-control-sm rounded-pill" id="database_initial_input" placeholder="e.g: aksara_cms" value="<?= session()->get('database_initial'); ?>" />
+                <input type="text" name="database_initial" class="form-control form-control-sm rounded-pill" id="database_initial_input" placeholder="e.g: aksara_cms" value="<?= session()->get('database_initial') ?>" />
             </div>
         </div>
         <div class="col-md-6">
@@ -94,7 +94,7 @@ foreach ($drivers as $key => $val) {
                 <span class="d-none d-md-block mb-0">&nbsp;</span>
                 <label class="form-check form-switch" for="database_forge_input">
                     <input type="checkbox" name="database_forge" class="form-check-input" id="database_forge_input" value="1" />
-                    <?= phrase('Create database if not exist'); ?>
+                    <?= phrase('Create database if not exist') ?>
                 </label>
             </div>
         </div>
@@ -106,18 +106,18 @@ foreach ($drivers as $key => $val) {
     <div class="row">
         <div class="col-6">
             <div class="d-grid">
-                <a href="<?= site_url('requirement'); ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
+                <a href="<?= site_url('requirement') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
                     <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back'); ?>
+                    <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
         <div class="col-6">
             <div class="d-grid">
-                <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue'); ?>">
+                <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue') ?>">
                     <i class="mdi mdi-check"></i>
-                    <?= phrase('Continue'); ?>
+                    <?= phrase('Continue') ?>
                 </button>
             </div>
         </div>

@@ -3,7 +3,7 @@
 /**
  * @var mixed $results
  */
-$viewMode = (service('request')->getGet('mode') === 'list') ? 'list' : 'grid';
+$viewMode = service('request')->getGet('mode') === 'list' ? 'list' : 'grid';
 $directories = explode('/', service('request')->getGet('directory') ?? '');
 $paths = null;
 $breadcrumbs = null;
@@ -11,36 +11,34 @@ $breadcrumbs = null;
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-8 pt-3 pb-3 bg-body border-end">
-            <?php if (get_active_storage() && get_active_storage() != 'disabled' && ! get_userdata('hide_cloud_storage_media_notice')): ?>
+            <?php if (get_active_storage() && get_active_storage() != 'disabled' && !get_userdata('hide_cloud_storage_media_notice')): ?>
                 <div class="alert alert-warning alert-dismissible callout cloud-storage-media-notice mb-3">
-                    <?= phrase('Cloud storage is active. File browsing may be slower.'); ?>
-                    <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close'); ?>"></button>
+                    <?= phrase('Cloud storage is active. File browsing may be slower.') ?>
+                    <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close') ?>"></button>
                 </div>
             <?php endif; ?>
             <div class="row align-items-center mb-3">
                 <div class="col-md-9">
-                    <?php
-                    foreach ($directories as $key => $val) {
-                        $breadcrumbs .= '<li class="breadcrumb-item"><a href="' . current_page(null, ['directory' => $paths . $val]) . '" class="--xhr">' . $val . '</a></li>';
+                    <?php foreach ($directories as $key => $val) {
+                      $breadcrumbs .= '<li class="breadcrumb-item"><a href="' . current_page(null, ['directory' => $paths . $val]) . '" class="--xhr">' . $val . '</a></li>';
 
-                        $paths .= $val . '/';
-                    }
-                    ?>
+                      $paths .= $val . '/';
+                    } ?>
 
                     <nav class="d-none d-md-block" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="<?= current_page(null, ['directory' => null]); ?>" class="--xhr"><?= phrase('Media') ?></a></li>
-                            <?=  $breadcrumbs; ?>
+                            <li class="breadcrumb-item"><a href="<?= current_page(null, ['directory' => null]) ?>" class="--xhr"><?= phrase('Media') ?></a></li>
+                            <?= $breadcrumbs ?>
                         </ol>
                     </nav>
                 </div>
                 <div class="col-md-3">
                     <div class="btn-group btn-group-sm w-100" role="group" aria-label="View Toggle">
-                        <a href="<?= current_page(null, ['mode' => 'grid']); ?>" class="btn btn-outline-secondary <?= (service('request')->getGet('mode') !== 'list') ? 'active' : '' ?> --xhr">
-                            <i class="mdi mdi-view-grid"></i> <?= phrase('Grid'); ?>
+                        <a href="<?= current_page(null, ['mode' => 'grid']) ?>" class="btn btn-outline-secondary <?= service('request')->getGet('mode') !== 'list' ? 'active' : '' ?> --xhr">
+                            <i class="mdi mdi-view-grid"></i> <?= phrase('Grid') ?>
                         </a>
-                        <a href="<?= current_page(null, ['mode' => 'list']); ?>" class="btn btn-outline-secondary <?= (service('request')->getGet('mode') === 'list') ? 'active' : '' ?> --xhr">
-                            <i class="mdi mdi-view-list"></i> <?= phrase('List'); ?>
+                        <a href="<?= current_page(null, ['mode' => 'list']) ?>" class="btn btn-outline-secondary <?= service('request')->getGet('mode') === 'list' ? 'active' : '' ?> --xhr">
+                            <i class="mdi mdi-view-list"></i> <?= phrase('List') ?>
                         </a>
                     </div>
                 </div>
@@ -51,12 +49,16 @@ $breadcrumbs = null;
                 <div class="row align-items-end">
                     <?php if ($results->directory): ?>
                         <div class="col-4 col-sm-3 col-xl-2 text-center py-3 mb-3">
-                            <a href="<?= current_page(null, ['directory' => $results->parent_directory, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
+                            <a href="<?= current_page(null, [
+                              'directory' => $results->parent_directory,
+                              'file' => null,
+                              'mode' => $viewMode,
+                            ]) ?>" class="--xhr">
                                 <div>
                                     <i class="mdi mdi-arrow-left display-3"></i>
                                 </div>
                                 <div class="d-block text-truncate">
-                                    <?= phrase('Back'); ?>
+                                    <?= phrase('Back') ?>
                                 </div>
                             </a>
                         </div>
@@ -67,12 +69,16 @@ $breadcrumbs = null;
                             <?php if ($val->type == 'directory'): ?>
                                 <div class="col-4 col-sm-3 col-xl-2">
                                     <div class="rounded-4 border-hover text-center py-3 mb-3">
-                                        <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="--xhr">
+                                        <a href="<?= current_page(null, [
+                                          'directory' => ($results->directory ? $results->directory . '/' : null) . $val->source,
+                                          'file' => null,
+                                          'mode' => $viewMode,
+                                        ]) ?>" class="--xhr">
                                             <div>
                                                 <i class="mdi mdi-folder-image display-3 text-info"></i>
                                             </div>
                                             <div class="text-truncate">
-                                                <?= $val->label; ?>
+                                                <?= $val->label ?>
                                             </div>
                                         </a>
                                     </div>
@@ -80,12 +86,15 @@ $breadcrumbs = null;
                             <?php else: ?>
                                 <div class="col-4 col-sm-3 col-xl-2">
                                     <div class="rounded-4 border-hover text-center py-3 mb-3">
-                                        <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="--xhr">
+                                        <a href="<?= current_page(null, [
+                                          'file' => ($results->directory ? $results->directory . '/' : null) . $val->source,
+                                          'mode' => $viewMode,
+                                        ]) ?>" class="--xhr">
                                             <div class="px-3">
-                                                <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label; ?>" />
+                                                <img src="<?= $val->icon ?>" class="img-fluid rounded bg-light w-50" alt="<?= $val->label ?>" />
                                             </div>
                                             <div class="text-truncate">
-                                                <?= $val->label; ?>
+                                                <?= $val->label ?>
                                             </div>
                                         </a>
                                     </div>
@@ -101,14 +110,18 @@ $breadcrumbs = null;
                         <div class="list-group">
                             <?php foreach ($results->data as $key => $val): ?>
                                 <?php if ($val->type == 'directory'): ?>
-                                    <a href="<?= current_page(null, ['directory' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'file' => null, 'mode' => $viewMode]); ?>" class="list-group-item list-group-item-action py-0 --xhr">
+                                    <a href="<?= current_page(null, [
+                                      'directory' => ($results->directory ? $results->directory . '/' : null) . $val->source,
+                                      'file' => null,
+                                      'mode' => $viewMode,
+                                    ]) ?>" class="list-group-item list-group-item-action py-0 --xhr">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
                                                 <i class="mdi mdi-folder-image mdi-3x text-info" style="width: 48px; height: 48px"></i>
                                             </div>
                                             <div class="flex-fill">
-                                                <div class="fw-bold"><?= $val->label; ?></div>
-                                                <small class="text-muted"><?= phrase('Folder'); ?></small>
+                                                <div class="fw-bold"><?= $val->label ?></div>
+                                                <small class="text-muted"><?= phrase('Folder') ?></small>
                                             </div>
                                             <div>
                                                 <i class="mdi mdi-chevron-right"></i>
@@ -116,14 +129,17 @@ $breadcrumbs = null;
                                         </div>
                                     </a>
                                 <?php else: ?>
-                                    <a href="<?= current_page(null, ['file' => ($results->directory ? $results->directory . '/' : null) . $val->source, 'mode' => $viewMode]); ?>" class="list-group-item list-group-item-action --xhr">
+                                    <a href="<?= current_page(null, [
+                                      'file' => ($results->directory ? $results->directory . '/' : null) . $val->source,
+                                      'mode' => $viewMode,
+                                    ]) ?>" class="list-group-item list-group-item-action --xhr">
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
-                                                <img src="<?= $val->icon; ?>" class="img-fluid rounded bg-light" style="width: 48px; height: 48px; object-fit: contain;" alt="<?= $val->label; ?>" />
+                                                <img src="<?= $val->icon ?>" class="img-fluid rounded bg-light" style="width: 48px; height: 48px; object-fit: contain;" alt="<?= $val->label ?>" />
                                             </div>
                                             <div class="flex-fill">
-                                                <div class="fw-bold"><?= $val->label; ?></div>
-                                                <small class="text-muted"><?= $val->type; ?></small>
+                                                <div class="fw-bold"><?= $val->label ?></div>
+                                                <small class="text-muted"><?= $val->type ?></small>
                                             </div>
                                             <div>
                                                 <i class="mdi mdi-chevron-right"></i>
@@ -142,18 +158,19 @@ $breadcrumbs = null;
                 <?php if ($results->description): ?>
                     <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
                         <div class="text-center mb-3">
-                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" target="_blank">
-                                <img src="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ?? 'Preview'; ?>" style="max-width: 256px; max-height: 256px" />
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path) ?>" target="_blank">
+                                <img src="<?= $results->description->url ?? base_url($results->description->server_path) ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ??
+  'Preview' ?>" style="max-width: 256px; max-height: 256px" />
                             </a>
                         </div>
                     <?php endif; ?>
                     <div class="mb-3">
                         <span class="d-block text-muted mb-0">
-                            <?= phrase('Filename'); ?>
+                            <?= phrase('Filename') ?>
                         </span>
                         <div class="text-break-word">
-                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" download="<?= $results->description->name; ?>">
-                                <?= $results->description->name; ?>
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path) ?>" download="<?= $results->description->name ?>">
+                                <?= $results->description->name ?>
                             </a>
                         </div>
                     </div>
@@ -161,43 +178,46 @@ $breadcrumbs = null;
                         <div class="col-sm-6">
                             <div class="mb-3">
                                 <span class="d-block text-muted mb-0">
-                                    <?= phrase('Mime Type'); ?>
+                                    <?= phrase('Mime Type') ?>
                                 </span>
                                 <div class="text-break-word">
-                                    <?= $results->description->mime_type; ?>
+                                    <?= $results->description->mime_type ?>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="mb-3">
                                 <span class="d-block text-muted mb-0">
-                                    <?= phrase('Size'); ?>
+                                    <?= phrase('Size') ?>
                                 </span>
                                 <div class="text-break-word">
-                                    <?= $results->description->formatted_size ?? get_filesize(service('request')->getGet('directory'), $results->description->name); ?>
+                                    <?= $results->description->formatted_size ?? get_filesize(service('request')->getGet('directory'), $results->description->name) ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <span class="d-block text-muted mb-0">
-                            <?= phrase('Date Modified'); ?>
+                            <?= phrase('Date Modified') ?>
                         </span>
                         <div class="text-break-word">
-                            <?= date('Y-m-d H:i:s', $results->description->date); ?>
+                            <?= date('Y-m-d H:i:s', $results->description->date) ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <a href="<?= $results->description->url ?? base_url($results->description->server_path); ?>" class="btn btn-primary btn-sm d-block rounded-pill" target="_blank" download="<?= $results->description->name; ?>">
+                            <a href="<?= $results->description->url ?? base_url($results->description->server_path) ?>" class="btn btn-primary btn-sm d-block rounded-pill" target="_blank" download="<?= $results->description->name ?>">
                                 <i class="mdi mdi-download"></i>
-                                <?= phrase('Download'); ?>
+                                <?= phrase('Download') ?>
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="<?= current_page(null, ['action' => 'delete', 'mode' => $viewMode]); ?>" class="btn btn-danger btn-sm d-block rounded-pill --open-delete-confirm" data-bs-toggle="tooltip" aria-label="<?= phrase('Remove'); ?>" data-bs-original-title="<?= phrase('Remove'); ?>">
+                            <a href="<?= current_page(null, [
+                              'action' => 'delete',
+                              'mode' => $viewMode,
+                            ]) ?>" class="btn btn-danger btn-sm d-block rounded-pill --open-delete-confirm" data-bs-toggle="tooltip" aria-label="<?= phrase('Remove') ?>" data-bs-original-title="<?= phrase('Remove') ?>">
                                 <i class="mdi mdi-window-close"></i>
-                                <?= phrase('Remove'); ?>
+                                <?= phrase('Remove') ?>
                             </a>
                         </div>
                     </div>
@@ -212,7 +232,7 @@ $breadcrumbs = null;
         $('body').off('click.cloudStorageMediaNotice touch.cloudStorageMediaNotice');
         $('body').on('click.cloudStorageMediaNotice touch.cloudStorageMediaNotice', '.btn-cloud-storage-media-notice', function() {
             $.ajax({
-                url: '<?= current_page(); ?>',
+                url: '<?= current_page() ?>',
                 method: 'POST',
                 data: {
                     hide_cloud_storage_media_notice: true

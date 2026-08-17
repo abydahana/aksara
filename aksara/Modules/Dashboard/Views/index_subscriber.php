@@ -1,30 +1,31 @@
 <?php
 
-$logs = (isset($logs) ? $logs : []);
-$announcements = (isset($announcements) ? $announcements : []);
-$groupName = (isset($groupName) ? $groupName : phrase('Unknown'));
+$logs = $logs ?? [];
+$announcements = $announcements ?? [];
+$groupName = $groupName ?? phrase('Unknown');
 
-if (! get_userdata('username') || ! get_userdata('password')): ?>
+if (!get_userdata('username') || !get_userdata('password')): ?>
     <div class="alert alert-danger border-0 rounded-0 mb-0">
         <h5>
-            <?= phrase('Notice'); ?>
+            <?= phrase('Notice') ?>
         </h5>
-        <?php if (! get_userdata('username')) : ?>
+        <?php if (!get_userdata('username')): ?>
             <p class="mb-0">
-                <?= phrase('Please set your username as an alternative to the email when signing in.'); ?>
+                <?= phrase('Please set your username as an alternative to the email when signing in.') ?>
             </p>
         <?php endif; ?>
-        <?php if (! get_userdata('password')) : ?>
+        <?php if (!get_userdata('password')): ?>
             <p class="mb-0">
-                <?= phrase('Please set your password to keep your account safe.'); ?>
+                <?= phrase('Please set your password to keep your account safe.') ?>
             </p>
         <?php endif; ?>
         <br />
-        <a href="<?= base_url('administrative/account'); ?>" class="fw-bold --xhr">
-            <?= phrase('Update your profile'); ?>
+        <a href="<?= base_url('administrative/account') ?>" class="fw-bold --xhr">
+            <?= phrase('Update your profile') ?>
         </a>
     </div>
-<?php endif; ?>
+<?php endif;
+?>
 
 <div class="container-fluid py-3">
     <div class="row">
@@ -32,10 +33,10 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
             <div class="card overflow-hidden rounded-4 mb-3">
                 <div class="card-body p-4">
                     <h5 class="mb-1">
-                        <?= phrase('Welcome back'); ?>, <?= get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>!
+                        <?= phrase('Welcome back') ?>, <?= get_userdata('first_name') . ' ' . get_userdata('last_name') ?>!
                     </h5>
                     <p class="text-muted mb-0">
-                        <?= phrase('Here is what is happening with your account today.'); ?>
+                        <?= phrase('Here is what is happening with your account today.') ?>
                     </p>
                 </div>
             </div>
@@ -45,10 +46,10 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                     <div class="card overflow-hidden rounded-4 mb-3">
                         <div class="card-body">
                             <div class="text-muted small text-uppercase fw-bold mb-1">
-                                <?= phrase('Member Since'); ?>
+                                <?= phrase('Member Since') ?>
                             </div>
                             <div class="h5 mb-0">
-                                <?= format_date(get_userdata('created_at'), 'short'); ?>
+                                <?= format_date(get_userdata('created_at'), 'short') ?>
                             </div>
                         </div>
                     </div>
@@ -57,10 +58,10 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                     <div class="card overflow-hidden rounded-4 mb-3">
                         <div class="card-body">
                             <div class="text-muted small text-uppercase fw-bold mb-1">
-                                <?= phrase('Account Group'); ?>
+                                <?= phrase('Account Group') ?>
                             </div>
                             <div class="h5 mb-0">
-                                <?= $groupName; ?>
+                                <?= $groupName ?>
                             </div>
                         </div>
                     </div>
@@ -69,10 +70,10 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                     <div class="card overflow-hidden rounded-4 mb-3">
                         <div class="card-body">
                             <div class="text-muted small text-uppercase fw-bold mb-1">
-                                <?= phrase('Last Activity'); ?>
+                                <?= phrase('Last Activity') ?>
                             </div>
                             <div class="h5 mb-0">
-                                <?= ($logs ? date('H:i', strtotime($logs[0]->timestamp)) : '-'); ?>
+                                <?= $logs ? date('H:i', strtotime($logs[0]->timestamp)) : '-' ?>
                             </div>
                         </div>
                     </div>
@@ -82,7 +83,7 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
             <div class="card overflow-hidden rounded-4 mb-3">
                 <div class="card-header border-0 p-4">
                     <h6 class="fw-bold mb-0">
-                        <?= phrase('Recent Activities'); ?>
+                        <?= phrase('Recent Activities') ?>
                     </h6>
                 </div>
                 <div class="card-body p-0">
@@ -90,10 +91,10 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
-                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date'); ?></th>
-                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform'); ?></th>
-                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser'); ?></th>
-                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address'); ?></th>
+                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date') ?></th>
+                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform') ?></th>
+                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser') ?></th>
+                                    <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -101,23 +102,23 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
                                     <?php foreach ($logs as $log): ?>
                                         <tr>
                                             <td class="px-4 align-middle">
-                                                <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)); ?></span>
+                                                <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)) ?></span>
                                             </td>
                                             <td class="px-4 align-middle">
-                                                <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform; ?></span>
+                                                <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform ?></span>
                                             </td>
                                             <td class="px-4 align-middle">
-                                                <span class="text-sm"><?= $log->browser; ?></span>
+                                                <span class="text-sm"><?= $log->browser ?></span>
                                             </td>
                                             <td class="px-4 align-middle">
-                                                <code class="text-sm text-primary"><?= $log->ip_address; ?></code>
+                                                <code class="text-sm text-primary"><?= $log->ip_address ?></code>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
                                         <td colspan="4" class="text-center p-4 text-muted">
-                                            <?= phrase('No activity recorded yet.'); ?>
+                                            <?= phrase('No activity recorded yet.') ?>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -132,25 +133,25 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
             <div class="card overflow-hidden rounded-4 mb-3">
                 <div class="card-header bg-transparent border-0 p-4">
                     <h6 class="fw-bold mb-0">
-                        <?= phrase('Announcements'); ?>
+                        <?= phrase('Announcements') ?>
                     </h6>
                 </div>
                 <div class="card-body p-4">
                     <?php if ($announcements): ?>
                         <?php foreach ($announcements as $announcement): ?>
                             <div class="mb-3 pb-3 border-bottom last-child-border-0">
-                                <a href="<?= base_url('announcements/' . $announcement->announcement_slug); ?>" class="fw-bold text-decoration-none --xhr">
-                                    <?= $announcement->title; ?>
+                                <a href="<?= base_url('announcements/' . $announcement->announcement_slug) ?>" class="fw-bold text-decoration-none --xhr">
+                                    <?= $announcement->title ?>
                                 </a>
                                 <div class="text-muted small mt-1">
-                                    <?= truncate($announcement->content, 100); ?>
+                                    <?= truncate($announcement->content, 100) ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="text-center py-4 text-muted">
                             <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
-                            <?= phrase('No announcements available.'); ?>
+                            <?= phrase('No announcements available.') ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -159,12 +160,12 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
             <div class="card overflow-hidden rounded-4 bg-primary text-white mb-3">
                 <div class="card-body p-4 text-center">
                     <i class="mdi mdi-account-cog-outline mdi-48px mb-3"></i>
-                    <h6><?= phrase('Need help?'); ?></h6>
+                    <h6><?= phrase('Need help?') ?></h6>
                     <p class="small opacity-75 mb-3">
-                        <?= phrase('Update your profile or change your security settings here.'); ?>
+                        <?= phrase('Update your profile or change your security settings here.') ?>
                     </p>
-                    <a href="<?= base_url('administrative/account'); ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-4 --xhr">
-                        <?= phrase('Manage Account'); ?>
+                    <a href="<?= base_url('administrative/account') ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-4 --xhr">
+                        <?= phrase('Manage Account') ?>
                     </a>
                 </div>
             </div>

@@ -77,8 +77,7 @@ class Assets extends Core
 
         // Define local CSS files to load
         $localCss = [
-            'assets/local/css/override.min.css',
-            'assets/local/css/ie.fix.min.css'
+            'assets/local/css/override.min.css'
         ];
 
         if (is_rtl()) {
@@ -178,12 +177,6 @@ class Assets extends Core
             'assets/local/js/parser.min.js',
             'assets/local/js/global.min.js'
         ];
-
-        // Add IE Fixer if browser is Internet Explorer
-        $agent = $this->request->getUserAgent();
-        if ($agent->isBrowser('Internet Explorer')) {
-            $scripts[] = 'assets/local/js/ie.fix.min.js';
-        }
 
         try {
             foreach ($scripts as $file) {

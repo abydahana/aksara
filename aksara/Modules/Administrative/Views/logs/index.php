@@ -1,7 +1,7 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-4">
-            <a href="<?= go_to('activities'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('activities') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -9,10 +9,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Activities'); ?>
+                                <?= phrase('Activities') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Show log activities'); ?>
+                                <?= phrase('Show log activities') ?>
                             </p>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
             </a>
         </div>
         <div class="col-md-4">
-            <a href="<?= go_to('errors'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('errors') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -28,10 +28,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Errors'); ?>
+                                <?= phrase('Errors') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Show error logs'); ?>
+                                <?= phrase('Show error logs') ?>
                             </p>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="col-md-4">
-            <a href="<?= go_to('banned'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('banned') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -47,10 +47,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Banned'); ?>
+                                <?= phrase('Banned') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Show banned request logs'); ?>
+                                <?= phrase('Show banned request logs') ?>
                             </p>
                         </div>
                     </div>

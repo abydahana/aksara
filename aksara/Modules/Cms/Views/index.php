@@ -1,7 +1,7 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('blogs'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('blogs') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -9,10 +9,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Blogs'); ?>
+                                <?= phrase('Blogs') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage blog post'); ?>
+                                <?= phrase('Manage blog post') ?>
                             </p>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('pages'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('pages') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -28,10 +28,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Pages'); ?>
+                                <?= phrase('Pages') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage frontend pages'); ?>
+                                <?= phrase('Manage frontend pages') ?>
                             </p>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('galleries'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('galleries') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -47,10 +47,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Galleries'); ?>
+                                <?= phrase('Galleries') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage photo albums'); ?>
+                                <?= phrase('Manage photo albums') ?>
                             </p>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('peoples'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('peoples') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -68,10 +68,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Peoples'); ?>
+                                <?= phrase('Peoples') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage peoples'); ?>
+                                <?= phrase('Manage peoples') ?>
                             </p>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('partials/announcements'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('partials/announcements') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -87,10 +87,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Announcements'); ?>
+                                <?= phrase('Announcements') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage announcements'); ?>
+                                <?= phrase('Manage announcements') ?>
                             </p>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('partials/testimonials'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('partials/testimonials') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -106,10 +106,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Testimonials'); ?>
+                                <?= phrase('Testimonials') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage testimonials'); ?>
+                                <?= phrase('Manage testimonials') ?>
                             </p>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-md-10 col-xl-4 col-xl-8">
-            <a href="<?= go_to('partials/media'); ?>" class="card rounded-4 mb-3 --xhr">
+            <a href="<?= go_to('partials/media') ?>" class="card rounded-4 mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -127,10 +127,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Media'); ?>
+                                <?= phrase('Media') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage uploaded media'); ?>
+                                <?= phrase('Manage uploaded media') ?>
                             </p>
                         </div>
                     </div>

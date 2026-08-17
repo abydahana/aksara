@@ -9,18 +9,17 @@
  * @var mixed $groupName
  * @var mixed $logs
  */
-$logs = (isset($logs) ? $logs : []);
-?>
+$logs = $logs ?? []; ?>
 <div class="container-fluid py-3">
     <div class="row mb-3">
         <div class="col-lg-8">
             <div class="card overflow-hidden rounded-4 mb-3">
                 <div class="card-body p-4">
                     <h5 class="mb-1">
-                        <?= phrase('Welcome back'); ?>, <?= get_userdata('first_name') . ' ' . get_userdata('last_name'); ?>!
+                        <?= phrase('Welcome back') ?>, <?= get_userdata('first_name') . ' ' . get_userdata('last_name') ?>!
                     </h5>
                     <p class="text-muted mb-0">
-                        <?= phrase('You are signed in as {{ group_name }}.', ['group_name' => '<b>' . $groupName . '</b>']); ?>
+                        <?= phrase('You are signed in as {{ group_name }}.', ['group_name' => '<b>' . $groupName . '</b>']) ?>
                     </p>
                 </div>
             </div>
@@ -29,10 +28,10 @@ $logs = (isset($logs) ? $logs : []);
             <div class="card overflow-hidden rounded-4 mb-3">
                 <div class="card-body p-4 text-center">
                     <div class="text-muted small text-uppercase fw-bold mb-1">
-                        <?= phrase('Today'); ?>
+                        <?= phrase('Today') ?>
                     </div>
                     <div class="h5 mb-0 text-primary fw-bold">
-                        <?= phrase(date('l')) . ', ' . date('d') . ' ' . phrase(date('F')) . ' ' . date('Y'); ?>
+                        <?= phrase(date('l')) . ', ' . date('d') . ' ' . phrase(date('F')) . ' ' . date('Y') ?>
                     </div>
                 </div>
             </div>
@@ -41,7 +40,7 @@ $logs = (isset($logs) ? $logs : []);
 
     <div class="row">
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post'); ?>">
+            <a href="<?= base_url('cms/blogs') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post') ?>">
                 <div class="card border-0 rounded-4 bg-primary text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3">
@@ -51,10 +50,10 @@ $logs = (isset($logs) ? $logs : []);
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
-                                <?= phrase('Blogs'); ?>
+                                <?= phrase('Blogs') ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')); ?>
+                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')) ?>
                             </p>
                         </div>
                     </div>
@@ -62,7 +61,7 @@ $logs = (isset($logs) ? $logs : []);
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/pages'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage frontend pages'); ?>">
+            <a href="<?= base_url('cms/pages') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage frontend pages') ?>">
                 <div class="card border-0 rounded-4 bg-info text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3">
@@ -72,10 +71,10 @@ $logs = (isset($logs) ? $logs : []);
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
-                                <?= phrase('Pages'); ?>
+                                <?= phrase('Pages') ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')); ?>
+                                <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')) ?>
                             </p>
                         </div>
                     </div>
@@ -83,7 +82,7 @@ $logs = (isset($logs) ? $logs : []);
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/galleries'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage galleries'); ?>">
+            <a href="<?= base_url('cms/galleries') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage galleries') ?>">
                 <div class="card border-0 rounded-4 bg-success text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3">
@@ -93,10 +92,10 @@ $logs = (isset($logs) ? $logs : []);
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
-                                <?= phrase('Galleries'); ?>
+                                <?= phrase('Galleries') ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')); ?>
+                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')) ?>
                             </p>
                         </div>
                     </div>
@@ -104,7 +103,7 @@ $logs = (isset($logs) ? $logs : []);
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/videos'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage videos'); ?>">
+            <a href="<?= base_url('cms/videos') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage videos') ?>">
                 <div class="card border-0 rounded-4 bg-danger text-center text-sm-start mb-3" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3">
@@ -114,10 +113,10 @@ $logs = (isset($logs) ? $logs : []);
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate text-light">
-                                <?= phrase('Videos'); ?>
+                                <?= phrase('Videos') ?>
                             </h5>
                             <p class="text-light mb-0">
-                                <?= number_format($card->videos) . ' ' . ($card->videos > 1 ? phrase('videos') : phrase('video')); ?>
+                                <?= number_format($card->videos) . ' ' . ($card->videos > 1 ? phrase('videos') : phrase('video')) ?>
                             </p>
                         </div>
                     </div>
@@ -136,7 +135,7 @@ $logs = (isset($logs) ? $logs : []);
                         <div class="card overflow-hidden rounded-4 mb-3">
                             <div class="card-header border-0 p-4">
                                 <h5 class="card-title mb-0">
-                                    <?= phrase('Most used browsers'); ?>
+                                    <?= phrase('Most used browsers') ?>
                                 </h5>
                             </div>
                             <div class="card-body p-3">
@@ -144,25 +143,59 @@ $logs = (isset($logs) ? $logs : []);
                                 $num = 0;
 
                                 if (isset($visitors->browsers)) {
-                                    foreach ($visitors->browsers as $key => $val) {
-                                        echo '
-                                            ' . ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) . '
+                                  foreach ($visitors->browsers as $key => $val) {
+                                    echo '
+                                            ' .
+                                      ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) .
+                                      '
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-3 col-sm-2">
-                                                    <i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-primary' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
+                                                    <i class="mdi mdi-' .
+                                      ($key == 'chrome'
+                                        ? 'google-chrome text-success'
+                                        : ($key == 'firefox'
+                                          ? 'firefox text-warning'
+                                          : ($key == 'safari'
+                                            ? 'apple-safari text-primary'
+                                            : ($key == 'edge'
+                                              ? 'edge text-primary'
+                                              : ($key == 'opera'
+                                                ? 'opera text-danger'
+                                                : ($key == 'explorer'
+                                                  ? 'internet-explorer text-info'
+                                                  : 'web text-muted')))))) .
+                                      ' mdi-3x"></i>
                                                 </div>
                                                 <div class="col-9 col-sm-10 ps-3">
                                                     <b>
-                                                        ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
+                                                        ' .
+                                      ($key == 'chrome'
+                                        ? 'Google Chrome'
+                                        : ($key == 'firefox'
+                                          ? 'Mozilla Firefox'
+                                          : ($key == 'safari'
+                                            ? 'Safari'
+                                            : ($key == 'edge'
+                                              ? 'Microsoft Edge'
+                                              : ($key == 'opera'
+                                                ? 'Opera'
+                                                : ($key == 'explorer'
+                                                  ? 'Internet Explorer'
+                                                  : phrase('Unknown'))))))) .
+                                      '
                                                     </b>
                                                     <p class="mb-0 text-sm text-muted">
-                                                        ' . number_format($val) . ' ' . phrase('usage in a week') . '
+                                                        ' .
+                                      number_format($val) .
+                                      ' ' .
+                                      phrase('usage in a week') .
+                                      '
                                                     </p>
                                                 </div>
                                             </div>
                                         ';
-                                        $num++;
-                                    }
+                                    $num++;
+                                  }
                                 }
                                 ?>
                             </div>
@@ -172,34 +205,48 @@ $logs = (isset($logs) ? $logs : []);
                         <div class="card overflow-hidden rounded-4 mb-3">
                             <div class="card-header border-0 p-4">
                                 <h5 class="card-title mb-0">
-                                    <?= phrase('Recent sign in'); ?>
+                                    <?= phrase('Recent sign in') ?>
                                 </h5>
                             </div>
                             <div class="card-body p-3">
-                                <?php
-                                foreach ($recentSigned as $key => $val) {
-                                    echo '
-                                        ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
+                                <?php foreach ($recentSigned as $key => $val) {
+                                  echo '
+                                        ' .
+                                    ($key ? '<hr class="mt-2 mb-2" />' : null) .
+                                    '
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-3 col-sm-2">
-                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                    <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" alt="' . htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) . '" />
+                                                <a href="' .
+                                    base_url('user', ['user_id' => $val->user_id]) .
+                                    '" target="_blank">
+                                                    <img src="' .
+                                    get_image('users', $val->photo, 'icon') .
+                                    '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
+                                    htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
+                                    '" />
                                                 </a>
                                             </div>
                                             <div class="col-9 col-sm-10 ps-3">
-                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                <a href="' .
+                                    base_url('user', ['user_id' => $val->user_id]) .
+                                    '" target="_blank">
                                                     <b>
-                                                        ' . $val->first_name . ' ' . $val->last_name . '
+                                                        ' .
+                                    $val->first_name .
+                                    ' ' .
+                                    $val->last_name .
+                                    '
                                                     </b>
                                                 </a>
                                                 <p class="mb-0 text-sm text-muted">
-                                                    ' . $val->group_name . '
+                                                    ' .
+                                    $val->group_name .
+                                    '
                                                 </p>
                                             </div>
                                         </div>
                                     ';
-                                }
-                                ?>
+                                } ?>
                             </div>
                         </div>
                     </div>
@@ -207,7 +254,7 @@ $logs = (isset($logs) ? $logs : []);
                 <div class="card overflow-hidden rounded-4 mb-3">
                     <div class="card-header border-0 p-4">
                         <h5 class="card-title mb-0">
-                            <?= phrase('Recent Activities'); ?>
+                            <?= phrase('Recent Activities') ?>
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -215,10 +262,10 @@ $logs = (isset($logs) ? $logs : []);
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date'); ?></th>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform'); ?></th>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser'); ?></th>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date') ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform') ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser') ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address') ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -226,23 +273,23 @@ $logs = (isset($logs) ? $logs : []);
                                         <?php foreach ($logs as $log): ?>
                                             <tr>
                                                 <td class="px-4 align-middle">
-                                                    <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)); ?></span>
+                                                    <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)) ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform; ?></span>
+                                                    <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <span class="text-sm"><?= $log->browser; ?></span>
+                                                    <span class="text-sm"><?= $log->browser ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <code class="text-sm text-primary"><?= $log->ip_address; ?></code>
+                                                    <code class="text-sm text-primary"><?= $log->ip_address ?></code>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
                                             <td colspan="4" class="text-center p-4 text-muted">
-                                                <?= phrase('No activity recorded yet.'); ?>
+                                                <?= phrase('No activity recorded yet.') ?>
                                             </td>
                                         </tr>
                                     <?php endif; ?>
@@ -259,19 +306,21 @@ $logs = (isset($logs) ? $logs : []);
                     <div class="card overflow-hidden rounded-4 mb-3">
                         <div class="card-header border-0 p-4">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Announcements'); ?>
+                                <?= phrase('Announcements') ?>
                             </h5>
                         </div>
                         <?php
                         $announcement = null;
 
                         foreach ($announcements as $key => $val) {
-                            $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
+                          $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
                         }
 
                         echo '
                             <ul class="list-group list-group-flush">
-                                ' . $announcement . '
+                                ' .
+                          $announcement .
+                          '
                             </ul>
                         ';
                         ?>
@@ -281,25 +330,25 @@ $logs = (isset($logs) ? $logs : []);
                 <div class="card overflow-hidden rounded-4 mb-3">
                     <div class="card-header bg-transparent border-0 p-4">
                         <h5 class="fw-bold mb-0">
-                            <?= phrase('Announcements'); ?>
+                            <?= phrase('Announcements') ?>
                         </h5>
                     </div>
                     <div class="card-body p-4">
                         <?php if ($announcements): ?>
                             <?php foreach ($announcements as $announcement): ?>
                                 <div class="mb-3 pb-3 border-bottom last-child-border-0">
-                                    <a href="<?= base_url('announcements/' . $announcement->announcement_slug); ?>" class="fw-bold text-decoration-none --xhr">
-                                        <?= $announcement->title; ?>
+                                    <a href="<?= base_url('announcements/' . $announcement->announcement_slug) ?>" class="fw-bold text-decoration-none --xhr">
+                                        <?= $announcement->title ?>
                                     </a>
                                     <div class="text-muted small mt-1">
-                                        <?= truncate($announcement->content, 100); ?>
+                                        <?= truncate($announcement->content, 100) ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="text-center py-4 text-muted">
                                 <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
-                                <?= phrase('No announcements available.'); ?>
+                                <?= phrase('No announcements available.') ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -308,7 +357,7 @@ $logs = (isset($logs) ? $logs : []);
                 <div class="card overflow-hidden rounded-4 mb-3">
                     <div class="card-header border-0 p-4">
                         <h5 class="card-title mb-0">
-                            <?= phrase('Application Information'); ?>
+                            <?= phrase('Application Information') ?>
                         </h5>
                     </div>
                     <div class="card-body p-3">
@@ -319,47 +368,47 @@ $logs = (isset($logs) ? $logs : []);
                                         AKSARA
                                     </span>
                                     <p>
-                                        <?= aksara('version'); ?>
+                                        <?= aksara('version') ?>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Build Version'); ?>
+                                        <?= phrase('Build Version') ?>
                                     </span>
                                     <p>
-                                        <?= aksara('build_version'); ?>
+                                        <?= aksara('build_version') ?>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <span class="d-block text-muted mb-0">
-                                <?= phrase('Last Modified'); ?>
+                                <?= phrase('Last Modified') ?>
                             </span>
                             <p>
-                                <?= format_date(aksara('date_modified'), 'long', true); ?>
+                                <?= format_date(aksara('date_modified'), 'long', true) ?>
                             </p>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('System Language'); ?>
+                                        <?= phrase('System Language') ?>
                                     </span>
                                     <p>
-                                        <?= (isset($systemLanguage) ? $systemLanguage : null); ?>
+                                        <?= $systemLanguage ?? null ?>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Membership'); ?>
+                                        <?= phrase('Membership') ?>
                                     </span>
                                     <p>
-                                        <?= (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('Enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('Enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>' ?>
                                     </p>
                                 </div>
                             </div>
@@ -368,20 +417,20 @@ $logs = (isset($logs) ? $logs : []);
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Login Attempt'); ?>
+                                        <?= phrase('Login Attempt') ?>
                                     </span>
                                     <p>
-                                        <?= (get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>' ?>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Blocking Time'); ?>
+                                        <?= phrase('Blocking Time') ?>
                                     </span>
                                     <p>
-                                        <?= (get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>' ?>
                                     </p>
                                 </div>
                             </div>
@@ -395,14 +444,14 @@ $logs = (isset($logs) ? $logs : []);
 
 <script type="text/javascript">
     $(document).ready(function() {
-        require.js('<?= base_url('assets/echarts/echarts.min.js'); ?>', function() {
+        require.js('<?= base_url('assets/echarts/echarts.min.js') ?>', function() {
             // Initialize chart
             const visitorChart = echarts.init(document.getElementById('visitor-chart'));
 
             // Render chart
             visitorChart.setOption({
                 title: {
-                    text: '<?= phrase('Visitor Graph'); ?>',
+                    text: '<?= phrase('Visitor Graph') ?>',
                     textStyle: {
                         fontWeight: 'bold'
                     }
@@ -410,7 +459,7 @@ $logs = (isset($logs) ? $logs : []);
                 tooltip: {
                     trigger: 'axis',
                     valueFormatter: function(value) {
-                        return value + ' <?= phrase('Visits'); ?>';
+                        return value + ' <?= phrase('Visits') ?>';
                     }
                 },
                 grid: {
@@ -422,23 +471,23 @@ $logs = (isset($logs) ? $logs : []);
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: <?= (isset($visitors->categories) ? json_encode($visitors->categories) : '[]'); ?>
+                    data: <?= isset($visitors->categories) ? json_encode($visitors->categories) : '[]' ?>
                 },
                 yAxis: {
                     type: 'value',
-                    name: '<?= phrase('Visitor Total'); ?>',
+                    name: '<?= phrase('Visitor Total') ?>',
                     nameLocation: 'middle',
                     nameGap: 20,
                     minInterval: 1
                 },
                 series: [{
-                    name: '<?= phrase('Visitors'); ?>',
+                    name: '<?= phrase('Visitors') ?>',
                     type: 'line',
                     smooth: true,
                     areaStyle: {
                         opacity: 0.5
                     },
-                    data: <?= (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>,
+                    data: <?= isset($visitors->visits) ? json_encode($visitors->visits) : '[]' ?>,
                 }]
             });
 

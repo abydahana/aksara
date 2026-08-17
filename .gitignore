@@ -103,12 +103,14 @@ writable/**/*.db
 writable/**/*.sqlite
 
 #-------------------------
-# Composer
+# Developments
 #-------------------------
+node_modules/
+package-lock.json
 vendor/
 composer.lock
 
 #-------------------------
 # Extra Files
 #-------------------------
-.php-cs-fixer.cache
+.php-cs-fixer*.cache

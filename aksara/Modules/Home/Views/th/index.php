@@ -5,21 +5,21 @@
  * @var mixed $meta
  * @var mixed $error
  */
-if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
+if (isset($permission) && (!$permission->uploads || !$permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
                 ประกาศ!
             </h2>
-            <?php if (! $permission->uploads): ?>
+            <?php if (!$permission->uploads): ?>
                 <p class="mb-0 text-danger">
-                    <b><?= FCPATH . UPLOAD_PATH; ?></b> ไม่สามารถเขียนได้
+                    <b><?= FCPATH . UPLOAD_PATH ?></b> ไม่สามารถเขียนได้
                 </p>
             <?php endif; ?>
 
-            <?php if (! $permission->uploads): ?>
+            <?php if (!$permission->uploads): ?>
                 <p class="mb-0 text-danger">
-                    <b><?= WRITEPATH; ?></b> ไม่สามารถเขียนได้
+                    <b><?= WRITEPATH ?></b> ไม่สามารถเขียนได้
                 </p>
             <?php endif; ?>
 
@@ -34,10 +34,10 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <h1 class="text-center">
-                    <?= $meta->title; ?>
+                    <?= $meta->title ?>
                 </h1>
                 <p class="fs-5 text-center">
-                    <?= truncate($meta->description, 256); ?>
+                    <?= truncate($meta->description, 256) ?>
                 </p>
                 <h3 class="mb-3 text-center">
                     คุณกำลังใช้ <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!
@@ -57,12 +57,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                     <p>
                         โมดูลนี้ตั้งอยู่ใน
                         <br />
-                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>
+                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR ?>Home</code>
                     </p>
                     <p>
                         คุณสามารถ <b>เขียนทับ (override)</b> โมดูลนี้ไปที่
                         <br />
-                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code> ได้โดยไม่ต้องลบไฟล์ต้นฉบับ
+                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR ?>Home</code> ได้โดยไม่ต้องลบไฟล์ต้นฉบับ
                     </p>
                     <p>
                         <b>เป็นไปได้อย่างไร?</b> เพราะคุณกำลังใช้ <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>!

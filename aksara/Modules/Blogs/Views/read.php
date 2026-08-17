@@ -1,5 +1,4 @@
     <?php
-
     /**
      * @var mixed $results
      * @var mixed $meta
@@ -14,40 +13,53 @@
     $postTags = null;
 
     if ($fieldData) {
-        $tags = explode(',', $fieldData->post_tags->value);
+      $tags = explode(',', $fieldData->post_tags->value);
 
-        if (sizeof($tags) > 0) {
-            // Get post tags
-            foreach ($tags as $tag => $label) {
-                if (! $label) continue; // empty label
+      if (sizeof($tags) > 0) {
+        // Get post tags
+        foreach ($tags as $tag => $label) {
+          if (!$label) {
+            continue;
+          } // empty label
 
-                $postTags .= '
-                    <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="me-2 --xhr">
+          $postTags .=
+            '
+                    <a href="' .
+            go_to('../tags', ['q' => trim($label)]) .
+            '" class="me-2 --xhr">
                         <span class="badge bg-secondary">
-                            ' . trim($label) . '
+                            ' .
+            trim($label) .
+            '
                         </span>
                     </a>
                 ';
-            }
         }
+      }
 
-        // Reformat article output
-        list($toc, $article) = toc_generator(str_replace('MsoNormalTable', 'table table-bordered', preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-lg-justify article text-break">', preg_replace('/(<[^>]+) style=".*?"/i', '$1', $fieldData->post_content->value)))));
+      // Reformat article output
+      [$toc, $article] = toc_generator(
+        str_replace(
+          'MsoNormalTable',
+          'table table-bordered',
+          preg_replace('/(width|height)="\d*"\s/', '', preg_replace('~<p[^>]*>~', '<p class="text-lg-justify article text-break">', preg_replace('/(<[^>]+) style=".*?"/i', '$1', $fieldData->post_content->value))),
+        ),
+      );
 
-        if ($fieldData->featured_image->value && $fieldData->featured_image->value != 'placeholder.png') {
-            // Get featured image
-            $featuredImage = $fieldData->featured_image->value;
-        }
+      if ($fieldData->featured_image->value && $fieldData->featured_image->value != 'placeholder.png') {
+        // Get featured image
+        $featuredImage = $fieldData->featured_image->value;
+      }
     }
 
     if ($article): ?>
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <h1 class="display-4 fw-bold">
-                <?= $meta->title; ?>
+                <?= $meta->title ?>
             </h1>
             <p class="fs-5 text-muted mb-0">
-                <?= truncate($meta->description, 256); ?>
+                <?= truncate($meta->description, 256) ?>
             </p>
         </div>
     </section>
@@ -60,19 +72,19 @@
                             <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
                                 <div class="row align-items-center">
                                     <div class="col-2 pe-0">
-                                        <a href="<?= base_url('user/' . $fieldData->username->value); ?>" class="d-block --xhr">
-                                            <img src="<?= get_image('users', $fieldData->photo->value, 'thumb'); ?>" class="img-fluid rounded-circle" />
+                                        <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="d-block --xhr">
+                                            <img src="<?= get_image('users', $fieldData->photo->value, 'thumb') ?>" class="img-fluid rounded-circle" />
                                         </a>
                                     </div>
                                     <div class="col-10">
                                         <h2 class="h5" class="fw-bold mb-0">
-                                            <a href="<?= base_url('user/' . $fieldData->username->value); ?>" class="--xhr">
-                                                <?= $fieldData->first_name->value . ' ' . $fieldData->last_name->value; ?>
+                                            <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="--xhr">
+                                                <?= $fieldData->first_name->value . ' ' . $fieldData->last_name->value ?>
                                             </a>
                                         </h2>
                                         <p class="mb-0">
-                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $fieldData->created_at->value; ?>">
-                                                <?= time_ago($fieldData->created_at->value); ?>
+                                            <span class="text-muted" data-bs-toggle="tooltip" title="<?= $fieldData->created_at->value ?>">
+                                                <?= time_ago($fieldData->created_at->value) ?>
                                             </span>
                                         </p>
                                     </div>
@@ -80,13 +92,13 @@
                             </div>
                             <div class="col-sm-6 col-md-4 mb-3 order-0 order-md-1">
                                 <div class="btn-group btn-group-sm d-flex rounded-pill overflow-hidden">
-                                    <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page(); ?>" class="btn btn-primary border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook'); ?>" target="_blank">
+                                    <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page() ?>" class="btn btn-primary border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook') ?>" target="_blank">
                                         <i class="mdi mdi-facebook"></i>
                                     </a>
-                                    <a href="//www.twitter.com/share?url=<?= current_page(); ?>" class="btn btn-info text-white border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Twitter'); ?>" target="_blank">
+                                    <a href="//www.twitter.com/share?url=<?= current_page() ?>" class="btn btn-info text-white border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Twitter') ?>" target="_blank">
                                         <i class="mdi mdi-twitter"></i>
                                     </a>
-                                    <a href="//wa.me/?text=<?= current_page(); ?>" class="btn btn-success border-0" data-bs-toggle="tooltip" title="<?= phrase('Send to WhatsApp'); ?>" target="_blank">
+                                    <a href="//wa.me/?text=<?= current_page() ?>" class="btn btn-success border-0" data-bs-toggle="tooltip" title="<?= phrase('Send to WhatsApp') ?>" target="_blank">
                                         <i class="mdi mdi-whatsapp"></i>
                                     </a>
                                 </div>
@@ -96,7 +108,7 @@
                         <article>
                             <?php if ($featuredImage): ?>
                                 <div class="mb-3 fade-in">
-                                    <a href="<?= get_image('blogs', $featuredImage); ?>" class="d-block" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featuredImage); ?>" class="w-100 rounded" /></a>
+                                    <a href="<?= get_image('blogs', $featuredImage) ?>" class="d-block" target="_blank"><img id="og-image" src="<?= get_image('blogs', $featuredImage) ?>" class="w-100 rounded" /></a>
                                 </div>
                             <?php endif; ?>
 
@@ -104,31 +116,33 @@
                                 <div class="fade-in">
                                     <div class="fs-5">
                                         <p class="text-lg-justify article text-break">
-                                            <?= $meta->description; ?>
+                                            <?= $meta->description ?>
                                         </p>
                                     </div>
                                     <div class="toc">
                                         <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
-                                            <legend><?= phrase('Table of Contents'); ?></legend>
-                                            <?= $toc; ?>
+                                            <legend><?= phrase('Table of Contents') ?></legend>
+                                            <?= $toc ?>
                                         </fieldset>
                                     </div>
                                 </div>
                             <?php endif; ?>
 
                             <div class="fs-5 fade-in">
-                                <?= article_with_recommendation(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded mb-4"', $article), $recommendations); ?>
+                                <?= article_with_recommendation(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded mb-4"', $article), $recommendations) ?>
                             </div>
 
                             <div class="fade-in">
                                 <div class="my-3">
-                                    <?= $postTags; ?>
+                                    <?= $postTags ?>
                                 </div>
 
-                                <i class="text-muted text-sm"><?= ($fieldData->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value); ?></i>
+                                <i class="text-muted text-sm"><?= $fieldData->updated_at->value
+                                  ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value
+                                  : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
                             </div>
                             <div class="fade-in">
-                                <?= comment_widget(['post_id' => $fieldData->post_id->value, 'path' => service('uri')->getRoutePath()]); ?>
+                                <?= comment_widget(['post_id' => $fieldData->post_id->value, 'path' => service('uri')->getRoutePath()]) ?>
                             </div>
 
                             <div class="d-md-none py-3">&nbsp;</div>
@@ -139,7 +153,7 @@
                     <aside class="sticky-top fade-in">
                         <div class="mb-5">
                             <h4 class="mb-3">
-                                <?= phrase('Related Articles'); ?>
+                                <?= phrase('Related Articles') ?>
                             </h4>
 
                             <?php if ($related): ?>
@@ -148,14 +162,14 @@
                                         <div class="card-body">
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-2">
-                                                    <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug); ?>" class="--xhr">
-                                                        <img src="<?= get_image('blogs', $val->featured_image, 'icon'); ?>" class="img-fluid rounded-4" />
+                                                    <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug) ?>" class="--xhr">
+                                                        <img src="<?= get_image('blogs', $val->featured_image, 'icon') ?>" class="img-fluid rounded-4" />
                                                     </a>
                                                 </div>
                                                 <div class="col-10 ps-3">
                                                     <h2 class="h5">
-                                                        <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug); ?>" class="text-body --xhr">
-                                                            <?= $val->post_title; ?>
+                                                        <a href="<?= go_to('../' . $val->category_slug . '/' . $val->post_slug) ?>" class="text-body --xhr">
+                                                            <?= $val->post_title ?>
                                                         </a>
                                                     </h2>
                                                 </div>
@@ -168,7 +182,7 @@
 
                         <div class="mb-5">
                             <h4 class="mb-3">
-                                <?= phrase('Other Categories'); ?>
+                                <?= phrase('Other Categories') ?>
                             </h4>
                             <div class="card rounded-4 border-light-subtle mb-3">
                                 <div class="card-body">
@@ -180,17 +194,17 @@
 
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-2">
-                                                    <a href="<?= go_to('../' . $val->category_slug); ?>" class="d-block --xhr">
-                                                        <img src="<?= get_image('blogs', $val->category_image, 'icon'); ?>" class="img-fluid rounded-4" />
+                                                    <a href="<?= go_to('../' . $val->category_slug) ?>" class="d-block --xhr">
+                                                        <img src="<?= get_image('blogs', $val->category_image, 'icon') ?>" class="img-fluid rounded-4" />
                                                     </a>
                                                 </div>
                                                 <div class="col-10 ps-3">
-                                                    <a href="<?= go_to('../' . $val->category_slug); ?>" class="--xhr">
+                                                    <a href="<?= go_to('../' . $val->category_slug) ?>" class="--xhr">
                                                         <h4 class="text-body mb-0">
-                                                            <?= $val->category_title; ?>
+                                                            <?= $val->category_title ?>
                                                         </h4>
                                                         <p class="mb-0 text-muted">
-                                                            <?= number_format($val->total_data) . ' ' . ($val->total_data > 1 ? phrase('Articles') : phrase('Article')); ?>
+                                                            <?= number_format($val->total_data) . ' ' . ($val->total_data > 1 ? phrase('Articles') : phrase('Article')) ?>
                                                         </p>
                                                     </a>
                                                 </div>
@@ -210,7 +224,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['page' => null]), 'searchLabel' => phrase('Search posts...')]); ?>
+                    <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['page' => null]), 'searchLabel' => phrase('Search posts...')]) ?>
                 </div>
             </div>
             <?php if ($recommendations): ?>
@@ -220,27 +234,27 @@
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3">
                                     <i class="mdi mdi-newspaper-variant-outline text-primary me-2"></i>
-                                    <?= phrase('Recommended Articles'); ?>
+                                    <?= phrase('Recommended Articles') ?>
                                 </h5>
                                 <div class="list-group list-group-flush">
                                     <?php foreach ($recommendations as $val): ?>
                                         <?php
-                                            $link = is_array($val) ? ($val['link'] ?? '#') : ($val->link ?? '#');
-                                            $title = is_array($val) ? ($val['title'] ?? '') : ($val->title ?? '');
-                                            $image = is_array($val) ? ($val['image'] ?? null) : ($val->image ?? null);
+                                        $link = is_array($val) ? $val['link'] ?? '#' : $val->link ?? '#';
+                                        $title = is_array($val) ? $val['title'] ?? '' : $val->title ?? '';
+                                        $image = is_array($val) ? $val['image'] ?? null : $val->image ?? null;
                                         ?>
                                         <div class="list-group-item border-0 px-0 py-2">
                                             <div class="row g-3 align-items-center">
                                                 <?php if ($image): ?>
                                                     <div class="col-auto">
-                                                        <a href="<?= $link; ?>" class="d-block --xhr">
-                                                            <img src="<?= $image; ?>" class="rounded-4" alt="<?= $title; ?>" width="56" height="56" style="object-fit: cover;" />
+                                                        <a href="<?= $link ?>" class="d-block --xhr">
+                                                            <img src="<?= $image ?>" class="rounded-4" alt="<?= $title ?>" width="56" height="56" style="object-fit: cover;" />
                                                         </a>
                                                     </div>
                                                 <?php endif; ?>
                                                 <div class="col">
-                                                    <a href="<?= $link; ?>" class="text-body fw-medium text-break text-decoration-none --xhr">
-                                                        <?= $title; ?>
+                                                    <a href="<?= $link ?>" class="text-body fw-medium text-break text-decoration-none --xhr">
+                                                        <?= $title ?>
                                                     </a>
                                                 </div>
                                             </div>
@@ -254,4 +268,7 @@
             <?php endif; ?>
         </div>
     </div>
-<?php endif; ?>
+<?php endif;
+
+
+?>

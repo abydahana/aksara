@@ -1,0 +1,12 @@
+node_modules/
+vendor/
+writable/
+
+# Ignore third-party vendor assets except local
+public/assets/*
+!public/assets/local/
+themes/*/assets/bootstrap/
+
+# ALWAYS ignore all minified JS files everywhere (must be at the end)
+**/*.min.js
+*.min.js

@@ -3,55 +3,62 @@
 $thead = null;
 $tbody = null;
 $singlePrint = false;
-$method = (isset($method) ? $method : null);
-$pagination = (isset($pagination) ? $pagination : new stdClass());
+$method = $method ?? null;
+$pagination = $pagination ?? new stdClass();
 
 if (isset($results->table_data)) {
-    foreach($results->table_data as $key => $row) {
-        $rows = null;
+  foreach ($results->table_data as $key => $row) {
+    $rows = null;
 
-        foreach($row->field_data as $fields => $params) {
-            if($params->hidden) continue;
+    foreach ($row->field_data as $fields => $params) {
+      if ($params->hidden) {
+        continue;
+      }
 
-            $label = $params->label; // Backup label
-            $params->label = null; // Remove label
+      $label = $params->label; // Backup label
+      $params->label = null; // Remove label
 
-            if(0 == $key) {
-                $thead .= '<th class="bordered">' . $label . '</th>';
-            }
+      if (0 == $key) {
+        $thead .= '<th class="bordered">' . $label . '</th>';
+      }
 
-            $rows .= '<td class="bordered">' . form_read($params) . '</td>';
-        }
-
-        $tbody .= '<tr>' . $rows . '</tr>';
+      $rows .= '<td class="bordered">' . form_read($params) . '</td>';
     }
-} else if(isset($results->field_data)) {
-    $singlePrint = true;
 
-    foreach($results->field_data as $field => $params) {
-        $label = $params->label; // Backup label
-        $params->label = null; // Remove label
+    $tbody .= '<tr>' . $rows . '</tr>';
+  }
+} elseif (isset($results->field_data)) {
+  $singlePrint = true;
 
-        $tbody .= '
+  foreach ($results->field_data as $field => $params) {
+    $label = $params->label; // Backup label
+    $params->label = null; // Remove label
+
+    $tbody .=
+      '
             <tr>
                 <td class="text-muted text-uppercase text-end">
-                    ' . $label . '
+                    ' .
+      $label .
+      '
                 </td>
                 <td width="70%">
-                    ' . form_read($params) . '
+                    ' .
+      form_read($params) .
+      '
                     <hr />
                 </td>
             </tr>
         ';
-    }
+  }
 } else {
-    exit(phrase('No results could be rendered!'));
+  exit(phrase('No results could be rendered!'));
 }
 ?>
 <html>
     <head>
-        <title><?= (isset($meta->title) ? $meta->title : get_setting('app_name')); ?></title>
-        <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" />
+        <title><?= $meta->title ?? get_setting('app_name') ?></title>
+        <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" />
         <style type="text/css">
             .print {
                 display: none
@@ -65,7 +72,7 @@ if (isset($results->table_data)) {
                 }
             }
             @page {
-                sheet-size: <?= ($singlePrint ? '8.5in 13.5in' : '13.5in 8.5in'); ?>;;
+                sheet-size: <?= $singlePrint ? '8.5in 13.5in' : '13.5in 8.5in' ?>;;
                 footer: html_footer
             }
             * {
@@ -194,24 +201,24 @@ if (isset($results->table_data)) {
             <thead>
                 <tr>
                     <th>
-                        <img src="<?= get_image('settings', get_setting('app_icon'), 'icon'); ?>" alt="<?= get_setting('app_name'); ?>" />
+                        <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" alt="<?= get_setting('app_name') ?>" />
                     </th>
                     <th>
                         <h3 class="no-margin">
-                            <?= get_setting('app_name'); ?>
+                            <?= get_setting('app_name') ?>
                         </h3>
                         <h2 class="no-margin">
-                            <?= get_setting('office_name'); ?>
+                            <?= get_setting('office_name') ?>
                         </h2>
                         <p class="text-sm no-margin">
-                            <?= get_setting('office_address'); ?>
+                            <?= get_setting('office_address') ?>
                         </p>
                         <p class="text-sm no-margin">
-                            <?= phrase('Phone'); ?>: <?= get_setting('office_phone'); ?>
+                            <?= phrase('Phone') ?>: <?= get_setting('office_phone') ?>
                             /
-                            <?= phrase('Fax'); ?>: <?= get_setting('office_fax'); ?>
+                            <?= phrase('Fax') ?>: <?= get_setting('office_fax') ?>
                             /
-                            <?= get_setting('office_email'); ?>
+                            <?= get_setting('office_email') ?>
                         </p>
                     </th>
                 </tr>
@@ -223,11 +230,11 @@ if (isset($results->table_data)) {
         <table class="table">
             <thead>
                 <tr>
-                    <?= $thead; ?>
+                    <?= $thead ?>
                 </tr>
             </thead>
             <tbody>
-                <?= $tbody; ?>
+                <?= $tbody ?>
             </tbody>
         </table>
 
@@ -238,11 +245,14 @@ if (isset($results->table_data)) {
                         <tr>
                             <td class="text-muted text-sm">
                                 <i>
-                                    <?= phrase('The document was generated from {{app_name}} at {{datetime}}', ['app_name' => get_setting('app_name'), 'datetime' => date('Y-m-d H:i:s')]); ?>
+                                    <?= phrase('The document was generated from {{app_name}} at {{datetime}}', [
+                                      'app_name' => get_setting('app_name'),
+                                      'datetime' => date('Y-m-d H:i:s'),
+                                    ]) ?>
                                 </i>
                             </td>
                             <td class="text-muted text-sm text-end">
-                                <?= phrase('Page'); ?> {PAGENO} <?= phrase('of'); ?> {nb}
+                                <?= phrase('Page') ?> {PAGENO} <?= phrase('of') ?> {nb}
                             </td>
                         </tr>
                     </tfoot>
@@ -250,7 +260,7 @@ if (isset($results->table_data)) {
             </htmlpagefooter>
         <?php elseif ($method == 'print'): ?>
             <div class="no-print">
-                <?= pagination($pagination); ?>
+                <?= pagination($pagination) ?>
             </div>
             <script type="text/javascript">
                 window.print()

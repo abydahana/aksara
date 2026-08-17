@@ -7,7 +7,20 @@
 
 # Ignore export
 .git* export-ignore
-.php-cs-fixer.php export-ignore
+.prettier* export-ignore
+.php-cs-fixer* export-ignore
+bin/ export-ignore
 contributing export-ignore
 documentation export-ignore
 README.md export-ignore
+
+# Ignore unminified JS development files in export/downloads
+public/assets/local/js/function.js export-ignore
+public/assets/local/js/global.js export-ignore
+public/assets/local/js/openlayers.js export-ignore
+public/assets/local/js/parser.js export-ignore
+public/assets/local/js/require.js export-ignore
+themes/backend/assets/local/js/scripts.js export-ignore
+themes/default/assets/local/js/scripts.js export-ignore
+aksara/Modules/XHR/assets/js/ai.js export-ignore
+aksara/Modules/XHR/assets/js/comment.js export-ignore

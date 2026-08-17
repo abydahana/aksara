@@ -1,7 +1,7 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('services'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('services') ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -9,10 +9,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Services'); ?>
+                                <?= phrase('Services') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage service URLs'); ?>
+                                <?= phrase('Manage service URLs') ?>
                             </p>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('clients'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('clients') ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -28,10 +28,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Clients'); ?>
+                                <?= phrase('Clients') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage API Clients'); ?>
+                                <?= phrase('Manage API Clients') ?>
                             </p>
                         </div>
                     </div>
@@ -41,7 +41,7 @@
     </div>
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('apis'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('apis') ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -49,10 +49,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Permissions'); ?>
+                                <?= phrase('Permissions') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Manage client permissions'); ?>
+                                <?= phrase('Manage client permissions') ?>
                             </p>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
             </a>
         </div>
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('debugger'); ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('debugger') ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">
@@ -68,10 +68,10 @@
                         </div>
                         <div class="col">
                             <h5 class="card-title mb-0">
-                                <?= phrase('Debug Tools'); ?>
+                                <?= phrase('Debug Tools') ?>
                             </h5>
                             <p class="card-text">
-                                <?= phrase('Debug created API Services'); ?>
+                                <?= phrase('Debug created API Services') ?>
                             </p>
                         </div>
                     </div>

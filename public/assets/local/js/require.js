@@ -1,0 +1,73 @@
+/**
+ * A script library to import the javascript / css file on the fly
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled with this
+ * source code in the LICENSE.txt file.
+ */
+'use strict';
+
+// Track already-loaded sources to prevent duplicate loading
+let loaded_sources = [];
+let loading_sources = {}; // Track ongoing loads as Promises
+
+const require = (function () {
+  return {
+    js: async function (sources, callback) {
+      if (typeof $ === 'undefined') {
+        console.log('jQuery is required to use require.js()');
+        return;
+      }
+
+      if (!$.isArray(sources)) {
+        sources = [sources];
+      }
+
+      try {
+        // Load each source sequentially
+        for (const source of sources) {
+          if (loading_sources[source]) {
+            // Script is currently being loaded by another call — wait for it
+            await loading_sources[source];
+          } else if ($.inArray(source, loaded_sources) === -1) {
+            // Script hasn't been loaded yet — start loading it
+            loading_sources[source] = $.getScript(source).then(function () {
+              loaded_sources.push(source);
+              delete loading_sources[source];
+            });
+
+            await loading_sources[source];
+          }
+          // else: already loaded, just continue to next source
+        }
+
+        if (typeof callback === 'function') callback();
+      } catch (err) {
+        console.error('[require.js] failed to load script:', err);
+      }
+    },
+
+    css: async function (sources, callback) {
+      if (typeof $ === 'undefined') {
+        console.log('jQuery is required to use require.css()');
+        return;
+      }
+
+      if (!$.isArray(sources)) {
+        sources = [sources];
+      }
+
+      sources.forEach(function (source) {
+        if ($.inArray(source, loaded_sources) === -1) {
+          loaded_sources.push(source);
+          $(`<link rel="stylesheet" type="text/css" href="${source}" />`).appendTo('head');
+        }
+      });
+
+      if (typeof callback === 'function') callback();
+    }
+  };
+})();

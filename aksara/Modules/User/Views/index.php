@@ -4,22 +4,22 @@
  * @var mixed $results
  * @var mixed $meta
  */
-$user = (isset($results[0]) ? $results[0] : []);
+$user = $results[0] ?? [];
 
 if ($user): ?>
     <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
-                    <img src="<?= get_image('users', $user->photo, 'thumb'); ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name; ?>" />
+                    <img src="<?= get_image('users', $user->photo, 'thumb') ?>" class="img-fluid rounded-circle" alt="<?= $user->first_name . ' ' . $user->last_name ?>" />
                 </div>
                 <div class="col-12 col-sm-12 col-lg-10">
                     <div class="text-center text-lg-start">
                         <h2 class="mb-0">
-                            <?= $meta->title; ?>
+                            <?= $meta->title ?>
                         </h2>
                         <p class="fs-5">
-                            @<?= $user->username; ?>
+                            @<?= $user->username ?>
                         </p>
                     </div>
                 </div>
@@ -33,23 +33,34 @@ if ($user): ?>
                     <div class="overflow-x-auto">
                         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username, ['limit' => null, 'page' => null]); ?>" class="nav-link active rounded-pill no-wrap --xhr">
-                                    <i class="mdi mdi-information-outline"></i> <?= phrase('About'); ?>
+                                <a href="<?= go_to($user->username, [
+                                  'limit' => null,
+                                  'page' => null,
+                                ]) ?>" class="nav-link active rounded-pill no-wrap --xhr">
+                                    <i class="mdi mdi-information-outline"></i> <?= phrase('About') ?>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username . '/activities', ['limit' => null, 'page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
-                                    <i class="mdi mdi-account-clock-outline"></i> <?= phrase('Activities'); ?>
+                                <a href="<?= go_to($user->username . '/activities', [
+                                  'limit' => null,
+                                  'page' => null,
+                                ]) ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                    <i class="mdi mdi-account-clock-outline"></i> <?= phrase('Activities') ?>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username . '/likes', ['limit' => null, 'page' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
-                                    <i class="mdi mdi-heart"></i> <?= phrase('Likes'); ?>
+                                <a href="<?= go_to($user->username . '/likes', [
+                                  'limit' => null,
+                                  'page' => null,
+                                ]) ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                    <i class="mdi mdi-heart"></i> <?= phrase('Likes') ?>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= go_to($user->username . '/guestbook', ['comment_highlight' => null]); ?>" class="nav-link rounded-pill no-wrap --xhr">
-                                    <i class="mdi mdi-book"></i> <?= phrase('Guestbook'); ?>
+                                <a href="<?= go_to($user->username . '/guestbook', [
+                                  'comment_highlight' => null,
+                                ]) ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                    <i class="mdi mdi-book"></i> <?= phrase('Guestbook') ?>
                                 </a>
                             </li>
                         </ul>
@@ -64,18 +75,18 @@ if ($user): ?>
                 <div class="col-lg-8 offset-lg-2">
                     <div class="mb-3">
                         <h4 class="text-muted mb-0">
-                            <?= phrase('Biography'); ?>
+                            <?= phrase('Biography') ?>
                         </h3>
                         <p class="fs-5">
-                            <?= ($user->bio ? $user->bio : '-'); ?>
+                            <?= $user->bio ? $user->bio : '-' ?>
                         </p>
                     </div>
                     <div class="mb-3">
                         <h4 class="text-muted mb-0">
-                            <?= phrase('Last Activity'); ?>
+                            <?= phrase('Last Activity') ?>
                         </h3>
                         <p class="fs-5">
-                            <?= time_ago($user->last_activity); ?>
+                            <?= time_ago($user->last_activity) ?>
                         </p>
                     </div>
                 </div>
@@ -87,7 +98,7 @@ if ($user): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <?= view('templates/404', [...(array) $meta, 'searchLabel' => phrase('Search users...')]); ?>
+                    <?= view('templates/404', [...(array) $meta, 'searchLabel' => phrase('Search users...')]) ?>
                 </div>
             </div>
         </div>

@@ -5,21 +5,21 @@
  * @var mixed $meta
  * @var mixed $error
  */
-if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
+if (isset($permission) && (!$permission->uploads || !$permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
                 알림!
             </h2>
-            <?php if (! $permission->uploads): ?>
+            <?php if (!$permission->uploads): ?>
                 <p class="mb-0 text-danger">
-                    <b><?= FCPATH . UPLOAD_PATH; ?></b> 는 쓰기 가능하지 않습니다.
+                    <b><?= FCPATH . UPLOAD_PATH ?></b> 는 쓰기 가능하지 않습니다.
                 </p>
             <?php endif; ?>
 
-            <?php if (! $permission->uploads): ?>
+            <?php if (!$permission->uploads): ?>
                 <p class="mb-0 text-danger">
-                    <b><?= WRITEPATH; ?></b> 는 쓰기 가능하지 않습니다.
+                    <b><?= WRITEPATH ?></b> 는 쓰기 가능하지 않습니다.
                 </p>
             <?php endif; ?>
 
@@ -34,10 +34,10 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <h1 class="text-center">
-                    <?= $meta->title; ?>
+                    <?= $meta->title ?>
                 </h1>
                 <p class="fs-5 text-center">
-                    <?= truncate($meta->description, 256); ?>
+                    <?= truncate($meta->description, 256) ?>
                 </p>
                 <h3 class="mb-3 text-center">
                     당신은 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> 를 사용하고 있습니다!
@@ -57,12 +57,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                     <p>
                         이 모듈은 다음 위치에 있습니다
                         <br />
-                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>.
+                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR ?>Home</code>.
                     </p>
                     <p>
                         원본을 제거하지 않고 이 모듈을 다음 위치로 <b>재정의(override)</b> 할 수 있습니다
                         <br />
-                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code>.
+                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR ?>Home</code>.
                     </p>
                     <p>
                         <b>어떻게 그럴 수 있나요?</b> 당신이 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a> 를 사용하고 있기 때문입니다!

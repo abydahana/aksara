@@ -1,0 +1,353 @@
+/**
+ * Template Parser
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled with this
+ * source code in the LICENSE.txt file.
+ */
+'use strict';
+
+// Store rendered template
+let rendered_template = {};
+
+const parser = (function () {
+  return {
+    parse: function (component, replacement) {
+      if (typeof replacement !== 'object') {
+        console.log('Parser replacement must be an object...');
+      }
+
+      if (typeof rendered_template[component] === 'undefined') {
+        Object.keys(components).forEach(function (index, value) {
+          // Push components into rendered template
+          rendered_template[index] = components[index];
+
+          // Push components into Twig's template collections
+          Twig.twig({
+            id: index,
+            data: components[index]
+          });
+        });
+      }
+
+      // Add twig functions
+      Twig.extendFunction('phrase', function (words, check) {
+        return words ? phrase(words.trim()) : '';
+      });
+
+      Twig.extendFunction('current_page', function (path, params, unset) {
+        let url = window.location.href.split(/[?#]/)[0];
+        let queryParams = {};
+
+        if (params && typeof params === 'object') {
+          $.each(params, function (key, val) {
+            if (val && key !== unset) {
+              queryParams[key] = val;
+            }
+          });
+        }
+
+        let queryString = Object.keys(queryParams).length ? '?' + $.param(queryParams) : '';
+
+        return url.replace(/\/$/, '') + (path ? '/' + path : '') + queryString;
+      });
+
+      Twig.extendFunction('truncate', function (string, length, delimeter) {
+        if (typeof delimeter === 'undefined') {
+          delimeter = '...';
+        }
+
+        if (string.length <= length) {
+          return string;
+        }
+
+        return string.slice(0, length) + delimeter;
+      });
+
+      // Render Twig template
+      let template = Twig.twig({
+        data: rendered_template[component],
+        allowInlineIncludes: true
+      });
+
+      return template.render(replacement);
+    },
+
+    render: function (context, response, popstate, oldStuff) {
+      if (typeof response !== 'object') {
+        /**
+         * Response is not valid object, use error template
+         */
+        $('.modal.show').modal('hide');
+        $(config.wrapper.content).html(this.parse('core/error.twig', {}));
+        $('[data-role=icon]').removeAttr('class').addClass('mdi mdi-alert-outline');
+        $('[data-role=title]').text(phrase('Error'));
+        $('[data-role=description]').removeClass('show');
+        $('.full-height').css({
+          minHeight: typeof fullHeight !== 'undefined' ? fullHeight : window.outerHeight
+        });
+
+        return;
+      }
+
+      // Redirect
+      if ($.inArray(response.code, [301, 403, 404]) !== -1) {
+        // Throw exception
+        return throw_exception(response.code, response.message, response.target, response.redirect);
+      }
+
+      if (typeof response._token !== 'undefined') {
+        const tokenKey = `form_${$('.modal.show').length}`;
+
+        // Store response token
+        sessionStorage.setItem(tokenKey, response._token);
+      }
+
+      if (typeof response.meta !== 'undefined' && response.meta.segmentation !== 'undefined') {
+        // Manipulate segmentation (breadcrumb)
+        let segmentation = '',
+          segmentation_backup = '',
+          count = 0;
+
+        $.each(response.meta.segmentation, function (key, val) {
+          segmentation += (segmentation ? '_' : '') + val;
+          segmentation_backup += (segmentation_backup ? '|' : '') + val;
+
+          count++;
+        });
+
+        $('ul').find('li').removeClass('active');
+
+        if (response.prefer !== 'modal') {
+          // Activate the menu based on segmentation
+          if (segmentation && $('[data-segmentation=' + segmentation + ']').length) {
+            $('[data-segmentation=' + segmentation + ']')
+              .parents('li')
+              .addClass('active');
+          } else {
+            for (let i = 0; i < count; i++) {
+              if (segmentation_backup) {
+                segmentation_backup = segmentation_backup.substr(0, segmentation_backup.lastIndexOf('|'));
+
+                if (segmentation_backup && $('[data-segmentation=' + segmentation_backup.replaceAll('|', '_') + ']').length) {
+                  $('[data-segmentation=' + segmentation_backup.replaceAll('|', '_') + ']')
+                    .parents('li')
+                    .addClass('active');
+
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (typeof response.message !== 'undefined') {
+        // Response has message, throw the exception
+        return throw_exception(response.code, response.message, response.target, response.redirect);
+      } else if (typeof response.meta !== 'undefined' && typeof response.meta.popup !== 'undefined' && response.meta.popup) {
+        $('[data-role=icon]').removeAttr('class').addClass(oldStuff.icon);
+        $('[data-role=title]').text(oldStuff.title);
+
+        if (context.data('identifier') && '.modal#dynamic-modal-' + context.data('identifier').length) {
+          // Apply content to existing modal
+          $('.modal#dynamic-modal-' + context.data('identifier'))
+            .find('.modal-header')
+            .find('.modal-title-text')
+            .text(response.meta.title);
+          $('.modal#dynamic-modal-' + context.data('identifier'))
+            .find('.modal-header')
+            .find('.mdi.mdi-loading.mdi-spin')
+            .removeClass('mdi-loading mdi-spin')
+            .addClass(response.meta.icon);
+          $('.modal#dynamic-modal-' + context.data('identifier'))
+            .find('.modal-dialog')
+            .removeClass('modal-sm modal-md modal-lg modal-xl modal-xxl')
+            .addClass(response.meta.modal_size);
+          $('.modal#dynamic-modal-' + context.data('identifier'))
+            .find('.modal-body')
+            .html(response.content);
+
+          if ($('.modal#dynamic-modal-' + context.data('identifier')).find('.modal-body > .card-group, .modal-body > .card').length) {
+            // Remove padding from modal body
+            $('.modal#dynamic-modal-' + context.data('identifier'))
+              .find('.modal-body')
+              .addClass('p-0');
+          }
+        } else {
+          response.identifier = oldStuff.identifier;
+
+          let template = parser.parse('core/modal.twig', response);
+
+          $(template).appendTo('body').modal('show', {
+            backdrop: 'static',
+            keyboard: false
+          });
+        }
+
+        if (typeof response.meta.title === 'undefined' || !response.meta.title) {
+          $('.modal#dynamic-modal-' + oldStuff.identifier)
+            .find('.modal-content')
+            .addClass('rounded-4');
+          $('.modal#dynamic-modal-' + oldStuff.identifier)
+            .find('.modal-header')
+            .remove();
+        }
+
+        if (typeof response.reactivate !== 'undefined') {
+          reactivate();
+        }
+      } else if (!context.hasClass('--prevent-modify')) {
+        // The response is modal
+        if (!context.hasClass('--keep-modal')) {
+          // Hide previous modal
+          $('.modal.show')
+            .not('#' + oldStuff?.parent_modal)
+            .modal('hide');
+        }
+
+        if (response.prefer === 'modal') {
+          // Add data-level to parent modal
+          $('#' + oldStuff?.parent_modal).attr('data-level', $('.modal.show').length);
+
+          // Response is identically within twig template
+          response.identifier = $.now();
+
+          let content = parser.parse('core/' + (typeof response.view !== 'undefined' ? response.view : 'modal') + '.twig', response);
+
+          $(content).appendTo('body').modal('show', {
+            backdrop: 'static',
+            keyboard: false
+          });
+
+          // Reactivate the plugin
+          reactivate();
+
+          // Break operation
+          return;
+        } else {
+          if (!popstate && typeof response.links !== 'undefined') {
+            // Store into browser history
+            const currentPage = response.links.current_page;
+
+            history.pushState(
+              {
+                path: currentPage
+              },
+              response.meta.title,
+              currentPage
+            );
+          }
+        }
+
+        if (typeof response.breadcrumb !== 'undefined') {
+          // Load breadcrumb component
+          $('[data-role=breadcrumb]').find('ol').html('');
+
+          $.each(response.breadcrumb, function (key, val) {
+            if (val.url) {
+              $(`
+                <li class="breadcrumb-item">
+                  <a href="${val.url}" class="--xhr">
+                    ${(val.icon ? '<i class="' + val.icon + '"></i> ' : '') + val.label}
+                  </a>
+                </li>
+              `).appendTo('[data-role=breadcrumb] ol');
+            } else {
+              $(`
+                <li class="breadcrumb-item">
+                  <b class="text-muted">${(val.icon ? '<i class="' + val.icon + '"></i> ' : '') + val.label}</b>
+                </li>
+              `).appendTo('[data-role=breadcrumb] ol');
+            }
+          });
+        }
+
+        if (typeof response.content !== 'undefined') {
+          // Load html
+          if (context.data('identifier') && $('.modal#dynamic-modal-' + context.data('identifier')).length) {
+            // Apply content to existing modal
+            $('.modal#dynamic-modal-' + context.data('identifier'))
+              .find('.modal-dialog')
+              .removeClass('modal-sm modal-md modal-lg modal-xl modal-xxl')
+              .addClass(response.meta.modal_size);
+            $('.modal#dynamic-modal-' + context.data('identifier'))
+              .find('.modal-header')
+              .find('.mdi.mdi-loading.mdi-spin')
+              .removeClass('mdi-loading mdi-spin')
+              .addClass(response.meta.icon);
+            $('.modal#dynamic-modal-' + context.data('identifier'))
+              .find('.modal-header')
+              .find('.modal-title-text')
+              .text(response.meta.title);
+            $('.modal#dynamic-modal-' + context.data('identifier'))
+              .find('.modal-body')
+              .html(response.content);
+
+            if ($('.modal#dynamic-modal-' + context.data('identifier')).find('.modal-body > .card-group, .modal-body > .card').length) {
+              // Remove padding from modal body
+              $('.modal#dynamic-modal-' + context.data('identifier'))
+                .find('.modal-body')
+                .addClass('p-0');
+            }
+          } else {
+            $(config.wrapper.content).html(response.content);
+
+            if (!context.hasClass('--keep-modal')) {
+              // Hide previous modal
+              $('.modal.show')
+                .not('#' + oldStuff?.parent_modal)
+                .modal('hide');
+            }
+          }
+        } else {
+          // Load grid component
+          let output = parser.parse('core/' + response.view + '.twig', response);
+
+          $(config.wrapper.content).html(output);
+        }
+
+        if (typeof response.links !== 'undefined') {
+          // Change reload button's URL
+          const currentPage = response.links.current_page;
+
+          $('[data-role=reload]').attr('href', currentPage ? currentPage : context.attr('href'));
+        }
+
+        if (typeof response.meta !== 'undefined') {
+          // Push to browser tab title
+          document.title = response.meta.title + ' | ' + config.appName;
+
+          // Replace title, icon and description
+          $('[data-role=icon]').removeAttr('class').addClass(response.meta.icon);
+          $('[data-role=title]').text(response.meta.title);
+
+          if (response.meta.description) {
+            $('#description-btn').removeClass('d-none');
+            $('[data-role=description]').html(response.meta.description).addClass('show');
+          } else {
+            $('#description-btn').addClass('d-none');
+            $('[data-role=description]').html('').removeClass('show');
+          }
+        } else {
+          $('[data-role=icon]').removeAttr('class').addClass('mdi mdi-alert-outline');
+          $('[data-role=title]').text(phrase('Untitled'));
+        }
+
+        // Reset the body position to top
+        $('html, body').animate(
+          {
+            scrollTop: 0
+          },
+          200
+        );
+
+        // Reactivate the plugin
+        reactivate();
+      }
+    }
+  };
+})();

@@ -7,8 +7,7 @@
  * @var mixed $line
  * @var mixed $trace
  */
-$errorId = uniqid('error', true);
-?>
+$errorId = uniqid('error', true); ?>
 
 <!DOCTYPE html>
 <html>
@@ -44,9 +43,9 @@ $errorId = uniqid('error', true);
         <div class="container">
             <p><b><?= esc(clean_path($file)) ?></b> at line <b><?= esc($line) ?></b></p>
 
-            <?php if (is_file($file)) : ?>
+            <?php if (is_file($file)): ?>
                 <div class="source">
-                    <?= static::highlightFile($file, $line, 15); ?>
+                    <?= static::highlightFile($file, $line, 15) ?>
                 </div>
             <?php endif; ?>
         </div>
@@ -54,27 +53,25 @@ $errorId = uniqid('error', true);
         <div class="container">
             <h2>Backtrace</h2>
 
-            <?php foreach ($trace as $index => $row) : ?>
+            <?php foreach ($trace as $index => $row): ?>
                 <div>
                     <p>
                         <!-- Trace info -->
-                        <?php if (isset($row['file']) && is_file($row['file'])) :?>
-                            <?php
-                            if (isset($row['function']) && in_array($row['function'], ['include', 'include_once', 'require', 'require_once'], true)) {
-                                echo esc($row['function'] . ' ' . clean_path($row['file']));
+                        <?php if (isset($row['file']) && is_file($row['file'])): ?>
+                            <?php if (isset($row['function']) && in_array($row['function'], ['include', 'include_once', 'require', 'require_once'], true)) {
+                              echo esc($row['function'] . ' ' . clean_path($row['file']));
                             } else {
-                                echo esc(clean_path($row['file']) . ' : ' . $row['line']);
-                            }
-                            ?>
+                              echo esc(clean_path($row['file']) . ' : ' . $row['line']);
+                            } ?>
                         <?php else: ?>
                             {PHP internal code}
                         <?php endif; ?>
 
                         <!-- Class/Method -->
-                        <?php if (isset($row['class'])) : ?>
+                        <?php if (isset($row['class'])): ?>
                             &nbsp;&nbsp;&mdash;&nbsp;&nbsp;<?= esc($row['class'] . $row['type'] . $row['function']) ?>
-                            <?php if (! empty($row['args'])) : ?>
-                                <?php $argsId = $errorId . 'args' . $index ?>
+                            <?php if (!empty($row['args'])): ?>
+                                <?php $argsId = $errorId . 'args' . $index; ?>
                                 ( <a href="#" onclick="return toggle('<?= esc($argsId, 'attr') ?>');">arguments</a> )
                                 <div class="args" id="<?= esc($argsId, 'attr') ?>">
                                     <table cellspacing="0">
@@ -83,31 +80,32 @@ $errorId = uniqid('error', true);
                                     $params = null;
                                     // Reflection by name is not available for closure function
                                     if (substr($row['function'], -1) !== '}') {
-                                        $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
-                                        $params = $mirror->getParameters();
+                                      $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
+                                      $params = $mirror->getParameters();
                                     }
 
-                                    foreach ($row['args'] as $key => $value) : ?>
+                                    foreach ($row['args'] as $key => $value): ?>
                                         <tr>
                                             <td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
                                             <td><pre><?= esc(print_r($value, true)) ?></pre></td>
                                         </tr>
-                                    <?php endforeach ?>
+                                    <?php endforeach;
+                                    ?>
 
                                     </table>
                                 </div>
-                            <?php else : ?>
+                            <?php else: ?>
                                 ()
                             <?php endif; ?>
                         <?php endif; ?>
 
-                        <?php if (! isset($row['class']) && isset($row['function'])) : ?>
+                        <?php if (!isset($row['class']) && isset($row['function'])): ?>
                             &nbsp;&nbsp;&mdash;&nbsp;&nbsp;    <?= esc($row['function']) ?>()
                         <?php endif; ?>
                     </p>
 
                     <!-- Source? -->
-                    <?php if (isset($row['file']) && is_file($row['file']) && isset($row['class'])) : ?>
+                    <?php if (isset($row['file']) && is_file($row['file']) && isset($row['class'])): ?>
                         <div class="source">
                             <?= static::highlightFile($row['file'], $row['line']) ?>
                         </div>

@@ -1,0 +1,4556 @@
+/**
+ * Openlayers's Library
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled with this
+ * source code in the LICENSE.txt file.
+ */
+'use strict';
+
+let context,
+  map,
+  layerVector,
+  layerOverlap,
+  clickedPoint,
+  measurementVector,
+  routeWayPoints,
+  routeLineString,
+  selected,
+  selectionBox,
+  drawingManager,
+  drawingEditor,
+  drawingType,
+  draggableMarker,
+  lngLat,
+  colorscheme,
+  fillColor,
+  strokeColor,
+  strokeWidth,
+  iconPattern,
+  iconScale,
+  geocoder,
+  geolocation,
+  applyCoordinate,
+  applyLatitude,
+  applyLongitude,
+  applyAddress,
+  applyMeasurement,
+  applyRouteFrom,
+  applyRouteTo,
+  serviceUrl,
+  restUrl,
+  wmsUrl,
+  wmsTile,
+  mvtTile,
+  mvtSelectionId,
+  rasterTile,
+  panorama,
+  clicked,
+  previousCenter = [],
+  defaultZoom = 12,
+  minZoom = 4,
+  maxZoom = 22,
+  features = [],
+  projection = 'EPSG:4326',
+  popup = new ol.Overlay.Popup({
+    autoPan: false
+  }),
+  highlight = new ol.interaction.Select({
+    filter: function (feature, layer) {
+      if (window.isDrawingActive) return false;
+      if (layer) {
+        let init = layer.get('initial');
+        if (init === 'draggable' || init === 'clickedPoint' || init === 'digitizeVector' || init === 'handlesLayer' || init === 'digitize') return false;
+      }
+      if (typeof digitizeVector !== 'undefined' && digitizeVector && layer === digitizeVector) return false;
+      return true;
+    }
+  }),
+  highlighted,
+  exactHighlightLayer,
+  tileSource,
+  currentGeojsonLoadId = 0,
+  mapResizeObserver,
+  mapResizeHandler,
+  mapResizeTimer,
+  mapResizeFrame;
+
+function getDrawStyle(drawType, sColor, fColor) {
+  sColor = sColor || '#ff2a2a';
+  fColor = fColor || 'rgba(255, 42, 42, 0.25)';
+
+  return function (feature) {
+    let gType = feature && feature.getGeometry() ? feature.getGeometry().getType() : drawType;
+    let styles = [];
+
+    if (gType === 'Point' || gType === 'MultiPoint') {
+      if (drawType === 'Point' || drawType === 'point') {
+        styles.push(
+          new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 7,
+              fill: new ol.style.Fill({ color: sColor }),
+              stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
+            })
+          })
+        );
+      } else {
+        styles.push(
+          new ol.style.Style({
+            image: new ol.style.RegularShape({
+              fill: new ol.style.Fill({ color: '#ff2a2a' }),
+              stroke: new ol.style.Stroke({ color: '#ffffff', width: 2.5 }),
+              points: 4,
+              radius: 10,
+              radius2: 0,
+              angle: 0
+            })
+          })
+        );
+        styles.push(
+          new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 3.5,
+              fill: new ol.style.Fill({ color: '#ff2a2a' }),
+              stroke: new ol.style.Stroke({ color: '#ffffff', width: 1.5 })
+            })
+          })
+        );
+      }
+    } else if (gType === 'LineString' || gType === 'MultiLineString') {
+      styles.push(
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: sColor,
+            width: 3
+          })
+        })
+      );
+    } else {
+      styles.push(
+        new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: fColor
+          }),
+          stroke: new ol.style.Stroke({
+            color: sColor,
+            width: 3
+          })
+        })
+      );
+    }
+
+    if (feature && gType !== 'Point' && gType !== 'MultiPoint') {
+      const geom = feature.getGeometry();
+      if (geom) {
+        let coords = [];
+        if (gType === 'LineString') {
+          coords = geom.getCoordinates();
+        } else if (gType === 'Polygon') {
+          coords = geom.getCoordinates()[0] || [];
+        } else if (gType === 'MultiLineString') {
+          geom.getLineStrings().forEach(function (ls) {
+            coords.push(...ls.getCoordinates());
+          });
+        } else if (gType === 'MultiPolygon') {
+          geom.getPolygons().forEach(function (p) {
+            coords.push(...(p.getCoordinates()[0] || []));
+          });
+        }
+
+        if (coords.length > 0) {
+          styles.push(
+            new ol.style.Style({
+              geometry: new ol.geom.MultiPoint(coords),
+              image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({ color: '#ffffff' }),
+                stroke: new ol.style.Stroke({ color: sColor, width: 2 })
+              })
+            })
+          );
+        }
+      }
+    }
+
+    return styles;
+  };
+}
+
+const DARK_TILE_URL = 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+
+function _isDarkMode() {
+  return document.documentElement.getAttribute('data-bs-theme') === 'dark' || document.body.getAttribute('data-bs-theme') === 'dark';
+}
+
+function _makeTileSource(url) {
+  if (!url) {
+    return new ol.source.OSM();
+  }
+  try {
+    let provider = new URL(url),
+      site = provider.hostname.split('.'),
+      domain = site
+        .slice(0)
+        .slice(-(site.length === 4 ? 3 : 2))
+        .join('.');
+    return new ol.source.XYZ({
+      url: url,
+      attributions: ['© <a href="https://' + domain + '" target="_blank">' + domain + '</a>', '© <a href="https://openstreetmap.org">OpenStreetMap</a>'],
+      crossOrigin: 'anonymous'
+    });
+  } catch (e) {
+    return new ol.source.OSM();
+  }
+}
+
+const openlayers = (function () {
+  return {
+    render: function (_this) {
+      /**
+       * Render map
+       */
+      context = _this;
+
+      if (context.data('tiles-url') && context.data('tiles-url')) {
+        tileSource = _makeTileSource(context.data('tiles-url'));
+      } else if (config.defaultMapTile) {
+        tileSource = _makeTileSource(config.defaultMapTile);
+      } else {
+        // Auto-select dark tile when dark mode is active, fallback to OSM
+        tileSource = _isDarkMode() ? _makeTileSource(DARK_TILE_URL) : new ol.source.OSM();
+      }
+
+      // Apply coordinate to field with matches attribute
+      applyCoordinate = context.data('apply-coordinate-to');
+
+      // Apply latitude to field with matches attribute
+      applyLatitude = context.data('apply-latitude-to');
+
+      // Apply longitude to field with matches attribute
+      applyLongitude = context.data('apply-longitude-to');
+
+      // Apply address to field witch matches attribute
+      applyAddress = context.data('apply-address-to');
+
+      // Apply measurement to field with matches attribute
+      applyMeasurement = context.data('apply-measurement-to');
+
+      // Route start from
+      applyRouteFrom = context.data('route-from') ?? [];
+      applyRouteFrom = typeof applyRouteFrom.lat !== 'undefined' && typeof applyRouteFrom.lng ? [applyRouteFrom.lat, applyRouteFrom.lng] : applyRouteFrom;
+
+      // Route end to
+      applyRouteTo = context.data('route-to') ?? [];
+      applyRouteTo = typeof applyRouteTo.lat !== 'undefined' && typeof applyRouteTo.lng ? [applyRouteTo.lng, applyRouteTo.lat] : applyRouteTo;
+
+      // Use source url geospatial data
+      serviceUrl = context.data('source-url');
+
+      // Use rest url (ArcGIS)
+      restUrl = context.data('rest-url');
+
+      // Use wms url
+      wmsUrl = context.data('wms-url');
+
+      // Add street view
+      panorama = context.data('panorama');
+
+      fillColor = context.data('fill') ? context.data('fill') : null;
+      strokeColor = context.data('stroke') ? context.data('stroke') : null;
+      strokeWidth = context.data('stroke-width') ? context.data('stroke-width') : null;
+      iconPattern = context.data('icon') ? context.data('icon') : null;
+      iconScale = context.data('icon-scale') ? context.data('icon-scale') : null;
+
+      lngLat = context.data('coordinate') ? context.data('coordinate') : context.data('map-center') ? context.data('map-center') : [];
+      lngLat = lngLat && (typeof lngLat.lng !== 'undefined' && typeof lngLat.lat !== 'undefined' ? [lngLat.lng, lngLat.lat] : typeof lngLat[0] !== 'undefined' && typeof lngLat[1] !== 'undefined' ? [lngLat[0], lngLat[1]] : [107.0825363, -6.2355892]);
+      colorscheme = typeof lngLat.colorscheme !== 'undefined' ? lngLat.colorscheme : '#ff0000';
+
+      if (!context.attr('id')) {
+        context.attr('id', 'maps');
+      }
+
+      if (context.data('zoom')) {
+        defaultZoom = context.data('zoom');
+      }
+
+      // Reset previous rendered map
+      openlayers.reset();
+
+      // Render new map
+      map = new ol.Map({
+        interactions: ol.interaction
+          .defaults({
+            mouseWheelZoom: false,
+            dragPan: true
+          })
+          .extend([
+            new ol.interaction.MouseWheelZoom({
+              condition: function (e) {
+                return 0 != context.attr('control-mousewheel') || ol.events.condition.platformModifierKeyOnly(e);
+              }
+            })
+          ]),
+        target: context.attr('id'),
+        layers: [
+          new ol.layer.Tile({
+            source: tileSource
+          }) /*
+          new ol.layer.Tile({
+            source: new ol.source.TileDebug()
+          })*/
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat(lngLat),
+          zoom: defaultZoom,
+          minZoom,
+          maxZoom
+        }),
+        loadTilesWhileAnimating: false,
+        loadTilesWhileInteracting: false
+      });
+
+      exactHighlightLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: '#00ffff',
+            width: 3
+          }),
+          fill: new ol.style.Fill({
+            color: 'rgba(0, 255, 255, 0.2)'
+          }),
+          image: new ol.style.Circle({
+            radius: 6,
+            fill: new ol.style.Fill({
+              color: 'rgba(0, 255, 255, 0.2)'
+            }),
+            stroke: new ol.style.Stroke({
+              color: '#00ffff',
+              width: 2
+            })
+          })
+        }),
+        zIndex: 999
+      });
+      map.addLayer(exactHighlightLayer);
+
+      // ── Auto dark/light tile swap on theme change ────────────────────
+      (function () {
+        // Only auto-swap when no explicit tile URL is configured
+        var _autoTile = !context.data('tiles-url') && !config.defaultMapTile;
+        if (!_autoTile) return;
+
+        var _themeObserver = new MutationObserver(function () {
+          if (typeof map === 'undefined' || !map) return;
+
+          var newSource = _isDarkMode() ? _makeTileSource(DARK_TILE_URL) : new ol.source.OSM();
+
+          map
+            .getLayers()
+            .getArray()
+            .forEach(function (layer) {
+              if (layer instanceof ol.layer.Tile && layer.getSource() === tileSource) {
+                layer.setSource(newSource);
+              }
+            });
+
+          tileSource = newSource;
+        });
+
+        _themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['data-bs-theme']
+        });
+        _themeObserver.observe(document.body, { attributes: true, attributeFilter: ['data-bs-theme'] });
+      })();
+      // ── End auto tile swap ───────────────────────────────────────────
+
+      function syncRenderedMapSize() {
+        if (typeof map === 'undefined' || !map || typeof map.updateSize !== 'function') {
+          return;
+        }
+
+        var target = typeof map.getTargetElement === 'function' ? map.getTargetElement() : document.getElementById(context.attr('id'));
+        if (!target || !target.isConnected) {
+          return;
+        }
+
+        target.style.width = '100%';
+
+        if (target.classList.contains('full-height')) {
+          var parentHeight = target.parentElement ? target.parentElement.clientHeight : 0;
+          target.style.height = (parentHeight > 0 ? parentHeight : window.innerHeight) + 'px';
+        }
+
+        var rect = target.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) {
+          return;
+        }
+
+        map.updateSize();
+      }
+
+      function scheduleRenderedMapSize() {
+        clearTimeout(mapResizeTimer);
+        if (mapResizeFrame) {
+          cancelAnimationFrame(mapResizeFrame);
+        }
+        mapResizeFrame = requestAnimationFrame(function () {
+          mapResizeFrame = null;
+          syncRenderedMapSize();
+          mapResizeTimer = setTimeout(syncRenderedMapSize, 120);
+        });
+      }
+
+      if (mapResizeHandler && window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', mapResizeHandler);
+      }
+      $(window).off('resize.openlayers orientationchange.openlayers');
+
+      mapResizeHandler = scheduleRenderedMapSize;
+      $(window).on('resize.openlayers orientationchange.openlayers', mapResizeHandler);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', mapResizeHandler);
+      }
+
+      if (mapResizeObserver && typeof mapResizeObserver.disconnect === 'function') {
+        mapResizeObserver.disconnect();
+      }
+      if (typeof ResizeObserver !== 'undefined') {
+        var mapTarget = typeof map.getTargetElement === 'function' ? map.getTargetElement() : document.getElementById(context.attr('id'));
+        mapResizeObserver = new ResizeObserver(mapResizeHandler);
+        if (mapTarget) {
+          mapResizeObserver.observe(mapTarget);
+        }
+        if (mapTarget && mapTarget.parentElement) {
+          mapResizeObserver.observe(mapTarget.parentElement);
+        }
+      }
+
+      scheduleRenderedMapSize();
+
+      // ── Tile loading indicator ─────────────────────────────────────
+      (function () {
+        // Inject CSS (once)
+        if (!document.getElementById('ol-tile-loading-css')) {
+          var css = document.createElement('style');
+          css.id = 'ol-tile-loading-css';
+          css.textContent =
+            '.ol-tile-loading{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);z-index:9999;display:none;pointer-events:none}' +
+            '.ol-tile-loading.active{display:flex}' +
+            '.ol-tile-loading-pill{display:flex;align-items:center;gap:8px;padding:3px 0.5rem; border-radius:50px;' +
+            'background:rgba(0,0,0,.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);' +
+            'color:#fff;font-size:.78rem;font-weight:500}' +
+            '.ol-tile-loading-pill .spinner-border{width:.85rem;height:.85rem;border-width:2px}';
+          document.head.appendChild(css);
+        }
+
+        // Inject HTML into map container
+        var mapEl = document.getElementById(context.attr('id'));
+        if (mapEl && !mapEl.querySelector('.ol-tile-loading')) {
+          var overlay = document.createElement('div');
+          overlay.className = 'ol-tile-loading';
+          overlay.id = 'olTileLoading';
+          overlay.innerHTML = '<div class="ol-tile-loading-pill">' + '<div class="spinner-border text-light" role="status"></div>' + '<span>' + (typeof phrase === 'function' ? phrase('Loading...') : 'Loading...') + '</span>' + '</div>';
+          mapEl.style.position = 'relative';
+          mapEl.appendChild(overlay);
+        }
+
+        var _pending = 0;
+        var _hideTimer = null;
+        var _watched = new WeakSet();
+        var $indicator = null;
+
+        function _getIndicator() {
+          if (!$indicator || !$indicator.length) {
+            $indicator = $('#olTileLoading');
+          }
+          return $indicator;
+        }
+
+        function _watchSource(layer) {
+          if (!layer || typeof layer.getSource !== 'function') return;
+          var src = layer.getSource();
+          if (!src || _watched.has(src) || typeof src.on !== 'function') return;
+          _watched.add(src);
+
+          src.on('tileloadstart', function () {
+            _pending++;
+            if (_hideTimer) {
+              clearTimeout(_hideTimer);
+              _hideTimer = null;
+            }
+            _getIndicator().addClass('active');
+          });
+          src.on('tileloadend', _done);
+          src.on('tileloaderror', _done);
+        }
+
+        function _done() {
+          _pending--;
+          if (_pending <= 0) {
+            _pending = 0;
+            if (_hideTimer) clearTimeout(_hideTimer);
+            _hideTimer = setTimeout(function () {
+              _getIndicator().removeClass('active');
+            }, 300);
+          }
+        }
+
+        // Watch existing layers
+        map.getLayers().forEach(_watchSource);
+
+        // Watch dynamically added layers
+        map.getLayers().on('add', function (e) {
+          _watchSource(e.element);
+        });
+      })();
+      // ── End tile loading indicator ─────────────────────────────────
+
+      let resolution = map.getView().getResolution();
+
+      // Add zoom control to map
+      // Add custom fullscreen control (intercept OL default, use own function)
+      if (context.attr('control-fullscreen')) {
+        function customMapFullscreen() {
+          var isFs = !!document.fullscreenElement;
+
+          if (!isFs) {
+            // Enter fullscreen: record which elements were visible, then hide them
+            var fsWasVisible = [];
+            $('header, footer, #header-wrapper, #footer-wrapper').each(function () {
+              if ($(this).is(':visible')) {
+                fsWasVisible.push(this);
+                $(this).hide();
+              }
+            });
+            fsBtn._fsWasVisible = fsWasVisible;
+            $('#content-wrapper').css({ 'margin-top': '0', height: '100vh' });
+            $('#content-wrapper .full-height, #content-wrapper .position-relative').css('height', '100vh');
+            context.closest('.full-height').css('height', '100vh');
+            setTimeout(function () {
+              if (typeof map !== 'undefined') map.updateSize();
+            }, 50);
+            var mapEl = document.documentElement;
+            (mapEl.requestFullscreen || mapEl.webkitRequestFullscreen || mapEl.mozRequestFullScreen).call(mapEl);
+          } else {
+            // Exit fullscreen: restore header/footer, resize map
+            (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+          }
+        }
+
+        var fsBtn = document.createElement('button');
+        fsBtn.type = 'button';
+        fsBtn.setAttribute('data-bs-toggle', 'tooltip');
+        fsBtn.setAttribute('data-bs-placement', 'right');
+        fsBtn.setAttribute('title', phrase('Full screen'));
+        fsBtn.innerHTML = '<span class="ol-custom-fs-icon">&#10530;</span>';
+        fsBtn.addEventListener('click', function () {
+          customMapFullscreen();
+        });
+        var fsBtnTooltip = new bootstrap.Tooltip(fsBtn, { placement: 'right', trigger: 'hover' });
+
+        document.addEventListener('fullscreenchange', function () {
+          if (document.fullscreenElement) {
+            fsBtn.querySelector('.ol-custom-fs-icon').innerHTML = '&#10005;';
+            fsBtnTooltip.hide();
+            fsBtn.setAttribute('title', phrase('Exit full screen'));
+            fsBtnTooltip._config.title = phrase('Exit full screen');
+          } else {
+            fsBtn.querySelector('.ol-custom-fs-icon').innerHTML = '&#10530;';
+            fsBtn.setAttribute('title', phrase('Full screen'));
+            fsBtnTooltip._config.title = phrase('Full screen');
+            // Restore only elements that were visible before fullscreen
+            if (fsBtn._fsWasVisible && fsBtn._fsWasVisible.length) {
+              $(fsBtn._fsWasVisible).show();
+              fsBtn._fsWasVisible = [];
+            }
+            $('#content-wrapper').css({ 'margin-top': '', height: '' });
+            $('#content-wrapper .full-height, #content-wrapper .position-relative').css('height', '');
+            context.closest('.full-height').css('height', '');
+            setTimeout(function () {
+              if (typeof map !== 'undefined') map.updateSize();
+            }, 100);
+          }
+        });
+
+        var fsWrapper = document.createElement('div');
+        fsWrapper.className = 'ol-full-screen ol-unselectable ol-control';
+        fsWrapper.appendChild(fsBtn);
+
+        map.addControl(new ol.control.Control({ element: fsWrapper }));
+      }
+
+      // Add scale line to map
+      context.attr('control-scaleline') ? map.addControl(new ol.control.ScaleLine()) : '';
+
+      // Add mouse position to map
+      context.attr('control-mouseposition')
+        ? map.addControl(
+            new ol.control.MousePosition({
+              coordinateFormat: function (coord) {
+                return 'Lat: ' + coord[1].toFixed(6) + ' | Lng: ' + coord[0].toFixed(6);
+              },
+              projection: projection,
+              className: 'ol-mouse-position font-monospace',
+              undefinedHTML: ''
+            })
+          )
+        : '';
+
+      // Add zoom extent control to map
+      context.attr('control-zoom-extent')
+        ? map.addControl(
+            new ol.control.ZoomToExtent({
+              extent: map.getView().calculateExtent()
+            })
+          )
+        : '';
+      $('.ol-zoom-extent').children('button').html('<i class="mdi mdi-home"></i>');
+
+      $('.ol-zoom-extent').on('click', function () {
+        (map.getView().fit(map.getView().calculateExtent(), {
+          size: map.getSize()
+        }),
+          map.getView().setResolution(resolution));
+      });
+
+      if (!context.data('drawing-type')) {
+        map.on('singleclick', function (event) {
+          if (window.isDrawingActive || (typeof drawingManager !== 'undefined' && drawingManager) || (typeof activeDigitizeDraw !== 'undefined' && activeDigitizeDraw) || (typeof activePlottingDraw !== 'undefined' && activePlottingDraw)) {
+            if (typeof popup !== 'undefined' && popup) popup.hide();
+            if (typeof highlight !== 'undefined' && highlight) highlight.getFeatures().clear();
+            return;
+          }
+
+          if (typeof xhr !== 'undefined' && xhr) {
+            xhr.abort();
+          }
+          clicked = false;
+
+          // Stop all video and audio player
+          if (typeof mejs !== 'undefined' && typeof mejs.players !== 'undefined') {
+            $.each(mejs.players, function (key, val) {
+              if (typeof val.media.hlsPlayer !== 'undefined') {
+                val.media.hlsPlayer.stopLoad();
+                val.media.hlsPlayer.destroy();
+                val.media.remove();
+              }
+            });
+          }
+
+          if (exactHighlightLayer) {
+            exactHighlightLayer.getSource().clear();
+          }
+
+          // Add popup overlay
+          map.addOverlay(popup);
+
+          // Add highlighting interaction
+          map.addInteraction(highlight);
+
+          if (popup) {
+            // Hide previous popup
+            popup.hide();
+          }
+
+          if (clickedPoint && clickedPoint.getSource().getFeatures().length) {
+            // Add point to map
+            clickedPoint.getSource().getFeatures()[0].setGeometry(new ol.geom.Point(event.coordinate));
+          } else {
+            // Add point to map using image
+            clickedPoint = new ol.layer.VectorImage({
+              source: new ol.source.Vector({
+                features: [
+                  new ol.Feature({
+                    geometry: new ol.geom.Point(event.coordinate)
+                  })
+                ]
+              }),
+              style: new ol.style.Style({
+                image: new ol.style.Circle({
+                  radius: 5,
+                  stroke: new ol.style.Stroke({
+                    color: '#880000',
+                    width: 1
+                  }),
+                  fill: new ol.style.Fill({
+                    color: '#ff0000'
+                  })
+                })
+              }),
+              zIndex: 100,
+              initial: 'clickedPoint'
+            });
+
+            map.addLayer(clickedPoint);
+          }
+
+          let selected = highlight.getFeatures(),
+            coordinate = ol.proj.transform(event.coordinate, map.getView().getProjection(), projection);
+
+          window.overlapTargets = [];
+          window.overlapIndex = 0;
+          window.isNavigatingOverlap = false;
+
+          try {
+            map.forEachFeatureAtPixel(event.pixel, function (point, layer) {
+              if (layer && layer.get('initial') && ['clickedPoint', 'draggable'].includes(layer.get('initial'))) return false;
+              window.overlapTargets.push({ point: point, layer: layer });
+            });
+          } catch (e) {}
+
+          if (window.overlapTargets.length > 0) {
+            window.overlapTargets.sort(function (a, b) {
+              const rankA = a.point.getGeometry() ? (a.point.getGeometry().getType().indexOf('Point') > -1 ? 1 : a.point.getGeometry().getType().indexOf('Line') > -1 ? 2 : 3) : 4;
+              const rankB = b.point.getGeometry() ? (b.point.getGeometry().getType().indexOf('Point') > -1 ? 1 : b.point.getGeometry().getType().indexOf('Line') > -1 ? 2 : 3) : 4;
+              return rankA - rankB;
+            });
+          }
+
+          window.slideOverlap = function (direction) {
+            window.isNavigatingOverlap = true;
+            window.overlapIndex += direction;
+            if (window.overlapIndex < 0) window.overlapIndex = 0;
+            if (window.overlapIndex >= window.overlapTargets.length) window.overlapIndex = window.overlapTargets.length - 1;
+            window.loadOverlapPopup();
+          };
+
+          window.loadOverlapPopup = function () {
+            let target = window.overlapTargets[window.overlapIndex];
+
+            selected.clear();
+            if (typeof target !== 'undefined' && typeof target.point !== 'undefined') {
+              if (typeof mvtTile !== 'undefined' && target.layer === mvtTile) {
+                mvtSelectionId = target.point.getId();
+                if (mvtTile) mvtTile.changed();
+              } else {
+                mvtSelectionId = null;
+                if (typeof mvtTile !== 'undefined' && mvtTile) mvtTile.changed();
+                selected.push(target.point);
+              }
+            } else {
+              mvtSelectionId = null;
+              if (typeof mvtTile !== 'undefined' && mvtTile) mvtTile.changed();
+            }
+
+            let popupCoordinate = event.coordinate;
+
+            if (window.isNavigatingOverlap && typeof target !== 'undefined' && typeof target.point !== 'undefined') {
+              const geom = target.point.getGeometry();
+              if (geom) {
+                if (geom.getType() === 'Point') {
+                  popupCoordinate = geom.getCoordinates();
+                } else if (geom.getType() === 'MultiPoint') {
+                  popupCoordinate = geom.getPoint(0).getCoordinates();
+                } else if (typeof geom.getInteriorPoint === 'function') {
+                  popupCoordinate = geom.getInteriorPoint().getCoordinates();
+                } else {
+                  popupCoordinate = ol.extent.getCenter(geom.getExtent());
+                }
+              }
+            }
+
+            // Open the popup to find the features on the clicked point
+            if (!context.data('hide-popup')) {
+              popup.show(
+                popupCoordinate,
+                `<div class="popup-content"><div class="d-flex justify-content-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden sr-only">${phrase('Loading...')}</span></div></div></div>`
+              );
+            }
+
+            if (context.data('finder-url') && (typeof target === 'undefined' || typeof target.layer === 'undefined' || target.layer !== layerOverlap)) {
+              const objectId =
+                typeof target !== 'undefined' && typeof target.point !== 'undefined'
+                  ? target.point.get('objectId') || target.point.get('OBJECTID') || target.point.get('id') || (typeof target.point.getId === 'function' ? target.point.getId() : 0) || 0
+                  : 0;
+
+              if (drawingManager || drawingEditor) {
+                clicked = false;
+                popup.hide();
+                return;
+              }
+
+              // Attempt to find dataset using finder URL
+              xhr = $.ajax({
+                url: context.data('finder-url'),
+                method: 'POST',
+                data: {
+                  objectID: objectId,
+                  coordinate: coordinate
+                },
+                beforeSend: function () {
+                  if (xhr) {
+                    xhr.abort();
+                  }
+
+                  clicked = true;
+
+                  $('.popup-content').closest('.ol-popup-content').removeAttr('style');
+                }
+              })
+                .done(function (response) {
+                  // Check if the specific layer exists on the map
+                  const wmsExists = map.getLayers().getArray().includes(wmsTile);
+
+                  clicked = false;
+
+                  if (typeof response.title !== 'undefined' && response.title) {
+                    $('.ol-popup-title').text(response.title);
+                  }
+
+                  if (typeof response.content !== 'undefined' && response.content) {
+                    // Content found from response
+                    let finalContent = response.content;
+
+                    if (window.overlapTargets.length > 1) {
+                      finalContent += `
+                      <div class="d-flex justify-content-between align-items-center mt-2 pt-2 px-3 border-top" style="margin-left:-1rem; margin-right:-1rem">
+                        <span class="text-muted small fw-bold">${phrase('Showing') || 'from'} ${window.overlapIndex + 1} ${phrase('from') || 'from'} ${window.overlapTargets.length}</span>
+                        <div class="btn-group">
+                          <button onclick="window.slideOverlap(-1)" class="btn btn-sm btn-outline-secondary rounded-circle me-1" style="line-height:1.5" ${window.overlapIndex === 0 ? 'disabled' : ''}>&nbsp;&laquo;&nbsp;</button>
+                          <button onclick="window.slideOverlap(1)" class="btn btn-sm btn-outline-secondary rounded-circle" style="line-height:1.5" ${window.overlapIndex === window.overlapTargets.length - 1 ? 'disabled' : ''}>&nbsp;&raquo;&nbsp;</button>
+                        </div>
+                      </div>
+                    `;
+                    }
+
+                    $('.popup-content, .identification-information').html(finalContent);
+
+                    if (typeof response.geospatial !== 'undefined' && response.geospatial) {
+                      try {
+                        const format = new ol.format.GeoJSON();
+                        const geom = format.readGeometry(response.geospatial, {
+                          dataProjection: 'EPSG:4326',
+                          featureProjection: map.getView().getProjection()
+                        });
+                        const feature = new ol.Feature({
+                          geometry: geom
+                        });
+
+                        // Clear and add exact geometry to exactHighlightLayer
+                        if (exactHighlightLayer) {
+                          exactHighlightLayer.getSource().clear();
+                          exactHighlightLayer.getSource().addFeature(feature);
+                        }
+
+                        highlight.getFeatures().clear();
+                        highlight.getFeatures().push(feature);
+                      } catch (e) {}
+                    }
+
+                    const features = highlight.getFeatures().getArray();
+                    let displayValue = 0;
+                    let unit = '';
+
+                    if (features) {
+                      const measurement = getMeasurement(features);
+
+                      if (measurement) {
+                        if (measurement.type === 'polygon') {
+                          displayValue = measurement.area;
+                          unit = ' m²';
+                        } else if (measurement.type === 'linestring') {
+                          displayValue = measurement.distance;
+                          unit = ' m';
+                        }
+                      }
+
+                      if (unit) {
+                        $('.popup-content').find('[role=measure-' + objectId + ']').html(`
+                        <div class="row text-sm mb-3">
+                          <div class="col-4 text-muted text-right pr-0">
+                            ${typeof phrase.measurement !== 'undefined' ? phrase.measurement : 'Measurement'}
+                          </div>
+                          <div class="col-8 text-break-word">
+                            ${displayValue.toLocaleString('id') + unit}
+                          </div>
+                        </div>
+                      `);
+                      }
+                    }
+
+                    if (typeof response.width === 'number') {
+                      $('.popup-content')
+                        .closest('.ol-popup-content')
+                        .attr('style', 'width: ' + response.width + 'px!important');
+                    }
+
+                    if ($('[data-role=videoplayer]').length) {
+                      // Run video player when element's found
+                      reactivate(['videoplayer']);
+                    }
+                  } else if (!wmsExists) {
+                    // No data attribute found, close popup
+                    popup.hide();
+                  }
+                })
+                .fail(function () {
+                  clicked = false;
+                  popup.hide();
+                });
+            } else if (typeof target !== 'undefined' && typeof target.point !== 'undefined' && typeof target.point.getProperties() !== 'undefined') {
+              // Load attributes from property instead
+              let content = '',
+                num = 0;
+
+              $.each(target.point.getProperties(), function (key, val) {
+                if ('geometry' === key) return;
+
+                content += `<div class="row text-sm${num ? ' border-top' : ''}"><div class="col-4 text-muted text-end pr-0">${key}</div><div class="col-8 text-break-word">${val}</div></div>`;
+
+                num++;
+              });
+
+              if (window.overlapTargets.length > 1) {
+                content += `
+                  <div class="d-flex justify-content-between align-items-center mt-2 pt-2 px-3 border-top" style="margin-left:-1rem; margin-right:-1rem">
+                    <span class="text-muted small fw-bold">${phrase('Showing') || 'from'} ${window.overlapIndex + 1} ${phrase('from') || 'from'} ${window.overlapTargets.length}</span>
+                    <div class="btn-group">
+                      <button onclick="window.slideOverlap(-1)" class="btn btn-sm btn-outline-secondary rounded-circle me-1" style="line-height:1.5" ${window.overlapIndex === 0 ? 'disabled' : ''}>&nbsp;&laquo;&nbsp;</button>
+                      <button onclick="window.slideOverlap(1)" class="btn btn-sm btn-outline-secondary rounded-circle" style="line-height:1.5" ${window.overlapIndex === window.overlapTargets.length - 1 ? 'disabled' : ''}>&nbsp;&raquo;&nbsp;</button>
+                    </div>
+                  </div>
+                `;
+              }
+
+              $('.popup-content, .identification-information').html(content);
+            } else {
+              // No data attribute found, close popup
+              popup.hide();
+            }
+          };
+
+          window.loadOverlapPopup();
+
+          /**
+           * Store clicked coordinat for routing
+           */
+          if (coordinate && $('.route-start').length && !$('.route-start').val()) {
+            coordinate[0] = coordinate[0].toFixed(6);
+            coordinate[1] = coordinate[1].toFixed(6);
+
+            // Add route start point
+            $('.route-start').val(coordinate.reverse().join(), projection);
+          } else if (coordinate && $('.route-end').length && !$('.route-end').val()) {
+            coordinate[0] = coordinate[0].toFixed(6);
+            coordinate[1] = coordinate[1].toFixed(6);
+
+            // Add route end point
+            $('.route-end').val(coordinate.reverse().join(), projection);
+          }
+        });
+      }
+
+      map.getView().on('propertychange', function (event) {
+        if (typeof geolocation !== 'undefined') {
+          // Stop tracking to prevent map flicker
+          geolocation.setTracking(false);
+        }
+      });
+
+      map.on('pointermove', function (event) {
+        let pixel = map.getEventPixel(event.originalEvent),
+          hit = false;
+
+        try {
+          hit = map.hasFeatureAtPixel(pixel);
+        } catch (e) {}
+
+        // Set mouse style
+        map.getViewport().style.cursor = hit ? 'pointer' : '';
+      });
+
+      map.on('moveend', function (event) {
+        map.addInteraction(highlight);
+
+        let selected = highlight.getFeatures().getArray();
+
+        if (context.data('clustering-url') && !selected.length) {
+          // Get the clustering features
+          let coordinate = ol.proj.transform(map.getView().getCenter(), map.getView().getProjection(), projection),
+            latitude = typeof coordinate[1] !== 'undefined' ? coordinate[1] : 0,
+            longitude = typeof coordinate[0] !== 'undefined' ? coordinate[0] : 0,
+            distance = 0,
+            checked = [];
+
+          try {
+            checked = sessionStorage.getItem('checked_layers') ? JSON.parse(sessionStorage.getItem('checked_layers')) : [];
+          } catch (e) {}
+
+          // Don't apply the clustering if there's any checked layers
+          if (checked.length) return;
+
+          if (previousCenter.length) {
+            // Get distance from previous center point
+            let line = new ol.geom.LineString([previousCenter, map.getView().getCenter()]),
+              distance = Math.round(line.getLength() * event.map.getView().getResolution()) / event.map.getView().getResolution();
+          }
+
+          if (!previousCenter.length || distance > event.map.getView().getResolution()) {
+            // Attempt to get cluster
+            $.ajax({
+              url: context.data('clustering-url'),
+              method: 'POST',
+              data: {
+                lat: latitude,
+                lng: longitude,
+                keyword: context.closest('form').find('input[name=keyword]').val(),
+                marker: checked,
+                distance: Math.round(distance / event.map.getView().getResolution())
+              },
+              beforeSend: function () {
+                context.closest('form').find('button[type=submit]').find('.mdi').removeClass('mdi-magnify').addClass('mdi-loading mdi-spin');
+              }
+            })
+              .done(function (response) {
+                if (response) {
+                  openlayers.unzip(response, context.closest('form').find('button[type=submit]').find('.mdi'), null, true);
+                }
+
+                previousCenter = map.getView().getCenter();
+              })
+              .fail(function () {
+                context.closest('form').find('button[type=submit]').find('.mdi').removeClass('mdi-loading mdi-spin').addClass('mdi-magnify');
+              });
+          }
+        }
+      });
+
+      // Set coordinate
+      $.inArray(context.data('drawing-type'), ['point', 'coordinate']) !== -1 && (1 == context.data('draggable') || true === context.data('draggable')) ? openlayers.coordinate(true) : null;
+
+      // Set geocoder
+      context.data('geocoder') ? openlayers.geocoder(context) : null;
+
+      // Set geolocation
+      context.data('geolocation') ? openlayers.geolocation() : null;
+
+      // Render GeoJSON
+      context.data('geojson') ? openlayers.geojsonString(context.data('geojson'), context.data('drawing-type')) : null;
+
+      // Render from source URL
+      serviceUrl ? openlayers.source(serviceUrl) : null;
+
+      // Render from REST's URL
+      restUrl ? openlayers.rest(restUrl) : null;
+
+      // Apply WMS from URL
+      wmsUrl ? openlayers.wms(wmsUrl) : null;
+
+      // Render from REST's URL
+      panorama ? openlayers.panorama() : null;
+
+      // Update map size
+      syncRenderedMapSize();
+
+      if ($(applyLatitude).hasClass('reverse_latitude') && $(applyLongitude).hasClass('reverse_longitude')) {
+        ($('body').off('change.latLng keyup.latLng'),
+          $('body').on('change.latLng keyup.latLng', '.reverse_latitude, .reverse_longitude', function (e) {
+            let latitude = $('.reverse_latitude').val();
+            let longitude = $('.reverse_longitude').val();
+            const geojson = new ol.format.GeoJSON();
+
+            if (!isFinite(latitude) || !isFinite(longitude)) {
+              return;
+            }
+
+            if (Math.abs(latitude) > 90 || Math.abs(latitude) < -90) {
+              latitude = 0;
+            }
+
+            if (Math.abs(longitude) > 180 || Math.abs(longitude) < -180) {
+              longitude = 0;
+            }
+
+            if (latitude && longitude) {
+              if (layerVector) {
+                // Clear prevously drawn feature
+                layerVector.getSource().clear();
+              }
+
+              if (draggableMarker) {
+                // Push layer to map
+                (draggableMarker
+                  .getSource()
+                  .getFeatures()[0]
+                  .setGeometry(new ol.geom.Point(ol.proj.transform([longitude, latitude], projection, map.getView().getProjection()))),
+                  // Fit marker to map
+                  map.getView().fit(draggableMarker.getSource().getExtent(), {
+                    size: map.getSize()
+                  }),
+                  // Apply coordinate to input
+                  $(applyCoordinate).val(writeFeaturesWithoutProperties(geojson, draggableMarker.getSource().getFeatures(), map.getView().getProjection())));
+              } else {
+                draggableMarker = new ol.layer.VectorImage({
+                  source: new ol.source.Vector({
+                    features: [
+                      new ol.Feature({
+                        geometry: new ol.geom.Point(ol.proj.transform([longitude, latitude], projection, map.getView().getProjection()))
+                      })
+                    ]
+                  }),
+                  style: new ol.style.Style({
+                    image: new ol.style.Icon({
+                      scale: iconScale ? iconScale : 1,
+                      src: iconPattern ? iconPattern : config.assetUrl + 'openlayers/resources/icons/marker.png',
+                      anchor: [0.5, 1]
+                    })
+                  }),
+                  zIndex: 100,
+                  initial: 'draggable'
+                });
+
+                // Push layer to map
+                (map.addLayer(draggableMarker),
+                  // Fit marker to map
+                  map.getView().fit(draggableMarker.getSource().getExtent(), {
+                    size: map.getSize()
+                  }),
+                  // Apply coordinate to input
+                  $(applyCoordinate).val(writeFeaturesWithoutProperties(geojson, draggableMarker.getSource().getFeatures(), map.getView().getProjection())));
+              }
+
+              const drag = new ol.interaction.Translate({
+                features: new ol.Collection(draggableMarker.getSource().getFeatures())
+              });
+
+              // Add drag interaction to marker
+              (map.addInteraction(drag),
+                // On drag end
+                drag.on('translatestart', function (event) {
+                  (popup.hide(), map.removeOverlay(popup));
+                }),
+                // On drag end
+                drag.on('translateend', function (event) {
+                  if (typeof event.coordinate !== 'undefined') {
+                    const coordinate = ol.proj.transform(event.coordinate, map.getView().getProjection(), projection);
+
+                    ($(applyLatitude).val(typeof coordinate[1] !== 'undefined' ? parseFloat(coordinate[1]).toFixed(6) : 0),
+                      $(applyLongitude).val(typeof coordinate[0] !== 'undefined' ? parseFloat(coordinate[0]).toFixed(6) : 0),
+                      $(applyCoordinate).val(
+                        geojson.writeFeatures(event.features.getArray(), {
+                          featureProjection: map.getView().getProjection()
+                        })
+                      ));
+                  }
+                }));
+
+              return;
+            }
+          }));
+      }
+
+      // Drag and drop geojson
+      const dropfile = new ol.interaction.DropFile({
+        accept: ['.geojson', '.json']
+      });
+      map.addInteraction(dropfile);
+
+      dropfile.on('loadend', function (e) {
+        const file = e.file;
+        const reader = new FileReader();
+        const vectorLayer = new ol.layer.Vector({
+          source: new ol.source.Vector(),
+          style: new ol.style.Style({
+            fill: new ol.style.Fill({
+              color: 'rgba(255,0,0,0.2)'
+            }),
+            stroke: new ol.style.Stroke({
+              color: 'red',
+              width: 2
+            }),
+            image: new ol.style.Circle({
+              radius: 6,
+              fill: new ol.style.Fill({
+                color: 'red'
+              })
+            })
+          })
+        });
+        map.addLayer(vectorLayer);
+
+        reader.onload = function (event) {
+          try {
+            const geojson = JSON.parse(event.target.result);
+
+            // Validate GeoJSON format
+            if (!geojson.type || geojson.type !== 'FeatureCollection') {
+              throw new Error('Invalid GeoJSON format');
+            }
+
+            // Validate EPSG:4326
+            if (!isEPSG4326(geojson)) {
+              alert('Invalid file!\n\nOnly accepts GeoJSON in EPSG:4326 (WGS84) coordinates.\nPlease convert your file first.');
+              return;
+            }
+
+            // Display to map
+            const format = new ol.format.GeoJSON();
+            const features = format.readFeatures(geojson, {
+              dataProjection: 'EPSG:4326',
+              featureProjection: 'EPSG:3857'
+            });
+
+            vectorLayer.getSource().clear();
+            vectorLayer.getSource().addFeatures(features);
+
+            // Zoom to extent
+            const extent = vectorLayer.getSource().getExtent();
+            const center = ol.extent.getCenter(extent);
+            const centerWGS84 = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
+
+            map.getView().fit(extent, {
+              padding: [20, 20, 20, 20]
+            });
+
+            // Store to hidden input
+            $(applyCoordinate).val(JSON.stringify(geojson));
+            $(applyLatitude).val(centerWGS84[1].toFixed(6));
+            $(applyLongitude).val(centerWGS84[0].toFixed(6));
+          } catch (error) {
+            alert('Error loading file:\n' + error.message);
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      dropfile.on('loaderror', function (e) {
+        alert('Error loading file');
+      });
+    },
+    reset: function () {
+      /**
+       * Reset map
+       */
+      clicked = false;
+      currentGeojsonLoadId++;
+
+      if (mapResizeObserver && typeof mapResizeObserver.disconnect === 'function') {
+        mapResizeObserver.disconnect();
+        mapResizeObserver = null;
+      }
+      if (mapResizeHandler && window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', mapResizeHandler);
+      }
+      $(window).off('resize.openlayers orientationchange.openlayers');
+      if (mapResizeFrame) {
+        cancelAnimationFrame(mapResizeFrame);
+        mapResizeFrame = null;
+      }
+      clearTimeout(mapResizeTimer);
+
+      if (map) {
+        if (drawingManager) {
+          map.removeInteraction(drawingManager);
+          drawingManager = null;
+        }
+
+        if (drawingEditor) {
+          drawingEditor.destroy();
+          drawingEditor = null;
+        }
+
+        if (highlight) {
+          map.removeInteraction(highlight);
+        }
+
+        map.getLayers().forEach(function (layer, index) {
+          if ('draggable' == layer.get('initial')) return;
+
+          if (layer.getSource()) {
+            layer.getSource().clear();
+          }
+        });
+
+        map.updateSize();
+      }
+
+      if (popup) {
+        popup.hide();
+      }
+
+      if (typeof geolocation !== 'undefined') {
+        // Stop tracking to prevent map flicker
+        geolocation.setTracking(false);
+      }
+    },
+    source: function (source) {
+      /**
+       * Source extractor
+       */
+      if (!source) return false;
+
+      let extension = source.split('.').pop().toLowerCase();
+
+      if (source.indexOf('maps/features') !== -1) {
+        $.get(source, function (res) {
+          if (typeof res === 'string') {
+            try {
+              res = JSON.parse(res);
+            } catch (e) {
+              res = null;
+            }
+          }
+
+          if (res && res.url) {
+            openlayers.source(res.url);
+          }
+        });
+      } else if ('zip' == extension.replace(/\?.*/, '') || 'kmz' == extension.replace(/\?.*/, '')) {
+        // The source is ZIP or KMZ format
+        openlayers.unzip(source);
+      } else if ('kml' == extension.replace(/\?.*/, '')) {
+        // The source is KML format
+        openlayers.keyhole(source);
+      } else if (source.indexOf('{z}') !== -1 && source.indexOf('{x}') !== -1 && source.indexOf('{y}') !== -1) {
+        // The source is an MVT Tile URL
+        openlayers.mvt(source);
+      } else {
+        // The source is GeoJSON format
+        openlayers.geojson(source);
+      }
+    },
+    unzip: function (source, spinner, ignoreDraggableMarker, ignoreFit) {
+      /**
+       * Unzipper
+       */
+      let thisUnzipId = currentGeojsonLoadId;
+
+      if (typeof source.initial !== 'undefined' && sessionStorage.getItem(source.initial)) {
+        // Open stored blob
+        openlayers.geojson(sessionStorage.getItem(source.initial), spinner, ignoreDraggableMarker, ignoreFit);
+      } else if (typeof source.url !== 'undefined') {
+        /**
+         * Read the KMZ / ZIP File from the given source parameter
+         */
+        try {
+          // Read KMZ (zip) data
+          JSZipUtils.getBinaryContent(source.url, function (err, data) {
+            if (thisUnzipId !== currentGeojsonLoadId) return; // Cancelled
+            if (err || data.byteLength < 10) {
+              console.log(err);
+            }
+
+            // Unzip archive
+            JSZip.loadAsync(data).then(function (zip) {
+              // Read extracted datasource
+              Object.keys(zip.files).forEach(function (filename) {
+                if ('geojson' == filename.split('.').pop().toLowerCase() || 'json' == filename.split('.').pop().toLowerCase()) {
+                  // Create blob file from extracted data
+                  zip.files[filename].async('string').then(function (blob) {
+                    // Write blob file
+                    let blobURL = URL.createObjectURL(
+                      new Blob([blob], {
+                        type: 'application/json'
+                      })
+                    );
+                    $('.map-loading-overlay').removeClass('show');
+
+                    openlayers.geojson(blobURL, spinner, ignoreDraggableMarker, ignoreFit);
+                  });
+                } else if ('kml' == filename.split('.').pop().toLowerCase()) {
+                  // Create blob file from extracted data
+                  zip.files[filename].async('string').then(function (blob) {
+                    // Write blob file
+                    let blobURL = URL.createObjectURL(
+                      new Blob([blob], {
+                        type: 'application/vnd.google-earth.kml+xml'
+                      })
+                    );
+                    $('.map-loading-overlay').removeClass('show');
+
+                    openlayers.keyhole(blobURL, spinner, ignoreFit, true);
+                  });
+                }
+              });
+            });
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      } else if (source.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)) {
+        /**
+         * The source is an url
+         */
+        try {
+          // Read kmz (zip) data
+          JSZipUtils.getBinaryContent(source, function (err, data) {
+            if (err || data.byteLength < 10) {
+              // Archive cannot be extracted, show error
+              console.log(err);
+            }
+
+            // Unzip archive
+            JSZip.loadAsync(data).then(function (zip) {
+              // Read extracted datasource
+              Object.keys(zip.files).forEach(function (filename) {
+                if ('geojson' == filename.split('.').pop().toLowerCase() || 'json' == filename.split('.').pop().toLowerCase()) {
+                  // Create blob file from extracted data
+                  zip.files[filename].async('string').then(function (blob) {
+                    // Write blob file
+                    let blobURL = URL.createObjectURL(
+                      new Blob([blob], {
+                        type: 'application/json'
+                      })
+                    );
+
+                    openlayers.geojson(blobURL, spinner, ignoreDraggableMarker, ignoreFit);
+                  });
+                } else if ('kml' == filename.split('.').pop().toLowerCase()) {
+                  // Create blob file from extracted data
+                  zip.files[filename].async('string').then(function (blob) {
+                    // Write blob file
+                    let blobURL = URL.createObjectURL(
+                      new Blob([blob], {
+                        type: 'application/vnd.google-earth.kml+xml'
+                      })
+                    );
+
+                    openlayers.keyhole(blobURL, spinner, ignoreFit, true);
+                  });
+                }
+              });
+            });
+          });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    },
+    geojsonString: function (shapes, type) {
+      /**
+       * Initialize feature from GeoJSON string
+       */
+      if ((1 == context.data('draggable') || true === context.data('draggable')) && ['point', 'coordinate'].includes(type)) {
+        return;
+      }
+
+      let geojson = new ol.format.GeoJSON(),
+        sourceVector = new ol.source.Vector({});
+
+      let featuresArray = [];
+
+      if (typeof shapes === 'string') {
+        try {
+          shapes = JSON.parse(shapes);
+        } catch (e) {
+          shapes = null;
+        }
+      }
+
+      if (shapes) {
+        if (shapes.type === 'FeatureCollection') {
+          featuresArray = geojson.readFeatures(shapes, {
+            featureProjection: map.getView().getProjection()
+          });
+        } else if (shapes.type === 'Feature') {
+          featuresArray = geojson.readFeatures(
+            {
+              type: 'FeatureCollection',
+              features: [shapes]
+            },
+            {
+              featureProjection: map.getView().getProjection()
+            }
+          );
+        } else if (shapes.type) {
+          featuresArray = geojson.readFeatures(
+            {
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  geometry: shapes,
+                  properties: {}
+                }
+              ]
+            },
+            {
+              featureProjection: map.getView().getProjection()
+            }
+          );
+        } else if (typeof shapes.features !== 'undefined') {
+          featuresArray = geojson.readFeatures(shapes, {
+            featureProjection: map.getView().getProjection()
+          });
+        } else if (typeof shapes.geometry !== 'undefined') {
+          featuresArray = geojson.readFeatures(
+            {
+              type: 'FeatureCollection',
+              features: [shapes]
+            },
+            {
+              featureProjection: map.getView().getProjection()
+            }
+          );
+        } else if (!context.data('draggable') && typeof shapes.lat !== 'undefined' && typeof shapes.lng !== 'undefined') {
+          featuresArray = [
+            new ol.Feature({
+              geometry: new ol.geom.Point(ol.proj.transform([shapes.lng, shapes.lat], projection, map.getView().getProjection()))
+            })
+          ];
+        }
+      }
+
+      sourceVector = new ol.source.Vector({
+        features: featuresArray
+      });
+
+      layerVector = new ol.layer.VectorImage({
+        source: sourceVector,
+        renderBuffer: 10,
+        style: function (feature, resolution) {
+          let pattern = null,
+            iconWidth = 0;
+
+          if (iconPattern || feature.get('icon')) {
+            // Apply pattern from icon
+            let canvas = document.createElement('canvas'),
+              canvasContext = canvas.getContext('2d', {
+                willReadFrequently: true
+              }),
+              image = new Image();
+
+            image.src = iconPattern ? iconPattern : feature.get('icon');
+            pattern = canvasContext.createPattern(image, 'repeat');
+          }
+
+          return [
+            new ol.style.Style({
+              image: new ol.style.Icon({
+                scale: iconScale ? parseFloat(iconScale) : feature.get('icon-scale') ? parseFloat(feature.get('icon-scale')) : 1,
+                src: iconPattern ? iconPattern : feature.get('icon') ? feature.get('icon') : config.baseUrl + 'assets/openlayers/resources/icons/marker.png',
+                anchor: [0.5, 1]
+              }),
+              stroke: new ol.style.Stroke({
+                color: strokeColor ? strokeColor : feature.get('stroke') ? feature.get('stroke') : hex2rgba('#ff0000', 0),
+                width: strokeWidth ? strokeWidth : feature.get('stroke-width') ? feature.get('stroke-width') : 2
+              }),
+              fill: new ol.style.Fill({
+                color: pattern ? pattern : hex2rgba(fillColor ? fillColor : feature.get('fill') ? feature.get('fill') : '#ff0000', iconScale ? parseFloat(iconScale) : feature.get('fill-opacity') ? feature.get('fill-opacity') : 0.35)
+              }),
+              text: new ol.style.Text({
+                text: feature.get('label'),
+                font: '14px Arial, sans-serif',
+                fill: new ol.style.Fill({
+                  color: '#000000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: '#ffffff',
+                  width: 3
+                })
+              })
+            })
+          ];
+        }
+      });
+
+      // Push layer to map
+      map.addLayer(layerVector);
+
+      // Fit map to features
+      if (layerVector.getSource().getFeatures().length) {
+        const features = layerVector.getSource().getFeatures(),
+          pointOnly = features.every(function (feature) {
+            const geometry = feature.getGeometry();
+
+            return geometry && ['Point', 'MultiPoint'].includes(geometry.getType());
+          });
+
+        if (context.data('zoom') && pointOnly) {
+          map.getView().setCenter(ol.extent.getCenter(layerVector.getSource().getExtent()));
+          map.getView().setZoom(parseFloat(defaultZoom));
+        } else {
+          map.getView().fit(layerVector.getSource().getExtent(), {
+            size: map.getSize()
+          });
+        }
+      }
+
+      if (type && ['polygon', 'linestring'].includes(type)) {
+        function applyDrawFeatureData(feature, drawType, sourceFeatures) {
+          sourceFeatures = sourceFeatures || layerVector.getSource().getFeatures();
+
+          let measurement = getMeasurement(sourceFeatures),
+            coordinate = {
+              lat: 0,
+              lng: 0
+            };
+
+          if (feature && feature.getGeometry()) {
+            let transformed = ol.proj.transform(feature.getGeometry().flatCoordinates, map.getView().getProjection(), projection);
+            coordinate = {
+              lat: typeof transformed[1] !== 'undefined' ? transformed[1] : 0,
+              lng: typeof transformed[0] !== 'undefined' ? transformed[0] : 0
+            };
+          }
+
+          $(applyCoordinate).val(
+            geojson.writeFeatures(sourceFeatures, {
+              featureProjection: map.getView().getProjection()
+            })
+          );
+          $(applyLatitude).val(parseFloat(coordinate.lat).toFixed(6));
+          $(applyLongitude).val(parseFloat(coordinate.lng).toFixed(6));
+          $(applyMeasurement).val(measurement.area > 0 ? measurement.area : measurement.distance);
+
+          if ('google' == config.openlayersSearchProvider) {
+            /**
+             * Use Google Maps API as geocoder
+             */
+            require.js('https://maps.googleapis.com/maps/api/js?key=' + config.openlayersSearchKey + '&libraries=places&language=' + config.language, function () {
+              let finder = new google.maps.Geocoder();
+
+              finder.geocode(
+                {
+                  location: coordinate
+                },
+                function (response, status) {
+                  if (status === 'OK') {
+                    $(applyAddress).val(response[0].formatted_address).trigger('input');
+                    $('#gcd-input-query, #autocomplete').val(response[0].formatted_address);
+                  } else {
+                    console.log(status);
+                  }
+                }
+              );
+            });
+          } else {
+            /**
+             * Use Nominatim as geocoder
+             */
+            $.get('https://nominatim.openstreetmap.org/reverse?accept-language=id&format=json&lat=' + coordinate.lat + '&lon=' + coordinate.lng + '&addressdetails=1', function (response) {
+              if (typeof response !== 'undefined') {
+                // Apply to inputs
+                $(applyAddress).val(response.display_name).trigger('input');
+                $('#gcd-input-query, #autocomplete').val(response.display_name);
+              }
+            });
+          }
+        }
+
+        let actualDrawType = type === 'polygon' ? 'Polygon' : type === 'linestring' ? 'LineString' : 'Point';
+
+        function getDrawStyle(drawType, sColor, fColor) {
+          sColor = sColor || '#ff2a2a';
+          fColor = fColor || 'rgba(255, 42, 42, 0.25)';
+
+          return function (feature) {
+            let gType = feature && feature.getGeometry() ? feature.getGeometry().getType() : drawType;
+            let styles = [];
+
+            if (gType === 'Point' || gType === 'MultiPoint') {
+              if (drawType === 'Point' || drawType === 'point') {
+                styles.push(
+                  new ol.style.Style({
+                    image: new ol.style.Circle({
+                      radius: 7,
+                      fill: new ol.style.Fill({ color: sColor }),
+                      stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
+                    })
+                  })
+                );
+              } else {
+                styles.push(
+                  new ol.style.Style({
+                    image: new ol.style.RegularShape({
+                      fill: new ol.style.Fill({ color: '#ff2a2a' }),
+                      stroke: new ol.style.Stroke({ color: '#ffffff', width: 2.5 }),
+                      points: 4,
+                      radius: 10,
+                      radius2: 0,
+                      angle: 0
+                    })
+                  })
+                );
+                styles.push(
+                  new ol.style.Style({
+                    image: new ol.style.Circle({
+                      radius: 3.5,
+                      fill: new ol.style.Fill({ color: '#ff2a2a' }),
+                      stroke: new ol.style.Stroke({ color: '#ffffff', width: 1.5 })
+                    })
+                  })
+                );
+              }
+            } else if (gType === 'LineString' || gType === 'MultiLineString') {
+              styles.push(
+                new ol.style.Style({
+                  stroke: new ol.style.Stroke({
+                    color: sColor,
+                    width: 3
+                  })
+                })
+              );
+            } else {
+              styles.push(
+                new ol.style.Style({
+                  fill: new ol.style.Fill({
+                    color: fColor
+                  }),
+                  stroke: new ol.style.Stroke({
+                    color: sColor,
+                    width: 3
+                  })
+                })
+              );
+            }
+
+            if (feature && gType !== 'Point' && gType !== 'MultiPoint') {
+              const geom = feature.getGeometry();
+              if (geom) {
+                let coords = [];
+                if (gType === 'LineString') {
+                  coords = geom.getCoordinates();
+                } else if (gType === 'Polygon') {
+                  coords = geom.getCoordinates()[0] || [];
+                } else if (gType === 'MultiLineString') {
+                  geom.getLineStrings().forEach(function (ls) {
+                    coords.push(...ls.getCoordinates());
+                  });
+                } else if (gType === 'MultiPolygon') {
+                  geom.getPolygons().forEach(function (p) {
+                    coords.push(...(p.getCoordinates()[0] || []));
+                  });
+                }
+
+                if (coords.length > 0) {
+                  styles.push(
+                    new ol.style.Style({
+                      geometry: new ol.geom.MultiPoint(coords),
+                      image: new ol.style.Circle({
+                        radius: 5,
+                        fill: new ol.style.Fill({ color: '#ffffff' }),
+                        stroke: new ol.style.Stroke({ color: sColor, width: 2 })
+                      })
+                    })
+                  );
+                }
+              }
+            }
+
+            return styles;
+          };
+        }
+
+        drawingManager = new ol.interaction.Draw({
+          type: actualDrawType,
+          source: layerVector.getSource(),
+          style: getDrawStyle(actualDrawType)
+        });
+
+        drawingType = type;
+
+        // Event on drawing end
+        drawingManager.on('drawend', function (event) {
+          let output = layerVector.getSource().getFeatures().concat(event.feature);
+          applyDrawFeatureData(event.feature, type, output);
+
+          if (drawingEditor) {
+            drawingEditor.destroy();
+          }
+          drawingEditor = openlayers.geometryEditor({
+            map: map,
+            layer: layerVector,
+            drawType: type,
+            onChange: applyDrawFeatureData
+          });
+          setTimeout(function () {
+            if (drawingEditor && typeof drawingEditor.update === 'function') {
+              drawingEditor.update();
+            }
+          }, 0);
+        });
+
+        // Add drawing manager
+        map.addInteraction(drawingManager);
+        if (typeof popup !== 'undefined' && popup) {
+          popup.hide();
+          map.removeOverlay(popup);
+        }
+
+        if (drawingEditor) {
+          drawingEditor.destroy();
+        }
+        drawingEditor = openlayers.geometryEditor({
+          map: map,
+          layer: layerVector,
+          drawType: type,
+          onChange: applyDrawFeatureData
+        });
+      }
+    },
+    geojson: function (source, spinner, ignoreDraggableMarker, ignoreFit, aliases, newFile) {
+      /**
+       * Render features from geojson
+       */
+      let thisLoadId = currentGeojsonLoadId;
+
+      if (layerOverlap && newFile) {
+        // Remove previously rendered layer overlap
+        map.removeLayer(layerOverlap);
+      } else if (layerVector && !aliases) {
+        // Remove previously rendered layer vector
+        map.removeLayer(layerVector);
+      }
+
+      // Initialize layer, use blob, url or geojson string
+      let sourceUrl = typeof source.url !== 'undefined' ? source.url : source;
+      let isStringData = false;
+      try {
+        if (typeof sourceUrl === 'string' && (sourceUrl.trim().startsWith('{') || sourceUrl.trim().startsWith('['))) {
+          isStringData = true;
+        }
+      } catch (e) {}
+
+      let vectorSource = new ol.source.Vector({
+        projection: map.getView().getProjection()
+      });
+
+      layerVector = new ol.layer.VectorImage({
+        source: vectorSource,
+        renderBuffer: 10,
+        style: function (feature, resolution) {
+          if (feature.get('is_editing')) return null;
+          let pattern = null;
+
+          if (feature.get('icon')) {
+            let canvas = document.createElement('canvas'),
+              canvasContext = canvas.getContext('2d', {
+                willReadFrequently: true
+              }),
+              image = new Image();
+
+            image.src = feature.get('icon');
+            pattern = canvasContext.createPattern(image, 'repeat');
+          }
+
+          if (feature.get('selected')) {
+            selected.push(feature);
+          }
+
+          return [
+            new ol.style.Style({
+              image: new ol.style.Icon({
+                scale: iconScale ? iconScale : feature.get('icon-scale') ? feature.get('icon-scale') : 1,
+                src: iconPattern ? iconPattern : feature.get('icon') ? feature.get('icon') : config.baseUrl + 'assets/openlayers/resources/icons/marker.png',
+                anchor: [0.5, 1]
+              }),
+              stroke: new ol.style.Stroke({
+                color: strokeColor ? strokeColor : feature.get('stroke') ? feature.get('stroke') : hex2rgba('#ff0000', 0),
+                width: strokeWidth ? strokeWidth : feature.get('stroke-width') ? feature.get('stroke-width') : 2
+              }),
+              fill: new ol.style.Fill({
+                color: pattern ? pattern : hex2rgba(feature.get('fill') ? feature.get('fill') : '#ff0000', feature.get('fill-opacity') ? feature.get('fill-opacity') : 0.35)
+              }),
+              text: new ol.style.Text({
+                text: feature.get('layer_type') && $.inArray(feature.get('layer_type'), ['polygon', 'linestring']) !== -1 ? feature.get('label') : null,
+                font: '14px Arial, sans-serif',
+                fill: new ol.style.Fill({
+                  color: '#000000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: '#ffffff',
+                  width: 3
+                })
+              })
+            })
+          ];
+        },
+        initial: aliases ? 'layerOverlap' : typeof source.initial !== 'undefined' ? source.initial : 'layerVector',
+        url: typeof source.url !== 'undefined' ? source.url : context.data('finder-url')
+      });
+
+      // Push layer to map
+      map.addLayer(layerVector);
+
+      if (spinner) {
+        spinner.removeClass('mdi-magnify').addClass('mdi-loading mdi-spin');
+      }
+
+      let loadAndProcessGeojson = function (jsonData) {
+        let featuresData = [];
+        if (jsonData.type === 'FeatureCollection') {
+          featuresData = jsonData.features;
+        } else if (jsonData.type === 'Feature') {
+          featuresData = [jsonData];
+        } else if (jsonData.type) {
+          featuresData = [
+            {
+              type: 'Feature',
+              geometry: jsonData,
+              properties: {}
+            }
+          ];
+        } else {
+          featuresData = [jsonData];
+        }
+        if (!Array.isArray(featuresData)) featuresData = [featuresData];
+
+        let totalData = featuresData.length;
+        let chunkSize = 50; // VERY SMALL chunk size to unblock UI
+        let currentIndex = 0;
+        let geojsonFormat = new ol.format.GeoJSON({ extractStyles: true });
+
+        function nextLoad() {
+          if (thisLoadId !== currentGeojsonLoadId) {
+            // Abort loading because another reset or layer request has been initiated
+            return;
+          }
+
+          let chunk = featuresData.slice(currentIndex, currentIndex + chunkSize);
+          let dummyCollection = { type: 'FeatureCollection', features: chunk };
+          if (jsonData.crs) dummyCollection.crs = jsonData.crs;
+
+          try {
+            let olFeatures = geojsonFormat.readFeatures(dummyCollection, {
+              featureProjection: map.getView().getProjection()
+            });
+            vectorSource.addFeatures(olFeatures);
+          } catch (e) {
+            console.error('Error reading geojson features', e);
+          }
+
+          currentIndex += chunkSize;
+          if (currentIndex < totalData) {
+            // Yield to allow click/drag events
+            setTimeout(nextLoad, 15);
+          } else {
+            vectorSource.dispatchEvent('change_complete');
+          }
+        }
+        if (totalData > 0) {
+          nextLoad();
+        } else {
+          vectorSource.dispatchEvent('change_complete');
+        }
+      };
+
+      if (typeof window.geojsonCache === 'undefined') {
+        window.geojsonCache = {};
+      }
+
+      if (isStringData) {
+        try {
+          loadAndProcessGeojson(JSON.parse(sourceUrl));
+        } catch (e) {
+          vectorSource.dispatchEvent('change_complete');
+        }
+      } else {
+        if (window.geojsonCache[sourceUrl]) {
+          loadAndProcessGeojson(window.geojsonCache[sourceUrl]);
+        } else {
+          fetch(sourceUrl)
+            .then((r) => r.json())
+            .then((data) => {
+              if (thisLoadId !== currentGeojsonLoadId) return; // Cancelled
+              window.geojsonCache[sourceUrl] = data; // CACHE IT!
+              loadAndProcessGeojson(data);
+            })
+            .catch((e) => {
+              vectorSource.dispatchEvent('change_complete');
+            });
+        }
+      }
+
+      // Fit it map to features
+      let listener = layerVector.getSource().once('change_complete', function (e) {
+        if (layerVector.getSource().getState() === 'ready') {
+          let boundsSelected = ol.extent.createEmpty();
+          let boundsAll = layerVector.getSource().getExtent();
+          let foundSelected = false;
+          let foundAll = boundsAll && !ol.extent.isEmpty(boundsAll);
+
+          const sourceFeatures = layerVector.getSource().getFeatures();
+          const sourceFeaturesLength = sourceFeatures.length;
+
+          for (let i = 0; i < sourceFeaturesLength; i++) {
+            let feat = sourceFeatures[i];
+
+            if (typeof layerVector.getZIndex() === 'undefined') {
+              // Add zoom index
+              layerVector.setZIndex(i + 1);
+            }
+
+            const raster = feat.get('raster');
+            const wms = feat.get('wms');
+            const fill = feat.get('fill');
+            const stroke = feat.get('stroke');
+            const strokeWidth = feat.get('stroke-width');
+            const opacity = feat.get('icon-scale');
+
+            if (raster) {
+              /**
+               * GeoTIFF Raster (experimental)
+               * Export to EPSG:3857 CRS Projection when EPSG:4326 is failed to load
+               */
+              require.js([config.baseUrl + 'assets/openlayers/231.ol.js'], function () {
+                rasterTile = new ol.layer.WebGLTile({
+                  source: new ol.source.GeoTIFF({
+                    zIndex: parseInt(layerVector.getZIndex(i)) - 1,
+                    sources: [
+                      {
+                        url: raster,
+                        nodata: 0
+                      }
+                    ]
+                  })
+                });
+
+                rasterTile.getSource().on('change', () => {
+                  if (rasterTile.getSource().getState() === 'ready') {
+                    const projection = rasterTile.getSource().getProjection().getCode();
+
+                    if (projection == 'EPSG:3857') {
+                      map.addLayer(rasterTile);
+                    } else {
+                      console.log('GeoTIFF Error:', `The projection of GeoTIFF file of "${feat.get('title')}" layer is not supported. GeoTIFF File Projection: ${projection}. Required Projection: EPSG:3857.`);
+                    }
+                  }
+                });
+              });
+            } else if (wms) {
+              openlayers.wms(wms, fill, stroke, strokeWidth, opacity);
+
+              // Hide layerVector when WMS is present
+              layerVector.setVisible(false);
+            }
+
+            if (feat.getGeometry() && feat.get('selected')) {
+              foundSelected = true;
+              ol.extent.extend(boundsSelected, feat.getGeometry().getExtent());
+            }
+          }
+
+          if (!ignoreFit) {
+            if (foundSelected) {
+              map.getView().fit(boundsSelected, {
+                size: map.getSize()
+              });
+            } else if (foundAll) {
+              map.getView().fit(boundsAll, {
+                size: map.getSize()
+              });
+            }
+          }
+
+          if (!ignoreDraggableMarker && draggableMarker && foundAll) {
+            draggableMarker.getSource().getFeatures()[0].setGeometry(new ol.geom.Point(map.getView().getCenter()));
+          }
+
+          // Remove spinner
+          spinner ? spinner.removeClass('mdi-loading mdi-spin').addClass('mdi-magnify') : '';
+
+          // Unbind listener
+          ol.Observable.unByKey(listener);
+        }
+      });
+
+      if (aliases) {
+        // Assign vector to layer overlap
+        layerOverlap = layerVector;
+      }
+    },
+    keyhole: function (source, spinner, ignoreFit, extractStyle) {
+      /**
+       * Render the keyhole (kml) type of source
+       */
+      layerOverlap = new ol.layer.VectorImage({
+        source: new ol.source.Vector({
+          projection: ol.proj.get(projection),
+          url: source,
+          format: new ol.format.KML({
+            extractStyles: extractStyle === true
+          })
+        }),
+        type: 'xml',
+        initial: 'layerOverlap'
+      });
+
+      // Push layer to map
+      map.addLayer(layerOverlap);
+
+      if (spinner) {
+        // Remove spinner
+        spinner.removeClass('mdi-magnify').addClass('mdi-loading mdi-spin');
+      }
+
+      if (!ignoreFit) {
+        // Fit map to features
+        layerOverlap.getSource().once('change', function (e) {
+          if (layerOverlap.getSource().getState() === 'ready') {
+            if (layerOverlap.getSource().getExtent().length && $.inArray(Infinity, layerOverlap.getSource().getExtent()) === -1) {
+              map.getView().fit(layerOverlap.getSource().getExtent(), {
+                size: map.getSize()
+              });
+            }
+          }
+        });
+      }
+    },
+    rest: function (source) {
+      /**
+       * Render the features from ArcGIS Rest API
+       */
+      let esriJSON = new ol.format.EsriJSON();
+
+      let vectorSource = new ol.source.Vector({
+        loader: function (extent, resolution, projection) {
+          let srid = projection
+            .getCode()
+            .split(/:(?=\d+$)/)
+            .pop();
+
+          $.ajax({
+            url: source + '/query',
+            method: 'POST',
+            data: {
+              f: 'json',
+              returnGeometry: true,
+              spatialRel: 'esriSpatialRelIntersects',
+              geometry: '{"xmin":' + extent[0] + ',"ymin":' + extent[1] + ',"xmax":' + extent[2] + ',"ymax":' + extent[3] + ',"spatialReference":{"wkid":' + srid + '}}',
+              geometryType: 'esriGeometryEnvelope',
+              outFields: '*',
+              inSR: srid,
+              outSR: srid
+            },
+            dataType: 'jsonp',
+            success: function (response, xhr, hehe) {
+              if (response.error) {
+                console.log(response.error.message, response.error.details.join('\n'));
+              } else {
+                let features = esriJSON.readFeatures(response, {
+                  featureProjection: projection
+                });
+
+                if (features.length > 0) {
+                  vectorSource.addFeatures(features);
+                }
+              }
+            }
+          });
+        },
+        strategy: ol.loadingstrategy.tile(
+          ol.tilegrid.createXYZ({
+            tileSize: 512
+          })
+        )
+      });
+
+      layerOverlap = new ol.layer.VectorImage({
+        source: vectorSource
+      });
+
+      // Push layer to map
+      map.addLayer(layerOverlap);
+
+      // Fit map to features
+      layerOverlap.getSource().once('change', function (e) {
+        if (layerOverlap.getSource().getState() === 'ready') {
+          if (layerOverlap.getSource().getExtent().length && $.inArray(Infinity, layerOverlap.getSource().getExtent()) === -1) {
+            map.getView().fit(layerOverlap.getSource().getExtent(), {
+              size: map.getSize()
+            });
+          }
+        }
+      });
+    },
+    /**
+     * Parse and render Mapbox Vector Tile (MVT)
+     */
+    mvt: function (url) {
+      if (!url) return;
+
+      // Extract table and query params from URL
+      let tempUrl = url.replace('{z}', '0').replace('{x}', '0').replace('{y}', '0');
+      let urlObj;
+      try {
+        urlObj = new URL(tempUrl);
+      } catch (e) {
+        console.error('Invalid MVT URL', e);
+        return;
+      }
+
+      // Add URL parameters to the bounds request
+      let params = {};
+      for (let [key, value] of urlObj.searchParams.entries()) {
+        params[key] = value;
+      }
+
+      // Fetch bounds for zooming asynchronously
+      $.get(config.baseUrl + 'maps/geospatial/bounds', params, function (res) {
+        if (res && res.bounds && res.bounds.xmin !== null) {
+          let extent = [parseFloat(res.bounds.xmin), parseFloat(res.bounds.ymin), parseFloat(res.bounds.xmax), parseFloat(res.bounds.ymax)];
+          if (isFinite(extent[0]) && isFinite(extent[1]) && isFinite(extent[2]) && isFinite(extent[3])) {
+            map.getView().fit(ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'), {
+              maxZoom: 18,
+              padding: [50, 50, 50, 50]
+            });
+          }
+        }
+      });
+
+      // Proceed with MVT rendering immediately
+      if (typeof mvtTile !== 'undefined' && mvtTile) {
+        map.removeLayer(mvtTile);
+      }
+
+      let vtSource = new ol.source.VectorTile({
+        format: url.indexOf('format=geojson') !== -1 ? new ol.format.GeoJSON({ featureClass: ol.Feature }) : new ol.format.MVT({ featureClass: ol.Feature }),
+        url: url
+      });
+
+      mvtTile = new ol.layer.VectorTile({
+        declutter: true,
+        minZoom,
+        maxZoom,
+        source: vtSource,
+        style: function (feature) {
+          const type = feature.getGeometry().getType();
+
+          if (typeof mvtHybridEditIds !== 'undefined' && mvtHybridEditIds.includes(feature.getId())) {
+            return null; // Hide the MVT feature while editing its GeoJSON counterpart
+          }
+
+          let isSelected = false;
+          if (typeof mvtSelectionId !== 'undefined' && mvtSelectionId !== null) {
+            if (Array.isArray(mvtSelectionId)) {
+              isSelected = mvtSelectionId.includes(feature.getId());
+            } else {
+              isSelected = mvtSelectionId === feature.getId();
+            }
+          }
+
+          let fColor = typeof fillColor !== 'undefined' && fillColor ? fillColor : feature.get('fillColor', 'layer_fillColor', '#ff0000');
+          let sColor = typeof strokeColor !== 'undefined' && strokeColor ? strokeColor : feature.get('strokeColor', 'layer_strokeColor', type === 'Polygon' || type === 'MultiPolygon' ? '#ff0000' : '#ffffff');
+          let sWidth = typeof strokeWidth !== 'undefined' && strokeWidth ? strokeWidth : parseFloat(feature.get('strokeWidth', 'layer_stroke_width', type === 'LineString' || type === 'MultiLineString' ? 2 : 1));
+          let opacity = typeof iconScale !== 'undefined' && iconScale ? iconScale : parseFloat(feature.get('iconScale', 'layer_icon_scale', 1));
+          let layerOpacity = 1;
+          if (typeof window !== 'undefined' && window.checkedLayerOpacityByLayer) {
+            let perLayerOpacity = parseFloat(window.checkedLayerOpacityByLayer[feature.get('layer_id')]);
+            layerOpacity = isNaN(perLayerOpacity) ? 1 : Math.max(0, Math.min(1, perLayerOpacity));
+          }
+          let pattern = feature.get('fill_pattern', 'layer_fill_pattern', null);
+
+          let rgbaFill;
+          try {
+            let rgb = ol.color.asArray(fColor);
+            let fillOp = (type === 'Polygon' || type === 'MultiPolygon' ? Math.min(1, opacity) : 0.2) * layerOpacity;
+            rgbaFill = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${fillOp})`;
+          } catch (e) {
+            rgbaFill = `rgba(255, 0, 0, ${0.2 * layerOpacity})`;
+          }
+
+          let rgbaStroke;
+          try {
+            let sRgb = ol.color.asArray(sColor);
+            rgbaStroke = `rgba(${sRgb[0]}, ${sRgb[1]}, ${sRgb[2]}, ${layerOpacity})`;
+          } catch (e) {
+            rgbaStroke = sColor;
+          }
+
+          let baseStyle;
+          if (type === 'Point' || type === 'MultiPoint') {
+            let iconSrc = '';
+            if (pattern && pattern !== 'placeholder.png') {
+              if (isIndividual && feature.get('fill_pattern') === pattern) {
+                iconSrc = config.baseUrl + 'uploads/dataset/icon/' + pattern;
+              } else {
+                iconSrc = config.baseUrl + 'uploads/layers/icon/' + pattern;
+              }
+            } else {
+              let svgFill = encodeURIComponent(fColor);
+              let svgStroke = encodeURIComponent(sColor);
+              iconSrc = config.baseUrl + 'assets/svg/point.svg?fill=' + svgFill + '&stroke=' + svgStroke + '&stroke-width=' + sWidth;
+            }
+
+            baseStyle = new ol.style.Style({
+              image: new ol.style.Icon({
+                scale: opacity > 0 ? opacity : 1,
+                opacity: layerOpacity,
+                src: iconSrc,
+                anchor: [0.5, 1]
+              })
+            });
+          } else if (type === 'LineString' || type === 'MultiLineString') {
+            baseStyle = new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: rgbaStroke,
+                width: sWidth
+              })
+            });
+          } else {
+            baseStyle = new ol.style.Style({
+              fill: new ol.style.Fill({
+                color: rgbaFill
+              }),
+              stroke: new ol.style.Stroke({
+                color: rgbaStroke,
+                width: sWidth
+              })
+            });
+          }
+
+          let featureLabel = feature.get('label');
+          if (featureLabel) {
+            baseStyle.setText(
+              new ol.style.Text({
+                text: featureLabel,
+                font: '14px Arial, sans-serif',
+                fill: new ol.style.Fill({
+                  color: '#000000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: '#ffffff',
+                  width: 3
+                }),
+                overflow: true
+              })
+            );
+          }
+
+          if (isSelected) {
+            let highlightStyle = new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: '#3399CC',
+                width: Math.max(3, sWidth)
+              }),
+              image: new ol.style.Circle({
+                radius: 6,
+                stroke: new ol.style.Stroke({
+                  color: '#3399CC',
+                  width: 2
+                })
+              })
+            });
+            return highlightStyle;
+          }
+
+          return baseStyle;
+        }
+      });
+      map.addLayer(mvtTile);
+    },
+
+    wms: function (source, fill, stroke, strokeWidth, opacity) {
+      /**
+       * Render the features from ArcGIS Rest API
+       */
+      const sldBody = createSLD(get_query_params('layers', source.toLowerCase()), fill, stroke, strokeWidth, opacity);
+
+      wmsTile = new ol.layer.Tile({
+        initial: 'wms',
+        source: new ol.source.TileWMS({
+          url: source,
+          crossOrigin: 'anonymous',
+          projection: map.getView().getProjection(),
+          params: {
+            LAYERS: get_query_params('layers', source.toLowerCase()),
+            TILED: true,
+            SLD_BODY: sldBody
+          },
+          serverType: 'geoserver'
+        })
+      });
+
+      // Push layer to map
+      map.addLayer(wmsTile);
+
+      map.on('singleclick', function (event) {
+        if (window.isDrawingActive || (typeof drawingManager !== 'undefined' && drawingManager) || (typeof activeDigitizeDraw !== 'undefined' && activeDigitizeDraw) || (typeof activePlottingDraw !== 'undefined' && activePlottingDraw)) {
+          if (typeof popup !== 'undefined' && popup) popup.hide();
+          return;
+        }
+
+        let shown = false;
+        popup.show(
+          event.coordinate,
+          `<div class="popup-content"><div class="d-flex justify-content-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden sr-only">${phrase('Loading...')}</span></div></div></div>`
+        );
+
+        map.getLayers().forEach(function (layer, index) {
+          if (shown) return;
+
+          if ('wms' == layer.get('initial')) {
+            const url = layer.getSource().getFeatureInfoUrl(event.coordinate, map.getView().getResolution(), map.getView().getProjection(), {
+              INFO_FORMAT: 'application/json'
+            });
+
+            if (url) {
+              let output = '';
+
+              fetch(url)
+                .then((response) => response.text())
+                .then((json) => {
+                  try {
+                    const geojson = JSON.parse(json);
+                    const properties = geojson.features[0].properties;
+
+                    Object.entries(properties).forEach(([label, value]) => {
+                      output += `<tr><td>${label}</td><td>${value}</td></tr>`;
+                    });
+                  } catch (e) {
+                    // Safe abstraction
+                  }
+
+                  if (output) {
+                    shown = true;
+                    $('.popup-content').html(`
+                      <table class="table table-sm">
+                        <tbody>
+                          ${output}
+                        </tbody>
+                      </table>
+                    `);
+                  } else {
+                    popup.hide();
+                  }
+                });
+            } else {
+              popup.hide();
+            }
+          }
+        });
+      });
+
+      setTimeout(function () {
+        zoomToWMSLayer(source);
+      }, 500);
+    },
+    coordinate: function (draggable) {
+      /**
+       * Create editable marker
+       */
+      let markerGeometry = new ol.geom.Point(map.getView().getCenter());
+      let hasGeojson = false;
+      let geojsonStr = context.data('geojson');
+      if (geojsonStr && geojsonStr !== '{}' && geojsonStr !== '[]') {
+        try {
+          let shapes = typeof geojsonStr === 'string' ? JSON.parse(geojsonStr) : geojsonStr;
+          if (shapes) {
+            let geojsonFormat = new ol.format.GeoJSON();
+            let parsedFeatures = geojsonFormat.readFeatures(shapes, {
+              featureProjection: map.getView().getProjection()
+            });
+            if (parsedFeatures && parsedFeatures.length > 0) {
+              markerGeometry = parsedFeatures[0].getGeometry();
+              hasGeojson = true;
+            }
+          }
+        } catch (e) {
+          // Ignore
+        }
+      }
+
+      draggableMarker = new ol.layer.VectorImage({
+        source: new ol.source.Vector({
+          features: [
+            new ol.Feature({
+              type: 'click',
+              title: `<span class="d-block font-weight-bold text-muted mb-0">${phrase('Default Marker')}</span>`,
+              description: `<p class="mb-0">${phrase('This can be dragged in edit mode.')}</p>`,
+              geometry: markerGeometry
+            })
+          ]
+        }),
+        style: new ol.style.Style({
+          image: new ol.style.Icon({
+            src: config.baseUrl + 'assets/openlayers/resources/icons/marker.png',
+            anchor: [0.5, 1]
+          })
+        }),
+        zIndex: 100,
+        initial: 'draggable'
+      });
+
+      // Push layer to map
+      map.addLayer(draggableMarker);
+
+      if (hasGeojson) {
+        if (context.data('zoom')) {
+          map.getView().setCenter(ol.extent.getCenter(draggableMarker.getSource().getExtent()));
+          map.getView().setZoom(parseFloat(defaultZoom));
+        } else {
+          map.getView().fit(draggableMarker.getSource().getExtent(), {
+            size: map.getSize()
+          });
+        }
+      }
+
+      if (draggable) {
+        let updateMarkerPosition = function (clickedCoord, skipGeometryUpdate) {
+          if (typeof geolocation !== 'undefined') {
+            geolocation.setTracking(false);
+          }
+
+          let features = draggableMarker.getSource().getFeatures();
+          if (!clickedCoord && features && features.length > 0) {
+            clickedCoord = features[0].getGeometry().getCoordinates();
+          }
+
+          if (!clickedCoord) {
+            return;
+          }
+
+          if (!skipGeometryUpdate && features && features.length > 0) {
+            features[0].getGeometry().setCoordinates(clickedCoord);
+          }
+
+          let coordinate = ol.proj.transform(clickedCoord, map.getView().getProjection(), projection);
+
+          coordinate = {
+            lat: coordinate[1],
+            lng: coordinate[0]
+          };
+
+          $(applyLatitude).val(parseFloat(coordinate.lat).toFixed(6));
+          $(applyLongitude).val(parseFloat(coordinate.lng).toFixed(6));
+
+          let geojsonFormat = new ol.format.GeoJSON();
+          $(applyCoordinate).val(writeFeaturesWithoutProperties(geojsonFormat, draggableMarker.getSource().getFeatures(), map.getView().getProjection()));
+
+          if ('google' == config.openlayersSearchProvider) {
+            /**
+             * Use Google Maps API as geocoder
+             */
+            require.js('https://maps.googleapis.com/maps/api/js?key=' + config.openlayersSearchKey + '&libraries=places&language=' + config.language, function () {
+              let finder = new google.maps.Geocoder();
+
+              finder.geocode(
+                {
+                  location: coordinate
+                },
+                function (response, status) {
+                  if (status === 'OK') {
+                    $(applyAddress).val(response[0].formatted_address).trigger('input');
+                    $('#gcd-input-query, #autocomplete').val(response[0].formatted_address);
+                  } else {
+                    console.log(status);
+                  }
+                }
+              );
+            });
+          } else {
+            /**
+             * Use Nominatim as geocoder
+             */
+            $.get('https://nominatim.openstreetmap.org/reverse?accept-language=id&format=json&lat=' + coordinate.lat + '&lon=' + coordinate.lng + '&addressdetails=1', function (response) {
+              if (typeof response !== 'undefined') {
+                // Apply to inputs
+                $(applyAddress).val(response.display_name).trigger('input');
+                $('#gcd-input-query, #autocomplete').val(response.display_name);
+              }
+            });
+          }
+        };
+
+        let drag = new ol.interaction.Translate({
+          features: new ol.Collection(draggableMarker.getSource().getFeatures())
+        });
+
+        // Add drag interaction to marker
+        map.addInteraction(drag);
+
+        // Event on marker drag end
+        drag.on('translateend', function (event) {
+          const features = event.features.getArray();
+          updateMarkerPosition(features.length ? features[0].getGeometry().getCoordinates() : null, true);
+        });
+
+        // Event on map singleclick to jump marker to clicked coordinate
+        map.on('singleclick', function (event) {
+          updateMarkerPosition(event.coordinate);
+        });
+      }
+    },
+    geometryEditor: function (options) {
+      options = options || {};
+
+      let targetMap = options.map || map;
+      let featureLayer = options.layer;
+      let onChange = typeof options.onChange === 'function' ? options.onChange : function () {};
+      let drawType = options.drawType;
+      let snapSources = options.snapSources || [];
+      let handlesLayer = null;
+      let pointer = null;
+      let modify = null;
+      let translate = null;
+      let select = null;
+      let snapInteractions = [];
+      let moveendKey = null;
+      let keydownHandler = null;
+      let activeHandleType = null;
+      let activeFeature = null;
+      let selectedFeature = null;
+      let handleDragStartCoord = null;
+      let handleOriginalGeom = null;
+
+      if (!targetMap || !featureLayer || !featureLayer.getSource) return null;
+
+      function getMainFeature() {
+        let source = featureLayer.getSource();
+        if (!source) return null;
+        let items = source.getFeatures();
+        return items && items.length ? items[0] : null;
+      }
+
+      function getFeatures() {
+        let source = featureLayer.getSource();
+        return source ? source.getFeatures() : [];
+      }
+
+      function notifyChange(feature) {
+        onChange(feature || getMainFeature(), drawType, getFeatures());
+      }
+
+      function removeFeature(feature) {
+        let source = featureLayer.getSource();
+        if (!source || !feature) return;
+        source.removeFeature(feature);
+        if (select) select.getFeatures().clear();
+        selectedFeature = null;
+        activeFeature = null;
+        notifyChange(getMainFeature());
+        updateHandles();
+      }
+
+      function computeCentroid(geom) {
+        let type = geom.getType();
+        if (type === 'Polygon') {
+          let ring = geom.getCoordinates()[0] || [];
+          let pts = ring.length > 1 ? ring.slice(0, -1) : ring;
+          if (!pts.length) return ol.extent.getCenter(geom.getExtent());
+          let sx = 0,
+            sy = 0;
+          for (let i = 0; i < pts.length; i++) {
+            sx += pts[i][0];
+            sy += pts[i][1];
+          }
+          return [sx / pts.length, sy / pts.length];
+        }
+        if (type === 'LineString') {
+          return geom.getCoordinateAt(0.5);
+        }
+        if (type === 'MultiPolygon') {
+          let polygons = geom.getCoordinates();
+          let sx = 0,
+            sy = 0,
+            total = 0;
+          polygons.forEach(function (polygon) {
+            let ring = polygon[0] || [];
+            let pts = ring.length > 1 ? ring.slice(0, -1) : ring;
+            pts.forEach(function (point) {
+              sx += point[0];
+              sy += point[1];
+              total++;
+            });
+          });
+          return total ? [sx / total, sy / total] : ol.extent.getCenter(geom.getExtent());
+        }
+        if (type === 'MultiLineString') {
+          let lines = geom.getCoordinates();
+          let line = lines[Math.floor(lines.length / 2)] || [];
+          return line.length ? line[Math.floor(line.length / 2)] : ol.extent.getCenter(geom.getExtent());
+        }
+        return ol.extent.getCenter(geom.getExtent());
+      }
+
+      function rotateGeomAroundPoint(geom, angle, pivot) {
+        let cos = Math.cos(angle);
+        let sin = Math.sin(angle);
+        let type = geom.getType();
+
+        function rotateCoord(c) {
+          let dx = c[0] - pivot[0];
+          let dy = c[1] - pivot[1];
+          return [pivot[0] + dx * cos - dy * sin, pivot[1] + dx * sin + dy * cos];
+        }
+
+        if (type === 'LineString') {
+          return new ol.geom.LineString(geom.getCoordinates().map(rotateCoord));
+        }
+        if (type === 'Polygon') {
+          return new ol.geom.Polygon(
+            geom.getCoordinates().map(function (ring) {
+              return ring.map(rotateCoord);
+            })
+          );
+        }
+        if (type === 'MultiLineString') {
+          return new ol.geom.MultiLineString(
+            geom.getCoordinates().map(function (line) {
+              return line.map(rotateCoord);
+            })
+          );
+        }
+        if (type === 'MultiPolygon') {
+          return new ol.geom.MultiPolygon(
+            geom.getCoordinates().map(function (polygon) {
+              return polygon.map(function (ring) {
+                return ring.map(rotateCoord);
+              });
+            })
+          );
+        }
+        return geom;
+      }
+
+      function ensureHandlesLayer() {
+        if (!handlesLayer) {
+          handlesLayer = new ol.layer.VectorImage({
+            source: new ol.source.Vector(),
+            zIndex: options.zIndex || 10000
+          });
+          targetMap.addLayer(handlesLayer);
+        }
+      }
+
+      function handleStyle(handleType, anchor, coord) {
+        let isRotate = handleType === 'rotate';
+        let isDelete = handleType === 'delete';
+        let styles = [];
+        if (isRotate && anchor && coord) {
+          styles.push(
+            new ol.style.Style({
+              geometry: new ol.geom.LineString([anchor, coord]),
+              stroke: new ol.style.Stroke({ color: '#28a745', width: 1.5, lineDash: [4, 4] })
+            })
+          );
+        }
+        styles.push(
+          new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: isDelete ? 10 : 11,
+              fill: new ol.style.Fill({ color: isDelete ? '#dc3545' : isRotate ? '#28a745' : '#007bff' }),
+              stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
+            }),
+            text: new ol.style.Text({
+              text: isDelete ? '×' : isRotate ? '↻' : '✥',
+              font: isDelete ? 'bold 16px sans-serif' : 'bold 13px sans-serif',
+              fill: new ol.style.Fill({ color: '#ffffff' }),
+              offsetY: isDelete ? -1 : isRotate ? 0 : 0,
+              offsetX: isDelete ? 0 : isRotate ? 0 : 0.75
+            })
+          })
+        );
+        return styles;
+      }
+
+      function addHandle(source, type, coord, anchor, targetFeature) {
+        let feature = new ol.Feature({
+          geometry: new ol.geom.Point(coord),
+          handleType: type
+        });
+        feature.targetFeature = targetFeature;
+        feature.setStyle(handleStyle(type, anchor, coord));
+        source.addFeature(feature);
+      }
+
+      function updateHandles() {
+        ensureHandlesLayer();
+        let source = handlesLayer.getSource();
+        source.clear();
+
+        let res = targetMap.getView().getResolution() || 1;
+        let handleOffset = res * (options.handleOffsetPixels || 24);
+        let handleHorizontalOffset = res * (options.handleHorizontalOffsetPixels || 14);
+        let polygonDeleteOffset = res * (options.polygonDeleteHandleOffsetPixels || 20);
+        let items = getFeatures();
+
+        items.forEach(function (mainFeature) {
+          let geom = mainFeature.getGeometry();
+          if (!geom) return;
+
+          let type = geom.getType();
+          if (type === 'LineString') {
+            let moveCoord = geom.getCoordinateAt(0.5);
+            let rotateCoord = [moveCoord[0] + handleHorizontalOffset, moveCoord[1] + handleOffset];
+            let deleteCoord = [moveCoord[0] - handleHorizontalOffset, moveCoord[1] + handleOffset];
+            addHandle(source, 'move', moveCoord, null, mainFeature);
+            addHandle(source, 'rotate', rotateCoord, moveCoord, mainFeature);
+            addHandle(source, 'delete', deleteCoord, null, mainFeature);
+          } else if (type === 'MultiLineString') {
+            let moveCoord = computeCentroid(geom);
+            let rotateCoord = [moveCoord[0] + handleHorizontalOffset, moveCoord[1] + handleOffset];
+            let deleteCoord = [moveCoord[0] - handleHorizontalOffset, moveCoord[1] + handleOffset];
+            addHandle(source, 'move', moveCoord, null, mainFeature);
+            addHandle(source, 'rotate', rotateCoord, moveCoord, mainFeature);
+            addHandle(source, 'delete', deleteCoord, null, mainFeature);
+          } else if (type === 'Polygon' || type === 'MultiPolygon') {
+            let centroid = computeCentroid(geom);
+            let rotateCoord = [centroid[0] + handleHorizontalOffset, centroid[1] + polygonDeleteOffset];
+            let deleteCoord = [centroid[0] - handleHorizontalOffset, centroid[1] + polygonDeleteOffset];
+            addHandle(source, 'move', centroid, null, mainFeature);
+            addHandle(source, 'rotate', rotateCoord, centroid, mainFeature);
+            addHandle(source, 'delete', deleteCoord, null, mainFeature);
+          }
+        });
+      }
+
+      translate = new ol.interaction.Translate({
+        layers: [featureLayer]
+      });
+      targetMap.addInteraction(translate);
+
+      translate.on('translating', updateHandles);
+      translate.on('translateend', function (evt) {
+        let items = evt.features.getArray();
+        if (items.length) notifyChange(items[0]);
+        updateHandles();
+      });
+
+      modify = new ol.interaction.Modify({
+        source: featureLayer.getSource(),
+        pixelTolerance: options.pixelTolerance || 15,
+        style:
+          options.vertexStyle ||
+          new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 7,
+              fill: new ol.style.Fill({ color: '#e74c3c' }),
+              stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
+            })
+          })
+      });
+      targetMap.addInteraction(modify);
+
+      modify.on('modifying', updateHandles);
+      modify.on('modifyend', function (evt) {
+        let items = evt.features.getArray();
+        if (items.length) notifyChange(items[0]);
+        updateHandles();
+      });
+
+      if (options.delete !== false) {
+        select = new ol.interaction.Select({
+          layers: [featureLayer],
+          hitTolerance: options.selectHitTolerance || 6,
+          style: function (feature) {
+            if (typeof options.selectStyle === 'function') {
+              return options.selectStyle(feature);
+            }
+            if (options.selectStyle && (options.selectStyle instanceof ol.style.Style || Array.isArray(options.selectStyle))) {
+              return options.selectStyle;
+            }
+            if (typeof featureLayer.getStyle === 'function') {
+              let styleFn = featureLayer.getStyle();
+              if (typeof styleFn === 'function') {
+                return styleFn(feature);
+              } else if (styleFn) {
+                return styleFn;
+              }
+            }
+            return null;
+          }
+        });
+        targetMap.addInteraction(select);
+
+        select.on('select', function (evt) {
+          selectedFeature = evt.selected && evt.selected.length ? evt.selected[0] : null;
+        });
+
+        keydownHandler = function (evt) {
+          if (!selectedFeature || (evt.key !== 'Delete' && evt.key !== 'Backspace')) return;
+
+          let target = evt.target;
+          if (target && ['INPUT', 'TEXTAREA', 'SELECT'].indexOf(target.tagName) !== -1) return;
+
+          evt.preventDefault();
+          removeFeature(selectedFeature);
+        };
+        window.addEventListener('keydown', keydownHandler, true);
+      }
+
+      if (options.snap !== false) {
+        snapSources.unshift(featureLayer.getSource());
+        snapSources.forEach(function (source) {
+          if (!source) return;
+          let snap = new ol.interaction.Snap({
+            source: source,
+            pixelTolerance: options.snapPixelTolerance || 15
+          });
+          snapInteractions.push(snap);
+          targetMap.addInteraction(snap);
+        });
+      }
+
+      pointer = new ol.interaction.Pointer({
+        handleDownEvent: function (evt) {
+          if (typeof popup !== 'undefined' && popup) {
+            popup.hide();
+            targetMap.removeOverlay(popup);
+          }
+
+          let found = null;
+          evt.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+            if (layer === handlesLayer) {
+              found = feature;
+              return true;
+            }
+          });
+          if (!found) return false;
+
+          activeHandleType = found.get('handleType');
+          activeFeature = found.targetFeature;
+          if (!activeFeature) return false;
+          if (activeHandleType === 'delete') {
+            removeFeature(activeFeature);
+            return true;
+          }
+          handleDragStartCoord = evt.coordinate;
+          handleOriginalGeom = activeFeature.getGeometry().clone();
+          return true;
+        },
+        handleDragEvent: function (evt) {
+          if (activeHandleType === 'delete') return;
+          if (!activeHandleType || !handleOriginalGeom) return;
+          if (!activeFeature) return;
+
+          let geom = handleOriginalGeom.clone();
+          if (activeHandleType === 'move') {
+            geom.translate(evt.coordinate[0] - handleDragStartCoord[0], evt.coordinate[1] - handleDragStartCoord[1]);
+            activeFeature.setGeometry(geom);
+          } else if (activeHandleType === 'rotate') {
+            let centroid = computeCentroid(geom);
+            let startAngle = Math.atan2(handleDragStartCoord[1] - centroid[1], handleDragStartCoord[0] - centroid[0]);
+            let currentAngle = Math.atan2(evt.coordinate[1] - centroid[1], evt.coordinate[0] - centroid[0]);
+            activeFeature.setGeometry(rotateGeomAroundPoint(geom, currentAngle - startAngle, centroid));
+          }
+          notifyChange(activeFeature);
+          updateHandles();
+        },
+        handleUpEvent: function () {
+          activeHandleType = null;
+          activeFeature = null;
+          handleDragStartCoord = null;
+          handleOriginalGeom = null;
+          return false;
+        }
+      });
+      targetMap.addInteraction(pointer);
+
+      moveendKey = targetMap.on('moveend', function () {
+        if (getMainFeature()) updateHandles();
+      });
+      updateHandles();
+
+      return {
+        update: updateHandles,
+        destroy: function () {
+          if (modify) targetMap.removeInteraction(modify);
+          if (translate) targetMap.removeInteraction(translate);
+          if (pointer) targetMap.removeInteraction(pointer);
+          if (select) targetMap.removeInteraction(select);
+          snapInteractions.forEach(function (snap) {
+            targetMap.removeInteraction(snap);
+          });
+          if (moveendKey) ol.Observable.unByKey(moveendKey);
+          if (keydownHandler) window.removeEventListener('keydown', keydownHandler, true);
+          if (handlesLayer) targetMap.removeLayer(handlesLayer);
+          modify = null;
+          translate = null;
+          pointer = null;
+          handlesLayer = null;
+          snapInteractions = [];
+          moveendKey = null;
+        }
+      };
+    },
+    geocoder: function (context) {
+      /**
+       * Add geocoder (place search)
+       */
+      geocoder = new Geocoder('nominatim', {
+        provider: 'openlayers' == config.openlayersSearchProvider ? 'osm' : config.openlayersSearchProvider, // osm, mapquest, photon, pelias, bing, opencage
+        key: config.openlayersSearchKey, // API Key
+        targetType: 'text-input',
+        //countrycodes: 'id',
+        placeholder: phrase('Search Place'),
+        limit: 10,
+        autoComplete: true,
+        featureStyle: null
+      });
+
+      // Add geocoder into map controls directories
+      map.addControl(geocoder);
+
+      if ('google' == config.openlayersSearchProvider) {
+        /**
+         * Use Google Maps API as geocoder
+         */
+        require.js('https://maps.googleapis.com/maps/api/js?key=' + config.openlayersSearchKey + '&libraries=places&language=' + config.language, function () {
+          let autocomplete = new google.maps.places.Autocomplete(document.getElementById('gcd-input-query'), {
+            componentRestrictions: {
+              country: 'id'
+            },
+            fields: ['formatted_address', 'geometry', 'name'],
+            strictBounds: false,
+            types: ['establishment']
+          });
+
+          google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            let place = autocomplete.getPlace();
+
+            if (typeof place.geometry === 'undefined') {
+              return;
+            }
+
+            if (typeof geolocation !== 'undefined') {
+              geolocation.setTracking(false);
+            }
+
+            if (!drawingType) {
+              // Apply to inputs
+              let pointFeature = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.transform([place.geometry.location.lng(), place.geometry.location.lat()], projection, map.getView().getProjection()))
+              });
+              let geojsonFormat = new ol.format.GeoJSON();
+              $(applyCoordinate).val(
+                geojsonFormat.writeFeatures([pointFeature], {
+                  featureProjection: map.getView().getProjection()
+                })
+              );
+            }
+
+            $(context.data('apply-address-to')).val(place.formatted_address).trigger('change');
+
+            map.getView().setCenter(ol.proj.transform([place.geometry.location.lng(), place.geometry.location.lat()], projection, map.getView().getProjection()));
+
+            if (draggableMarker) {
+              draggableMarker
+                .getSource()
+                .getFeatures()[0]
+                .setGeometry(new ol.geom.Point(ol.proj.transform([place.geometry.location.lng(), place.geometry.location.lat()], projection, map.getView().getProjection())));
+
+              map.getView().fit(draggableMarker.getSource().getExtent(), {
+                size: map.getSize()
+              });
+            } else {
+              // Fit map using Google viewport, or fall back to zoom
+              try {
+                const vp = place.geometry.viewport;
+                if (vp) {
+                  const ne = vp.getNorthEast(),
+                    sw = vp.getSouthWest();
+                  const extent = ol.proj.transformExtent([sw.lng(), sw.lat(), ne.lng(), ne.lat()], projection, map.getView().getProjection());
+                  map.getView().fit(extent, {
+                    size: map.getSize(),
+                    zoom: defaultZoom,
+                    minZoom,
+                    maxZoom
+                  });
+                } else {
+                  map.getView().setZoom(defaultZoom);
+                }
+              } catch (e) {
+                map.getView().setZoom(defaultZoom);
+              }
+            }
+
+            if (context.data('finder-url')) {
+              xhr = $.ajax({
+                url: context.data('finder-url'),
+                method: 'POST',
+                data: {
+                  lat: place.geometry.location.lat(),
+                  lng: place.geometry.location.lng()
+                },
+                beforeSend: function () {
+                  if (xhr) {
+                    xhr.abort();
+                  }
+                }
+              }).done(function (response) {
+                if (typeof response.url !== 'undefined') {
+                  openlayers.unzip(response, null, true);
+                }
+              });
+            }
+          });
+        });
+      } else {
+        // Create event when address is chosen
+        geocoder.on('addresschosen', function (response) {
+          if (typeof geolocation !== 'undefined') {
+            geolocation.setTracking(false);
+          }
+
+          let coordinate = ol.proj.transform(response.coordinate, map.getView().getProjection(), projection);
+
+          coordinate = {
+            lat: coordinate[1],
+            lng: coordinate[0]
+          };
+
+          if (!drawingType) {
+            let pointFeature = new ol.Feature({
+              geometry: new ol.geom.Point(response.coordinate)
+            });
+            let geojsonFormat = new ol.format.GeoJSON();
+            $(applyCoordinate).val(
+              geojsonFormat.writeFeatures([pointFeature], {
+                featureProjection: map.getView().getProjection()
+              })
+            );
+          }
+
+          $(context.data('apply-address-to')).val(response.address.details.name).trigger('change');
+
+          $('#gcd-input-query').val(response.address.details.name);
+
+          map.getView().setCenter(response.coordinate);
+
+          if (draggableMarker) {
+            draggableMarker.getSource().getFeatures()[0].setGeometry(new ol.geom.Point(response.coordinate));
+
+            map.getView().fit(draggableMarker.getSource().getExtent(), {
+              size: map.getSize()
+            });
+          } else {
+            // Fit map using bounding box from Nominatim response, or fall back to zoom
+            try {
+              const bbox = response.place.bbox;
+              if (bbox && bbox.length === 4) {
+                const extent = ol.proj.transformExtent([parseFloat(bbox[2]), parseFloat(bbox[0]), parseFloat(bbox[3]), parseFloat(bbox[1])], projection, map.getView().getProjection());
+                map.getView().fit(extent, { size: map.getSize(), zoom: defaultZoom, minZoom, maxZoom });
+              } else {
+                map.getView().setZoom(defaultZoom);
+              }
+            } catch (e) {
+              map.getView().setZoom(defaultZoom);
+            }
+          }
+
+          if (context.data('finder-url')) {
+            xhr = $.ajax({
+              url: context.data('finder-url'),
+              method: 'POST',
+              data: {
+                lat: coordinate.lat,
+                lng: coordinate.lng
+              },
+              beforeSend: function () {
+                if (xhr) {
+                  xhr.abort();
+                }
+              }
+            }).done(function (response) {
+              if (typeof response.url !== 'undefined') {
+                openlayers.unzip(response, null, true);
+              }
+            });
+          }
+        });
+      }
+    },
+    geolocation: function () {
+      /**
+       * Add geolocation (user based location)
+       */
+      if (applyRouteTo.length) {
+        navigator.geolocation.watchPosition(
+          function (tracking) {
+            // Stop tracking to prevent map flicker
+            openlayers.route([tracking.coords.longitude, tracking.coords.latitude], applyRouteTo, 'driving');
+          },
+          function (error) {
+            if (error.code == error.PERMISSION_DENIED) {
+              alert(phrase('Please enable location to use the directions feature.'));
+            }
+          }
+        );
+      }
+
+      geolocation = new ol.Geolocation({
+        projection: map.getView().getProjection(),
+        tracking: false,
+        trackingOptions: {
+          enableHighAccuracy: true,
+          maximumAge: 2000
+        }
+      });
+
+      let updateGeolocationPosition = function () {
+        let position = geolocation.getPosition();
+
+        if (!position) {
+          return;
+        }
+
+        map.getView().setCenter(position);
+
+        if (draggableMarker) {
+          draggableMarker.getSource().getFeatures()[0].setGeometry(new ol.geom.Point(position));
+
+          map.getView().setZoom(defaultZoom);
+
+          if (!drawingType) {
+            let coordinate = ol.proj.transform(position, map.getView().getProjection(), projection);
+
+            coordinate = {
+              lat: coordinate[1],
+              lng: coordinate[0]
+            };
+
+            $(applyLatitude).val(parseFloat(coordinate.lat).toFixed(6));
+            $(applyLongitude).val(parseFloat(coordinate.lng).toFixed(6));
+
+            let pointFeature = new ol.Feature({
+              geometry: new ol.geom.Point(position)
+            });
+            let geojsonFormat = new ol.format.GeoJSON();
+            $(applyCoordinate).val(
+              geojsonFormat.writeFeatures([pointFeature], {
+                featureProjection: map.getView().getProjection()
+              })
+            );
+          }
+        }
+      };
+
+      let handleTrack = function (e) {
+        updateGeolocationPosition();
+      };
+
+      let icon = document.createElement('i'),
+        button = document.createElement('button'),
+        element = document.createElement('div');
+
+      icon.setAttribute('class', 'mdi mdi-crosshairs-gps');
+      button.setAttribute('title', phrase('Track Me'));
+      button.setAttribute('type', 'button');
+      button.appendChild(icon);
+      button.addEventListener('click', handleTrack, false);
+      element.setAttribute('class', 'ol-track ol-unselectable ol-control');
+      element.appendChild(button);
+
+      map.addControl(
+        new ol.control.Control({
+          element: element
+        })
+      );
+
+      // On device position change
+      geolocation.on('change', function () {
+        updateGeolocationPosition();
+      });
+
+      geolocation.on('error', function (error) {
+        if (error.code == error.PERMISSION_DENIED) {
+          alert(phrase('Please enable location to use this feature.'));
+        } else if (error.code != error.POSITION_UNAVAILABLE) {
+          console.log(error.message);
+        }
+      });
+
+      geolocation.setTracking(true);
+    },
+    panorama: function () {
+      require.css([config.baseUrl + 'assets/openlayers/ol-street-view/ol-street-view.min.css']);
+      require.js([config.baseUrl + 'assets/interactjs/interact.min.js', config.baseUrl + 'assets/openlayers/ol-street-view/ol-street-view.min.js'], function () {
+        let streetView = new StreetView({
+          apiKey: config.openlayersSearchKey,
+          language: StreetView.Language.EN,
+          transparentButton: false,
+          radius: 50,
+          updatePegmanToClosestPanorama: true,
+          size: StreetView.BtnControlSize.Large,
+          resizable: false,
+          sizeToggler: true,
+          zoomOnInit: 18,
+          minZoom: 13,
+          defaultMapSize: StreetView.MapSize.Compact,
+          autoLoadGoogleMaps: true,
+          i18n: {
+            dragToInit: 'Drag and drop me'
+          }
+        });
+
+        map.addControl(streetView);
+
+        streetView.once('loadLib', function () {
+          let panorama = streetView.showStreetView(map.getView().getCenter());
+
+          panorama.setPov({
+            heading: 52,
+            pitch: -12,
+            zoom: 1
+          });
+        });
+
+        streetView.once('streetViewInit', function () {
+          // Get the panorama instance
+          let panorama = streetView.getStreetViewPanorama();
+
+          let coordinate = ol.proj.transform(map.getView().getCenter(), map.getView().getProjection(), projection);
+
+          // Use global google maps functions to add the icon
+          let markerPos = new google.maps.LatLng(coordinate[1], coordinate[0]);
+
+          new google.maps.Marker({
+            position: markerPos,
+            map: panorama,
+            icon: 'https://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=star|FF0000',
+            title: 'Star'
+          });
+        });
+      });
+    },
+    route: function (startPoint, endPoint, type) {
+      /**
+       * Routing machine
+       */
+      $('.find-route-steps').html('');
+
+      if (!startPoint || !endPoint) {
+        alert('Please choose the starting point and destination!');
+
+        return;
+      }
+
+      if (!$.isArray(startPoint)) {
+        startPoint = startPoint.split(',').reverse();
+      }
+
+      if (!$.isArray(endPoint)) {
+        endPoint = endPoint.split(',').reverse();
+      }
+
+      if (routeWayPoints) {
+        routeWayPoints.getSource().clear();
+      }
+
+      if (routeLineString) {
+        routeLineString.getSource().clear();
+      }
+
+      routeWayPoints = new ol.layer.VectorImage({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+          image: new ol.style.Icon({
+            src: config.baseUrl + 'assets/openlayers/resources/icons/marker.png',
+            anchor: [0.5, 1]
+          })
+        }),
+        zIndex: 100
+      });
+
+      routeLineString = new ol.layer.VectorImage({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            width: 5,
+            color: [40, 40, 255, 0.8]
+          })
+        }),
+        zIndex: 100
+      });
+
+      $.ajax({
+        url: config.baseUrl + 'maps/direction',
+        method: 'POST',
+        data: {
+          profile: type,
+          startPoint: startPoint.join(),
+          endPoint: endPoint.join(),
+          partial: true
+        },
+        beforeSend: function () {
+          popup.hide();
+
+          $('.find-route-steps').html('');
+          $(`
+              <div class="d-flex justify-content-center loading-result">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden sr-only">${phrase('Loading...')}</span>
+                </div>
+              </div>
+            `).appendTo('.find-route-steps');
+        }
+      }).done(function (response) {
+        $('.loading-result').remove();
+
+        if (!response) {
+          $('<div class="alert alert-danger">Request take too long, routing cancelled</div>').appendTo('.find-route-steps');
+        }
+
+        // Push route to map
+        routeLineString.getSource().addFeature(
+          new ol.Feature({
+            type: 'route',
+            geometry: new ol.format.Polyline().readGeometry(response.geometry, {
+              dataProjection: projection,
+              featureProjection: map.getView().getProjection()
+            })
+          })
+        );
+
+        $.each(response.steps, function (key, val) {
+          $(`
+              <div class="py-1${key ? ' border-top' : ''}">
+                <div class="row align-items-center">
+                  <div class="col-1 col-md-1">
+                    <span class="routing-icon ${val.icon}"></span>
+                  </div>
+                  <div class="col-8 col-md-8">
+                    ${val.maneuver}
+                  </div>
+                  <div class="col-3 col-md-3 text-end">
+                    ${val.distance}
+                  </div>
+                </div>
+              </div>
+            `).appendTo('.find-route-steps');
+
+          if (key + 1 >= response.steps.length && typeof OverlayScrollbarsGlobal !== 'undefined') {
+            $('.find-route-results').height($(window).outerHeight(true) - (($('.navbar').length ? $('.navbar').outerHeight(true) : 0) + ($('.filter-header').length ? $('.filter-header').outerHeight(true) : 0)));
+
+            $('.find-route-results').each(function () {
+              const instance = OverlayScrollbarsGlobal.OverlayScrollbars(this);
+
+              if (instance) {
+                instance.update();
+              } else {
+                OverlayScrollbarsGlobal.OverlayScrollbars(this, {
+                  scrollbars: {
+                    theme: 'os-theme-dark',
+                    autoHide: 'leave',
+                    autoHideDelay: 500,
+                    clickScroll: true
+                  }
+                });
+              }
+            });
+          }
+        });
+      });
+
+      // Add point between route to map
+      routeWayPoints.getSource().addFeature(
+        new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat(startPoint))
+        })
+      );
+
+      routeWayPoints.getSource().addFeature(
+        new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat(endPoint))
+        })
+      );
+
+      // Push route and waypoints to map
+      map.addLayer(routeLineString);
+      map.addLayer(routeWayPoints);
+
+      // Fit route to extent
+      routeWayPoints.getSource().getFeatures().length
+        ? map.getView().fit(routeWayPoints.getSource().getExtent(), {
+            size: map.getSize()
+          })
+        : null;
+    },
+    selection: function (appendTo) {
+      /**
+       * Selection
+       */
+      map.addInteraction(highlight);
+
+      selected = highlight.getFeatures();
+      selectionBox = new ol.interaction.DragBox({
+        condition: ol.events.condition.platformModifierKeyOnly
+      });
+
+      map.addInteraction(selectionBox);
+
+      selectionBox.on('boxend', function (e) {
+        let extent = selectionBox.getGeometry().getExtent(),
+          resolution = map.getView().getResolution(),
+          exists = [];
+
+        mvtSelectionId = [];
+
+        map
+          .getLayers()
+          .getArray()
+          .forEach(function (layer, index) {
+            if (!index) return;
+
+            let features = [];
+            if (typeof layer.getSource().forEachFeatureIntersectingExtent === 'function') {
+              layer.getSource().forEachFeatureIntersectingExtent(extent, function (f) {
+                features.push(f);
+              });
+            } else if (typeof layer.getSource().getFeaturesInExtent === 'function') {
+              features = layer.getSource().getFeaturesInExtent(extent);
+            } else {
+              return;
+            }
+
+            features.forEach(function (feature) {
+              if (!feature.get('objectId') && !feature.get('id') && !feature.getId()) {
+                return;
+              }
+
+              if (!$('#selection-feature-' + feature.get('layer_id')).length) {
+                $(`
+                <div id="selection-feature-${feature.get('layer_id')}" class="mb-3">
+                  <h6 class="fw-bold">${feature.get('category')}</h6>
+                  <div class="row align-items-center">
+                    <div class="col-10">
+                      ${feature.get('layer')}
+                    </div>
+                    <div class="col-2 text-right text-end">
+                      <span class="badge badge-info bg-info" data-group="${feature.get('layer_id')}">0</span>
+                    </div>
+                  </div>
+                </div>
+              `).appendTo('.selection-information');
+              } else if ($('span[data-group=' + feature.get('layer_id') + ']').length) {
+                $('span[data-group=' + feature.get('layer_id') + ']').text(parseFloat($('span[data-group=' + feature.get('layer_id') + ']').text()) + 1);
+              }
+
+              selected.push(feature);
+              if (mvtSelectionId !== null) {
+                mvtSelectionId.push(feature.getId());
+              }
+            });
+          });
+
+        map.getView().fit(extent, {
+          size: map.getSize()
+        });
+
+        map.getView().setResolution(resolution);
+        if (typeof mvtTile !== 'undefined' && mvtTile) mvtTile.changed();
+      });
+
+      selectionBox.on('boxstart', function (e) {
+        selected.clear();
+      });
+
+      map.on('click', function () {
+        selected.clear();
+      });
+    },
+    identification: function (appendTo) {
+      /**
+       * Identification
+       */
+      map.addInteraction(highlight);
+
+      selected = highlight.getFeatures();
+      selectionBox = new ol.interaction.DragBox({
+        condition: ol.events.condition.platformModifierKeyOnly
+      });
+
+      map.addInteraction(selectionBox);
+
+      selectionBox.on('boxend', function (e) {
+        let info = [],
+          extent = selectionBox.getGeometry().getExtent(),
+          resolution = map.getView().getResolution(),
+          exist = [],
+          num = 0;
+
+        mvtSelectionId = [];
+
+        $(appendTo).html('');
+
+        map
+          .getLayers()
+          .getArray()
+          .forEach(function (layer, index) {
+            if (!index) return;
+
+            let features = [];
+            if (typeof layer.getSource().forEachFeatureIntersectingExtent === 'function') {
+              layer.getSource().forEachFeatureIntersectingExtent(extent, function (f) {
+                features.push(f);
+              });
+            } else if (typeof layer.getSource().getFeaturesInExtent === 'function') {
+              features = layer.getSource().getFeaturesInExtent(extent);
+            } else {
+              return;
+            }
+
+            features.forEach(function (feature) {
+              if (!feature.get('objectId') && !feature.get('id') && !feature.getId()) {
+                return;
+              }
+
+              let objectId;
+
+              if (typeof feature.get('objectId') !== 'undefined' || typeof feature.get('id') !== 'undefined') {
+                objectId = feature.get('objectId') || feature.get('id');
+              } else if (typeof feature.getId === 'function' && feature.getId()) {
+                objectId = feature.getId();
+              } else {
+                // Get primary id from description that contain objectId attribute
+                objectId = feature.get('description').toLowerCase() + ' ';
+
+                objectId = objectId.replace(/(<b[^>]+?>|<b>|<\/b>)/gi, ' ');
+                objectId = objectId.replace(/\s\s+/g, ' ');
+                objectId = objectId.substring(objectId.lastIndexOf('objectId = ') + 11);
+                objectId = objectId.substr(0, objectId.indexOf(' '));
+              }
+
+              feature.setId(objectId);
+
+              selected.push(feature);
+              if (mvtSelectionId !== null) {
+                mvtSelectionId.push(feature.getId());
+              }
+
+              if ($.inArray(objectId, exist) === -1) {
+                exist.push(objectId);
+
+                $(`
+                <div class="identification-item pt-2 pb-2${$('.identification-information').children().length > 0 ? ' border-top' : ''}" data-title="${feature.get('title')}" data-target="${objectId}" style="cursor:pointer">
+                  <i class="mdi mdi-information-outline float-end"></i>
+                  ${feature.get('label') ? feature.get('label') : feature.get('title')}
+                </div>
+              `).appendTo(appendTo);
+              }
+            });
+          });
+
+        $('body').off('mouseover.identification-item');
+        $('body').on('mouseover.identification-item', '.identification-item', function (e) {
+          let target = $(this).data('target');
+          selected.getArray().forEach(function (f) {
+            if (f.getId() == target) {
+              popup.hide();
+              map.getView().setCenter(ol.extent.getCenter(f.getGeometry().getExtent()), {
+                size: map.getSize()
+              });
+            }
+          });
+        });
+
+        $('body').off('click.identification-item touch.identification-item');
+        $('body').on('click.identification-item touch.identification-item', '.identification-item', function (e) {
+          let target = $(this).data('target');
+          let feature = null;
+          selected.getArray().forEach(function (f) {
+            if (f.getId() == target) {
+              feature = f;
+            }
+          });
+
+          if (feature) {
+            map.getView().setCenter(ol.extent.getCenter(feature.getGeometry().getExtent()), {
+              size: map.getSize()
+            });
+
+            map.addOverlay(popup);
+
+            popup.show(
+              ol.extent.getCenter(feature.getGeometry().getExtent()),
+              `<div class="popup-content"><div class="d-flex justify-content-center"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden sr-only">${phrase('Loading...')}</span></div></div></div>`
+            );
+
+            xhr = $.ajax({
+              url: context.data('finder-url'),
+              method: 'POST',
+              data: {
+                objectID: target
+              },
+              beforeSend: function () {
+                if (xhr) {
+                  xhr.abort();
+                }
+
+                $('.popup-content').html(`
+                    <div class="d-flex justify-content-center">
+                      <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden sr-only">${phrase('Loading...')}</span>
+                      </div>
+                    </div>
+                  `);
+              }
+            }).done(function (response) {
+              $('.popup-title').html(response.title);
+              $('.popup-content').html(response.content);
+            });
+          }
+        });
+
+        map.getView().fit(extent, {
+          size: map.getSize()
+        });
+        if (typeof mvtTile !== 'undefined' && mvtTile) mvtTile.changed();
+      });
+
+      selectionBox.on('boxstart', function (e) {
+        selected.clear();
+      });
+
+      map.on('click', function () {
+        $(appendTo).html('');
+        selected.clear();
+        mvtSelectionId = null;
+        if (typeof mvtTile !== 'undefined' && mvtTile) mvtTile.changed();
+      });
+    },
+    measurement: function (type, appendTo) {
+      /**
+       * Measurement
+       */
+      clicked = true;
+      $(appendTo).html('');
+
+      if (typeof map !== 'undefined' && typeof drawingManager !== 'undefined') {
+        map.removeInteraction(drawingManager);
+
+        drawingManager = null;
+      }
+
+      if (drawingEditor) {
+        drawingEditor.destroy();
+        drawingEditor = null;
+      }
+
+      if (measurementVector) {
+        measurementVector.getSource().clear();
+      }
+
+      if (type === 'area' || type === 'distance') {
+        measurementVector = new ol.layer.VectorImage({
+          source: new ol.source.Vector(),
+          style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: colorscheme,
+              width: 3
+            }),
+            fill: new ol.style.Fill({
+              color: hex2rgba(colorscheme ?? '#ff0000', 0.15)
+            })
+          })
+        });
+
+        let measDrawType = 'area' == type ? 'Polygon' : 'LineString';
+        drawingManager = new ol.interaction.Draw({
+          type: measDrawType,
+          source: measurementVector.getSource(),
+          style: getDrawStyle(measDrawType, colorscheme, hex2rgba(colorscheme ?? '#ff0000', 0.15))
+        });
+
+        // Push layer to map
+        map.addLayer(measurementVector);
+
+        // Create drawing tools
+        map.addInteraction(drawingManager);
+
+        // Event on drawing end
+        drawingManager.on('drawstart', function (event) {
+          clicked = true;
+
+          measurementVector.getSource().clear();
+          $(appendTo).html('').removeData('meter');
+        });
+
+        // Update result helper
+        const updateResult = function (meter) {
+          let value = $(appendTo).closest('.tab-pane').find('select').val(),
+            label = $(appendTo).closest('.tab-pane').find('select option:selected').html(),
+            result = 0;
+
+          if (type === 'area') {
+            result = value === 'ac' ? meter / 4046.86 : value === 'mi' ? meter / 2589988.11 : value === 'ha' ? meter / 10000 : value === 'yd' ? meter * 1.19599 : value === 'ft' ? meter * 10.7639 : value === 'km' ? meter / 1000000 : meter;
+          } else {
+            result = value === 'mi' ? meter / 1609.34 : value === 'km' ? meter / 1000 : value === 'yd' ? meter * 1.09361 : value === 'ft' ? meter * 3.28084 : meter;
+          }
+
+          $(appendTo).html(`
+                <div class="text-center mt-3">
+                    <h6>${phrase('Measurement result')}</h6>
+                    <h1 class="fw-bold text-primary">${result.toLocaleString(undefined, { maximumFractionDigits: 2 })}</h1>
+                    <h5>${label}</h5>
+                </div>
+            `);
+        };
+
+        // Event on drawing end
+        drawingManager.on('drawend', function (event) {
+          clicked = false;
+
+          let key = features.length ? parseInt(features.length + 1) : 0,
+            prepare = [];
+
+          features[key] = event.feature.getGeometry().getCoordinates();
+
+          $.each(features, function (_key, _val) {
+            if (!_val) return;
+
+            _val = 'area' == type ? _val[0] : _val;
+
+            let coord = [];
+
+            $.each(_val, function (__key, __val) {
+              coord.push(ol.proj.transform(__val, map.getView().getProjection(), projection));
+            });
+
+            prepare.push({
+              type: 'Feature',
+              geometry: {
+                type: 'area' == type ? 'Polygon' : 'LineString',
+                coordinates: 'area' == type ? [coord] : coord
+              },
+              properties: {}
+            });
+          });
+
+          let meter = 'area' == type ? event.feature.getGeometry().getArea() : event.feature.getGeometry().getLength();
+
+          // Store meter value in element for future unit changes
+          $(appendTo).data('meter', meter);
+
+          updateResult(meter);
+        });
+
+        // Handle unit change
+        $(appendTo)
+          .closest('.tab-pane')
+          .find('select')
+          .off('change.measurement')
+          .on('change.measurement', function () {
+            let meter = $(appendTo).data('meter');
+            if (typeof meter !== 'undefined') {
+              updateResult(meter);
+            }
+          });
+      } else {
+        map.on('singleclick', function (event) {
+          let coordinate = ol.proj.transform(event.coordinate, map.getView().getProjection(), projection),
+            hdms = ol.coordinate.toStringHDMS(coordinate, 4);
+
+          if (measurementVector) {
+            measurementVector.getSource().clear();
+          }
+
+          measurementVector = new ol.layer.VectorImage({
+            source: new ol.source.Vector({
+              features: [
+                new ol.Feature({
+                  geometry: new ol.geom.Point(ol.proj.fromLonLat([coordinate[0], coordinate[1]]))
+                })
+              ]
+            }),
+            style: new ol.style.Style({
+              image: new ol.style.Icon({
+                src: config.baseUrl + 'assets/openlayers/resources/icons/marker.png',
+                anchor: [0.5, 1]
+              })
+            })
+          });
+
+          // Push layer to map
+          map.addLayer(measurementVector);
+
+          $(appendTo).html(`
+            <div class="mt-3">
+              <h6 class="text-center mb-3 fw-bold">${phrase('Measurement result')}</h6>
+              <div class="row g-2 mb-3">
+                <div class="col-6 text-center">
+                  <div class="bg-light border p-2 rounded">
+                    <small class="text-muted d-block fw-bold">${phrase('Latitude')}</small>
+                    <span class="fw-bold text-primary">${coordinate[1].toFixed(6)}</span>
+                  </div>
+                </div>
+                <div class="col-6 text-center">
+                  <div class="bg-light border p-2 rounded">
+                    <small class="text-muted d-block fw-bold">${phrase('Longitude')}</small>
+                    <span class="fw-bold text-primary">${coordinate[0].toFixed(6)}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-light border p-2 rounded text-center">
+                <small class="text-muted d-block fw-bold">HDMS</small>
+                <span class="text-primary">${hdms}</span>
+              </div>
+            </div>
+          `);
+        });
+      }
+    },
+    upload: function (data) {
+      /**
+       * Upload
+       */
+      let ext = data.name.split('.').pop().toLowerCase();
+
+      if ('zip' !== ext && 'kmz' !== ext && 'geojson' !== ext && 'json' !== ext && 'kml' !== ext) {
+        alert('Only GEOJSON, KML, KMZ or ZIP file are allowed to upload!');
+
+        return;
+      }
+
+      if (map && layerOverlap) {
+        map.removeLayer(layerOverlap);
+      }
+
+      try {
+        if ('zip' === ext || 'kmz' === ext) {
+          // Unzip archive
+          JSZip.loadAsync(data).then(function (zip) {
+            let newFile = true;
+
+            // Read extracted datasource
+            Object.keys(zip.files).forEach(function (filename) {
+              if ('geojson' == filename.split('.').pop().toLowerCase() || 'json' == filename.split('.').pop().toLowerCase()) {
+                // Create blob file from extracted data
+                zip.files[filename].async('string').then(function (blob) {
+                  // Write blob file
+                  let blobURL = URL.createObjectURL(
+                    new Blob([blob], {
+                      type: 'application/json'
+                    })
+                  );
+
+                  openlayers.geojson(blobURL, null, false, false, true, newFile);
+
+                  newFile = false;
+                });
+              } else if ('kml' == filename.split('.').pop().toLowerCase()) {
+                // Create blob file from extracted data
+                zip.files[filename].async('string').then(function (blob) {
+                  // Write blob file
+                  let blobURL = URL.createObjectURL(
+                    new Blob([blob], {
+                      type: 'application/vnd.google-earth.kml+xml'
+                    })
+                  );
+
+                  openlayers.keyhole(blobURL, null, false, true);
+                });
+              }
+            });
+          });
+        } else if ('geojson' === ext || 'json' === ext) {
+          let blobURL = URL.createObjectURL(data);
+          openlayers.geojson(blobURL, null, false, false, true, true);
+        } else if ('kml' === ext) {
+          let blobURL = URL.createObjectURL(data);
+          openlayers.keyhole(blobURL, null, false, true);
+        }
+      } catch (e) {
+        alert('Unsupported geospatial format!');
+      }
+    },
+    download: function (type, pageFormat, dpi) {
+      /**
+       * Download
+       */
+      if ('png' == type) {
+        let canvas = $('.ol-layer canvas');
+
+        if (canvas && typeof canvas[0] !== 'undefined') {
+          if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(canvas[0].msToBlob(), 'map.png');
+          } else {
+            let link = document.getElementById('image-download');
+
+            link.href = canvas[0].toDataURL();
+
+            link.click();
+          }
+        }
+      } else if ('pdf' == type) {
+        let canvas = $('.ol-layer canvas'),
+          centerCoordinate = ol.proj.transform(map.getView().getCenter(), map.getView().getProjection(), projection);
+
+        if (canvas && typeof canvas[0] !== 'undefined') {
+          require.js([config.baseUrl + 'assets/jspdf/jspdf.min.js'], function () {
+            let unit = map.getView().getProjection().getUnits(),
+              resolution = map.getView().getResolution(),
+              format = $.inArray(pageFormat, ['a0', 'a1', 'a2', 'a3', 'a4', 'a5']) !== -1 ? pageFormat : 'a4',
+              doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: format,
+                compress: true
+              });
+
+            // Get PDF page dimensions in mm
+            let pdfWidth = doc.internal.pageSize.getWidth();
+            let pdfHeight = doc.internal.pageSize.getHeight();
+
+            // Define margins and spacing
+            let margin = 10;
+            let headerHeight = 10;
+            let footerHeight = 10;
+
+            // Calculate available content area
+            let contentWidth = pdfWidth - margin * 2;
+            let contentHeight = pdfHeight - headerHeight - footerHeight - margin * 2;
+
+            // Get canvas dimensions
+            let canvasWidth = canvas[0].width;
+            let canvasHeight = canvas[0].height;
+
+            // Calculate scale to fit (maintain aspect ratio)
+            let scaleX = contentWidth / (canvasWidth * 0.264583); // px to mm conversion
+            let scaleY = contentHeight / (canvasHeight * 0.264583);
+            let scale = Math.min(scaleX, scaleY);
+
+            // Final dimensions in mm
+            let finalWidth = canvasWidth * 0.264583 * scale;
+            let finalHeight = canvasHeight * 0.264583 * scale;
+
+            // Center the image
+            let offsetX = margin + (contentWidth - finalWidth) / 2;
+            let offsetY = margin + headerHeight + (contentHeight - finalHeight) / 2;
+
+            // Add header text
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text(config.appName, pdfWidth / 2, margin + 7, { align: 'center' });
+
+            // Add border rectangle
+            doc.setDrawColor(0);
+            doc.setLineWidth(0.5);
+            doc.rect(margin, margin + headerHeight, contentWidth, contentHeight);
+
+            // Add map image (scaled to fit)
+            let imgData = canvas[0].toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', offsetX, offsetY, finalWidth, finalHeight);
+
+            // Add footer info
+            doc.setFontSize(8);
+            doc.setFont(undefined, 'normal');
+            let footerY = pdfHeight - margin - 3;
+
+            // Central coordinate
+            doc.text(phrase('Central') + ': ' + centerCoordinate[1].toFixed(4) + ',' + centerCoordinate[0].toFixed(4), margin, footerY);
+
+            // Scale info
+            doc.text(phrase('Scale') + ' ] 1:' + Math.floor(resolution * ol.proj.Units.METERS_PER_UNIT[unit] * 39.37) + unit + ' [', pdfWidth / 2, footerY, { align: 'center' });
+
+            // Helper function to convert image URL to base64
+            function getBase64Image(url, callback) {
+              let img = new Image();
+              img.crossOrigin = 'Anonymous';
+              img.onload = function () {
+                let canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                let ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                let dataURL = canvas.toDataURL('image/png');
+                callback(dataURL);
+              };
+              img.onerror = function () {
+                callback(null);
+              };
+              img.src = url;
+            }
+
+            // Add logo if exists
+            if (config.appLogo) {
+              getBase64Image(config.appLogo, function (base64) {
+                if (base64) {
+                  try {
+                    doc.addImage(base64, 'PNG', pdfWidth - margin - 15, footerY - 5, 15, 5);
+                  } catch (e) {
+                    console.warn('Failed to add logo:', e);
+                  }
+                }
+                // Save PDF (with or without logo)
+                doc.save('map.pdf');
+              });
+            } else {
+              // Save PDF without logo
+              doc.save('map.pdf');
+            }
+          });
+        }
+      }
+    },
+    goToLocation: function (options) {
+      options = options || {};
+      if (typeof map === 'undefined' || !map) return;
+
+      if (options.dataset_id || options.id) {
+        let dsId = options.dataset_id || options.id;
+        let url = (config.baseUrl || '/') + 'maps/ajax/features';
+
+        $.ajax({
+          url: url,
+          method: 'POST',
+          data: { objectID: dsId }
+        }).done(function (res) {
+          let centerCoord = null;
+          let feat = null;
+
+          if (res && res.geospatial) {
+            try {
+              let format = new ol.format.GeoJSON();
+              let geom = format.readGeometry(res.geospatial, {
+                dataProjection: 'EPSG:4326',
+                featureProjection: map.getView().getProjection()
+              });
+
+              if (geom) {
+                feat = new ol.Feature({ geometry: geom });
+                let extent = geom.getExtent();
+
+                if (geom.getType() === 'Point') {
+                  centerCoord = geom.getCoordinates();
+                  map.getView().animate({
+                    center: centerCoord,
+                    zoom: options.zoom || 16,
+                    duration: 600
+                  });
+                } else {
+                  centerCoord = ol.extent.getCenter(extent);
+                  map.getView().fit(extent, {
+                    size: map.getSize(),
+                    maxZoom: options.zoom || 17,
+                    duration: 600,
+                    padding: [40, 40, 40, 40]
+                  });
+                }
+              }
+            } catch (e) {
+              console.error('Error parsing feature geospatial data:', e);
+            }
+          }
+
+          if (!centerCoord && res && res.latitude && res.longitude) {
+            centerCoord = ol.proj.fromLonLat([parseFloat(res.longitude), parseFloat(res.latitude)]);
+            map.getView().animate({
+              center: centerCoord,
+              zoom: options.zoom || 16,
+              duration: 600
+            });
+          }
+
+          if (feat) {
+            if (typeof exactHighlightLayer !== 'undefined' && exactHighlightLayer) {
+              exactHighlightLayer.getSource().clear();
+              exactHighlightLayer.getSource().addFeature(feat);
+            }
+            if (typeof highlight !== 'undefined' && highlight) {
+              highlight.getFeatures().clear();
+              highlight.getFeatures().push(feat);
+            }
+          }
+
+          if (centerCoord && res && res.content && typeof popup !== 'undefined' && popup) {
+            const popupHtml = `<div class="popup-content">${res.content}</div>`;
+            popup.show(centerCoord, popupHtml);
+            if (res.title) {
+              $('.ol-popup-title').text(res.title);
+            }
+          }
+        });
+        return;
+      }
+
+      if (options.lat && options.lng) {
+        let coord = ol.proj.fromLonLat([parseFloat(options.lng), parseFloat(options.lat)]);
+        map.getView().animate({
+          center: coord,
+          zoom: options.zoom || 16,
+          duration: 600
+        });
+        return;
+      }
+
+      if (options.feature) {
+        let geom = options.feature.getGeometry();
+        if (geom) {
+          if (typeof exactHighlightLayer !== 'undefined' && exactHighlightLayer) {
+            exactHighlightLayer.getSource().clear();
+            exactHighlightLayer.getSource().addFeature(options.feature);
+          }
+          if (typeof highlight !== 'undefined' && highlight) {
+            highlight.getFeatures().clear();
+            highlight.getFeatures().push(options.feature);
+          }
+
+          let extent = geom.getExtent();
+          let centerCoord = geom.getType() === 'Point' ? geom.getCoordinates() : ol.extent.getCenter(extent);
+
+          if (geom.getType() === 'Point') {
+            map.getView().animate({
+              center: centerCoord,
+              zoom: options.zoom || 16,
+              duration: 600
+            });
+          } else {
+            map.getView().fit(extent, {
+              size: map.getSize(),
+              maxZoom: options.zoom || 17,
+              duration: 600,
+              padding: [40, 40, 40, 40]
+            });
+          }
+        }
+      }
+    },
+    bindGoToButtons: function (container) {
+      let self = this;
+      $(container || document)
+        .off('click.openlayers-goto', '.cp-btn-goto, .digitize-go-to-feature')
+        .on('click.openlayers-goto', '.cp-btn-goto, .digitize-go-to-feature', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          let dsId = $(this).data('datasetId') || $(this).attr('data-dataset-id');
+          if (dsId) {
+            self.goToLocation({ dataset_id: dsId });
+          } else {
+            let lat = $(this).data('lat');
+            let lng = $(this).data('lng');
+            if (lat && lng) {
+              self.goToLocation({ lat: lat, lng: lng, zoom: 16 });
+            }
+          }
+        });
+    }
+  };
+})();
+
+function writeFeaturesWithoutProperties(format, features, projection) {
+  let geojsonObj = format.writeFeaturesObject(features, {
+    featureProjection: projection
+  });
+  if (geojsonObj && geojsonObj.features) {
+    geojsonObj.features.forEach(function (f) {
+      delete f.properties;
+    });
+  }
+  return JSON.stringify(geojsonObj);
+}
+
+function getMeasurement(features) {
+  let area = 0;
+  let distance = 0;
+  let type = '';
+
+  features.forEach(function (feature, i) {
+    const geometry = feature.getGeometry();
+    const gType = geometry.getType();
+
+    if (gType === 'Polygon') {
+      area += ol.sphere.getArea(geometry, {
+        projection: 'EPSG:3857'
+      });
+      distance += ol.sphere.getLength(new ol.geom.LineString(geometry.getCoordinates()[0]), {
+        projection: 'EPSG:3857'
+      });
+      type = 'polygon';
+    } else if (gType === 'MultiPolygon') {
+      geometry.getPolygons().forEach((poly) => {
+        area += ol.sphere.getArea(poly, {
+          projection: 'EPSG:3857'
+        });
+        distance += ol.sphere.getLength(new ol.geom.LineString(poly.getCoordinates()[0]), {
+          projection: 'EPSG:3857'
+        });
+      });
+      type = 'polygon';
+    } else if (gType === 'LineString') {
+      distance += ol.sphere.getLength(geometry, {
+        projection: 'EPSG:3857'
+      });
+      type = 'linestring';
+    } else if (gType === 'MultiLineString') {
+      geometry.getLineStrings().forEach((line) => {
+        distance += ol.sphere.getLength(line, {
+          projection: 'EPSG:3857'
+        });
+      });
+      type = 'linestring';
+    } else {
+      console.warn('Geometry type not handled:', gType);
+    }
+  });
+
+  return {
+    area: area ? parseFloat(area.toFixed(2)) : 0,
+    distance: distance ? parseFloat(distance.toFixed(2)) : 0,
+    type: type
+  };
+}
+
+function removeFeature() {
+  layerVector.getSource().removeFeature(highlighted);
+
+  let geojson = new ol.format.GeoJSON(),
+    measurement = getMeasurement(layerVector.getSource().getFeatures());
+
+  $(applyCoordinate).val(
+    geojson.writeFeatures(layerVector.getSource().getFeatures(), {
+      featureProjection: map.getView().getProjection()
+    })
+  );
+
+  $(applyMeasurement).val(measurement.area > 0 ? measurement.area : measurement.distance);
+
+  popup.hide();
+
+  map.removeOverlay(popup);
+}
+
+// Function to create SLD XML for custom color
+function createSLD(layerName, fillColor, strokeColor, strokeWidth, opacity) {
+  fillColor = fillColor || '#FF0000';
+  strokeColor = strokeColor || '#000000';
+  strokeWidth = strokeWidth || 1;
+  opacity = opacity || 0.7;
+
+  let sld =
+    '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld">' +
+    '<NamedLayer>' +
+    '<Name>' +
+    layerName +
+    '</Name>' +
+    '<UserStyle>' +
+    '<FeatureTypeStyle>' +
+    '<Rule>' +
+    '<PolygonSymbolizer>' +
+    '<Fill>' +
+    '<CssParameter name="fill">' +
+    fillColor.toUpperCase() +
+    '</CssParameter>' +
+    '<CssParameter name="fill-opacity">0.7</CssParameter>' +
+    '</Fill>' +
+    '<Stroke>' +
+    '<CssParameter name="stroke">' +
+    strokeColor.toUpperCase() +
+    '</CssParameter>' +
+    '<CssParameter name="stroke-width">' +
+    strokeWidth +
+    '</CssParameter>' +
+    '<CssParameter name="stroke-opacity">' +
+    opacity +
+    '</CssParameter>' +
+    '</Stroke>' +
+    '</PolygonSymbolizer>' +
+    '</Rule>' +
+    '</FeatureTypeStyle>' +
+    '</UserStyle>' +
+    '</NamedLayer>' +
+    '</StyledLayerDescriptor>';
+
+  return sld;
+}
+
+function zoomToWMSLayer(sourceUrl) {
+  let baseUrl = sourceUrl.split('?')[0];
+  let layerName = get_query_params('layers', sourceUrl.toLowerCase());
+
+  // Request GetCapabilities
+  let capabilitiesUrl = baseUrl + '?service=WMS&version=1.1.1&request=GetCapabilities';
+
+  fetch(capabilitiesUrl)
+    .then(function (response) {
+      return response.text();
+    })
+    .then(function (text) {
+      let parser = new ol.format.WMSCapabilities();
+      let result = parser.read(text);
+      let targetLayer = findLayer(result.Capability.Layer, layerName);
+
+      if (targetLayer) {
+        let extent = null;
+
+        // Try different ways to get extent
+        if (targetLayer.BoundingBox && targetLayer.BoundingBox.length > 0) {
+          let bbox = targetLayer.BoundingBox[0];
+          extent = bbox.extent;
+        } else if (targetLayer.EX_GeographicBoundingBox) {
+          // Format: [westBoundLongitude, southBoundLatitude, eastBoundLongitude, northBoundLatitude]
+          extent = [targetLayer.EX_GeographicBoundingBox.westBoundLongitude, targetLayer.EX_GeographicBoundingBox.southBoundLatitude, targetLayer.EX_GeographicBoundingBox.eastBoundLongitude, targetLayer.EX_GeographicBoundingBox.northBoundLatitude];
+        } else if (targetLayer.LatLonBoundingBox) {
+          // Format WMS 1.1.1: [minx, miny, maxx, maxy]
+          extent = [targetLayer.LatLonBoundingBox.minx, targetLayer.LatLonBoundingBox.miny, targetLayer.LatLonBoundingBox.maxx, targetLayer.LatLonBoundingBox.maxy];
+        }
+
+        if (extent && extent.length === 4) {
+          // Transform extent from EPSG:4326 to projection map
+          let transformedExtent = ol.proj.transformExtent(extent, 'EPSG:4326', map.getView().getProjection());
+
+          // Zoom to extent
+          map.getView().fit(transformedExtent, {
+            duration: 1000,
+            padding: [50, 50, 50, 50],
+            zoom: defaultZoom,
+            minZoom,
+            maxZoom
+          });
+        } else {
+          console.warn('No valid extent found in layer capabilities');
+        }
+      } else {
+        console.warn('Layer not found in capabilities');
+      }
+    })
+    .catch(function (error) {
+      console.error('Error loading WMS capabilities:', error);
+    });
+}
+
+function findLayer(layers, targetName) {
+  if (!layers || !targetName) return null;
+
+  // Remove prefix if any (example: geonode:layer_name -> layer_name)
+  let cleanTargetName = targetName.includes(':') ? targetName.split(':')[1] : targetName;
+
+  if (Array.isArray(layers)) {
+    for (let i = 0; i < layers.length; i++) {
+      let layerName = layers[i].Name || '';
+      let cleanLayerName = layerName.includes(':') ? layerName.split(':')[1] : layerName;
+
+      // Check with real name and cleared name
+      if (layers[i].Name === targetName || cleanLayerName.toLowerCase() === cleanTargetName.toLowerCase()) {
+        return layers[i];
+      }
+
+      // Search in sub-layers if any
+      if (layers[i].Layer) {
+        let found = findLayer(layers[i].Layer, targetName);
+        if (found) return found;
+      }
+    }
+  } else {
+    let layerName = layers.Name || '';
+    let cleanLayerName = layerName.includes(':') ? layerName.split(':')[1] : layerName;
+
+    if (layers.Name === targetName || cleanLayerName.toLowerCase() === cleanTargetName.toLowerCase()) {
+      return layers;
+    }
+
+    // Search in sub-layers if any
+    if (layers.Layer) {
+      return findLayer(layers.Layer, targetName);
+    }
+  }
+  return null;
+}
+
+// EPSG:4326 validation based on coordinate range
+function isEPSG4326(geojson) {
+  // 1. Check CRS properties (if any)
+  if (geojson.crs) {
+    let crsIdentifier = '';
+
+    // Format CRS might be different
+    if (geojson.crs.properties) {
+      crsIdentifier = geojson.crs.properties.name || geojson.crs.properties.code || geojson.crs.properties.href || '';
+    } else if (typeof geojson.crs === 'string') {
+      crsIdentifier = geojson.crs;
+    }
+
+    // Normalize for comparison
+    const crs = crsIdentifier.toUpperCase();
+
+    // Valid WGS84/Geographic coordinate systems
+    const validCRS = [
+      '4326', // EPSG code
+      'CRS84', // OGC standard
+      'WGS84', // Common name
+      'URN:OGC:DEF:CRS:EPSG::4326', // Full URN EPSG
+      'URN:OGC:DEF:CRS:OGC:1.3:CRS84', // OGC CRS84 (QGIS)
+      'URN:OGC:DEF:CRS:OGC:2:84', // Alternative OGC
+      'HTTP://WWW.OPENGIS.NET/GML/SRS/EPSG.XML#4326', // GML format (ArcGIS)
+      'GEOGCS["WGS 84"', // WKT format start
+      'EPSG:4326', // Standard format
+      'GCS_WGS_1984', // ArcGIS name
+      'WGS_1984' // Alternative name
+    ];
+
+    const isValidCRS = validCRS.some((valid) => crs.includes(valid));
+
+    if (!isValidCRS) {
+      console.log('Invalid CRS detected:', crsIdentifier);
+      return false;
+    }
+  }
+
+  // 2. Fallback: Check range coordinate (if no valid CRS or CRS)
+  if (!geojson.features || geojson.features.length === 0) {
+    return false;
+  }
+
+  // Check coordinates range geographic
+  for (const feature of geojson.features) {
+    if (!checkCoordinateRange(feature.geometry.coordinates, feature.geometry.type)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function checkCoordinateRange(coords, geomType) {
+  function isValidGeographic(coord) {
+    // WGS84 ranges: longitude [-180, 180], latitude [-90, 90]
+    return coord.length >= 2 && Math.abs(coord[0]) <= 180 && Math.abs(coord[1]) <= 90;
+  }
+
+  function traverse(coords, depth = 0) {
+    if (coords.length === 0) return true;
+
+    // Detect if this is a coordinate pair
+    if (typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+      return isValidGeographic(coords);
+    }
+
+    // Recursively check nested arrays
+    return coords.every((subCoords) => traverse(subCoords, depth + 1));
+  }
+
+  return traverse(coords);
+}
+
+function checkCoordinateRange(coords, geomType) {
+  if (geomType === 'Point') {
+    return Math.abs(coords[0]) <= 180 && Math.abs(coords[1]) <= 90;
+  } else if (geomType === 'LineString') {
+    for (let i = 0; i < coords.length; i++) {
+      if (Math.abs(coords[i][0]) > 180 || Math.abs(coords[i][1]) > 90) {
+        return false;
+      }
+    }
+    return true;
+  } else if (geomType === 'Polygon') {
+    for (let i = 0; i < coords.length; i++) {
+      for (let j = 0; j < coords[i].length; j++) {
+        if (Math.abs(coords[i][j][0]) > 180 || Math.abs(coords[i][j][1]) > 90) {
+          return false;
+        }
+      }
+    }
+    return true;
+  } else if (geomType === 'MultiPoint') {
+    for (let i = 0; i < coords.length; i++) {
+      if (Math.abs(coords[i][0]) > 180 || Math.abs(coords[i][1]) > 90) {
+        return false;
+      }
+    }
+    return true;
+  } else if (geomType === 'MultiLineString') {
+    for (let i = 0; i < coords.length; i++) {
+      if (!checkCoordinateRange(coords[i], 'LineString')) {
+        return false;
+      }
+    }
+    return true;
+  } else if (geomType === 'MultiPolygon') {
+    for (let i = 0; i < coords.length; i++) {
+      if (!checkCoordinateRange(coords[i], 'Polygon')) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
