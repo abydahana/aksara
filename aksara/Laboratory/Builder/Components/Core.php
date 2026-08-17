@@ -160,7 +160,13 @@ class Core
                 <div class="row">
                     {% for key, row in results.table_data %}
                         <div class="col-sm-6 col-md-4 col-xl-3">
-                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+                            <div class="card bg-body-tertiary border border-hover rounded-4 overflow-hidden mb-3 position-relative">
+                                {% set all_options = row.buttons | merge(row.dropdowns) %}
+                                {% if all_options | length > 0 %}
+                                    <a href="{{ current_page() }}" class="btn btn-sm border rounded-circle position-absolute top-0 end-0 m-2 z-1 --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" aria-label="{{ phrase('More options') }}" data-options="{{ all_options | json_encode | escape }}">
+                                        <i class="mdi mdi-dots-vertical"></i>
+                                    </a>
+                                {% endif %}
                                 {% set break = false %}
                                 {% for field in row.field_data %}
                                     {% if not break and field.type == 'images' %}
@@ -196,7 +202,7 @@ class Core
                                     <ul class="list-group list-group-flush">
                                         {% for field in row.field_data %}
                                             {% if field.type != 'image' and field.type != 'images' %}
-                                                <li class="list-group-item px-0">
+                                                <li class="list-group-item bg-transparent px-0">
                                                     <span class="text-sm text-muted d-block">{{ field.label }}</span>
                                                     {# Include table component #}
                                                     {% include 'table/' ~ field.type ~ '.twig' with field %}
@@ -204,20 +210,6 @@ class Core
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="btn-group btn-group-sm d-flex">
-                                        {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class }}" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
-                                                <i class="{{ button.icon }}"></i>
-                                            </a>
-                                        {% endfor %}
-                                        {% if row.dropdowns | length > 0 %}
-                                            <a href="{{ current_page() }}" class="btn btn-secondary --open-item-option" data-bs-toggle="tooltip" title="{{ phrase('More options') }}" data-options="{{ row.dropdowns | json_encode | escape }}">
-                                                <i class="mdi mdi-format-list-bulleted"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -342,7 +334,7 @@ class Core
                 {% if row.buttons | length > 0 or row.dropdowns | length > 0 %}
                     <div class="position-absolute top-0 end-0 p-2 z-1">
                         <div class="dropdown">
-                            <button type="button" class="btn btn-sm btn-light border-0 rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ phrase('Options') }}">
+                            <button type="button" class="btn btn-sm border rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ phrase('Options') }}">
                                 <i class="mdi mdi-dots-vertical mdi-18px"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
@@ -447,7 +439,7 @@ class Core
                 {% if row.buttons | length > 0 or row.dropdowns | length > 0 %}
                     <div class="position-absolute top-0 end-0 p-2 z-1">
                         <div class="dropdown">
-                            <button type="button" class="btn btn-sm btn-light border-0 rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ phrase('Options') }}">
+                            <button type="button" class="btn btn-sm border rounded-circle d-flex align-items-center justify-content-center p-0 shadow-sm" style="width: 32px; height: 32px;" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ phrase('Options') }}">
                                 <i class="mdi mdi-dots-vertical mdi-18px"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">

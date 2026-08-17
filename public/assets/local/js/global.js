@@ -1621,7 +1621,20 @@ $(document).ready(function () {
       let list_items = '';
 
       $.each(options, function (key, val) {
-        list_items += `<a href="${val.url}" class="list-group-item list-group-item-action ${val.class}" data-prefer="${val.prefer}" target="${val.target}"><i class="mdi ${val.icon ?? 'mdi-blank'}"></i> ${val.label}</a>`;
+        let clean_class = (val.class || '')
+          .replace(/\bbtn-[a-z0-9-]+\b/gi, '')
+          .replace(/\bbtn\b/gi, '')
+          .trim();
+
+        if ((val.class && val.class.includes('btn-danger')) || val.path === 'delete' || val.label === 'Delete') {
+          if (!clean_class.includes('text-danger')) {
+            clean_class += ' text-danger';
+          }
+        }
+
+        let new_tab = val.new_tab ? ' target="_blank"' : '';
+
+        list_items += `<a href="${val.url}" class="list-group-item list-group-item-action ${clean_class}" data-prefer="${val.prefer || ''}"${new_tab}><i class="mdi ${val.icon ?? 'mdi-blank'}"></i> ${val.label}</a>`;
       });
 
       $(`
@@ -1639,6 +1652,36 @@ $(document).ready(function () {
       `)
         .appendTo('body')
         .modal('show');
+    }
+  });
+
+  /**
+   * Long press / press and hold on grid card triggers options modal
+   */
+  let longPressTimer = null;
+
+  $('body').on('touchstart mousedown', '[data-role="grid"] .card', function (e) {
+    if ($(e.target).closest('a, button, input, select, textarea, .carousel-control-prev, .carousel-control-next').length) {
+      return;
+    }
+
+    const card = $(this);
+    const optionBtn = card.find('.--open-item-option');
+
+    if (!optionBtn.length) return;
+
+    longPressTimer = setTimeout(function () {
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(40);
+      }
+      optionBtn.trigger('click');
+    }, 450);
+  });
+
+  $('body').on('touchend touchmove mouseup mouseleave dragstart', '[data-role="grid"] .card', function (e) {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
     }
   });
 
