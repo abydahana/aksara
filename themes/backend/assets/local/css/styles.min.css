@@ -246,7 +246,8 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 }
 .navbar .dropdown-menu .nav-item a.nav-link:hover,
 .navbar .dropdown-menu .dropdown-item:hover {
-  background: var(--bs-secondary-bg);
+  background: var(--bs-tertiary-bg);
+  color: var(--bs-nav-link-hover-color);
 }
 .dropdown-menu .dropdown-header {
   color: var(--bs-secondary-color) !important;
@@ -254,7 +255,6 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
 .dropdown-menu .nav-link,
 .dropdown-menu .dropdown-item {
   border-radius: 8px;
-  color: var(--bs-body-color);
   padding: 0.5rem 0.75rem;
   transition: background .15s ease, color .15s ease;
 }

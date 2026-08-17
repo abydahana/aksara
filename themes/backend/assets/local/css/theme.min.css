@@ -576,17 +576,14 @@
   inherits: true;
   initial-value: 135deg;
 }
-
 @keyframes borderRotate {
-  from { --border-angle: 135deg; }
-  to { --border-angle: 495deg; }
+  from { --border-angle: 0deg; }
+  to { --border-angle: 360deg; }
 }
-
 @keyframes borderFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 .border-hover {
   position: relative;
   border-color: transparent;
@@ -599,37 +596,10 @@
   border-radius: inherit;
   pointer-events: none;
   opacity: 0;
-  background: linear-gradient(
-    120deg,
-    var(--bs-primary) 0%,
-    var(--bs-primary) 55%,
-    var(--bs-primary) 65%,
-    var(--bs-light) 70%,
-    transparent 80%,
-    transparent 100%
-  );
-  background-size: 300% 300%;
-  background-position: 100% 100%;
-  mask:
-    linear-gradient(var(--bs-primary) 0 0) content-box,
-    linear-gradient(var(--bs-primary) 0 0);
-  -webkit-mask:
-    linear-gradient(var(--bs-primary) 0 0) content-box,
-    linear-gradient(var(--bs-primary) 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
   transition:
     background-position .8s cubic-bezier(.4, 0, .2, 1),
     opacity 0s linear .6s;
 }
-.border-hover:hover::before {
-  opacity: 1;
-  background-position: 0 0;
-  transition:
-    background-position .8s cubic-bezier(.4, 0, .2, 1),
-    opacity 0s linear;
-}
-
 .border-hover::after {
   content: '';
   position: absolute;
@@ -641,7 +611,9 @@
   background: conic-gradient(
     from var(--border-angle),
     transparent 0%,
-    transparent 80%,
+    transparent 40%,
+    var(--bs-primary) 70%,
+    var(--bs-secondary) 80%,
     var(--bs-light) 90%,
     transparent 100%
   );
@@ -656,7 +628,7 @@
 }
 .border-hover:hover::after {
   animation: 
-    borderFadeIn .4s ease-out .8s forwards,
+    borderFadeIn .1s ease-out .1s forwards,
     borderRotate 5s linear infinite;
 }
 

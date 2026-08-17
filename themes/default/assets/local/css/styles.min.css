@@ -19,7 +19,8 @@ html.dark-mode img {
 }
 .navbar .dropdown-menu .nav-item a.nav-link:hover,
 .navbar .dropdown-menu .dropdown-item:hover {
-  background: var(--bs-secondary-bg);
+  background: var(--bs-tertiary-bg);
+  color: var(--bs-nav-link-hover-color);
 }
 .navbar-brand .img-icon,
 body.sidebar-collapsed .navbar-brand img.img-logo,
@@ -106,7 +107,6 @@ body.sidebar-collapsed .navbar-brand img.img-icon {
 .dropdown-menu .nav-link,
 .dropdown-menu .dropdown-item {
   border-radius: 8px;
-  color: var(--bs-body-color);
   padding: 0.25rem 1rem;
   transition: background .15s ease, color .15s ease;
 }

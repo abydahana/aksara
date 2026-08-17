@@ -492,7 +492,7 @@
         modal.tabIndex = -1;
         modal.innerHTML = `
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
+                <div class="modal-content border-hover rounded-4">
                     <div class="modal-header">
                         <h5 class="modal-title"><i class="mdi mdi-creation"></i> ${escapeHtml(phrase('AI Assistant'))}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${escapeHtml(phrase('Close'))}"></button>
