@@ -91,9 +91,6 @@
                     <div class="alert alert-success callout p-4 rounded-4">
                         <h2><?= phrase('Your message has been sent.') ?></h2>
                         <p><?= phrase('We have received your message and will follow up as soon as possible using the phone number or email address you provided.') ?></p>
-                        <a href="<?= go_to(null, ['success' => null]) ?>" class="btn btn-success rounded-pill --xhr">
-                            <?= phrase('Send another message') ?> <i class="mdi mdi-arrow-right"></i>
-                        </a>
                     </div>
                 <?php else: ?>
                     <div class="card border-light-subtle border-hover rounded-5 fade-in">

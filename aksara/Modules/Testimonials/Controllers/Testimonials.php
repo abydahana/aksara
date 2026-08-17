@@ -23,6 +23,11 @@ class Testimonials extends Core
 {
     private string $_table = 'testimonials';
 
+    /**
+     * Rate limit window in seconds (default 86400 = 24 hours / 1 day)
+     */
+    private int $_rateLimit = 86400;
+
     public function __construct()
     {
         parent::__construct();
@@ -55,17 +60,21 @@ class Testimonials extends Core
         )
 
         ->where([
-            'status' => 392
+            'status' => 1
         ])
 
         ->orderBy('testimonials.created_at', 'DESC')
-        ->orderBy('(CASE WHEN testimonials.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
 
         ->render($this->_table);
     }
 
     public function create()
     {
+        // Rate limit check: 1 device / user 1 testimonial per day
+        if ($this->_checkRateLimit()) {
+            return throw_exception(400, ['quota_exceeded' => phrase('You have already submitted a testimonial today. Please try again tomorrow.')]);
+        }
+
         $this->allowTokenFrom('testimonials');
 
         // Add captcha validation for guest users
@@ -93,7 +102,6 @@ class Testimonials extends Core
         ])
         ->setDefault([
             'photo' => 'placeholder.png', // Will be overridden in beforeInsert
-            'language_id' => get_userdata('language_id') ?: 1,
             'status' => 0,
             'created_by' => get_userdata('user_id')
         ])
@@ -118,6 +126,11 @@ class Testimonials extends Core
      */
     protected function beforeInsert()
     {
+        // Rate limit check on before insert
+        if ($this->_checkRateLimit()) {
+            return throw_exception(400, ['quota_exceeded' => phrase('You have already submitted a testimonial today. Please try again tomorrow.')]);
+        }
+
         if (get_userdata('is_logged')) {
             $userPhoto = get_userdata('photo');
 
@@ -137,7 +150,70 @@ class Testimonials extends Core
             unset_userdata(['captcha', 'captcha_file']);
         }
 
+        // Set rate limit cache
+        if ($this->_rateLimit) {
+            $ipAddress = service('request')->getIPAddress();
+            $userAgent = service('request')->getUserAgent()->getAgentString() ?? '';
+            $deviceHash = md5((get_userdata('user_id') ?: $ipAddress) . '_' . $userAgent);
+            $cacheKey = 'rate_limit_testimonial_' . $deviceHash;
+
+            service('cache')->save($cacheKey, true, $this->_rateLimit);
+        }
+
         return throw_exception(301, phrase('Your testimonial was successfully submitted and will be reviewed by our team.'), current_page('../', ['success' => 1]));
+    }
+
+    /**
+     * Check rate limit: 1 device / user 1 testimonial per $_rateLimit seconds
+     * Handles cache clearing gracefully using DB ground truth for both users and guests.
+     */
+    private function _checkRateLimit(): bool
+    {
+        if (! $this->_rateLimit) {
+            return false;
+        }
+
+        $ipAddress = service('request')->getIPAddress();
+        $userAgent = service('request')->getUserAgent()->getAgentString() ?? '';
+        $deviceHash = md5((get_userdata('user_id') ?: $ipAddress) . '_' . $userAgent);
+        $cacheKey = 'rate_limit_testimonial_' . $deviceHash;
+
+        // 1. Fast path: check cache
+        if (service('cache')->get($cacheKey)) {
+            return true;
+        }
+
+        // 2. Fallback if cache was cleared: check DB ground truth within rate limit window
+        $timeWindow = date('Y-m-d H:i:s', time() - $this->_rateLimit);
+
+        if (get_userdata('is_logged')) {
+            $existing = $this->model->getWhere($this->_table, [
+                'created_by' => get_userdata('user_id'),
+                'created_at >=' => $timeWindow
+            ], 1)->row();
+
+            if ($existing) {
+                service('cache')->save($cacheKey, true, $this->_rateLimit);
+
+                return true;
+            }
+        } else {
+            // Check activity log for guest IP submission within rate limit window
+            $existingActivity = $this->model->getWhere('app_log_activities', [
+                'ip_address' => $ipAddress,
+                'path' => 'testimonials',
+                'method' => 'create',
+                'timestamp >=' => $timeWindow
+            ], 1)->row();
+
+            if ($existingActivity) {
+                service('cache')->save($cacheKey, true, $this->_rateLimit);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
