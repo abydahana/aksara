@@ -571,11 +571,27 @@
 .invalid-feedback, .invalid-tooltip { color: var(--bs-danger) !important; }
 .form-control.is-invalid:focus, .was-validated .form-control:invalid:focus { border-color: var(--bs-danger) !important; box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb), .25) !important; }
 
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 135deg;
+}
+
+@keyframes borderRotate {
+  from { --border-angle: 135deg; }
+  to { --border-angle: 495deg; }
+}
+
+@keyframes borderFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .border-hover {
   position: relative;
   border-color: transparent;
 }
-.border-hover::after {
+.border-hover::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -606,12 +622,42 @@
     background-position .8s cubic-bezier(.4, 0, .2, 1),
     opacity 0s linear .6s;
 }
-.border-hover:hover::after {
+.border-hover:hover::before {
   opacity: 1;
   background-position: 0 0;
   transition:
     background-position .8s cubic-bezier(.4, 0, .2, 1),
     opacity 0s linear;
+}
+
+.border-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 0%,
+    transparent 80%,
+    var(--bs-light) 90%,
+    transparent 100%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.border-hover:hover::after {
+  animation: 
+    borderFadeIn .4s ease-out .8s forwards,
+    borderRotate 5s linear infinite;
 }
 
 /* Dark mode keeps semantic utilities colored while the backend chrome stays neutral. */
