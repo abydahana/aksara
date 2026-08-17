@@ -155,7 +155,7 @@ class Core
                 <div class="row">
                     {% for key, row in results.table_data %}
                         <div class="col-sm-6 col-md-4 col-xl-3">
-                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+                            <div class="card border-hover shadow-sm rounded-4 overflow-hidden mb-3">
                                 {% set break = false %}
                                 {% for field in row.field_data %}
                                     {% if not break and field.type == 'images' %}
@@ -203,7 +203,7 @@ class Core
                                 <div class="card-footer">
                                     <div class="btn-group btn-group-sm d-flex">
                                         {% for button in row.buttons %}
-                                            <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-light" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
+                                            <a href="{{ button.url }}" class="btn {{ button.class | replace({'btn-': 'ignore-btn-'}) }} btn-outline-secondary" data-bs-toggle="tooltip" title="{{ button.label }}" {% if button.new_tab %} target="_blank" {% endif %} {{ button.attribution | raw }}>
                                                 <i class="{{ button.icon }}"></i>
                                             </a>
                                         {% endfor %}
@@ -410,7 +410,7 @@ class Core
         </div>
         <div class="modal --prevent-remove" id="searchModal" tabindex="-1" aria-labelledby="searchModalCenterTitle" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered ui-draggable" role="document">
-                <div class="modal-content">
+                <div class="modal-content border-hover rounded-4">
                     <div class="modal-header">
                         <h5 class="modal-title" id="searchModalCenterTitle">
                             <i class="mdi mdi-magnify"></i>
@@ -551,11 +551,11 @@ class Core
                                                             {% include 'core/form_input.twig' with params %}
                                                         </div>
 
-                                                        {% for mergedField in results.merged_field[name] %}
-                                                            {% if results.field_data[mergedField] %}
-                                                                <div class="col {{ results.field_size[mergedField] }}">
+                                                        {% for merged_field in results.merged_field[name] %}
+                                                            {% if results.field_data[merged_field] %}
+                                                                <div class="col {{ results.field_size[merged_field] }}">
                                                                     {# Include form input component #}
-                                                                    {% include 'core/form_input.twig' with {params: results.field_data[mergedField]} %}
+                                                                    {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
                                                                 </div>
                                                             {% endif %}
                                                         {% endfor %}
@@ -581,7 +581,7 @@ class Core
                             </a>
 
                             <div class="d-flex justify-content-end align-items-center gap-1">
-                                {% for button in results.extra_action.submit %}
+                                {% for button in results.extraAction.submit %}
                                     <button type="button" name="{{ button.name }}" class="{{ button.class }} me-1" {{ button.attribution | raw }}>
                                         {% if button.icon %}
                                             <i class="{{ button.icon }}"></i>
@@ -620,7 +620,7 @@ class Core
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
-                <form action="{{ links.current_page }}" method="POST" class="--validate-form modal-content {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
+                <form action="{{ links.current_page }}" method="POST" class="--validate-form modal-content border-hover rounded-4 {% if modal %} border shadow {% endif %}" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                             <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
@@ -657,11 +657,11 @@ class Core
                                                         {% include 'core/form_input.twig' with params %}
                                                     </div>
 
-                                                    {% for mergedField in results.merged_field[name] %}
-                                                        {% if results.field_data[mergedField] %}
-                                                            <div class="col {{ results.field_size[mergedField] }}">
+                                                    {% for merged_field in results.merged_field[name] %}
+                                                        {% if results.field_data[merged_field] %}
+                                                            <div class="col {{ results.field_size[merged_field] }}">
                                                                 {# Include form input component #}
-                                                                {% include 'core/form_input.twig' with {params: results.field_data[mergedField]} %}
+                                                                {% include 'core/form_input.twig' with {params: results.field_data[merged_field]} %}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -681,7 +681,7 @@ class Core
                             {{ phrase('Cancel') }}
                             <em class="text-sm d-none d-lg-inline">(esc)</em>
                         </button>
-                        {% for button in results.extra_action.submit %}
+                        {% for button in results.extraAction.submit %}
                             <button type="button" name="{{ button.name }}" value="{{ button.value }}" class="{{ button.class }}" {{ button.attribution | raw }}>
                                 {% if button.icon %}
                                     <i class="{{ button.icon }}"></i>
@@ -743,11 +743,11 @@ class Core
                                                         {% include 'core/form_read.twig' with params %}
                                                     </div>
 
-                                                    {% for mergedField in results.merged_field[name] %}
-                                                        {% if results.field_data[mergedField] %}
-                                                            <div class="col {{ results.field_size[mergedField] }}">
+                                                    {% for merged_field in results.merged_field[name] %}
+                                                        {% if results.field_data[merged_field] %}
+                                                            <div class="col {{ results.field_size[merged_field] }}">
                                                                 {# Include form read component #}
-                                                                {% include 'core/form_read.twig' with {params: results.field_data[mergedField]} %}
+                                                                {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -793,7 +793,7 @@ class Core
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
-                <div class="modal-content {% if modal %} border shadow {% endif %}">
+                <div class="modal-content border-hover rounded-4 {% if modal %} border shadow {% endif %}">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                             <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
@@ -830,11 +830,11 @@ class Core
                                                         {% include 'core/form_read.twig' with params %}
                                                     </div>
 
-                                                    {% for mergedField in results.merged_field[name] %}
-                                                        {% if results.field_data[mergedField] %}
-                                                            <div class="col {{ results.field_size[mergedField] }}">
+                                                    {% for merged_field in results.merged_field[name] %}
+                                                        {% if results.field_data[merged_field] %}
+                                                            <div class="col {{ results.field_size[merged_field] }}">
                                                                 {# Include form read component #}
-                                                                {% include 'core/form_read.twig' with {params: results.field_data[mergedField]} %}
+                                                                {% include 'core/form_read.twig' with {params: results.field_data[merged_field]} %}
                                                             </div>
                                                         {% endif %}
                                                     {% endfor %}
@@ -964,7 +964,7 @@ class Core
         $component = <<<EOF
         <div class="modal" id="dynamic-modal-{{ identifier }}" role="dialog" aria-labelledby="dynamic-modal-{{ identifier }}-title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered {{ meta.modal_size }}" role="document">
-                <div class="modal-content">
+                <div class="modal-content border-hover rounded-4">
                     <div class="modal-header">
                         <h5 class="modal-title" id="dynamic-modal-{{ identifier }}-title">
                             <i class="{{ meta.icon ?? 'mdi mdi-loading mdi-spin' }}"></i>
