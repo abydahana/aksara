@@ -42,11 +42,12 @@ class Years extends Core
         $this->setTitle(phrase('Years'))
         ->setIcon('mdi mdi-calendar-clock')
         ->setField([
+            'year' => 'integer',
             'default' => 'boolean',
             'status' => 'boolean'
         ])
         ->setValidation([
-            'year' => 'required|numeric|max_length[4]',
+            'year' => 'required|valid_year|max_length[4]',
             'default' => 'boolean',
             'status' => 'boolean'
         ])
