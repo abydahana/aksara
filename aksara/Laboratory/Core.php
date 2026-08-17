@@ -3273,7 +3273,7 @@ abstract class Core extends Controller
             $this->_unsetMethod = array_merge($this->_unsetMethod, ['update', 'delete']);
         }
 
-        if ($this->apiClient && ! in_array($this->request->getGet('format_result'), ['field_data', 'complete', 'full'])) {
+        if ($this->apiClient && ! in_array($this->request->getGet('format_result'), ['metadata', 'complete', 'full'])) {
             // Requested from API Client in unformatted result
             return make_json($data);
         }
@@ -3283,7 +3283,7 @@ abstract class Core extends Controller
         $serialized = $this->serialize($data);
         timer('Core::serialize() Data Formatting');
 
-        if ($this->apiClient && 'field_data' === $this->request->getGet('format_result')) {
+        if ($this->apiClient && 'metadata' === $this->request->getGet('format_result')) {
             // Requested from API Client with field data information
             return make_json($serialized);
         }

@@ -75,13 +75,6 @@ define('DB_PASSWORD', '%DB_PASSWORD%');
 define('DB_DATABASE', '%DB_DATABASE%');
 
 /**
- * API Response Format
- *
- * 'snake_case', 'camelCase' or 'PascalCase'
- */
-define('API_RESPONSE_FORMAT', 'snake_case');
-
-/**
  * Upload config
  */
 define('UPLOAD_PATH', 'uploads'); // NO TRAILING SLASH

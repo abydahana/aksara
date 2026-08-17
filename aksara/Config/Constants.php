@@ -113,12 +113,6 @@ defined('THUMBNAIL_DIMENSION') || define('THUMBNAIL_DIMENSION', 0);
 defined('ICON_DIMENSION') || define('ICON_DIMENSION', 0);
 
 /**
- * API Response Format
- * 'snake_case', 'camelCase' or 'PascalCase'
- */
-defined('API_RESPONSE_FORMAT') || define('API_RESPONSE_FORMAT', 'snake_case');
-
-/**
  * Reverse Proxy IPs configuration.
  * Whitelist proxy IP addresses (HAProxy, Nginx, Cloudflare, etc.) from which CodeIgniter
  * should trust headers like X-Forwarded-For to accurately resolve client IP address.
