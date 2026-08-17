@@ -52,14 +52,18 @@ class JsonFormatter implements FilterInterface
      */
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Check if a format argument was provided (e.g., ['camelCase'])
-        if (! empty($arguments) && isset($arguments[0])) {
-            $this->_format = $arguments[0];
-        } else {
-            // Fallback to config.php constant, default to the class property
-            if (defined('API_RESPONSE_FORMAT')) {
-                $this->_format = API_RESPONSE_FORMAT;
-            }
+        // 1. Check HTTP Header (X-Naming-Convention)
+        $headerCasing = $request->getHeaderLine('X-Naming-Convention');
+
+        // 2. Check Query Parameter (naming_convention)
+        $queryCasing = service('request')->getGet('naming_convention');
+
+        if (! empty($headerCasing)) {
+            $this->_format = $this->_normalizeFormat($headerCasing);
+        } elseif (! empty($queryCasing)) {
+            $this->_format = $this->_normalizeFormat($queryCasing);
+        } elseif (! empty($arguments) && isset($arguments[0])) {
+            $this->_format = $this->_normalizeFormat($arguments[0]);
         }
 
         // Only process if the response is JSON AND it's explicitly marked as an API Client request
@@ -164,5 +168,27 @@ class JsonFormatter implements FilterInterface
                 // Keep as snake_case
                 return $normalized;
         }
+    }
+
+    /**
+     * Normalize casing format string aliases.
+     */
+    private function _normalizeFormat(string $format): string
+    {
+        $formatLower = strtolower(trim($format));
+
+        if (in_array($formatLower, ['camel', 'camelcase'])) {
+            return 'camelCase';
+        }
+
+        if (in_array($formatLower, ['pascal', 'pascalcase', 'studly', 'studlycase'])) {
+            return 'PascalCase';
+        }
+
+        if (in_array($formatLower, ['snake', 'snakecase'])) {
+            return 'snake_case';
+        }
+
+        return $format;
     }
 }

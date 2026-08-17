@@ -206,7 +206,7 @@ class Documentation extends Core
 
                 if (in_array($val, ['create', 'update'])) {
                     // Get field data
-                    $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
+                    $request = $curl->get(base_url($slug . '/create', ['format_result' => 'metadata']));
                     $response = json_decode($request->getBody()) ?? [];
 
                     foreach ($response as $field => $params) {
@@ -248,98 +248,6 @@ class Documentation extends Core
                         $output[$val]['query_params'] = $response->results->table_data[0]->primary;
                     }
                 }
-
-
-
-
-                /*
-                // Call API request
-                $request = $curl->get(base_url($slug . (! in_array($val, ['index', 'delete']) ? '/' . $val : null), ['format_result' => 'full', 'limit' => 1]));
-
-                // Decode response
-                $response = json_decode($request->getBody());
-
-                if (isset($response->method)) {
-                    if (in_array($response->method, ['index'])) {
-                        // Push response
-                        $output[$val]['response']['success'] = trim($request->getHeaderLine('Content-Type'));
-                        $output[$val]['response']['error'] = $exception;
-
-                        if (isset($response->results->table_data[0])) {
-                            $fieldData = [];
-
-                            foreach($response->results->table_data[0]->field_data as $_key => $_val) {
-                                $fieldData[$_key] = $_val->content;
-                            }
-
-                            $output[$val]['response']['success'] = $fieldData;
-                        }
-                    } elseif (in_array($response->method, ['create', 'update'])) {
-                        $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
-
-                        // Decode the response
-                        $response = json_decode($request->getBody());
-
-                        if (isset($response[0])) {
-                            // Set field data
-                            $fieldData = [];
-                            $validationError = [];
-
-                            foreach ($response[0] as $_key => $_val) {
-                                if ($_val->hidden) continue;
-
-                                $fieldData[$_key] = [
-                                    'type' => array_keys((array)$_val->type),
-                                    'maxlength' => $_val->maxlength,
-                                    'label' => $_key,
-                                    'required' => in_array('required', (array)$_val->validation)
-                                ];
-
-                                if (in_array('required', $_val->validation)) {
-                                    // Set field validation
-                                    $validationError[$_key] = phrase('Validation messages');
-                                }
-                            }
-
-                            $output[$val]['field_data'] = $fieldData;
-                            $output[$val]['response']['success'] = $exception;
-                            $output[$val]['response']['error'] = [
-                                'status' => 400,
-                                'message' => $validationError
-                            ];
-                        }
-                    } elseif (in_array($response->method, ['read'])) {
-                        $request = $curl->get(base_url($slug . '/create', ['format_result' => 'field_data']));
-
-                        // Decode the response
-                        $response = json_decode($request->getBody());
-
-                        if (isset($response[0])) {
-                        }
-                        if (isset($response->results->table_data[0])) {
-                            $fieldData = [];
-
-                            foreach($response->results->table_data[0]->field_data as $_key => $_val) {
-                                $fieldData[$_key] = $_val->content;
-                            }
-
-                            $output[$val]['response']['success'] = $fieldData;
-
-                            // Set query params
-                            $output[$val]['query_params'] = $response->results->table_data[0]->primary;
-                        }
-                    }
-                }
-
-                if (isset($response->method) && in_array($response->method, ['create', 'update', 'delete'])) {
-                    // Set exception message
-                    $output[$val]['response']['success'] = [
-                        'code' => phrase('HTTP status code'),
-                        'message' => phrase('Success messages'),
-                        'target' => phrase('Redirect URL')
-                    ];
-                }
-                    */
             }
         } catch (Throwable $e) {
             $fetchError = $e->getMessage();
