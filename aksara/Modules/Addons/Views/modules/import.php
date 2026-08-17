@@ -2,21 +2,20 @@
     <div class="sticky-top bg-body overflow-x-auto py-1 px-3 mx--3 mb-3 border-bottom">
         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to('../') ?>" class="nav-link rounded-pill no-wrap --xhr">
-                    <i class="mdi mdi-cart"></i>
-                    <?= phrase('Market') ?>
+                <a href="<?= go_to('../') ?>
+
+" class="nav-link rounded-pill no-wrap --xhr">
+                    <i class="mdi mdi-cart"></i> <?= phrase('Market') ?>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="<?= go_to('../themes') ?>" class="nav-link rounded-pill no-wrap --xhr">
-                    <i class="mdi mdi-palette"></i>
-                    <?= phrase('Installed Theme') ?>
+                    <i class="mdi mdi-palette"></i> <?= phrase('Installed Theme') ?>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="<?= go_to('../modules') ?>" class="nav-link rounded-pill no-wrap --xhr">
-                    <i class="mdi mdi-puzzle"></i>
-                    <?= phrase('Installed Module') ?>
+                    <i class="mdi mdi-puzzle"></i> <?= phrase('Installed Module') ?>
                 </a>
             </li>
         </ul>
@@ -52,8 +51,7 @@
                             <div class="col-sm-4 col-md-3">
                                 <div class="input-group d-grid mb-3">
                                     <button type="submit" class="btn btn-dark rounded-pill">
-                                        <i class="mdi mdi-import"></i>
-                                        <?= phrase('Import') ?>
+                                        <i class="mdi mdi-import"></i> <?= phrase('Import') ?>
                                     </button>
                                 </div>
                             </div>

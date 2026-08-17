@@ -7,50 +7,44 @@ $carousel = null;
 $attribution = null;
 
 if (isset($detail->screenshot) && $detail->screenshot) {
-  foreach ($detail->screenshot as $key => $val) {
-    if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $detail->screenshot[0]->src)) {
-      $screenshot = base_url('modules/' . $detail->folder . '/' . $val->src);
-    } else {
-      $screenshot = get_image(null, 'placeholder_thumb.png');
+    ob_start();
+
+    foreach ($detail->screenshot as $key => $val) {
+        if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $detail->screenshot[0]->src)) {
+            $screenshot = base_url('modules/' . $detail->folder . '/' . $val->src);
+        } else {
+            $screenshot = get_image(null, 'placeholder_thumb.png');
+        }
+        ?>
+
+        <div class="carousel-item rounded<?= ! $key ? ' active' : null ?>">
+            <a href="<?= $screenshot ?>" target="_blank">
+                <img src="<?= $screenshot ?>" class="d-block rounded w-100" alt="<?= $val->alt ?>">
+            </a>
+        </div>
+    <?php
     }
 
-    $carousel .=
-      '
-            <div class="carousel-item rounded' .
-      (!$key ? ' active' : null) .
-      '">
-                <a href="' .
-      $screenshot .
-      '" target="_blank">
-                    <img src="' .
-      $screenshot .
-      '" class="d-block rounded w-100" alt="' .
-      $val->alt .
-      '">
-                </a>
-            </div>
-        ';
-  }
+    $carousel = ob_get_clean();
 }
 
 if (isset($detail->attribution) && $detail->attribution) {
-  foreach ($detail->attribution as $key => $val) {
-    $attribution .=
-      '
-            <div class="row">
-                <div class="col-4 text-muted">
-                    ' .
-      $key .
-      '
-                </div>
-                <div class="col-8">
-                    ' .
-      $val .
-      '
-                </div>
+    ob_start();
+
+    foreach ($detail->attribution as $key => $val) {
+        ?>
+        <div class="row">
+            <div class="col-4 text-muted">
+                <?= $key ?>
             </div>
-        ';
-  }
+            <div class="col-8">
+                <?= $val ?>
+            </div>
+        </div>
+    <?php
+    }
+
+    $attribution = ob_get_clean();
 }
 ?>
 
@@ -110,8 +104,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                         <a href="<?= current_page('../update', [
                           'item' => $detail->folder,
                         ]) ?>" class="btn btn-outline-primary btn-sm --modal">
-                            <i class="mdi mdi-auto-fix"></i>
-                            <?= phrase('Update') ?>
+                            <i class="mdi mdi-auto-fix"></i> <?= phrase('Update') ?>
                         </a>
                     </div>
                 </div>
@@ -120,8 +113,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                         <a href="<?= current_page('../delete', [
                           'item' => $detail->folder,
                         ]) ?>" class="btn btn-outline-danger btn-sm --modal">
-                            <i class="mdi mdi-delete"></i>
-                            <?= phrase('Uninstall') ?>
+                            <i class="mdi mdi-delete"></i> <?= phrase('Uninstall') ?>
                         </a>
                     </div>
                 </div>
