@@ -143,7 +143,6 @@ body.sidebar-collapsed #sidebar-wrapper .nav-link .mdi {
   bottom: 0 !important;
   left: 0 !important;
   width: 220px !important;
-  background: var(--bs-sidebar-bg) !important;
   border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
   border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
   align-items: center !important;
