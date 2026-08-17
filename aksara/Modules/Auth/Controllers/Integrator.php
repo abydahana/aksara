@@ -37,7 +37,7 @@ class Integrator extends Core
             'last_name' => get_userdata('last_name'),
             'gender' => get_userdata('gender'),
             'avatar' => get_image('users', get_userdata('photo'), 'thumb'),
-            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
+            'ip_address' => $this->request->getIPAddress()
         ]);
     }
 }

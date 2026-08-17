@@ -197,7 +197,7 @@ class Permission
                         'id' => get_userdata('access_token'),
                         'ip_address' => $request->getIPAddress(),
                         'timestamp' => date('Y-m-d H:i:s'),
-                        'data' => session_encode()
+                        'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                     ]
                 );
             } catch (Throwable $e) {
@@ -207,7 +207,7 @@ class Permission
                     [
                         'ip_address' => $request->getIPAddress(),
                         'timestamp' => date('Y-m-d H:i:s'),
-                        'data' => session_encode()
+                        'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                     ],
                     [
                         'id' => get_userdata('access_token')
