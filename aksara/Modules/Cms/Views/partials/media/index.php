@@ -137,7 +137,7 @@ $breadcrumbs = null;
                                             <div class="me-3">
                                                 <img src="<?= $val->icon ?>" class="img-fluid rounded bg-light" style="width: 48px; height: 48px; object-fit: contain;" alt="<?= $val->label ?>" />
                                             </div>
-                                            <div class="flex-fill">
+                                            <div class="flex-fill text-truncate">
                                                 <div class="fw-bold"><?= $val->label ?></div>
                                                 <small class="text-muted"><?= $val->type ?></small>
                                             </div>
