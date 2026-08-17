@@ -24,7 +24,12 @@ use Aksara\Libraries\Messaging;
 
 class Contact extends Core
 {
-    private $_table = 'inquiries';
+    private string $_table = 'inquiries';
+
+    /**
+     * Rate limit window in seconds (default 3600 = 1 hour)
+     */
+    private int $_rateLimit = 3600;
 
     public function __construct()
     {
@@ -36,6 +41,10 @@ class Contact extends Core
 
     public function index()
     {
+        if (service('request')->is('post') && $this->_checkRateLimit()) {
+            return throw_exception(400, ['quota_exceeded' => phrase('You have reached the submission rate limit. Please try again later.')]);
+        }
+
         if (! service('request')->getPost('_token')) {
             // Load captcha helper
             helper('captcha');
@@ -76,8 +85,25 @@ class Contact extends Core
         ->render($this->_table);
     }
 
+    public function beforeInsert()
+    {
+        if ($this->_checkRateLimit()) {
+            return throw_exception(400, ['quota_exceeded' => phrase('You have reached the submission rate limit. Please try again later.')]);
+        }
+    }
+
     public function afterInsert()
     {
+        // Set rate limit cache
+        if ($this->_rateLimit) {
+            $ipAddress = service('request')->getIPAddress();
+            $userAgent = service('request')->getUserAgent()->getAgentString() ?? '';
+            $deviceHash = md5((get_userdata('user_id') ?: $ipAddress) . '_' . $userAgent);
+            $cacheKey = 'rate_limit_contact_' . $deviceHash;
+
+            service('cache')->save($cacheKey, true, $this->_rateLimit);
+        }
+
         if ($this->request->getPost('copy')) {
             $messaging = new Messaging();
 
@@ -92,5 +118,57 @@ class Contact extends Core
         unset_userdata(['captcha', 'captcha_file']);
 
         return throw_exception(301, phrase('Your inquiry was successfully submitted.'), current_page(null, ['success' => 1]));
+    }
+
+    /**
+     * Check rate limit: 1 device / user 1 submission per $_rateLimit seconds
+     * Handles cache clearing gracefully using DB ground truth for both users and guests.
+     */
+    private function _checkRateLimit(): bool
+    {
+        if (! $this->_rateLimit) {
+            return false;
+        }
+
+        $ipAddress = service('request')->getIPAddress();
+        $userAgent = service('request')->getUserAgent()->getAgentString() ?? '';
+        $deviceHash = md5((get_userdata('user_id') ?: $ipAddress) . '_' . $userAgent);
+        $cacheKey = 'rate_limit_contact_' . $deviceHash;
+
+        // 1. Fast path: check cache
+        if (service('cache')->get($cacheKey)) {
+            return true;
+        }
+
+        // 2. Fallback if cache was cleared: check DB ground truth within rate limit window
+        $timeWindow = date('Y-m-d H:i:s', time() - $this->_rateLimit);
+
+        if (get_userdata('is_logged')) {
+            $existing = $this->model->getWhere($this->_table, [
+                'created_by' => get_userdata('user_id'),
+                'created_at >=' => $timeWindow
+            ], 1)->row();
+
+            if ($existing) {
+                service('cache')->save($cacheKey, true, $this->_rateLimit);
+
+                return true;
+            }
+        } else {
+            // Check activity log for guest IP submission within rate limit window
+            $existingActivity = $this->model->getWhere('app_log_activities', [
+                'ip_address' => $ipAddress,
+                'path' => 'pages/contact',
+                'timestamp >=' => $timeWindow
+            ], 1)->row();
+
+            if ($existingActivity) {
+                service('cache')->save($cacheKey, true, $this->_rateLimit);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

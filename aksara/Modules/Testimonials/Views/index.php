@@ -27,9 +27,7 @@ if ($results): ?>
                         <div class="d-flex g-3 rounded-pill border border-light-subtle p-1">
                             <div class="input-group ps-4">
                                 <i class="mdi mdi-magnify mdi-2x text-muted"></i>
-                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? '') ?>" placeholder="<?= phrase(
-  'Search testimonials...',
-) ?>">
+                                <input type="text" name="q" class="form-control form-control-lg fw-light border-0 bg-transparent" value="<?= htmlspecialchars(service('request')->getGet('q') ?? ''); ?>" placeholder="<?= phrase('Search testimonials...'); ?>">
                                 <button type="submit" class="btn btn-primary btn-lg fw-light rounded-pill px-4">
                                     <?= phrase('Search') ?> <i class="mdi mdi-arrow-right"></i>
                                 </button>
@@ -106,11 +104,6 @@ if ($results): ?>
                                     <i class="mdi mdi-check-circle-outline text-success" style="font-size: 4rem;"></i>
                                     <h3 class="mt-3"><?= phrase('Thank you!') ?></h3>
                                     <p class="text-muted"><?= phrase('Your testimonial was successfully submitted and will be reviewed by our team.') ?></p>
-                                    <a href="<?= go_to(null, [
-                                      'success' => null,
-                                    ]) ?>" class="btn btn-outline-primary rounded-pill px-4 --xhr">
-                                        <i class="mdi mdi-pencil-plus-outline"></i> <?= phrase('Submit Another') ?>
-                                    </a>
                                 </div>
                             </div>
                         </div>
