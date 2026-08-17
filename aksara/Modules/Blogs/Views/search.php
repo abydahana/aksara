@@ -41,7 +41,7 @@
                 <?php if ($keywords): ?>
                     <div class="border p-3 rounded-4 fs-5 mb-3 fade-in">
                         <?php if ($pagination->total): ?>
-                            <?= phrase('Your search keyword {{keywords}} has returning {{total}} data.', ['keywords' => $keywords, 'total' => number_format($pagination->total)]); ?>
+                            <?= phrase('Your search keyword {{keywords}} has returned {{total}} data.', ['keywords' => $keywords, 'total' => number_format($pagination->total)]); ?>
                         <?php else: ?>
                             <?= phrase('Your search keyword {{keywords}} does not match any result.', ['keywords' => $keywords]); ?>
                         <?php endif; ?>

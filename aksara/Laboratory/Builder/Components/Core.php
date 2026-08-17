@@ -1098,7 +1098,7 @@ class Core
                             {{ phrase('Page not found!') }}
                         </h2>
                         <p class="fs-5 text-center">
-                            {{ phrase('The page you requested does not exist or already been archived.') }}
+                            {{ phrase('The page you requested does not exist or has already been archived.') }}
                         </p>
                         <div class="text-center">
                             <a href="{{ base_url() }}" class="btn btn-outline-primary rounded-pill px-4">

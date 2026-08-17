@@ -25,6 +25,6 @@ class Partial extends Core
     {
         parent::__construct();
 
-        return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
+        return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'));
     }
 }

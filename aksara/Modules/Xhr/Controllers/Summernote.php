@@ -34,7 +34,7 @@ class Summernote extends Core
 
     public function index()
     {
-        return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
+        return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'));
     }
 
     public function upload()
@@ -88,7 +88,7 @@ class Summernote extends Core
         if (preg_match('/<\?(php|=)|<script\b/i', $fileContent)) {
             return make_json([
                 'status' => 'error',
-                'messages' => phrase('The file is not allowed to upload')
+                'messages' => phrase('The file is not allowed to be uploaded.')
             ]);
         }
 
@@ -128,13 +128,13 @@ class Summernote extends Core
 
             return make_json([
                 'status' => 'success',
-                'messages' => phrase('Image was successfully removed')
+                'messages' => phrase('Image was successfully removed.')
             ]);
         }
 
         return make_json([
             'status' => 'error',
-            'messages' => phrase('Image was not found')
+            'messages' => phrase('Image was not found.')
         ]);
     }
 }

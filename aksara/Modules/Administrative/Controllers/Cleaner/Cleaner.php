@@ -109,7 +109,7 @@ class Cleaner extends Core
                         ' . phrase('Garbage Cleaned!') . '
                     </h5>
                     <p>
-                        ' . phrase('There are {{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($sessionCleaned)]) . '
+                        ' . phrase('{{sessions}} unused sessions were cleaned up successfully.', ['sessions' => number_format($sessionCleaned)]) . '
                     </p>
                     <a href="javascript:void(0)" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">
                         <i class="mdi mdi-window-close"></i>

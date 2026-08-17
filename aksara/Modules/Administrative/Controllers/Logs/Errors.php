@@ -182,7 +182,7 @@ class Errors extends Core
             }
         }
 
-        return throw_exception(301, phrase('{{deleted}} of {{total}} was successfully removed.', ['deleted' => number_format($success), 'total' => number_format(sizeof($logs) ?? 0)]), current_page('../', ['log' => null]));
+        return throw_exception(301, phrase('{{deleted}} of {{total}} items were successfully removed.', ['deleted' => number_format($success), 'total' => number_format(sizeof($logs) ?? 0)]), current_page('../', ['log' => null]));
     }
 
     private function _logs()

@@ -87,7 +87,6 @@ class Categories extends Core
         ->setPlaceholder([
             'category_description' => phrase('Category details to improve SEO')
         ])
-
         ->render($this->_table);
     }
 

@@ -80,7 +80,7 @@ if (isset($updater->changelog)) {
             <div class="col-lg-7">
                 <div class="alert alert-secondary rounded-4">
                     <h5>
-                        <?= phrase('Your core system is up to date'); ?>
+                        <?= phrase('Your core system is up to date.'); ?>
                     </h5>
                     <p>
                         <?= phrase('No update available at the moment. The update will be inform to you if available.'); ?>

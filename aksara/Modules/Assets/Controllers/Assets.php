@@ -62,7 +62,7 @@ class Assets extends Core
             $this->_serveAsset($realPath);
         }
 
-        return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+        return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'), base_url());
     }
 
     /**
@@ -153,8 +153,7 @@ class Assets extends Core
         return $this->response
             ->setHeader('Content-Type', 'text/css')
             ->setCache(['max-age' => 3600, 'public', 'must-revalidate'])
-            ->setBody($credits . "\n\n" . $output)
-            ->send();
+            ->setBody($credits . "\n\n" . $output);
     }
 
     /**
@@ -229,8 +228,7 @@ class Assets extends Core
         return $this->response
             ->setHeader('Content-Type', 'text/javascript')
             ->setCache(['max-age' => 3600, 'public', 'must-revalidate'])
-            ->setBody($credits . "\n\n" . $config . "\n\n" . $phrases . "\n\n" . $components . "\n\n" . $output)
-            ->send();
+            ->setBody($credits . "\n\n" . $config . "\n\n" . $phrases . "\n\n" . $components . "\n\n" . $output);
     }
 
     private function _getConfigs($theme = null)

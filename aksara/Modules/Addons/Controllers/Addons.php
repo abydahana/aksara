@@ -88,7 +88,7 @@ class Addons extends Core
                 );
             } catch (Throwable $e) {
                 return make_json([
-                        'error' => $e->getMessage()
+                    'error' => $e->getMessage()
                 ]);
             }
 
@@ -526,7 +526,7 @@ class Addons extends Core
             return throw_exception(404, phrase('The selected {{type}} you would to install is not available.', ['type' => $type]));
         }
 
-        return throw_exception(404, phrase('Your web server need to connected to the internet to install the add-ons.'));
+        return throw_exception(404, phrase('Your web server needs to be connected to the internet to install the add-ons.'));
     }
 
     /**

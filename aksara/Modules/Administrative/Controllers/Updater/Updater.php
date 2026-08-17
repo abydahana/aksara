@@ -172,7 +172,7 @@ class Updater extends Core
             // Remove temporary path
             $this->_rmdir($tmpPath);
 
-            return throw_exception(400, ['package' => phrase('Update canceled due inability to write the backup file!') . ': ' . $e->getMessage()]);
+            return throw_exception(400, ['package' => phrase('Update canceled due to inability to write the backup file!') . ': ' . $e->getMessage()]);
         }
 
         try {
@@ -364,7 +364,7 @@ class Updater extends Core
                     <i class="mdi mdi-block-helper mdi-5x text-danger"></i>
                     <br />
                     <h5>
-                        ' . phrase('Update failed due inability to write the updater file.') . ' ' . phrase('Please use the manual update instead.') . '
+                        ' . phrase('Update failed due to inability to write the updater file.') . ' ' . phrase('Please use the manual update instead.') . '
                     </h5>
                 </div>
             </div>

@@ -34,7 +34,7 @@ class Svg extends Core
 
     public function index()
     {
-        return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+        return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'), base_url());
     }
 
     public function point()
@@ -43,7 +43,7 @@ class Svg extends Core
 
         $this->response->setContentType('image/svg+xml');
         $this->response->setBody($output);
-        $this->response->send();
+        return $this->response;
     }
 
     public function polygon()
@@ -52,7 +52,7 @@ class Svg extends Core
 
         $this->response->setContentType('image/svg+xml');
         $this->response->setBody($output);
-        $this->response->send();
+        return $this->response;
     }
 
     public function linestring()
@@ -61,7 +61,7 @@ class Svg extends Core
 
         $this->response->setContentType('image/svg+xml');
         $this->response->setBody($output);
-        $this->response->send();
+        return $this->response;
     }
 
     public function folder()
@@ -70,7 +70,7 @@ class Svg extends Core
 
         $this->response->setContentType('image/svg+xml');
         $this->response->setBody($output);
-        $this->response->send();
+        return $this->response;
     }
 
     public function backArrow()
@@ -79,7 +79,7 @@ class Svg extends Core
 
         $this->response->setContentType('image/svg+xml');
         $this->response->setBody($output);
-        $this->response->send();
+        return $this->response;
     }
 
     private function _validateHex($hexColor = '')
