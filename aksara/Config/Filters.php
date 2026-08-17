@@ -29,6 +29,7 @@ use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
 use Aksara\Filters\BannedIp;
 use Aksara\Filters\MaintenanceMode;
+use Aksara\Filters\JsonFormatter;
 
 class Filters extends BaseFilters
 {
@@ -53,6 +54,7 @@ class Filters extends BaseFilters
         'performance' => PerformanceMetrics::class,
         'banned-ip' => BannedIp::class,
         'maintenance-mode' => MaintenanceMode::class,
+        'json-formatter' => JsonFormatter::class,
     ];
 
     /**
@@ -100,6 +102,7 @@ class Filters extends BaseFilters
         'after' => [
             // 'honeypot',
             // 'secureheaders',
+            'json-formatter',
             'toolbar' => ['except' => ['themes/*', 'assets/*']]
         ],
     ];
