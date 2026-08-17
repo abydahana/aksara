@@ -31,7 +31,7 @@ class Auth extends Core
 
         if ($this->request->getGet('privilege_check')) {
             // Prevent endless redirect
-            return throw_exception(403, phrase('You were signed in but have no privilege to access the requested page.'), base_url(null, ['privilege_check' => null, 'redirect' => null]), true);
+            return throw_exception(403, phrase('You are signed in, but you don\'t have sufficient privileges to access the requested page.'), base_url(null, ['privilege_check' => null, 'redirect' => null]), true);
         }
     }
 
@@ -41,6 +41,20 @@ class Auth extends Core
         if (get_userdata('is_logged')) {
             // Check if request is made through API or not
             if ($this->apiClient) {
+                if (! get_userdata('access_token')) {
+                    set_userdata('access_token', bin2hex(random_bytes(32)));
+
+                    $this->model->insert(
+                        'app_sessions',
+                        [
+                            'id' => get_userdata('access_token'),
+                            'ip_address' => $this->request->getIPAddress(),
+                            'timestamp' => date('Y-m-d H:i:s'),
+                            'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
+                        ]
+                    );
+                }
+
                 // Requested through API, provide the access token
                 return make_json([
                     'status' => 200,
@@ -49,7 +63,7 @@ class Auth extends Core
                 ]);
             } else {
                 // Requested through browser
-                return throw_exception(301, phrase('You were signed in'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
+                return throw_exception(301, phrase('You are already logged in.'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : 'dashboard'), ['privilege_check' => 1, 'redirect' => null]), true);
             }
         } elseif ($this->validToken($this->request->getPost('_token')) || ($this->apiClient && $this->request->getServer('REQUEST_METHOD') == 'POST')) {
             // Apply login attempts limit (prevent bruteforce)
@@ -58,13 +72,13 @@ class Auth extends Core
                 $this->model->upsert(
                     'app_users_blocked',
                     [
-                        'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
+                        'ip_address' => $this->request->getIPAddress(),
                         'blocked_until' => date('Y-m-d H:i:s', get_userdata('_login_attempt_time')),
                         'blocked_reason' => 'login_attempt'
                     ]
                 );
 
-                return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
+                return throw_exception(400, ['username' => phrase('You are temporarily blocked due to frequent failed login attempts.')]);
             }
 
             $this->formValidation->setRule('username', phrase('Username'), 'required');
@@ -100,13 +114,13 @@ class Auth extends Core
 
                 // Check if user is inactive
                 if ($execute && 1 != $execute->status) {
-                    return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
+                    return throw_exception(400, ['username' => phrase('Your account is temporarily disabled or not yet activated.')]);
                 } elseif ($execute && password_verify($password . ENCRYPTION_KEY, $execute->password)) {
                     // Check if login attempts failed from the previous session
                     $blockingCheck = $this->model->getWhere(
                         'app_users_blocked',
                         [
-                            'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
+                            'ip_address' => $this->request->getIPAddress()
                         ],
                         1
                     )
@@ -116,13 +130,13 @@ class Auth extends Core
                         // Check if blocking time is still available
                         if (strtotime($blockingCheck->blocked_until) >= time()) {
                             // Throw the blocking messages
-                            return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
+                            return throw_exception(400, ['username' => phrase('You are temporarily blocked due to frequent failed login attempts.')]);
                         } else {
                             // Remove the record from blocking table
                             $this->model->delete(
                                 'app_users_blocked',
                                 [
-                                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress())
+                                    'ip_address' => $this->request->getIPAddress()
                                 ]
                             );
                         }
@@ -166,6 +180,8 @@ class Auth extends Core
                     // Regenerate session ID to prevent Session Fixation
                     service('session')->regenerate();
 
+                    $secureToken = bin2hex(random_bytes(32));
+
                     // Set the user credential into session
                     set_userdata([
                         'is_logged' => true,
@@ -174,7 +190,8 @@ class Auth extends Core
                         'group_id' => $execute->group_id,
                         'language_id' => (get_userdata('language_id') ? get_userdata('language_id') : $execute->language_id),
                         'year' => ($this->_getActiveYears() ? ($this->request->getPost('year') ? $this->request->getPost('year') : date('Y')) : null),
-                        'session_generated' => time()
+                        'session_generated' => time(),
+                        'access_token' => $secureToken
                     ]);
 
                     // Update the last login timestamp
@@ -190,21 +207,18 @@ class Auth extends Core
                         1
                     );
 
+                    $this->model->insert(
+                        'app_sessions',
+                        [
+                            'id' => get_userdata('access_token'),
+                            'ip_address' => $this->request->getIPAddress(),
+                            'timestamp' => date('Y-m-d H:i:s'),
+                            'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
+                        ]
+                    );
+
                     // Check if request is made through API or not
                     if ($this->apiClient) {
-                        // Set access token
-                        set_userdata('access_token', session_id());
-
-                        $this->model->insert(
-                            'app_sessions',
-                            [
-                                'id' => get_userdata('access_token'),
-                                'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
-                                'timestamp' => date('Y-m-d H:i:s'),
-                                'data' => session_encode()
-                            ]
-                        );
-
                         // Requested through API, provide the access token
                         return make_json([
                             'status' => 200,
@@ -311,12 +325,14 @@ class Auth extends Core
         }
 
         // Remove session from database
-        $this->model->delete(
-            'app_sessions',
-            [
-                'id' => $this->request->getHeaderLine('X-ACCESS-TOKEN') ?? session_id()
-            ]
-        );
+        if (get_userdata('access_token')) {
+            $this->model->delete(
+                'app_sessions',
+                [
+                    'id' => get_userdata('access_token')
+                ]
+            );
+        }
 
         // Backup session items
         $_login_attempt = get_userdata('_login_attempt');
@@ -334,7 +350,7 @@ class Auth extends Core
             '_spam_timer' => $_spam_timer
         ]);
 
-        return throw_exception(301, phrase('You were signed out'), base_url(), true);
+        return throw_exception(301, phrase('You have successfully signed out.'), base_url(), true);
     }
 
     /**

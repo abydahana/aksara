@@ -163,7 +163,7 @@ class Documentation extends Core
             $this->model->update(
                 'app_sessions',
                 [
-                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
+                    'ip_address' => $this->request->getIPAddress(),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ],
@@ -177,7 +177,7 @@ class Documentation extends Core
                 'app_sessions',
                 [
                     'id' => $sessionId,
-                    'ip_address' => ($this->request->hasHeader('x-forwarded-for') ? $this->request->getHeaderLine('x-forwarded-for') : $this->request->getIPAddress()),
+                    'ip_address' => $this->request->getIPAddress(),
                     'timestamp' => date('Y-m-d H:i:s'),
                     'data' => (DB_DRIVER === 'Postgre' ? '\x' . bin2hex(session_encode()) : session_encode())
                 ]
