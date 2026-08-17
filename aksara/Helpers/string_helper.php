@@ -16,6 +16,7 @@
  */
 
 use Config\Services;
+use CodeIgniter\HTTP\ResponseInterface;
 
 if (! function_exists('truncate')) {
     /**
@@ -72,7 +73,7 @@ if (! function_exists('make_json')) {
     /**
      * Generate the response as JSON format
      */
-    function make_json(array|object $data = [], string $filename = ''): string
+    function make_json(array|object $data = [], string $filename = ''): ResponseInterface
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', -1);
@@ -91,30 +92,30 @@ if (! function_exists('make_json')) {
 
         $output = preg_replace(array_keys($minifyPattern), array_values($minifyPattern), json_encode($data));
 
-        http_response_code(200);
-
-        header('Content-Type: application/json');
+        $response = Services::response();
+        $response->setStatusCode(200);
+        $response->setContentType('application/json');
 
         if ($filename) {
-            header('Content-Disposition: attachment; filename=' . $filename . (stripos($filename, '.json') === false ? '.json' : null));
+            $response->setHeader('Content-Disposition', 'attachment; filename=' . $filename . (stripos($filename, '.json') === false ? '.json' : null));
         }
 
         // Add security headers
-        header('Permissions-Policy: geolocation=(self "' . base_url() . '")');
-        header('Referrer-Policy: same-origin');
-        header('Set-Cookie: HttpOnly; Secure');
-        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
-        header('X-Content-Type-Options: nosniff');
-        header('X-Frame-Options: SAMEORIGIN');
-        header('X-XSS-Protection: 1; mode=block');
+        $response->setHeader('Permissions-Policy', 'geolocation=(self "' . base_url() . '")');
+        $response->setHeader('Referrer-Policy', 'same-origin');
+        $response->setHeader('Set-Cookie', 'HttpOnly; Secure');
+        $response->setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        $response->setHeader('X-Content-Type-Options', 'nosniff');
+        $response->setHeader('X-Frame-Options', 'SAMEORIGIN');
+        $response->setHeader('X-XSS-Protection', '1; mode=block');
 
         // Compress output if client accepts gzip
         if (isset($_SERVER['HTTP_ACCEPT_ENCODING']) && stripos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
-            header('Content-Encoding: gzip');
+            $response->setHeader('Content-Encoding', 'gzip');
             $output = gzencode($output, 6); // Level 6 provides a good balance between compression ratio and speed
         }
 
-        exit($output);
+        return $response->setBody($output);
     }
 }
 

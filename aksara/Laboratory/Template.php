@@ -20,6 +20,8 @@ namespace Aksara\Laboratory;
 use Throwable;
 use stdClass;
 use Config\Services;
+use CodeIgniter\HTTP\Response;
+use CodeIgniter\HTTP\ResponseInterface;
 use Aksara\Laboratory\Model;
 use Aksara\Laboratory\Renderer\Parser;
 
@@ -379,7 +381,7 @@ class Template
      *
      * @return \CodeIgniter\HTTP\Response|object The HTTP Response object for non-AJAX requests or a JSON object for AJAX requests.
      */
-    public function build(?string $view = null, array $data = []): \CodeIgniter\HTTP\Response|string
+    public function build(?string $view = null, array $data = []): Response|ResponseInterface
     {
         $request = Services::request();
 
@@ -498,7 +500,7 @@ class Template
             $response->setHeader('X-Frame-Options', 'SAMEORIGIN');
             $response->setHeader('X-XSS-Protection', '1; mode=block');
 
-            return $response->setBody($output)->sendBody();
+            return $response->setBody($output);
         }
     }
 
