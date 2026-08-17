@@ -2470,7 +2470,7 @@ abstract class Core extends Controller
                                         // Use query builder that supports parameter binding
                                         // Example with CodeIgniter 4:
                                         $escapedQuery = $this->model->escape($searchQuery);
-                                        $this->_prepare('order_by', [
+                                        $this->_prepare('orderBy', [
                                             "(CASE
                                                 WHEN {$orderField} LIKE {$escapedQuery} THEN 1
                                                 WHEN {$orderField} LIKE CONCAT({$escapedQuery}, '%') THEN 2
@@ -2631,7 +2631,7 @@ abstract class Core extends Controller
                             $queryString = str_replace('\\', '\\\\', $queryString);
                             $queryString = str_replace(['%', '_'], ['\\%', '\\_'], $queryString);
 
-                            $this->_prepare('order_by', ['(CASE WHEN ' . $val . ' LIKE \'%' . $queryString . '%\' ESCAPE \'\\\' THEN 1 WHEN ' . $val . ' LIKE \'%' . $queryString . '\' ESCAPE \'\\\' THEN 3 ELSE 2 END)']);
+                            $this->_prepare('orderBy', ['(CASE WHEN ' . $val . ' LIKE \'%' . $queryString . '%\' ESCAPE \'\\\' THEN 1 WHEN ' . $val . ' LIKE \'%' . $queryString . '\' ESCAPE \'\\\' THEN 3 ELSE 2 END)']);
                         }
 
                         $compiledLike[] = $fieldOrigin;
@@ -2729,7 +2729,7 @@ abstract class Core extends Controller
                         // Match order by the primary table
                         // Push order to the prepared query builder
                         $this->_prepare[] = [
-                            'function' => 'order_by',
+                            'function' => 'orderBy',
                             'arguments' => [$this->_table . '.' . $checkField, get_userdata('sort_order')]
                         ];
                     } elseif ($this->_compiledTable) {
@@ -2744,7 +2744,7 @@ abstract class Core extends Controller
 
                                 // Push order to the prepared query builder
                                 $this->_prepare[] = [
-                                    'function' => 'order_by',
+                                    'function' => 'orderBy',
                                     'arguments' => [$dbTable . '.' . $checkField, get_userdata('sort_order')]
                                 ];
                                 break;
@@ -5826,7 +5826,7 @@ abstract class Core extends Controller
             $function = $val['function'];
             $arguments = $val['arguments'];
 
-            if ($recycling && in_array($function, ['select', 'order_by', 'limit', 'offset'], true)) {
+            if ($recycling && in_array($function, ['select', 'order_by', 'orderBy', 'limit', 'offset'], true)) {
                 continue;
             }
 
@@ -5908,7 +5908,7 @@ abstract class Core extends Controller
             } elseif ('selectSubquery' == $function) {
                 // Free query builder
                 $this->model->resetQuery();
-            } elseif ('order_by' == $function) {
+            } elseif (in_array($function, ['order_by', 'orderBy'], true)) {
                 if (in_array($this->_method, ['create', 'read', 'update', 'delete'])) {
                     // Prevent order on create, read, update, and delete method
                     continue;
