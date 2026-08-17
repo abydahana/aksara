@@ -182,7 +182,7 @@ $isRtl = in_array(session()->get('language'), [
                                                 </div>
                                             </div>
                                             <p>
-                                                <?= phrase('Thank you for choosing Aksara'); ?>
+                                                <?= phrase('Thank you for choosing Aksara.'); ?>
                                             </p>
                                             <div class="text-muted opacity-50">
                                                 <hr class="row" />

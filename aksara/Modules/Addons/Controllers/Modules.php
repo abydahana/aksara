@@ -494,7 +494,7 @@ class Modules extends Core
 
                     return throw_exception(301, phrase('Your module package was successfully imported.'), current_page('../'));
                 } else {
-                    return throw_exception(400, ['file' => phrase('Your module folder seems cannot be writable.')]);
+                    return throw_exception(400, ['file' => phrase('Your module folder does not seem to be writable.')]);
                 }
             }
 
@@ -695,7 +695,7 @@ class Modules extends Core
                 $this->_rmdir(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $this->request->getPost('module'));
             } else {
                 // Module property is not found
-                return throw_exception(400, ['module' => phrase('A module without package manifest cannot be uninstall from the module manager.')]);
+                return throw_exception(400, ['module' => phrase('A module without package manifest cannot be uninstalled from the module manager.')]);
             }
         } else {
             return throw_exception(400, ['module' => phrase('The module you would to delete is not exists or already uninstalled.')]);

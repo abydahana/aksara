@@ -14,7 +14,7 @@
         </b>
     </p>
     <p class="text-break-word">
-        <?= phrase('Unable to create or write file'); ?>
+        <?= phrase('Unable to create or write file.'); ?>
     </p>
     <p class="mb-0">
         <b>
@@ -22,7 +22,7 @@
         </b>
     </p>
     <p class="text-break-word">
-        <?= phrase('Please download the configuration file below and upload or paste it manually under the following directory'); ?>:
+        <?= phrase('Please download the configuration file below and upload or paste it manually under the following directory.'); ?>:
         <br />
         <code><?= ROOTPATH; ?></code>
         <br /><br />

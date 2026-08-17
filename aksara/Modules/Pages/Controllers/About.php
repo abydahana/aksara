@@ -30,7 +30,7 @@ class About extends Core
     {
         $this->setTitle(phrase('About the project'))
         ->setIcon('mdi mdi-information-outline')
-        ->setDescription(phrase('Including the credit of external resources.'))
+        ->setDescription(phrase('Including credits for external resources.'))
 
         ->render();
     }

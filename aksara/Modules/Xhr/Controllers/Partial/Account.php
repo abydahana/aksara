@@ -29,7 +29,7 @@ class Account extends Core
         $this->permission->mustAjax();
 
         if ('modal' != $this->request->getPost('prefer')) {
-            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
+            return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'));
         }
     }
 

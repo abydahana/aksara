@@ -80,7 +80,7 @@ class Videos extends Core
         ])
 
         ->setTooltip([
-            'video_url' => phrase('You can use YouTube, Facebook, Vimeo, DailyMotion and Twitch video')
+            'video_url' => phrase('You can use YouTube, Facebook, Vimeo, DailyMotion, and Twitch videos.')
         ])
 
         ->render($this->_table);

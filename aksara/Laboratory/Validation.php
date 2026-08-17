@@ -402,7 +402,7 @@ class Validation
 
             if (isset($rules[$field]['rules']) && in_array('required', $rules[$field]['rules'])) {
                 // Field is required
-                $validation->setError($field, phrase('Please choose the file to upload'));
+                $validation->setError($field, phrase('Please choose the file to upload.'));
             }
         }
 
@@ -461,12 +461,12 @@ class Validation
 
         if (! in_array($source->getMimeType(), $validMime)) {
             // Mime is invalid
-            $this->_uploadError = phrase('The selected file format is not allowed to upload');
+            $this->_uploadError = phrase('The selected file format is not allowed to be uploaded.');
 
             return false;
         } elseif (! in_array(strtolower($source->getExtension()), $filetype)) {
             // Extension is invalid (bypassed mime check)
-            $this->_uploadError = phrase('The selected file extension is not allowed to upload');
+            $this->_uploadError = phrase('The selected file extension is not allowed to be uploaded.');
 
             return false;
         } elseif ((float) $source->getSizeByMetricUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
@@ -476,7 +476,7 @@ class Validation
             return false;
         } elseif (! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
             // Upload directory is unwritable
-            $this->_uploadError = phrase('The upload folder is not writable');
+            $this->_uploadError = phrase('The upload folder is not writable.');
 
             return false;
         }
@@ -531,7 +531,7 @@ class Validation
         // Check for PHP tags
         if (preg_match('/<\?(?:php\s|=\s)|<script\b/i', $fileContent, $match)) {
             // Ensure the file is not contain exploit command
-            $this->_uploadError = phrase('The file is not allowed to upload');
+            $this->_uploadError = phrase('The file is not allowed to be uploaded.');
 
             return false;
         }
@@ -541,7 +541,7 @@ class Validation
             $imageinfo = getimagesize($source);
 
             if (! $imageinfo) {
-                $this->_uploadError = phrase('The selected image file is not valid');
+                $this->_uploadError = phrase('The selected image file is not valid.');
 
                 return false;
             }
@@ -563,7 +563,7 @@ class Validation
                     // Resize image and move to upload directory
                     $image->withFile($source)->resize($width, $height, true, $masterDimension)->save(UPLOAD_PATH . '/' . $uploadPath . '/' . $filename);
                 } catch (Throwable $e) {
-                    $this->_uploadError = phrase('Unable to process the uploaded image');
+                    $this->_uploadError = phrase('Unable to process the uploaded image.');
 
                     return false;
                 }
@@ -640,7 +640,7 @@ class Validation
                     fclose($stream);
                 }
 
-                $this->_uploadError = phrase('Unable to upload file to cloud storage');
+                $this->_uploadError = phrase('Unable to upload file to cloud storage.');
 
                 return false;
             }
@@ -665,15 +665,15 @@ class Validation
             case UPLOAD_ERR_FORM_SIZE:
                 return phrase('The selected file size exceeds the maximum allocation');
             case UPLOAD_ERR_PARTIAL:
-                return phrase('The file was only partially uploaded');
+                return phrase('The file was only partially uploaded.');
             case UPLOAD_ERR_NO_TMP_DIR:
                 return phrase('Missing a temporary folder for upload');
             case UPLOAD_ERR_CANT_WRITE:
-                return phrase('Failed to write file to disk');
+                return phrase('Failed to write file to disk.');
             case UPLOAD_ERR_EXTENSION:
                 return phrase('File upload stopped by extension');
             default:
-                return phrase('The file is not allowed to upload');
+                return phrase('The file is not allowed to be uploaded.');
         }
     }
 

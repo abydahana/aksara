@@ -455,7 +455,7 @@ class Themes extends Core
                 if ($extract && is_dir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $packagePath)) {
                     return throw_exception(301, phrase('Your theme package was successfully imported.'), current_page('../'));
                 } else {
-                    return throw_exception(400, ['file' => phrase('Your theme folder seems cannot be writable.')]);
+                    return throw_exception(400, ['file' => phrase('Your theme folder does not seem to be writable.')]);
                 }
             }
 
@@ -549,7 +549,7 @@ class Themes extends Core
                 $this->_rmdir(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->request->getPost('theme'));
             } else {
                 // Theme property is not found
-                return throw_exception(400, ['theme' => phrase('A theme without package manifest cannot be uninstall from the theme manager.')]);
+                return throw_exception(400, ['theme' => phrase('A theme without package manifest cannot be uninstalled from the theme manager.')]);
             }
         } else {
             return throw_exception(400, ['theme' => phrase('The theme you would to delete is not exists or already uninstalled.')]);

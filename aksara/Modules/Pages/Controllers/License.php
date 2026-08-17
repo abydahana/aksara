@@ -30,7 +30,7 @@ class License extends Core
     {
         $this->setTitle(phrase('End User License Agreement'))
         ->setIcon('mdi mdi-certificate')
-        ->setDescription(phrase('Including the terms of services.'))
+        ->setDescription(phrase('Including the terms of service.'))
 
         ->render();
     }

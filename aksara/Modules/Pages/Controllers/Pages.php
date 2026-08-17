@@ -34,7 +34,7 @@ class Pages extends Core
     public function index($slug = null)
     {
         $this->setTitle('{{ page_title }}', phrase('Page not found!'))
-        ->setDescription('{{ page_description }}', phrase('The page you requested does not exist or already been archived.'))
+        ->setDescription('{{ page_description }}', phrase('The page you requested does not exist or has already been archived.'))
         ->setIcon('mdi mdi-file-document-outline')
         ->setOutput([
             'suggestions' => $this->model->select('
@@ -65,7 +65,7 @@ class Pages extends Core
     public function notFound()
     {
         $this->setTitle(phrase('Page not found!'))
-        ->setDescription(phrase('The page you requested does not exist or already been archived.'))
+        ->setDescription(phrase('The page you requested does not exist or has already been archived.'))
         ->setOutput([
             'suggestions' => $this->model->select('
                 page_slug,

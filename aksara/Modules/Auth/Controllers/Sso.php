@@ -87,7 +87,7 @@ class Sso extends Core
         if (DEMO_MODE) {
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page('../'));
         } elseif (! $params) {
-            return throw_exception(403, phrase('Unable to signing you in using th selected platform.'), current_page('../'));
+            return throw_exception(403, phrase('Unable to sign you in using the selected platform.'), current_page('../'));
         }
 
         $query = $this->model->select('

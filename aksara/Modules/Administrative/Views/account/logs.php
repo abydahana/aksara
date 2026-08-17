@@ -8,7 +8,7 @@
 <div class="container-fluid py-3">
     <div class="alert alert-info callout rounded-4">
         <h3><?= phrase('Information'); ?></h3>
-        <i class="mdi mdi-information-outline"></i> <?= phrase('You are signed in on these devices or have been recently in.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
+        <i class="mdi mdi-information-outline"></i> <?= phrase('You are signed in on these devices or were active recently.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
     </div>
     <div class="row">
         <div class="col-md-7 col-xxl-6">

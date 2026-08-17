@@ -62,7 +62,7 @@ class Read extends Core
         }
 
         $this->setTitle('{{ post_title }}', phrase('No post is found!'))
-        ->setDescription('{{ post_excerpt }}', phrase('The post you requested was not found or already been archived.'))
+        ->setDescription('{{ post_excerpt }}', phrase('The post you requested was not found or has already been archived.'))
         ->setIcon('mdi mdi-newspaper')
         ->setOutput([
             // Category detail

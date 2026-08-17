@@ -34,7 +34,7 @@ class Language extends Core
             return $this->_languages(true);
         } elseif ('modal' != $this->request->getPost('prefer')) {
             // Redirect non modal request
-            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'));
+            return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'));
         }
 
         $this->setTitle(phrase('Change Language'))

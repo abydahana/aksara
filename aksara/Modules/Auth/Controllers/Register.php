@@ -34,7 +34,7 @@ class Register extends Core
             return throw_exception(301, phrase('You have been signed in.'), base_url('dashboard'), true);
         } elseif (! get_setting('frontend_registration')) {
             // Frontend registration is disabled
-            return throw_exception(403, phrase('The registration is temporary disabled.'), base_url('auth'));
+            return throw_exception(403, phrase('The registration is temporarily disabled.'), base_url('auth'));
         }
     }
 
@@ -68,7 +68,7 @@ class Register extends Core
             return throw_exception(403, phrase('This feature is disabled in demo mode.'), current_page());
         } elseif (! $this->validToken($this->request->getPost('_token'))) {
             // Invalid token
-            return throw_exception(403, phrase('The token you submitted has been expired or you are trying to bypass it from the restricted source.'), current_page());
+            return throw_exception(403, phrase('The token you submitted has expired or you are trying to bypass it from the restricted source.'), current_page());
         }
 
         // Set validation rules
@@ -199,7 +199,7 @@ class Register extends Core
 
             return throw_exception(301, phrase('Your account has been successfully activated.'), base_url(($this->request->getGet('redirect') ? $this->request->getGet('redirect') : null)));
         } else {
-            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+            return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'), base_url());
         }
     }
 
@@ -226,7 +226,7 @@ class Register extends Core
                 ' . phrase('Hi') . ', <b>' . $params['first_name'] . ' ' . $params['last_name'] . '</b>
             </p>
             <p>
-                ' . phrase('You are recently register your account using this email on our website.') . ' ' . phrase('Your account need to be activated.') . ' ' . phrase('Click link below to activate your account.') . '
+                ' . phrase('You recently registered your account using this email on our website.') . ' ' . phrase('Your account needs to be activated.') . ' ' . phrase('Click link below to activate your account.') . '
             </p>
             <p>
                 <a href="' . current_page('activate', ['hash' => $token]) . '" style="background:#007bff; color:#fff; text-decoration:none; font-weight:bold; border-radius:6px; padding:5px 10px; line-height:3">
@@ -263,7 +263,7 @@ class Register extends Core
                     ' . phrase('Congratulations!') . ',
                 </b>
                 <br />
-                ' . phrase('Your account was successfully registered to our website and already been activated.') . ' ' . phrase('You can use your email or username to sign in to your dashboard.') . '
+                ' . phrase('Your account was successfully registered to our website and has already been activated.') . ' ' . phrase('You can use your email or username to sign in to your dashboard.') . '
             </p>
             <br />
             <br />

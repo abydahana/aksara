@@ -53,7 +53,7 @@ class Shortlink extends Core
             // Redirect to real URL
             return throw_exception(301, null, $query->url);
         } else {
-            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+            return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'), base_url());
         }
     }
 }

@@ -61,7 +61,7 @@ class Forgot extends Core
         ->row();
 
         if (! $query) {
-            return throw_exception(404, phrase('The page you requested does not exist or already been archived.'), base_url());
+            return throw_exception(404, phrase('The page you requested does not exist or has already been archived.'), base_url());
         }
 
         $this->setTitle(phrase('Reset Password'))
@@ -105,7 +105,7 @@ class Forgot extends Core
         if (! $query) {
             return throw_exception(400, ['username' => phrase('The username or email you entered does not registered.')]);
         } elseif (! $query->status) {
-            return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
+            return throw_exception(400, ['username' => phrase('Your account is temporarily disabled or not yet activated.')]);
         }
 
         $query = $this->model->getWhere(
@@ -210,7 +210,7 @@ class Forgot extends Core
         if (! $query) {
             return throw_exception(400, ['password' => phrase('Your password has been reset recently.')]);
         } elseif (! $query->status) {
-            return throw_exception(400, ['password' => phrase('Your account is temporary disabled or not yet activated.')]);
+            return throw_exception(400, ['password' => phrase('Your account is temporarily disabled or not yet activated.')]);
         }
 
         $messaging = new Messaging();

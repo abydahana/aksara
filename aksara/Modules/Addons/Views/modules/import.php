@@ -29,16 +29,16 @@
                 </h5>
                 <ul class="mb-5">
                     <li>
-                        <?= phrase('Make sure the package you would to import is downloaded from the official market'); ?> (<a href="//www.aksaracms.com/market" class="text-primary fw-bold" target="_blank">Aksara Market</a>);
+                        <?= phrase('Make sure the package you want to import is downloaded from the official market.'); ?> (<a href="//www.aksaracms.com/market" class="text-primary fw-bold" target="_blank">Aksara Market</a>);
                     </li>
                     <li>
-                        <?= phrase('The package you download from outside the official market may contains exploit tool that risk your server'); ?>;
+                        <?= phrase('Packages downloaded from outside the official market may contain exploit tools that risk your server.'); ?>;
                     </li>
                     <li>
-                        <?= phrase('Make sure the package was pass the test from your development server'); ?>;
+                        <?= phrase('Make sure the package has passed the test on your development server.'); ?>;
                     </li>
                     <li>
-                        <?= phrase('Do import with your own risk'); ?>.
+                        <?= phrase('Import at your own risk.'); ?>.
                     </li>
                 </ul>
                 <div class="card rounded-4">

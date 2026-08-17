@@ -82,7 +82,7 @@ class Permission
         // Validate user status and password
         if ($query && 1 != $query->status) {
             // User exists but inactive
-            return throw_exception(400, ['username' => phrase('Your account is temporary disabled or not yet activated.')]);
+            return throw_exception(400, ['username' => phrase('Your account is temporarily disabled or not yet activated.')]);
         } elseif ($query && password_verify($password . ENCRYPTION_KEY, $query->password)) {
             // Security: Check for brute force blocking (based on IP)
             $blockingCheck = $this->_model->getWhere(
@@ -97,7 +97,7 @@ class Permission
             if ($blockingCheck) {
                 // Check if blocking time is still active
                 if (strtotime($blockingCheck->blocked_until) >= time()) {
-                    return throw_exception(400, ['username' => phrase('You are temporarily blocked due do frequent failed login attempts.')]);
+                    return throw_exception(400, ['username' => phrase('You are temporarily blocked due to frequent failed login attempts.')]);
                 } else {
                     // Release the block if time passed
                     $this->_model->delete(
@@ -345,7 +345,7 @@ class Permission
         // Check if privilege is NOT set or method is NOT in the allowed list
         if (! isset($privileges[$path]) || ! $this->_matchMethod($method, $privileges[$path])) {
             // Access DENIED
-            return throw_exception(403, phrase('You do not have a sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
+            return throw_exception(403, phrase('You do not have sufficient privileges to access this page.'), ($redirect ? $redirect : base_url()));
         }
     }
 

@@ -112,7 +112,7 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']), current_page('../'));
         }
 
-        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases was successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($uniquePhrases)) . '</b>']), current_page('../'));
+        return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases were successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($uniquePhrases)) . '</b>']), current_page('../'));
     }
 
     private function _languages(): array

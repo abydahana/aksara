@@ -405,7 +405,7 @@
                 </p>
                 <div class="meta" aria-label="<?= phrase('Maintenance details'); ?>">
                     <span class="pill">HTTP 503</span>
-                    <span class="pill"><?= phrase('No data is affected'); ?></span>
+                    <span class="pill"><?= phrase('No data is affected.'); ?></span>
                     <span class="pill"><?= phrase('Refresh later'); ?></span>
                 </div>
             </section>
