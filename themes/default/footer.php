@@ -9,7 +9,7 @@
                                 <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" class="img-fluid mb-3" width="48" alt="<?= get_setting('app_name') . ' Icon' ?>" loading="lazy" decoding="async" />
                             </a>
                             <p class="text-muted">
-                                <?= get_setting('app_description') ?>
+                                <?= nl2br(get_setting('app_description')) ?>
                             </p>
                             <div class="d-flex justify-content-center justify-content-lg-start gap-3">
                                 <?php if (get_setting('twitter_username')): ?>

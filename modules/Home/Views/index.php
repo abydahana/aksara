@@ -151,7 +151,7 @@
                 <?= get_setting('app_name') ?><span>.</span>
             </h1>
             <p class="hero-copy mb-4">
-                <?= get_setting('app_description') ?>
+                <?= nl2br(get_setting('app_description')) ?>
             </p>
             <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
                 <a href="<?= base_url('auth') ?>" class="btn btn-primary btn-lg rounded-pill px-4 hero-action --modal">
