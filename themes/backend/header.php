@@ -26,7 +26,7 @@
                 <li class="nav-item">
                     <?php if (get_userdata('year')): ?>
                         <div class="dropdown">
-                            <button class="btn btn-danger btn-sm border-light fw-bold rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-danger btn-sm border fw-bold rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <?= get_userdata('year'); ?>
                             </button>
                             <ul class="dropdown-menu">
