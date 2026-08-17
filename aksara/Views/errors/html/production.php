@@ -39,7 +39,7 @@
                 width: 40px;
                 height: 60px;
                 transform: translateY(-50%);
-                background-image: url("<?= base_url('assets/yao-ming-hand.png'); ?>");
+                background-image: url("<?= base_url('assets/yao-ming-hand.png') ?>");
                 background-repeat: no-repeat;
                 background-size: 80px 60px;
                 pointer-events: none;
@@ -121,21 +121,21 @@
     <body>
         <div class="content-wrapper">
             <div class="person">
-                <img src="<?= base_url('assets/yao-ming.png'); ?>" alt="Error" />
+                <img src="<?= base_url('assets/yao-ming.png') ?>" alt="Error" />
             </div>
             <div class="banner">
                 <div class="logo-container">
-                    <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" height="48" alt="Logo" />
+                    <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')) ?>" height="48" alt="Logo" />
                 </div>
-                <h1 class="text-danger"><?= phrase('Whoops!'); ?></h1>
-                <p><?= phrase('We seem to have hit a snag. Please try again later...'); ?></p>
-                <a href="<?= base_url(); ?>" class="btn-back">
+                <h1 class="text-danger"><?= phrase('Whoops!') ?></h1>
+                <p><?= phrase('We seem to have hit a snag. Please try again later...') ?></p>
+                <a href="<?= base_url() ?>" class="btn-back">
                     <span>
                         <img
                         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 404.43'><path fill='%23fff' d='m68.69 184.48 443.31.55v34.98l-438.96-.54 173.67 159.15-23.6 25.79L0 199.94 218.6.02l23.6 25.79z'/></svg>"
                         alt="Arrow">
                     </span>
-                    <span><?= phrase('Back to Home'); ?></span>
+                    <span><?= phrase('Back to Home') ?></span>
                 </a>
             </div>
         </div>

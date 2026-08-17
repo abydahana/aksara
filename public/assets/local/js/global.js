@@ -1,0 +1,1934 @@
+/**
+ * Global library
+ *
+ * @author     Aby Dahana <abydahana@gmail.com>
+ * @copyright  (c) Aksara Laboratory <https://aksaracms.com>
+ * @license    MIT License
+ *
+ * This source file is subject to the MIT license that is bundled with this
+ * source code in the LICENSE.txt file.
+ */
+$(document).ready(function () {
+  /**
+   * Clear previous storage
+   */
+  sessionStorage.clear();
+
+  /**
+   * Reactivate in first load
+   */
+  reactivate();
+
+  function disposeTooltips() {
+    if (window.bootstrap && bootstrap.Tooltip) {
+      $('[data-bs-toggle=tooltip]').each(function () {
+        const instance = bootstrap.Tooltip.getInstance(this);
+
+        if (instance) {
+          instance._activeTrigger = instance._activeTrigger || {};
+
+          try {
+            instance.dispose();
+          } catch (error) {
+            this.removeAttribute('aria-describedby');
+          }
+        }
+      });
+      $('.tooltip').remove();
+
+      return;
+    }
+
+    if (typeof $.fn.tooltip !== 'undefined') {
+      $('[data-bs-toggle=tooltip]').tooltip('dispose');
+    }
+  }
+
+  function refreshTooltips() {
+    disposeTooltips();
+
+    if (window.bootstrap && bootstrap.Tooltip) {
+      $('[data-bs-toggle=tooltip]').each(function () {
+        bootstrap.Tooltip.getOrCreateInstance(this);
+      });
+
+      return;
+    }
+
+    if (typeof $.fn.tooltip !== 'undefined') {
+      $('[data-bs-toggle=tooltip]').tooltip();
+    }
+  }
+
+  /**
+   * Open child menu when current page is presents in navigation
+   */
+  let segmentation = config.currentSlug,
+    count = segmentation.split('/').length;
+
+  if (count) {
+    for (let i = 0; i < count; i++) {
+      if (segmentation) {
+        segmentation = segmentation.substr(0, segmentation.lastIndexOf('/'));
+
+        if (segmentation && $('[data-segmentation=' + segmentation.replaceAll('/', '_') + ']').length) {
+          $('[data-segmentation=' + segmentation.replaceAll('/', '_') + ']')
+            .parents('li')
+            .addClass('active');
+
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * Set the color scheme of browser status bar
+   */
+  let colorScheme = rgba2hex($(config.wrapper.header).css('backgroundColor') ?? '#213C69');
+
+  document.querySelector('meta[name=msapplication-navbutton-color]').setAttribute('content', colorScheme);
+  document.querySelector('meta[name=theme-color]').setAttribute('content', colorScheme);
+  document.querySelector('meta[name=apple-mobile-web-app-status-bar-style]').setAttribute('content', colorScheme);
+
+  /**
+   * Store the request to browser history
+   */
+  history.replaceState(
+    {
+      path: window.location.href
+    },
+    ''
+  );
+
+  /**
+   * Override the jQuery error exception
+   */
+  $(window).on('error', function (response) {
+    // Throw log to console
+    return throw_exception(500, typeof response.originalEvent.message !== 'undefined' ? response.originalEvent.message : response.originalEvent.srcElement);
+  });
+
+  /**
+   * Describe the back button of browser to fix the SPA
+   */
+  $(window).bind('popstate', function (e) {
+    if (!e.originalEvent.state) return;
+
+    xhr = $.ajax({
+      url: location.href,
+      context: this,
+      method: 'POST',
+      data: {
+        prefer: UA === 'mobile' ? 'html' : null
+      },
+      beforeSend: function (progress) {
+        if (xhr) {
+          xhr.abort();
+        }
+
+        $('[data-role=title]').text(phrase('Loading...'));
+        $('[data-role=icon]').removeAttr('class').addClass('mdi mdi-loading mdi-spin');
+        $('[data-role=description]').removeClass('show');
+        $('[data-role=reload]').attr('href', location.href);
+        disposeTooltips();
+        $('[data-bs-toggle=popover]').popover('dispose');
+        $('.modal.show').modal('hide');
+      }
+    })
+      .done(function (response) {
+        parser.render($(this), response, true);
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        if (typeof response.responseJSON !== 'undefined') {
+          // Get response JSON
+          response = response.responseJSON;
+        }
+
+        return throw_exception(response.code, response?.message);
+      });
+  });
+
+  $(document).on('show.bs.modal', '.modal', function () {
+    // Count modals currently open
+    var zIndex = 1050 + 5 * $('.modal.show').length;
+
+    // Set z-index for this modal
+    $(this).css('z-index', zIndex);
+
+    // Delay so Bootstrap creates backdrop first
+    setTimeout(() => {
+      $('.modal-backdrop')
+        .not('.modal-stack')
+        .first()
+        .css('z-index', zIndex - 1)
+        .addClass('modal-stack');
+    }, 50);
+  });
+
+  /**
+   * Overtake the keyboard shortcut
+   */
+  $('body').on('keydown', function (e) {
+    let keycode = e.which ? e.which : e.keyCode;
+
+    if (keycode === 116) {
+      e.preventDefault();
+
+      // Overtake F5
+      if ($('a[data-role=reload]').length) {
+        $('a[data-role=reload]').trigger('click');
+      } else {
+        $('<a href="' + window.location.href + '" class="--xhr"></a>')
+          .appendTo('body')
+          .trigger('click')
+          .remove();
+      }
+    } else if ((keycode == 115 || keycode == 83) && (e.ctrlKey || e.metaKey || keycode == 19) && $('form.--validate-form:visible').length) {
+      e.preventDefault();
+
+      // Overtake CTRL + S
+      $('form.--validate-form:visible').trigger('submit');
+    } else if (e.ctrlKey && keycode === 70 && !$('.modal:visible').length && $('input[name="q"]').length) {
+      e.preventDefault();
+
+      // Overtake CTRL + F
+      $('input[name="q"]').focus();
+    } else if (keycode === 27 && $('.modal:visible').length && $('.modal:visible').attr('data-bs-backdrop') != 'static') {
+      e.preventDefault();
+
+      // Overtake ESC
+      $('.modal:visible').find('[data-bs-dismiss="modal"]').trigger('click');
+    }
+  });
+
+  /**
+   * Toggle full screen
+   */
+  $('body').on('click touch', '[data-toggle=fullscreen]', function (e) {
+    e.preventDefault();
+
+    if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+      let success = false;
+
+      if (document.documentElement.requestFullScreen) {
+        success = true;
+
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        success = true;
+
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        success = true;
+
+        document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+
+      if (success) {
+        $(this).find('.mdi').removeClass('mdi-fullscreen').addClass('mdi-fullscreen-exit');
+      }
+    } else {
+      let success = false;
+
+      if (document.cancelFullScreen) {
+        success = true;
+
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        success = true;
+
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        success = true;
+
+        document.webkitCancelFullScreen();
+      }
+
+      if (success) {
+        $(this).find('.mdi').removeClass('mdi-fullscreen-exit').addClass('mdi-fullscreen');
+      }
+    }
+  });
+
+  $('body').on('click touch', 'button, .btn, [data-ripple]', function (e) {
+    if ($(this).is('.btn-disabled') || $(this).is('.no-ripple')) {
+      return;
+    }
+
+    let position = $(this).css('position'),
+      offset = $(this).offset(),
+      xAxis = e.pageX - offset.left,
+      yAxis = e.pageY - offset.top,
+      diagonal = Math.min(this.offsetHeight, this.offsetWidth, 100),
+      ripple = $('<div class="ripple"></div>').appendTo($(this));
+
+    if (!position || position === 'static') {
+      $(this).css({
+        position: 'relative'
+      });
+    }
+
+    $('<div class="rippleWave"></div>')
+      .css({
+        background: $(this).data('ripple'),
+        width: diagonal,
+        height: diagonal,
+        left: xAxis - diagonal / 2,
+        top: yAxis - diagonal / 2
+      })
+      .appendTo(ripple)
+      .on('animationend', function () {
+        ripple.remove();
+      });
+  });
+
+  /**
+   * Submit and validate form
+   */
+  $('body:not(.no-ajax)').on('submit', 'form.--validate-form[method=POST]', function (e) {
+    // Prevent browser to take place as well
+    e.preventDefault();
+
+    // Prevent form resubmission when previous request is on progress
+    if ($(this).find('button[type=submit]').hasClass('disabled')) return false;
+
+    let context = $(this);
+    let formData = new FormData(this);
+    let reset = context.attr('data-reset') ? context.data('reset') : true;
+
+    let moneyFields = {};
+
+    $('input[data-role=money]', $(this)).each(function () {
+      // Rollback formatted money
+      let name = $(this).attr('name');
+      let value = $(this).val() ?? 0;
+
+      if (!name) {
+        return;
+      }
+
+      try {
+        value = $(this).autoNumeric('get');
+      } catch (error) {
+        let settings = $(this).data('autoNumeric') || {};
+        let decimalCommaLanguages = ['id', 'de', 'es', 'it', 'nl', 'pt', 'tr', 'vi', 'da', 'el', 'is', 'ro', 'sl'];
+        let useDecimalComma = decimalCommaLanguages.includes(config.language);
+        let decimal = settings.aDec || (useDecimalComma ? ',' : '.');
+        let thousand = settings.aSep || (useDecimalComma ? '.' : ',');
+
+        value = value.toString().split(thousand).join('').replace(decimal, '.');
+      }
+
+      if (!moneyFields[name]) {
+        moneyFields[name] = [];
+      }
+
+      moneyFields[name].push(value);
+    });
+
+    $.each(moneyFields, function (name, values) {
+      formData.delete(name);
+
+      $.each(values, function (index, value) {
+        formData.append(name, value);
+      });
+    });
+
+    if (!$(this).find('input[name=_token]').length) {
+      // Get token from storage
+      const tokenKey = `form_${$('.modal.show').length}`;
+
+      // Set token to paylod
+      formData.append('_token', sessionStorage.getItem(tokenKey) ? sessionStorage.getItem(tokenKey) : $('meta[name=_token]').attr('content'));
+    }
+
+    if ($(this).find('button[type=submit]:focus').attr('name') && $(this).find('button[type=submit]:focus').attr('value')) {
+      // Set new value
+      formData.append($(this).find('button[type=submit]:focus').attr('name'), $(this).find('button[type=submit]:focus').attr('value'));
+    }
+
+    if ($('.modal.show').length > 1) {
+      formData.append('__modal_index', $('.modal.show').length);
+    }
+
+    xhr = $.ajax({
+      method: 'POST',
+      context: this,
+      url: context.attr('action'),
+      data: formData,
+      contentType: false,
+      processData: false,
+      beforeSend: function (progress) {
+        if (xhr) {
+          xhr.abort();
+        }
+
+        // Focus to the submit button
+        context.find('button[type=submit]').addClass('disabled').find('i.mdi').removeClass('mdi-check').addClass('mdi-loading mdi-spin').focus().blur();
+
+        // Remove all previous field checker
+        context.find('input, textarea, select').removeClass('is-invalid');
+        context.find('.input-group-text, .select2-selection').removeClass('border-danger');
+
+        // Remove all previous field error message
+        context.find('[data-role=validation-callback]').removeAttr('class').html('');
+
+        if (typeof $.fn.tooltip !== 'undefined') {
+          $('body').tooltip('dispose');
+        }
+
+        if (typeof $.fn.popover !== 'undefined') {
+          $('body').popover('dispose');
+        }
+      },
+      statusCode: {
+        301: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            successBuzzer.play();
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          // Validation success, hide form modal and redirect
+          context.closest('.modal').modal('hide');
+
+          if ($('.modal.show').length === 0 || response.redirect) {
+            // Redirect only when no modal is open
+            return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+          }
+        },
+        400: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            warningBuzzer.play();
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          let margin = '3'; // 1rem
+          let rounded = '3'; // 1rem
+          let appendTo = context.children().last();
+
+          if (context.closest('.modal:visible').length && context.find('.modal-footer').length) {
+            margin = '0';
+
+            if (context.hasClass('modal-content')) {
+              rounded = '0';
+            }
+          }
+
+          if (appendTo.hasClass('opt-btn')) {
+            appendTo = appendTo.prev();
+          }
+
+          // Validation error
+          if (!context.find('[data-role=validation-callback]').length) {
+            $(`<div class="alert alert-warning py-1 rounded-${rounded} mb-${margin}" data-role="validation-callback"></div>`).insertBefore(appendTo);
+          } else {
+            context.find('[data-role=validation-callback]').addClass('alert alert-warning py-1 rounded-' + rounded + ' mb-' + margin);
+          }
+
+          let index = 0;
+
+          $.each(response.message, function (key, val) {
+            context.find(':input[name=' + key + ']').addClass('is-invalid');
+            context
+              .find(':input[name=' + key + ']')
+              .prev('.input-group-text')
+              .addClass('border-danger');
+            context
+              .find(':input[name=' + key + ']')
+              .next('.input-group-text')
+              .addClass('border-danger');
+            context
+              .find(':input[name=' + key + ']')
+              .next('.select2-container')
+              .find('.select2-selection')
+              .addClass('border-danger');
+            $('<p class="my-1' + (index ? ' border-top border-warning' : '') + '">' + val + '</p>').appendTo(context.find('[data-role=validation-callback]'));
+
+            index++;
+          });
+
+          // Form maybe hidden somewhere else, trigger open hidden wrapper to show it
+          if ($(this).find('.click-on-invalid').length) {
+            $(this).find('.click-on-invalid').trigger('click');
+          }
+
+          var selector = 'html, body';
+
+          if (context.closest('.modal:visible').length) {
+            selector = '.modal';
+          }
+
+          $(selector).animate(
+            {
+              scrollTop: $('[data-role=validation-callback]').offset().top + 60
+            },
+            200
+          );
+
+          // Auto-reload captcha on validation error
+          if (context.find('.captcha-refresh').length) {
+            context.find('.captcha-refresh').trigger('click');
+            context.find('input[name=captcha]').val('');
+          }
+        },
+        403: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            warningBuzzer.play();
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        },
+        404: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            warningBuzzer.play();
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        },
+        500: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            failBuzzer.play();
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        }
+      }
+    })
+      .done(function (response) {
+        // Animate the submit button
+        context.find('button[type=submit]').removeClass('disabled').find('i.mdi').removeClass('mdi-loading mdi-spin').addClass('mdi-check');
+
+        // Remove element
+        if (typeof response.remove_element !== 'undefined' && $(response.remove_element).length) {
+          $(response.remove_element).remove();
+        }
+
+        // Append to element
+        if (typeof response.prepend_to !== 'undefined' && typeof response.content !== 'undefined') {
+          $(response.content).prependTo(typeof response.in_context !== 'undefined' && response.in_context ? context.closest(response.prepend_to) : response.prepend_to);
+        }
+
+        // Prepend to element
+        if (typeof response.append_to !== 'undefined' && typeof response.content !== 'undefined') {
+          $(response.content).appendTo(typeof response.in_context !== 'undefined' && response.in_context ? context.closest(response.append_to) : response.append_to);
+        }
+
+        // Insert before element
+        if (typeof response.insert_before !== 'undefined' && typeof response.content !== 'undefined') {
+          $(response.content).insertBefore(typeof response.in_context !== 'undefined' && response.in_context ? context.closest(response.insert_before) : response.insert_before);
+        }
+
+        // Insert after element
+        if (typeof response.insert_after !== 'undefined' && typeof response.content !== 'undefined') {
+          $(response.content).insertAfter(typeof response.in_context !== 'undefined' && response.in_context ? context.closest(response.insert_after) : response.insert_after);
+        }
+
+        if (typeof response.target !== 'undefined') {
+          // Redirect into target
+          if (typeof response.popup !== 'undefined' && response.popup) {
+            ($('.modal').modal('hide'),
+              $('<a href="' + response.target + '" class="--modal"></a>')
+                .appendTo('body')
+                .trigger('click')
+                .remove());
+          } else {
+            $('<a href="' + response.target + '" class="--xhr"></a>')
+              .appendTo('body')
+              .trigger('click')
+              .remove();
+          }
+
+          return;
+        } else if (typeof response.element !== 'undefined' && typeof response.content !== 'undefined') {
+          // Modify element
+          $(response.element).html(response.content);
+          context.closest('.modal').modal('hide');
+        } else if (typeof response.meta !== 'undefined' && typeof response.meta.popup !== 'undefined' && response.meta.popup) {
+          if (typeof response.meta.keep_modal === 'undefined') {
+            // Hide previous modal
+            $('.modal').modal('hide');
+          }
+
+          let template = parser.parse('core/modal.twig', response);
+
+          if (response.meta?.title === undefined) {
+            const newTemplate = $(template);
+
+            // Remove modal header
+            newTemplate.find('.modal-header').remove();
+
+            // Get new template
+            template = newTemplate.prop('outerHTML');
+          }
+
+          $(template).appendTo('body').modal('show', {
+            backdrop: 'static',
+            keyboard: false
+          });
+
+          if (typeof response.reactivate !== 'undefined') {
+            reactivate(response.reactivate);
+          }
+        } else {
+          // Play sound
+          if (config.actionSound) {
+            successBuzzer.play();
+          }
+
+          // Validation success, hide form modal and follow response
+          context.closest('.modal').modal('hide');
+
+          if ($('.modal.show').length === 0 || response.redirect) {
+            // Redirect only when no modal is open
+            return throw_exception(response.code, response.message, response.target, response.redirect);
+          }
+        }
+
+        if (reset) {
+          context.trigger('reset');
+          context.find('textarea').css('height', 'auto');
+        }
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        context.find('button[type=submit]').removeClass('disabled').find('i.mdi').removeClass('mdi-loading mdi-spin').addClass('mdi-check');
+      });
+  });
+
+  /**
+   * On submit form method get, such a search form
+   */
+  $('body:not(.no-ajax)').on('submit', 'form[method=GET]:not(.no-ajax):not([target=_blank])', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const actionUrl = form.attr('action') || window.location.href;
+
+    // Build query string from form inputs
+    const formData = new FormData(form[0]);
+    const params = new URLSearchParams();
+
+    // Convert FormData to URLSearchParams
+    for (let [key, value] of formData.entries()) {
+      // Handle multiple values with the same name
+      if (params.has(key)) {
+        // If already exists, convert to array
+        const existing = params.get(key);
+        if (Array.isArray(existing)) {
+          existing.push(value);
+          params.set(key, existing);
+        } else {
+          params.set(key, [existing, value]);
+        }
+      } else {
+        params.append(key, value);
+      }
+    }
+
+    // Add submit button value if exists
+    const submitButton = form.find('button[type=submit]:focus, input[type=submit]:focus');
+    if (submitButton.length) {
+      const buttonName = submitButton.attr('name');
+      const buttonValue = submitButton.attr('value');
+      if (buttonName && buttonValue) {
+        params.append(buttonName, buttonValue);
+      }
+    }
+
+    // Build final URL
+    const queryString = params.toString();
+    const finalUrl = queryString ? `${actionUrl}${actionUrl.includes('?') ? '&' : '?'}${queryString}` : actionUrl;
+
+    // Create and trigger link
+    $('<a href="' + finalUrl + '" class="--xhr"></a>')
+      .appendTo('body')
+      .trigger('click')
+      .remove();
+  });
+
+  /**
+   * Initial of hyperlink that use XHR Request
+   */
+  $('body:not(.no-ajax)').on('click touch', 'a.--xhr, a.--modal', function (e) {
+    if (
+      !$(this).attr('href') ||
+      $(this).attr('href') === '#' ||
+      $(this).attr('href') === 'javascript:void(0)' ||
+      $(this).attr('data-bs-toggle') === 'dropdown' ||
+      $(this).hasClass('dropdown-toggle') ||
+      $(this).attr('href').indexOf(config.baseUrl) === -1 ||
+      $(this).attr('target')
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+
+    let context = $(this);
+    let oldTitle = $('[data-role=title]:first').text();
+    let oldIcon = $('[data-role=icon]:first').attr('class');
+    let backupIcon = 'mdi mdi-check';
+    let identifier = $.now();
+
+    if (context.hasClass('--modal') && (UA !== 'mobile' || context.hasClass('--force-xs'))) {
+      context.data('identifier', identifier);
+      context.data('prefer', 'modal');
+
+      let output = parser.parse('core/modal.twig', {
+        identifier: identifier
+      });
+
+      $(output).appendTo('body').modal('show', {
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
+
+    xhr = $.ajax({
+      url: context.attr('href'),
+      method: 'POST',
+      data: context.data(),
+      context: this,
+      beforeSend: function (progress) {
+        if (xhr) {
+          xhr.abort();
+        }
+
+        $('body').css({
+          cursor: 'wait'
+        });
+
+        // Check if progress need to be shown in the clicked element
+        if (context.hasClass('show-progress') && !context.hasClass('--modal')) {
+          // Prevent click active link
+          context.addClass('disabled').prop('disabled', true);
+
+          // Trigger icon to spin
+          if (context.find('i.mdi').length) {
+            // Backup button icon
+            backupIcon = context.find('i.mdi').attr('class');
+
+            context.find('i.mdi').removeAttr('class').addClass('mdi mdi-loading mdi-spin');
+          }
+        } else if (!context.hasClass('--prevent-modify') && !context.hasClass('--modal')) {
+          // Otherwise
+          $('[data-role=title]').text(phrase('Loading...'));
+          $('[data-role=icon]').removeAttr('class').addClass('mdi mdi-loading mdi-spin');
+        }
+
+        if (typeof $.fn.tooltip !== 'undefined') {
+          $('[data-bs-toggle=tooltip]').tooltip('hide');
+        }
+
+        if (typeof $.fn.popover !== 'undefined') {
+          $('[data-bs-toggle=popover]').popover('hide');
+        }
+      },
+      statusCode: {
+        301: function (response) {
+          if ($('.modal#dynamic-modal-' + identifier).length) {
+            // Close modal
+            $('.modal#dynamic-modal-' + identifier).modal('hide');
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        },
+        403: function (response) {
+          if ($('.modal#dynamic-modal-' + identifier).length) {
+            // Close modal
+            $('.modal#dynamic-modal-' + identifier).modal('hide');
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        },
+        404: function (response) {
+          if ($('.modal#dynamic-modal-' + identifier).length) {
+            // Close modal
+            $('.modal#dynamic-modal-' + identifier).modal('hide');
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        },
+        500: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            failBuzzer.play();
+          }
+
+          if ($('.modal#dynamic-modal-' + identifier).length) {
+            // Close modal
+            $('.modal#dynamic-modal-' + identifier).modal('hide');
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+        }
+      }
+    })
+      .done(function (response) {
+        $('body').css({
+          cursor: 'default'
+        });
+
+        if (context.hasClass('show-progress') && !context.hasClass('--modal')) {
+          // Prevent click active link
+          context.removeClass('disabled').prop('disabled', false);
+
+          // Trigger icon to spin
+          if (context.find('i.mdi').length) {
+            context.find('i.mdi').removeAttr('class').addClass(backupIcon);
+          }
+        }
+
+        if (typeof response.target !== 'undefined') {
+          // Redirect into target
+          if (typeof response.popup !== 'undefined' && response.popup) {
+            ($('.modal').modal('hide'),
+              $('<a href="' + response.target + '" class="--modal"></a>')
+                .appendTo('body')
+                .trigger('click')
+                .remove());
+          } else if (response.target) {
+            $('<a href="' + response.target + '" class="--xhr"></a>')
+              .appendTo('body')
+              .trigger('click')
+              .remove();
+          } else {
+            // Indicates the response is exception
+            return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+          }
+
+          return;
+        } else if (typeof response.toggle_html !== 'undefined') {
+          // Append HTML response
+          return context.parent().html(response.toggle_html);
+        } else {
+          const oldStuff = {
+            identifier: identifier,
+            parent_modal: context.closest('.modal').attr('id'),
+            title: oldTitle,
+            icon: oldIcon
+          };
+
+          // Parse response
+          return parser.render(context, response, false, oldStuff);
+        }
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        $('body').css({
+          cursor: 'default'
+        });
+
+        if (context.hasClass('show-progress') && !context.hasClass('--modal')) {
+          // Prevent click active link
+          context.removeClass('disabled').prop('disabled', false);
+
+          // Trigger icon to spin
+          if (context.find('i.mdi').length) {
+            context.find('i.mdi').removeAttr('class').addClass(backupIcon);
+          }
+        }
+
+        $('[data-role=title]').text(oldTitle);
+        $('[data-role=icon]').removeAttr('class').addClass(oldIcon);
+      });
+  });
+
+  /**
+   * Simple request and modify
+   */
+  $('body').on('click', '.--modify', function (e) {
+    e.preventDefault();
+
+    xhr = $.ajax({
+      url: $(this).data('href') ? $(this).data('href') : $(this).attr('href'),
+      method: 'POST',
+      context: this,
+      data: $(this).data(),
+      beforeSend: function () {
+        $(this).prop('disabled', true);
+        $('[data-bs-toggle=tooltip]').tooltip('dispose');
+      },
+      complete: function () {
+        $(this).prop('disabled', false);
+      },
+      statusCode: {
+        403: function (response, status, error) {
+          if (config.actionSound) {
+            warningBuzzer.play();
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            response = response.responseJSON;
+
+            throw_exception(response.code, response.message);
+          }
+        }
+      }
+    })
+      .done(function (response) {
+        if (typeof response.element !== 'undefined' && response.content !== 'undefined') {
+          $(response.element).html(response.content);
+
+          if (typeof response.class_add !== 'undefined' && typeof response.class_remove !== 'undefined') {
+            $(this).removeClass(response.class_remove).addClass(response.class_add);
+          }
+        }
+      })
+      .fail(function (response, status, error) {
+        if (response.statusText == 'abort') {
+          return;
+        }
+      });
+  });
+
+  /**
+   * Delete item after confirmed
+   */
+  $('body').on('click.delete touch.delete', '.--delete-anyway', function (e) {
+    // Prevent browser to take place as well
+    e.preventDefault();
+
+    // Generate the response data
+    xhr = $.ajax({
+      url: $(this).attr('href'),
+      method: 'POST',
+      context: this,
+      data: {
+        batch: $(this).data('bulk-delete') ? 1 : 0,
+        items: $('input[name^=bulk_delete]:checked')
+          .map(function () {
+            return $(this).val();
+          })
+          .get()
+      },
+      beforeSend: function (progress) {
+        if (xhr) {
+          xhr.abort();
+        }
+
+        $(this).find('i.mdi').removeAttr('class').addClass('mdi mdi-refresh mdi-spin');
+
+        if ($.fn.tooltip !== 'undefined') {
+          $('body').tooltip('dispose');
+        }
+
+        if (typeof $.fn.popover !== 'undefined') {
+          $('body').popover('dispose');
+        }
+      },
+      statusCode: {
+        301: function (response) {
+          // Play sound
+          if (config.actionSound) {
+            successBuzzer.play();
+          }
+
+          // Delete success, hide confirmation modal and redirect
+          $(this).closest('.modal').modal('hide');
+
+          // Throw messages
+          return throw_exception(response.code, response.message, response.target, response.redirect);
+        },
+        403: function (response) {
+          // Permission denied, hide confirmation modal and redirect
+          $(this).closest('.modal').modal('hide');
+
+          // Throw messages
+          return throw_exception(response.code, response.message, response.target, response.redirect);
+        }
+      }
+    })
+      .done(function (response) {
+        // Play sound
+        if (config.actionSound) {
+          successBuzzer.play();
+        }
+
+        $(this).find('i.mdi').removeAttr('class').addClass('mdi mdi-check');
+
+        // Delete success, hide confirmation modal and follow response
+        $(this).closest('.modal').modal('hide');
+
+        // Throw messages
+        return throw_exception(response.code, response.message, response.target, response.redirect);
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        if (typeof response.responseJSON !== 'undefined') {
+          // Get response JSON
+          response = response.responseJSON;
+        }
+
+        // Play sound
+        if (config.actionSound && $.inArray(response.code, [500]) !== -1) {
+          failBuzzer.play();
+        }
+
+        // Throw messages
+        return throw_exception(response.code, response?.message, response?.target, response?.redirect);
+      });
+  });
+
+  /**
+   * On click expandable
+   */
+  $('body').on('click touch', '[data-role=expand]', function (e) {
+    // Prevent browser to take place as well
+    e.preventDefault();
+
+    if ($(this).find('.mdi').hasClass('mdi-arrow-expand')) {
+      $(this).attr('data-bs-original-title', phrase('Collapse'));
+      $(this).find('.mdi').removeClass('mdi-arrow-expand').addClass('mdi-arrow-collapse');
+    } else {
+      $(this).attr('data-bs-original-title', phrase('Expand'));
+      $(this).find('.mdi').removeClass('mdi-arrow-collapse').addClass('mdi-arrow-expand');
+    }
+
+    $('body').toggleClass('content-expanded');
+
+    $('[data-role=table], [role=form]').height(function (index, height) {
+      return (
+        $(window).outerHeight(true) -
+        (($('[data-role=header]:visible').outerHeight(true) ?? 0) +
+          ($('[data-role=breadcrumb]:visible').outerHeight(true) ?? 0) +
+          ($('[data-role=meta]:visible').outerHeight(true) ?? 0) +
+          ($('[data-role=toolbar]:visible').outerHeight(true) ?? 0) +
+          ($('[data-role=pagination]:visible').outerHeight(true) ?? 0) +
+          ($('[data-role=submit]:visible').outerHeight(true) ?? 0))
+      );
+    });
+
+    refreshTooltips();
+  });
+
+  /**
+   * On click removable
+   */
+  $('body').on('click touch', '[data-role=close]', function (e) {
+    // Prevent browser to take place as well
+    e.preventDefault();
+  });
+
+  /**
+   * Move element up / down
+   */
+  $('body')
+    .on('click touch', '.--move-up', function (e) {
+      // Move element down
+      e.preventDefault();
+      $(this)
+        .closest($(this).attr('data-element'))
+        .insertBefore($(this).closest($(this).attr('data-element')).prev($(this).attr('data-element')));
+    })
+    .on('click touch', '.--move-down', function (e) {
+      // Move element up
+      e.preventDefault();
+      $(this)
+        .closest($(this).attr('data-element'))
+        .insertAfter($(this).closest($(this).attr('data-element')).next($(this).attr('data-element')));
+    });
+
+  /**
+   * On bootstrap toast hidden
+   */
+  $('body').on('hidden.bs.toast', '.toast', function (e) {
+    $(this).closest('.toast-container').remove();
+  });
+
+  /**
+   * On bootstrap modal hidden
+   */
+  $('body')
+    .on('shown.bs.modal', '.modal', function (e) {
+      // Fix the scrollbar for creating duplicate object
+      $('html').addClass('fix-scrollbar');
+    })
+    .on('shown.bs.modal', '.modal:not(.dragless)', function (e) {
+      let context = $(this).find('.modal-dialog');
+
+      require.js([config.baseUrl + 'assets/draggable/jquery-ui.draggable.min.js'], function () {
+        // Apply jquery-ui draggable
+        context.draggable({
+          cursor: 'move',
+          handle: '.modal-header'
+        });
+        $('.ui-draggable-handle').css('cursor', 'move');
+      });
+    });
+
+  /**
+   * On bootstrap modal hidden
+   */
+  $('body').on('hidden.bs.modal', '.modal', function (e) {
+    $('html').removeClass('fix-scrollbar');
+
+    $('.dcalendarpicker, #sortableListsBase, .note-popover').remove();
+
+    if ($('.modal:visible').length) {
+      $('html').addClass('fix-scrollbar');
+      $('body').addClass('modal-open');
+    }
+
+    if (!$(this).hasClass('--prevent-remove')) {
+      $(this).remove();
+    }
+
+    $('.modal.note-modal').remove();
+  });
+
+  /**
+   * On navbar collapse
+   */
+  $('body')
+    .on('shown.bs.collapse', '.navbar-collapse', function (e) {
+      ($('html').addClass('overflow-hidden'), $('body').addClass('sidebar-expanded').removeClass('sidebar-collapsing sidebar-collapsed'), $('.navbar').first().removeClass('bg-transparent'));
+    })
+    .on('show.bs.collapse', '.navbar-collapse', function (e) {
+      $('body').addClass('sidebar-collapsing');
+    })
+    .on('hidden.bs.collapse', '.navbar-collapse', function (e) {
+      ($('html').removeClass('overflow-hidden'), $('body').removeClass('sidebar-collapsing sidebar-expanded').addClass('sidebar-collapsed'));
+      $('.leading').visible(true) ? $('.navbar').first().addClass('bg-transparent') : '';
+    })
+    .on('hide.bs.collapse', '.navbar-collapse', function (e) {
+      $('body').addClass('sidebar-collapsing');
+    });
+
+  /**
+   * On bootstrap collapse shown / collapsed
+   */
+  $('body').on('hide.bs.collapse show.bs.collapse', '[data-role=description]', function (e) {
+    $('[data-role=table]').length ? $('body').css('overflow-y', 'hidden') : null;
+  });
+  $('body')
+    .on('hidden.bs.collapse', '[data-role=description]', function (e) {
+      $('[data-role=table]').animate(
+        {
+          height:
+            $(window).outerHeight(true) -
+            (($('[data-role=header]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=breadcrumb]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=meta]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=toolbar]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=pagination]:visible').outerHeight(true) ?? 0))
+        },
+        {
+          complete: function () {
+            $('body').css('overflow-y', 'auto');
+          }
+        }
+      );
+    })
+    .on('shown.bs.collapse', '[data-role=description]', function (e) {
+      $('[data-role=table]').animate(
+        {
+          height:
+            $(window).outerHeight(true) -
+            (($('[data-role=header]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=breadcrumb]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=meta]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=toolbar]:visible').outerHeight(true) ?? 0) +
+              ($('[data-role=pagination]:visible').outerHeight(true) ?? 0))
+        },
+        {
+          complete: function () {
+            $('body').css('overflow-y', 'auto');
+          }
+        }
+      );
+    });
+
+  /**
+   * Sidebar for mobile device
+   */
+  $('body').on('click touch', '[data-toggle=sidebar]', function (e) {
+    if ($('body').hasClass('sidebar-collapsed')) {
+      $(this).find('i').removeClass('mdi-arrow-right').addClass('mdi-arrow-left');
+    } else {
+      $(this).find('i').removeClass('mdi-arrow-left').addClass('mdi-arrow-right');
+    }
+
+    $('.navbar-collapse').collapse('hide');
+    $('body').hasClass('sidebar-collapsed')
+      ? ($('body').addClass('sidebar-expanded').removeClass('sidebar-collapsed'), UA === 'mobile' ? $('html').addClass('overflow-hidden') : null)
+      : $('body').hasClass('sidebar-expanded')
+        ? ($('body').removeClass('sidebar-expanded').addClass('sidebar-collapsed'), $('html').removeClass('overflow-hidden'))
+        : UA === 'mobile'
+          ? ($('body').addClass('sidebar-expanded'), $('html').addClass('overflow-hidden'))
+          : $('body').addClass('sidebar-collapsed');
+
+    // Wait event to complete
+    setTimeout(function () {
+      // Trigger window resize to resize the table
+      $(window).trigger('resize');
+    }, 300);
+  });
+
+  /**
+   * Expand and collapse for sidebar menu
+   */
+  $('body').on('click touch', '[data-toggle=expand-collapse]', function (e) {
+    e.preventDefault();
+
+    $(this).closest('li').siblings().find('[data-toggle=expand-collapse]').removeClass('is-expanded');
+    $(this).closest('li').siblings().find('ul').collapse('hide');
+    if ($(this).next('ul').hasClass('show')) {
+      $(this).removeClass('is-expanded');
+      $(this).next('ul').collapse('hide');
+    } else {
+      $(this).addClass('is-expanded');
+      $(this).next('ul').collapse('show');
+    }
+  });
+
+  /**
+   * Dependent dropdown
+   */
+  $('body').on('change', 'select[data-to-change]', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: $(this).closest('form').attr('action'),
+      method: 'POST',
+      data: {
+        trigger: 'dropdown',
+        value: $(this).val(),
+        selector: $(this).attr('data-to-change')
+      },
+      context: this,
+      beforeSend: function () {
+        $(this)
+          .closest('form')
+          .find('select[name=' + $(this).attr('data-to-change') + ']')
+          .empty();
+        $(this)
+          .closest('form')
+          .find('select[name=' + $(this).attr('data-to-change') + ']')
+          .html('<option>&nbsp;</option>')
+          .attr('disabled', true)
+          .trigger('change');
+      }
+    })
+      .done(function (response) {
+        if (typeof response.suggestions !== 'undefined') {
+          let target = $(this)
+            .closest('form')
+            .find('select[name=' + response.selector + ']');
+          target.empty();
+          let results = typeof response.suggestions.results !== 'undefined' ? response.suggestions.results : response.suggestions;
+          if (Array.isArray(results)) {
+            results.forEach(function (item) {
+              target.append(new Option(item.text, item.id, false, false));
+            });
+          }
+          target.attr('disabled', false).trigger('change');
+        } else if (typeof response.content !== 'undefined') {
+          $(this)
+            .closest('form')
+            .find('select[name=' + response.selector + ']')
+            .html(response.content)
+            .attr('disabled', false)
+            .select2();
+          $(this)
+            .closest('form')
+            .find('select[name=' + response.selector + ']')
+            .trigger('change');
+        }
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        if (typeof response.responseJSON !== 'undefined') {
+          // Get response JSON
+          response = response.responseJSON;
+        }
+
+        return throw_exception(response.code, response?.message);
+      });
+  });
+
+  /**
+   * Get dropdown content
+   */
+  $('body').on('change', 'select.get-dropdown-content', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: $(this).closest('form').attr('action'),
+      method: 'POST',
+      data: {
+        trigger: 'get-dropdown-content',
+        value: $(this).val()
+      },
+      context: this,
+      beforeSend: function () {
+        $(this).closest('.form-group').find('.dropdown-content').remove();
+      }
+    })
+      .done(function (response) {
+        if (typeof response.content !== 'undefined') {
+          $(response.content).addClass('dropdown-content mt-3').appendTo($(this).closest('.form-group'));
+        } else if (typeof response.fields !== 'undefined' && typeof response.fields === 'object') {
+          $.each(response.fields, function (key, val) {
+            if ($('input[name=' + key + ']').length) {
+              $('input[name=' + key + ']').val(val);
+            } else if ($('textarea[name=' + key + ']').length) {
+              $('textarea[name=' + key + ']').val(val);
+            }
+          });
+        }
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        if (typeof response.responseJSON !== 'undefined') {
+          // Get response JSON
+          response = response.responseJSON;
+        }
+
+        return throw_exception(response.code, response?.message);
+      });
+  });
+
+  /**
+   * On change submit form, such a filter form
+   */
+  $('body').on('change', '.filter-form select', function (e) {
+    e.preventDefault();
+
+    $(this).closest('form').trigger('submit');
+  });
+
+  /**
+   * Preview image before upload
+   */
+  $('body').on('change', '[data-role=image-upload]', function (e) {
+    // Prevent browser to take place as well
+    e.preventDefault();
+
+    var context = $(this);
+
+    if (this.files && this.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        if (context.hasClass('multiple')) {
+          context.parents('.fileupload').clone().appendTo(t.parents('.multiple-upload'));
+        }
+
+        context.parents('.btn-file').find('.upload_preview').attr('src', e.target.result);
+      };
+
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+
+  /**
+   * Check all rows
+   */
+  $('body')
+    .on('change', '[data-role=checker]', function (e) {
+      var _parent = $(this).data('parent');
+
+      if ($(this).is(':checked')) {
+        $(this).closest(_parent).find(':checkbox.form-check-input').prop('checked', true);
+
+        if ($(this).hasClass('bulk-delete')) {
+          $('[data-bulk-delete=true]').prev('.btn').removeClass('rounded-end');
+          $('[data-bulk-delete=true]').removeClass('d-none disabled');
+        }
+      } else {
+        $(this).closest(_parent).find(':checkbox.form-check-input').prop('checked', false);
+
+        if ($(this).hasClass('bulk-delete')) {
+          $('[data-bulk-delete=true]').prev('.btn').addClass('rounded-end');
+          $('[data-bulk-delete=true]').addClass('d-none disabled');
+        }
+      }
+    })
+    .on('change', '.form-check-input', function (e) {
+      var _parent = $(this).parents('div').find('[data-role=checker]').attr('data-parent');
+
+      if ($(this).closest(_parent).find('input.form-check-input').is(':checked') > 0) {
+        $(this).closest(_parent).find('[data-role=checker]').prop('checked', true);
+
+        if (typeof e.target.name !== 'undefined' && e.target.name === 'bulk_delete[]') {
+          $('[data-bulk-delete=true]').prev('.btn').removeClass('rounded-end');
+          $('[data-bulk-delete=true]').removeClass('d-none disabled');
+        }
+      } else {
+        $(this).closest(_parent).find('[data-role=checker]').prop('checked', false);
+
+        if (typeof e.target.name !== 'undefined' && e.target.name === 'bulk_delete[]') {
+          $('[data-bulk-delete=true]').prev('.btn').addClass('rounded-end');
+          $('[data-bulk-delete=true]').addClass('d-none disabled');
+        }
+      }
+    });
+
+  /**
+   * Attributions type field, add attribute
+   */
+  $('body').on('click touch', '[data-role=add-attribution]', function (e) {
+    e.preventDefault();
+
+    $(`
+      <div class="row mb-1">
+        <div class="col-4 pe-0">
+          <input type="text" name="${$(this).attr('data-label')}" class="form-control form-control-sm" placeholder="${$(this).attr('data-label-placeholder')}" autocomplete="off" />
+        </div>
+        <div class="col-5 pe-0">
+          <input type="text" name="${$(this).attr('data-value')}" class="form-control form-control-sm" placeholder="${$(this).attr('data-value-placeholder')}" autocomplete="off" />
+        </div>
+        <div class="col-3">
+          <div class="btn-group btn-group-sm float-end">
+            <button type="button" class="btn btn-secondary --move-up" data-element=".row" data-bs-toggle="tooltip" title="${phrase('Move Up')}">
+              <i class="mdi mdi-arrow-collapse-up"></i>
+            </button>
+            <button type="button" class="btn btn-secondary --move-down" data-element=".row" data-bs-toggle="tooltip" title="${phrase('Move Down')}">
+              <i class="mdi mdi-arrow-collapse-down"></i>
+            </button>
+            <button type="button" class="btn btn-secondary float-end" data-role="remove-attribution" data-element=".row" data-bs-toggle="tooltip" title="${phrase('Remove')}">
+              <i class="mdi mdi-delete"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `).appendTo($(this).closest('.attribution-input').find('.attribution-input-body'));
+
+    $('[data-bs-toggle=tooltip]').tooltip();
+  });
+
+  /**
+   * Attributions type field, remove existing
+   */
+  $('body').on('click touch', '[data-role=remove-attribution]', function (e) {
+    e.preventDefault();
+
+    $(this)
+      .closest($(this).attr('data-element'))
+      .fadeOut(200, function () {
+        $('[data-bs-toggle=tooltip]').tooltip('dispose');
+
+        $(this).remove();
+      });
+  });
+
+  /**
+   * Accordion field type field add
+   */
+  $('body').on('click touch', '[data-role=add-accordion]', function (e) {
+    e.preventDefault();
+
+    $(`
+      <div class="card mb-3">
+        <div class="card-header p-2">
+          <div class="input-group input-group-sm">
+            <input type="text" name="${$(this).attr('data-field')}[title][]" class="form-control" placeholder="${phrase('Accordion Title')}" id="${$(this).attr('data-field')}_input" />
+            <button type="button" class="btn btn-secondary --move-up" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Move Up')}">
+              <i class="mdi mdi-arrow-collapse-up"></i>
+            </button>
+            <button type="button" class="btn btn-secondary --move-down" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Move Down')}">
+              <i class="mdi mdi-arrow-collapse-down"></i>
+            </button>
+            <button type="button" class="btn btn-secondary" data-role="remove-accordion" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Remove')}">
+              <i class="mdi mdi-delete"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-2">
+          <textarea name="${$(this).attr('data-field')}[body][]" class="form-control" data-role="wysiwyg" placeholder="${phrase('Accordion Body')}" id="${$(this).attr('data-field')}_input" rows="1"></textarea>
+        </div>
+      </div>
+    `).insertBefore($(this));
+
+    $('[data-bs-toggle=tooltip]').tooltip();
+
+    reactivate('wysiwyg');
+  });
+
+  /**
+   * Accordion field type, remove existing
+   */
+  $('body').on('click touch', '[data-role=remove-accordion]', function (e) {
+    e.preventDefault();
+
+    $(this)
+      .closest($(this).attr('data-element'))
+      .fadeOut(200, function () {
+        $('[data-bs-toggle=tooltip]').tooltip('dispose');
+
+        $(this).remove();
+      });
+  });
+
+  /**
+   * Carousel type field
+   */
+  $('body').on('click touch', '[data-role=add-carousel]', function (e) {
+    e.preventDefault();
+
+    const length = $(this).closest('.mb-3').find('.card').length;
+
+    $(`
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label class="text-muted" for="${$(this).attr('data-field')}_bg_${length}_input">${phrase('Background')}</label>
+            <div data-provides="fileupload" class="fileupload fileupload-new">
+              <span class="btn btn-file d-block">
+                <input type="file" name="${$(this).attr('data-field')}[background][${length}]" accept="images/*" data-role="image-upload" id="${$(this).attr('data-field')}_bg_${length}_input" />
+                <div class="fileupload-new text-center">
+                  <img class="img-fluid upload_preview rounded" src="${$(this).attr('data-image-placeholder')}" alt="${phrase('Preview')}" loading="lazy" decoding="async" />
+                </div>
+                <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.fileupload').find('input[type=file]').val(''), $(this).closest('.fileupload').find('img').attr('src', '${$(this).attr('data-image-placeholder')}'))">
+                  <i class="mdi mdi-delete"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" name="${$(this).attr('data-field')}[title][${length}]" class="form-control" placeholder="${phrase('Title')}" id="${$(this).attr('data-field')}_input" />
+          </div>
+          <div class="form-group mb-3">
+            <textarea name="${$(this).attr('data-field')}[description][${length}]" class="form-control" placeholder="${phrase('Description')}" id="${$(this).attr('data-field')}_input" rows="1"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <input type="text" name="${$(this).attr('data-field')}[link][${length}]" class="form-control" placeholder="${phrase('Target URL')}" id="${$(this).attr('data-field')}_input" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <input type="text" name="${$(this).attr('data-field')}[label][${length}]" class="form-control" placeholder="${phrase('Button Label')}" id="${$(this).attr('data-field')}_input" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer pt-1 pb-1">
+          <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-secondary --move-up" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Move Up')}">
+              <i class="mdi mdi-arrow-collapse-up"></i>
+            </button>
+            <button type="button" class="btn btn-secondary --move-down" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Move Down')}">
+              <i class="mdi mdi-arrow-collapse-down"></i>
+            </button>
+          </div>
+          <button type="button" class="btn btn-outline-danger btn-sm float-end" data-role="remove-carousel" data-element=".card">
+            <i class="mdi mdi-delete" data-bs-toggle="tooltip" title="${phrase('Remove')}"></i>
+          </button>
+        </div>
+      </div>
+    `).insertBefore($(this));
+
+    $('[data-bs-toggle=tooltip]').tooltip();
+  });
+
+  /**
+   * Carousel type field, remove existing
+   */
+  $('body').on('click touch', '[data-role=remove-carousel]', function (e) {
+    e.preventDefault();
+
+    $(this)
+      .closest($(this).attr('data-element'))
+      .fadeOut(200, function () {
+        $('[data-bs-toggle=tooltip]').tooltip('dispose');
+
+        $(this).remove();
+      });
+  });
+
+  /**
+   * Open option
+   */
+  $('body').on('click touch', '.--open-item-option', function (e) {
+    e.preventDefault();
+
+    $(this).blur();
+
+    let options = $(this).data('options');
+
+    if (options) {
+      let list_items = '';
+
+      $.each(options, function (key, val) {
+        list_items += `<a href="${val.url}" class="list-group-item list-group-item-action ${val.class}" data-prefer="${val.prefer}" target="${val.target}"><i class="mdi ${val.icon ?? 'mdi-blank'}"></i> ${val.label}</a>`;
+      });
+
+      $(`
+        <div class="modal modal-alert" id="options-modal" role="dialog" aria-labelledby="options-modal-title" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered rounded-4" role="document" style="max-width:360px">
+            <div class="modal-content border-hover rounded-4 border">
+              <div class="modal-body">
+                <div class="list-group list-group-flush">
+                  ${list_items}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `)
+        .appendTo('body')
+        .modal('show');
+    }
+  });
+
+  /**
+   * Open delete confirmation
+   */
+  $('body').on('click touch', '.--open-delete-confirm', function (e) {
+    e.preventDefault();
+
+    $(this).blur();
+    $(`
+      <div class="modal modal-alert" id="delete-modal" role="dialog" aria-labelledby="delete-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered rounded-4" role="document" style="max-width:360px">
+          <div class="modal-content border-hover rounded-4 border">
+            <div class="modal-body text-center">
+              <h5>${phrase('Delete Data')}</h5>
+              <div>
+                ${$(this).data('bulk-delete') ? $('input[name^=bulk_delete]:checked').length + ' ' + phrase('data will be deleted') : phrase('Are you sure want to delete this data?')}
+              </div>
+            </div>
+            <div class="modal-footer flex-nowrap p-0">
+              <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" data-bs-dismiss="modal" data-dismiss="modal">
+                ${phrase('Cancel')}
+              </button>
+              <a href="${$(this).attr('href')}" class="btn btn-lg btn-link text-danger fs-6 text-decoration-none col-6 m-0 rounded-0 --delete-anyway"${$(this).data('bulk-delete') ? ' data-bulk-delete="true"' : ''}>
+                <i class="mdi mdi-check"></i> ${phrase('Delete')}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `)
+      .appendTo('body')
+      .modal('show');
+  });
+
+  /**
+   * Remove previous dom when user start typing in the field
+   */
+  $('body').on('change keyup', 'input, textarea, select', function (e) {
+    // Remove highlighter class in the field
+    $(this).removeClass('is-invalid');
+    $(this).prev('.input-group-text').removeClass('border-danger');
+    $(this).next('.input-group-text').removeClass('border-danger');
+  });
+
+  /**
+   * Instant form submit if textarea entered
+   */
+  $('body').on('keydown keyup', 'textarea.--instant-submit', function (e) {
+    if (UA != 'mobile') {
+      if (e.which == 13 && !e.shiftKey) {
+        e.preventDefault();
+
+        $(this).blur();
+        $(this).closest('form').submit();
+      }
+    } else {
+      if ($(this).val()) {
+        $(this).next('button').removeClass('d-none');
+      } else {
+        $(this).next('button').addClass('d-none');
+      }
+    }
+  });
+
+  /**
+   * On click remove exception
+   */
+  $('body').on('click touch', '.alert.exception', function (e) {
+    // Prevent browser to take place as well
+    e.preventDefault();
+
+    $(this).fadeOut(200, function () {
+      $(this).remove();
+    });
+  });
+
+  /**
+   * Override bootstrap dropdown-menu
+   */
+  $('body').on('click', '.dropdown-menu a.dropdown-toggle', function (e) {
+    e.preventDefault();
+
+    if (!$(this).hasClass('show')) {
+      $(this).closest('.dropdown').find('ul.dropdown-menu').first().removeClass('show');
+    } else {
+      $(this).closest('.dropdown').find('ul.dropdown-menu').first().addClass('show');
+    }
+  });
+
+  /**
+   * Colorpicker
+   */
+  $('body').on('change', 'input[type=color]', function (e) {
+    if ($(this).closest('.card-body').length) {
+      if ($(this).hasClass('background-color')) {
+        $(this).closest('.card-body').css('background-color', $(this).val());
+      } else if ($(this).hasClass('foreground-color')) {
+        $(this).closest('.card-body').css('color', $(this).val());
+      }
+    }
+  });
+
+  /**
+   * Language picker
+   */
+  $('body').on('click touch', '[data-role=language]', function (e) {
+    if (!$(this).closest('li').find('ul').find('li').length) {
+      let context = $(this);
+
+      $.ajax({
+        url: $(this).attr('href'),
+        method: 'POST',
+        context: this,
+        data: {
+          prefer: 'dropdown'
+        }
+      })
+        .done(function (response) {
+          if (typeof response === 'object') {
+            $.each(response, function (key, val) {
+              $(`
+                  <li class="nav-item">
+                      <a href="${config.baseUrl}xhr/language/${val.code}" class="nav-link --xhr">
+                          <i class="mdi mdi-translate"></i> <span>${val.language}</span>
+                      </a>
+                  </li>
+              `).appendTo(context.closest('li').find('ul'));
+            });
+          }
+        })
+        .fail(function (response, textStatus, errorThrown) {
+          if (textStatus === 'abort') {
+            return;
+          }
+
+          if (typeof response.responseJSON !== 'undefined') {
+            // Get response JSON
+            response = response.responseJSON;
+          }
+
+          return throw_exception(response.code, response?.message);
+        });
+    }
+  });
+
+  /**
+   * Notification picker
+   */
+  $('body').on('click touch', '[data-role=notifications]', function (e) {
+    let context = $(this);
+
+    $.ajax({
+      url: $(this).attr('href'),
+      method: 'POST',
+      context: this,
+      data: {
+        prefer: 'dropdown'
+      },
+      beforeSend: function () {
+        context.closest('li').find('ul').html('');
+      }
+    })
+      .done(function (response) {
+        if (typeof response === 'object') {
+          context.closest('li').find('ul').css('minWidth', 340);
+          context.closest('li').find('ul').html(`
+                    <li class="nav-item px-3 mb-2 d-none d-md-block">
+                        <h4>${phrase('Notifications')}</h4>
+                    </li>
+                `);
+
+          if (response.length) {
+            $.each(response, function (key, val) {
+              $(`
+                <li class="nav-item px-2 mb-2">
+                  <a href="${val.url}" class="nav-link rounded --xhr" target="${val.target}">
+                    <div class="row g-0">
+                      <div class="col-2">
+                        <div class="position-relative">
+                          <i class="mdi ${'comment' === val.type ? 'mdi-comment-processing bg-success' : 'reply' === val.type ? 'mdi-reply bg-dark' : 'like' === val.type ? 'mdi-thumb-up bg-primary' : 'upvote' === val.type ? 'mdi-arrow-up-circle bg-info' : 'mdi-heart bg-danger'} text-light px-1 rounded-circle gradient position-absolute end-0 bottom-0"></i>
+                          <img src="${val.avatar}" class="rounded-circle img-fluid" alt="${val.user}" loading="lazy" decoding="async" />
+                        </div>
+                      </div>
+                      <div class="col-10 ps-2">
+                        <p class="mb-0">
+                          <b>${val.user}</b> ${val.text}
+                        </p>
+                        <p class="mb-0 text-muted">
+                          ${val.created_at}
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              `).appendTo(context.closest('li').find('ul'));
+            });
+          } else {
+            $(`
+              <li class="nav-item px-3 mb-2">
+                <div class="alert alert-warning callout">
+                  ${phrase('You have no notification at the moment.')}
+                </div>
+              </li>
+            `).appendTo(context.closest('li').find('ul'));
+          }
+        }
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        if (typeof response.responseJSON !== 'undefined') {
+          // Get response JSON
+          response = response.responseJSON;
+        }
+
+        return throw_exception(response.code, response?.message);
+      });
+  });
+
+  /**
+   * Share button
+   */
+  $('body').on('click touch', '[data-role=share]', function (e) {
+    const context = $(this);
+
+    if (!context.data('href')) return;
+
+    xhr = $.ajax({
+      url: config.baseUrl + context.data('href'),
+      method: 'POST',
+      data: context.data(),
+      context: this
+    }).done(function (response) {
+      if (navigator.share && typeof response.meta !== 'undefined' && typeof response.links !== 'undefined') {
+        navigator
+          .share({
+            text: response.meta.title,
+            url: response.links.current_page
+          })
+          .then(() => {
+            console.log('Thanks for sharing!');
+          })
+          .catch(console.error);
+      } else {
+        alert("This browser doesn't support the Web Share API");
+      }
+    });
+  });
+
+  /**
+   * Password peek
+   */
+  $('body').on('click touch', '.password-peek', function (e) {
+    e.preventDefault();
+
+    $(this).toggleClass('peek');
+
+    if ($(this).hasClass('peek')) {
+      $(this).removeClass('mdi-eye-outline').addClass('mdi-eye-off-outline').closest($(this).attr('data-parent')).find($(this).attr('data-peek')).attr('type', 'text');
+    } else {
+      $(this).removeClass('mdi-eye-off-outline').addClass('mdi-eye-outline').closest($(this).attr('data-parent')).find($(this).attr('data-peek')).attr('type', 'password');
+    }
+  });
+
+  /**
+   * Reload Captcha
+   */
+  $('body').on('click', '.captcha-refresh', function (e) {
+    e.preventDefault();
+    let container = $(this);
+    $.ajax({
+      url: config.baseUrl + 'xhr/captcha',
+      method: 'POST',
+      beforeSend: function () {
+        container.css('opacity', '0.5');
+      },
+      success: function (response) {
+        if (response.image) {
+          container.html('<img src="' + response.image + '" class="img-fluid" alt="CAPTCHA" loading="lazy" decoding="async" />');
+        } else if (response.string) {
+          container.html('<b class="text-dark pe-3 ps-3">' + response.string + '</b>');
+        }
+      },
+      complete: function () {
+        container.css('opacity', '1');
+      }
+    });
+  });
+});

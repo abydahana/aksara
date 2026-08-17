@@ -1,68 +1,67 @@
 <?php
-
 /**
  * @var mixed $encryptionKey
  * @var mixed $cookieName
  */
 ?>
-<form action="<?= site_url('system'); ?>" method="POST" class="--validate-form">
+<form action="<?= site_url('system') ?>" method="POST" class="--validate-form">
     <h4>
-        <?= phrase('Security Configuration'); ?>
+        <?= phrase('Security Configuration') ?>
     </h4>
     <p>
-        <?= phrase('Enter your secret formula to secure your application.'); ?>
+        <?= phrase('Enter your secret formula to secure your application.') ?>
     </p>
     <div class="text-muted opacity-50">
         <hr class="row" />
     </div>
     <div class="form-group mb-3">
         <label class="d-block mb-0" for="encryption_input">
-            <?= phrase('Encryption Key'); ?>
+            <?= phrase('Encryption Key') ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="encryption" class="form-control form-control-sm rounded-pill" id="encryption_input" placeholder="<?= phrase('Your encryption key'); ?>" value="<?= $encryptionKey; ?>" />
+        <input type="text" name="encryption" class="form-control form-control-sm rounded-pill" id="encryption_input" placeholder="<?= phrase('Your encryption key') ?>" value="<?= $encryptionKey ?>" />
     </div>
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="cookie_name_input">
-                    <?= phrase('Cookie Name'); ?>
+                    <?= phrase('Cookie Name') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="cookie_name" class="form-control form-control-sm rounded-pill" id="cookie_name_input" placeholder="<?= phrase('Unique cookie name to prevent session conflict'); ?>" value="<?= $cookieName; ?>" />
+                <input type="text" name="cookie_name" class="form-control form-control-sm rounded-pill" id="cookie_name_input" placeholder="<?= phrase('Unique cookie name to prevent session conflict') ?>" value="<?= $cookieName ?>" />
             </div>
         </div>
         <div class="col-sm-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="session_expiration_input">
-                    <?= phrase('Session Expiration'); ?>
+                    <?= phrase('Session Expiration') ?>
                     <b class="text-danger">*</b>
-                    <i class="mdi mdi-help-circle-outline" data-bs-toggle="tooltip" title="<?= phrase('The number of seconds you want the session to last.'); ?>"></i>
+                    <i class="mdi mdi-help-circle-outline" data-bs-toggle="tooltip" title="<?= phrase('The number of seconds you want the session to last.') ?>"></i>
                 </label>
-                <input type="number" name="session_expiration" class="form-control form-control-sm rounded-pill" id="session_expiration_input" placeholder="<?= phrase('In seconds'); ?>" value="<?= (session()->get('session_expiration') ?? 86400); ?>" />
+                <input type="number" name="session_expiration" class="form-control form-control-sm rounded-pill" id="session_expiration_input" placeholder="<?= phrase('In seconds') ?>" value="<?= session()->get('session_expiration') ?? 86400 ?>" />
             </div>
         </div>
     </div>
     <br/>
     <h5>
-        <?= phrase('Superuser'); ?>
+        <?= phrase('Superuser') ?>
     </h5>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="first_name_input">
-                    <?= phrase('First Name'); ?>
+                    <?= phrase('First Name') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="first_name" class="form-control form-control-sm rounded-pill" id="first_name_input" placeholder="e.g: John" value="<?= session()->get('first_name'); ?>" />
+                <input type="text" name="first_name" class="form-control form-control-sm rounded-pill" id="first_name_input" placeholder="e.g: John" value="<?= session()->get('first_name') ?>" />
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="last_name_input">
-                    <?= phrase('Last Name'); ?>
+                    <?= phrase('Last Name') ?>
                 </label>
-                <input type="text" name="last_name" class="form-control form-control-sm rounded-pill" id="last_name_input" placeholder="e.g: Doe" value="<?= session()->get('last_name'); ?>" />
+                <input type="text" name="last_name" class="form-control form-control-sm rounded-pill" id="last_name_input" placeholder="e.g: Doe" value="<?= session()->get('last_name') ?>" />
             </div>
         </div>
     </div>
@@ -70,19 +69,19 @@
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="email_input">
-                    <?= phrase('Email Address'); ?>
+                    <?= phrase('Email Address') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="email" name="email" class="form-control form-control-sm rounded-pill" id="email_input" placeholder="e.g: johndoe@example.com" value="<?= session()->get('email'); ?>" />
+                <input type="email" name="email" class="form-control form-control-sm rounded-pill" id="email_input" placeholder="e.g: johndoe@example.com" value="<?= session()->get('email') ?>" />
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="username_input">
-                    <?= phrase('Username'); ?>
+                    <?= phrase('Username') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="username" class="form-control form-control-sm rounded-pill" id="username_input" placeholder="<?= phrase('Create username for superuser'); ?>" value="<?= session()->get('username'); ?>" />
+                <input type="text" name="username" class="form-control form-control-sm rounded-pill" id="username_input" placeholder="<?= phrase('Create username for superuser') ?>" value="<?= session()->get('username') ?>" />
             </div>
         </div>
     </div>
@@ -90,19 +89,19 @@
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="password_input">
-                    <?= phrase('Password'); ?>
+                    <?= phrase('Password') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="password" name="password" class="form-control form-control-sm rounded-pill" id="password_input" placeholder="<?= phrase('Password for superuser'); ?>" />
+                <input type="password" name="password" class="form-control form-control-sm rounded-pill" id="password_input" placeholder="<?= phrase('Password for superuser') ?>" />
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group mb-3">
                 <label class="d-block mb-0" for="confirm_password_input">
-                    <?= phrase('Password Confirmation'); ?>
+                    <?= phrase('Password Confirmation') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="password" name="confirm_password" class="form-control form-control-sm rounded-pill" id="confirm_password_input" placeholder="<?= phrase('Retype the password'); ?>" />
+                <input type="password" name="confirm_password" class="form-control form-control-sm rounded-pill" id="confirm_password_input" placeholder="<?= phrase('Retype the password') ?>" />
             </div>
         </div>
     </div>
@@ -113,18 +112,18 @@
     <div class="row">
         <div class="col-6">
             <div class="d-grid">
-                <a href="<?= site_url('database'); ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back'); ?>">
+                <a href="<?= site_url('database') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
                     <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back'); ?>
+                    <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
         <div class="col-6">
             <div class="d-grid">
-                <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue'); ?>">
+                <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue') ?>">
                     <i class="mdi mdi-check"></i>
-                    <?= phrase('Continue'); ?>
+                    <?= phrase('Continue') ?>
                 </button>
             </div>
         </div>

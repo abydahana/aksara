@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var mixed $meta
  */
@@ -8,10 +7,10 @@
 <section class="section-padding fade-in">
     <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold">
-            <?= $meta->title; ?>
+            <?= $meta->title ?>
         </h1>
         <p class="fs-5 text-muted mb-0">
-            <?= truncate($meta->description, 256); ?>
+            <?= truncate($meta->description, 256) ?>
         </p>
     </div>
 </section>
@@ -19,32 +18,32 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-lg-6">
-                <form action="<?= current_page(); ?>" method="POST" class="--validate-form">
+                <form action="<?= current_page() ?>" method="POST" class="--validate-form">
                     <div class="text-center text-md-start mb-3">
                         <label class="text-secondary" for="password_input">
-                            <?= phrase('New Password'); ?>
+                            <?= phrase('New Password') ?>
                         </label>
-                        <input type="password" name="password" class="form-control" id="password_input" placeholder="<?= phrase('Enter your new password'); ?>" />
+                        <input type="password" name="password" class="form-control" id="password_input" placeholder="<?= phrase('Enter your new password') ?>" />
                     </div>
                     <div class="mb-3">
                         <label class="text-secondary" for="confirm_password_input">
-                            <?= phrase('Confirm New Password'); ?>
+                            <?= phrase('Confirm New Password') ?>
                         </label>
-                        <input type="password" name="confirm_password" class="form-control" id="confirm_password_input" placeholder="<?= phrase('Confirm your new password'); ?>" />
+                        <input type="password" name="confirm_password" class="form-control" id="confirm_password_input" placeholder="<?= phrase('Confirm your new password') ?>" />
                     </div>
                     <div class="mb-3">
                         <div class="row">
                             <div class="col-6">
                                 <div class="d-grid">
-                                    <a href="<?= current_page('../'); ?>" class="btn btn-outline-secondary --xhr">
-                                        <i class="mdi mdi-arrow-left"></i> <?= phrase('Back'); ?>
+                                    <a href="<?= current_page('../') ?>" class="btn btn-outline-secondary --xhr">
+                                        <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                                     </a>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="mdi mdi-check"></i> <?= phrase('Reset Password'); ?>
+                                        <i class="mdi mdi-check"></i> <?= phrase('Reset Password') ?>
                                     </button>
                                 </div>
                             </div>

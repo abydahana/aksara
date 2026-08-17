@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var mixed $userdata
  * @var mixed $year
@@ -10,54 +9,54 @@
  */
 ?>
 <div class="container-fluid py-3">
-    <form action="<?= current_page(); ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
+    <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="row align-items-center">
             <div class="col-sm-3 col-md-2 text-center">
-                <img src="<?= get_image('users', $userdata->photo, 'thumb'); ?>" class="img-fluid rounded" alt="<?= $userdata->first_name . ' ' . $userdata->last_name; ?>" />
+                <img src="<?= get_image('users', $userdata->photo, 'thumb') ?>" class="img-fluid rounded" alt="<?= $userdata->first_name . ' ' . $userdata->last_name ?>" />
             </div>
             <div class="col-sm-9 col-md-8">
                 <div class="row">
                     <div class="col-sm-4 col-md-3 text-muted">
-                        <?= phrase('Username'); ?>
+                        <?= phrase('Username') ?>
                     </div>
                     <div class="col-sm-8 col-md-9">
-                        <?= $userdata->username; ?>
+                        <?= $userdata->username ?>
                     </div>
                 </div>
                 <hr class="my-2" />
                 <div class="row">
                     <div class="col-sm-4 col-md-3 text-muted">
-                        <?= phrase('Full Name'); ?>
+                        <?= phrase('Full Name') ?>
                     </div>
                     <div class="col-8 col-md-9">
-                        <?= $userdata->first_name . ' ' . $userdata->last_name; ?>
+                        <?= $userdata->first_name . ' ' . $userdata->last_name ?>
                     </div>
                 </div>
                 <hr class="my-2" />
                 <div class="row">
                     <div class="col-sm-4 col-md-3 text-muted">
-                        <?= phrase('User Group'); ?>
+                        <?= phrase('User Group') ?>
                     </div>
                     <div class="col-8 col-md-9">
-                        <?= $userdata->group_name; ?>
+                        <?= $userdata->group_name ?>
                     </div>
                 </div>
                 <?php if ($year): ?>
                     <hr class="my-2" />
                     <div class="row">
                         <label class="col-sm-4 col-md-3 text-muted" for="access_year_input">
-                            <?= phrase('Access Year'); ?>
+                            <?= phrase('Access Year') ?>
                         </label>
                         <div class="col-sm-8 col-md-4">
                             <?php
-                                $options = null;
+                            $options = null;
 
-                                foreach ($year as $key => $val) {
-                                    $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
-                                }
+                            foreach ($year as $key => $val) {
+                              $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
+                            }
                             ?>
-                            <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose'); ?>">
-                                <?= $options; ?>
+                            <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose') ?>">
+                                <?= $options ?>
                             </select>
                         </div>
                     </div>
@@ -69,13 +68,13 @@
             <div class="col-sm-6 col-md-5">
                 <div class="mb-3">
                     <label class="text-muted d-block" for="menus_input">
-                        <?= phrase('Accessible Menus'); ?>
+                        <?= phrase('Accessible Menus') ?>
                     </label>
                     <?php if ($visibleMenu): ?>
-                        <?= $visibleMenu; ?>
+                        <?= $visibleMenu ?>
                     <?php else: ?>
                         <div class="alert alert-warning">
-                            <?= phrase('No menu is available right now.'); ?>
+                            <?= phrase('No menu is available right now.') ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -83,23 +82,25 @@
             <div class="col-sm-6 col-md-5">
                 <div class="mb-3">
                     <label class="text-muted d-block" for="sub_level_1_input">
-                        <?= phrase('The sub level can be accessed.'); ?>
+                        <?= phrase('The sub level can be accessed.') ?>
                     </label>
                     <?php if ($subLevel): ?>
                         <?php
-                            $option = null;
-                            foreach($subLevel as $key => $val) {
-                                if (! isset($val->id) || ! isset($val->label)) continue;
+                        $option = null;
+                        foreach ($subLevel as $key => $val) {
+                          if (!isset($val->id) || !isset($val->label)) {
+                            continue;
+                          }
 
-                                $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
-                            }
+                          $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
+                        }
                         ?>
-                        <select name="sub_level_1" class="form-control" id="sub_level_1_input" placeholder="<?= phrase('Please choose'); ?>">
-                            <?= $option; ?>
+                        <select name="sub_level_1" class="form-control" id="sub_level_1_input" placeholder="<?= phrase('Please choose') ?>">
+                            <?= $option ?>
                         </select>
                     <?php else: ?>
                         <div class="alert alert-warning">
-                            <?= phrase('No sub level table assigned to the selection.'); ?>
+                            <?= phrase('No sub level table assigned to the selection.') ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -108,15 +109,15 @@
         <div class="opt-btn-overlap-fix"></div>
         <div class="row opt-btn">
             <div class="col-md-10">
-                <a href="<?= $links->currentModule; ?>" class="btn btn-link --xhr">
+                <a href="<?= $links->currentModule ?>" class="btn btn-link --xhr">
                     <i class="mdi mdi-arrow-left"></i>
                     &nbsp;
-                    <?= phrase('Back'); ?>
+                    <?= phrase('Back') ?>
                 </a>
                 <button type="submit" class="btn btn-primary float-end">
                     <i class="mdi mdi-check"></i>
                     &nbsp;
-                    <?= phrase('Update'); ?>
+                    <?= phrase('Update') ?>
                     <em class="text-sm">(ctrl+s)</em>
                 </button>
             </div>

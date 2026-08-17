@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var mixed $logs
  */
@@ -7,46 +6,48 @@
 
 <div class="container-fluid py-3">
     <div class="alert alert-info callout rounded-4">
-        <h3><?= phrase('Information'); ?></h3>
-        <i class="mdi mdi-information-outline"></i> <?= phrase('You are signed in on these devices or were active recently.'); ?> <?= phrase('There might be multiple activity sessions from the same device.'); ?>
+        <h3><?= phrase('Information') ?></h3>
+        <i class="mdi mdi-information-outline"></i> <?= phrase('You are signed in on these devices or were active recently.') ?> <?= phrase('There might be multiple activity sessions from the same device.') ?>
     </div>
     <div class="row">
         <div class="col-md-7 col-xxl-6">
-            <?php foreach($logs as $platform => $log): ?>
+            <?php foreach ($logs as $platform => $log): ?>
                 <div class="card rounded-4 mb-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-5">
-                                <b><?= $platform; ?></b>
+                                <b><?= $platform ?></b>
                             </div>
                             <div class="col-sm-7">
-                                <?php foreach($log as $key => $session): ?>
+                                <?php foreach ($log as $key => $session): ?>
                                     <?php if ($key): ?>
                                         <hr />
                                     <?php endif; ?>
 
                                     <div>
                                         <?php if ($session->ip_address != service('request')->getIPAddress()): ?>
-                                            <a href="<?= current_page('kick', ['session' => $session->session_id]); ?>" class="btn btn-sm btn-danger float-end rounded-pill --xhr">
+                                            <a href="<?= current_page('kick', [
+                                              'session' => $session->session_id,
+                                            ]) ?>" class="btn btn-sm btn-danger float-end rounded-pill --xhr">
                                                 <i class="mdi mdi-logout"></i>
-                                                <?= phrase('Kick'); ?>
+                                                <?= phrase('Kick') ?>
                                             </a>
                                         <?php endif; ?>
                                         <b>
-                                            <?= format_date($session->timestamp, 'long', true); ?>
+                                            <?= format_date($session->timestamp, 'long', true) ?>
                                         </b>
                                         <br />
-                                        <?= $session->browser; ?>
+                                        <?= $session->browser ?>
                                         <br />
-                                        <a href="//ipinfo.io/<?= $session->ip_address; ?>" target="_blank">
-                                            <b class="--fetch-ip-info" data-ip="<?= $session->ip_address; ?>">
-                                                <?= $session->ip_address; ?> <i class="mdi mdi-launch"></i>
+                                        <a href="//ipinfo.io/<?= $session->ip_address ?>" target="_blank">
+                                            <b class="--fetch-ip-info" data-ip="<?= $session->ip_address ?>">
+                                                <?= $session->ip_address ?> <i class="mdi mdi-launch"></i>
                                             </b>
                                         </a>
                                         <?php if ($session->ip_address == service('request')->getIPAddress()): ?>
                                             <br />
                                             <i class="mdi mdi-check-circle text-primary"></i>
-                                            <?= phrase('Your current session'); ?>
+                                            <?= phrase('Your current session') ?>
                                         <?php endif; ?>
                                     </div>
                                 <?php endforeach; ?>

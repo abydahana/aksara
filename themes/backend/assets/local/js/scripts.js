@@ -1,0 +1,148 @@
+/**
+ * Apply saved theme immediately (before DOM ready) to prevent flash
+ */
+(function () {
+  var saved = localStorage.getItem('bs-theme') || 'light';
+  document.documentElement.setAttribute('data-bs-theme', saved);
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const icons = document.querySelectorAll('[data-sidebar-toggle-icon]');
+    const toggles = document.querySelectorAll('.mobile-menu-toggle[data-toggle="sidebar"]');
+
+    if (!icons.length && !toggles.length) {
+      return;
+    }
+
+    const updateSidebarIcon = function () {
+      const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+      const isExpanded = document.body.classList.contains('sidebar-expanded');
+
+      icons.forEach(function (icon) {
+        icon.classList.toggle('mdi-menu', isCollapsed);
+        icon.classList.toggle('mdi-menu-open', !isCollapsed);
+      });
+
+      toggles.forEach(function (toggle) {
+        toggle.classList.toggle('is-open', isExpanded);
+        toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+      });
+    };
+
+    document.body.addEventListener('click', function (event) {
+      if (event.target.closest('[data-toggle="sidebar"]')) {
+        setTimeout(updateSidebarIcon, 0);
+      }
+    });
+
+    updateSidebarIcon();
+  });
+})();
+
+$(document).ready(function () {
+  /**
+   * Toggle fullscreen
+   */
+  $('body').on('click touch', '[data-toggle=fullscreen]', function (e) {
+    e.preventDefault();
+
+    if ((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+      var success = false;
+
+      if (document.documentElement.requestFullScreen) {
+        success = true;
+
+        document.documentElement.requestFullScreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        success = true;
+
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullScreen) {
+        success = true;
+
+        document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+
+      if (success) {
+        $(this).find('.mdi').removeClass('mdi-fullscreen').addClass('mdi-fullscreen-exit');
+      }
+    } else {
+      var success = false;
+
+      if (document.cancelFullScreen) {
+        success = true;
+
+        document.cancelFullScreen();
+      } else if (document.mozCancelFullScreen) {
+        success = true;
+
+        document.mozCancelFullScreen();
+      } else if (document.webkitCancelFullScreen) {
+        success = true;
+
+        document.webkitCancelFullScreen();
+      }
+
+      if (success) {
+        $(this).find('.mdi').removeClass('mdi-fullscreen-exit').addClass('mdi-fullscreen');
+      }
+    }
+  });
+
+  /**
+   * Toggle theme dark/light
+   */
+  // Set initial icon based on saved theme
+  if (localStorage.getItem('bs-theme') === 'dark') {
+    $('[data-toggle=theme] .mdi').removeClass('mdi-weather-night').addClass('mdi-white-balance-sunny');
+  }
+
+  $('body').on('click', '[data-toggle=theme]', function (e) {
+    e.preventDefault();
+
+    var current = $('html').attr('data-bs-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+
+    $('html').attr('data-bs-theme', next);
+    localStorage.setItem('bs-theme', next);
+
+    if (next === 'dark') {
+      $(this).find('.mdi').removeClass('mdi-weather-night').addClass('mdi-white-balance-sunny');
+    } else {
+      $(this).find('.mdi').removeClass('mdi-white-balance-sunny').addClass('mdi-weather-night');
+    }
+
+    $.ajax({
+      url: (typeof config !== 'undefined' && config.baseUrl ? config.baseUrl : '/') + 'xhr/theme_toggle',
+      method: 'POST',
+      data: {
+        theme: next
+      }
+    });
+  });
+
+  // The .off() method removes event handlers that were attached with .on()
+  ($('body').off('change.layer_type'),
+    $('body').on('change.layer_type', 'input[name=layer_type]', function (e) {
+      // Modify text label on input changes
+      if (['polygon', 'linestring'].includes($(this).val())) {
+        $(this)
+          .closest('form')
+          .find('label[for=icon_scale_input]')
+          .html(phrase('Opacity') + ' <span class="text-danger font-weight-bold">*</span>');
+      } else {
+        $(this)
+          .closest('form')
+          .find('label[for=icon_scale_input]')
+          .html(phrase('Icon Scale') + ' <span class="text-danger font-weight-bold">*</span>');
+      }
+    }));
+});
+
+/**
+ * Include your function into afterCall to run it after ajax call
+ */
+afterCall.push(function () {
+  if ($('input[name=layer_type]').length) {
+    $('input[name=layer_type]').trigger('change');
+  }
+});

@@ -9,74 +9,74 @@
  * @var mixed $logs
  * @var mixed $systemLanguage
  */
-if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
+if (in_array(get_userdata('group_id'), [1]) && (!$permission->uploads || !$permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <h4 class="h5">
-            <?= phrase('Notice'); ?>
+            <?= phrase('Notice') ?>
         </h4>
 
-        <?php if (! $permission->uploads): ?>
+        <?php if (!$permission->uploads): ?>
             <p class="mb-0">
-                <b><?= str_replace('\\', '/', FCPATH . UPLOAD_PATH); ?></b> <?= phrase('is not writable.'); ?>
+                <b><?= str_replace('\\', '/', FCPATH . UPLOAD_PATH) ?></b> <?= phrase('is not writable.') ?>
             </p>
         <?php endif; ?>
 
-        <?php if (! $permission->uploads): ?>
+        <?php if (!$permission->uploads): ?>
             <p class="mb-0">
-                <b><?= str_replace('\\', '/', WRITEPATH); ?></b> <?= phrase('is not writable.'); ?>
+                <b><?= str_replace('\\', '/', WRITEPATH) ?></b> <?= phrase('is not writable.') ?>
             </p>
         <?php endif; ?>
 
         <br />
-        <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b><?= phrase('Click here'); ?></b></a> <?= phrase('to get an advice to solve this problem.'); ?>
+        <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b><?= phrase('Click here') ?></b></a> <?= phrase('to get an advice to solve this problem.') ?>
     </div>
-<?php elseif (in_array(get_userdata('group_id'), array(1)) && is_dir(ROOTPATH . 'install')): ?>
+<?php elseif (in_array(get_userdata('group_id'), [1]) && is_dir(ROOTPATH . 'install')): ?>
     <div class="alert alert-warning rounded-0 border-0 mb-0">
         <h4 class="h5">
-            <?= phrase('Notice'); ?>
+            <?= phrase('Notice') ?>
         </h4>
-        <?= phrase('Please remove or rename the following directory to secure your application:'); ?>
-        <code class="text-danger"><?= str_replace('\\', '/', ROOTPATH); ?>install</code>
+        <?= phrase('Please remove or rename the following directory to secure your application:') ?>
+        <code class="text-danger"><?= str_replace('\\', '/', ROOTPATH) ?>install</code>
     </div>
 <?php endif; ?>
 
 <div class="updater-placeholder"></div>
 
 <div class="container-fluid py-3">
-    <?php if (! get_userdata('hide_greeting')): ?>
+    <?php if (!get_userdata('hide_greeting')): ?>
         <div class="row" id="greeting-card">
             <div class="col-12">
                 <div class="card rounded-4 overflow-hidden mb-3">
                     <div class="card-body">
                         <h3>
-                            <button type="button" class="btn btn-close btn-greeting float-end" aria-label="<?= phrase('Close'); ?>"></button>
-                            <?= phrase('Welcome to'); ?> Aksara!
+                            <button type="button" class="btn btn-close btn-greeting float-end" aria-label="<?= phrase('Close') ?>"></button>
+                            <?= phrase('Welcome to') ?> Aksara!
                         </h3>
                         <p class="text-muted">
-                            <?= phrase('We have assembled some links to get you started.'); ?>
+                            <?= phrase('We have assembled some links to get you started.') ?>
                         </p>
                         <div class="row">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h4 class="mb-3 mb-md-5">
-                                    <?= phrase('Getting started'); ?>
+                                    <?= phrase('Getting started') ?>
                                 </h4>
                                 <div class="text-center text-md-start">
-                                    <a href="<?= base_url('administrative/settings'); ?>" class="btn btn-info pe-5 ps-5 rounded-pill --xhr">
-                                        <i class="mdi mdi-palette"></i> <?= phrase('Customize your app'); ?>
+                                    <a href="<?= base_url('administrative/settings') ?>" class="btn btn-info pe-5 ps-5 rounded-pill --xhr">
+                                        <i class="mdi mdi-palette"></i> <?= phrase('Customize your app') ?>
                                     </a>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h5 class="mb-3">
-                                    <?= phrase('Next step'); ?>
+                                    <?= phrase('Next step') ?>
                                 </h5>
                                 <div class="row">
                                     <div class="col-1">
                                         <i class="mdi mdi-plus"></i>
                                     </div>
                                     <div class="col-11">
-                                        <a href="<?= base_url('cms/blogs'); ?>" class="text-primary --xhr">
-                                            <?= phrase('Write a blog post'); ?>
+                                        <a href="<?= base_url('cms/blogs') ?>" class="text-primary --xhr">
+                                            <?= phrase('Write a blog post') ?>
                                         </a>
                                     </div>
                                 </div>
@@ -85,8 +85,8 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                         <i class="mdi mdi-file"></i>
                                     </div>
                                     <div class="col-11">
-                                        <a href="<?= base_url('cms/pages'); ?>" class="text-primary --xhr">
-                                            <?= phrase('Manage the page'); ?>
+                                        <a href="<?= base_url('cms/pages') ?>" class="text-primary --xhr">
+                                            <?= phrase('Manage the page') ?>
                                         </a>
                                     </div>
                                 </div>
@@ -95,22 +95,24 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                         <i class="mdi mdi-monitor-dashboard"></i>
                                     </div>
                                     <div class="col-11">
-                                        <a href="<?= base_url(); ?>" class="text-primary" target="_blank">
-                                            <?= phrase('View your site'); ?>
+                                        <a href="<?= base_url() ?>" class="text-primary" target="_blank">
+                                            <?= phrase('View your site') ?>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <h5 class="mb-3">
-                                    <?= phrase('More action'); ?>
+                                    <?= phrase('More action') ?>
                                 </h5>
                                 <div class="row">
                                     <div class="col-1">
                                         <i class="mdi mdi-puzzle"></i>
                                     </div>
                                     <div class="col-11">
-                                        <?= phrase('Manage'); ?> <a href="<?= base_url('addons'); ?>" class="text-primary --xhr"><?= phrase('Add-Ons'); ?></a> <?= phrase('or'); ?> <a href="<?= base_url('administrative/menus'); ?>" class="text-primary --xhr"><?= phrase('Menus'); ?></a>
+                                        <?= phrase('Manage') ?> <a href="<?= base_url('addons') ?>" class="text-primary --xhr"><?= phrase('Add-Ons') ?></a> <?= phrase('or') ?> <a href="<?= base_url(
+   'administrative/menus',
+ ) ?>" class="text-primary --xhr"><?= phrase('Menus') ?></a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -118,8 +120,8 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                         <i class="mdi mdi-comment-multiple-outline"></i>
                                     </div>
                                     <div class="col-11">
-                                        <a href="<?= base_url('cms/comments'); ?>" class="text-primary --xhr">
-                                            <?= phrase('Turn commenting on or off'); ?>
+                                        <a href="<?= base_url('cms/comments') ?>" class="text-primary --xhr">
+                                            <?= phrase('Turn commenting on or off') ?>
                                         </a>
                                     </div>
                                 </div>
@@ -129,7 +131,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                     </div>
                                     <div class="col-11">
                                         <a href="//aksaracms.com/pages/documentation" class="text-primary" target="_blank">
-                                            <?= phrase('Learn more about'); ?> Aksara
+                                            <?= phrase('Learn more about') ?> Aksara
                                         </a>
                                     </div>
                                 </div>
@@ -143,7 +145,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
 
     <div class="row">
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/blogs'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post'); ?>">
+            <a href="<?= base_url('cms/blogs') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage blog post') ?>">
                 <div class="card rounded-4 border-0 text-bg-primary text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
@@ -153,10 +155,10 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate">
-                                <?= phrase('Blogs'); ?>
+                                <?= phrase('Blogs') ?>
                             </h5>
                             <p class="mb-0">
-                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')); ?>
+                                <?= number_format($card->blogs) . ' ' . ($card->blogs > 1 ? phrase('articles') : phrase('article')) ?>
                             </p>
                         </div>
                     </div>
@@ -164,7 +166,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/pages'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage frontend pages'); ?>">
+            <a href="<?= base_url('cms/pages') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage frontend pages') ?>">
                 <div class="card rounded-4 border-0 text-bg-info text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
@@ -174,10 +176,10 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate">
-                                <?= phrase('Pages'); ?>
+                                <?= phrase('Pages') ?>
                             </h5>
                             <p class="mb-0">
-                                <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')); ?>
+                                <?= number_format($card->pages) . ' ' . ($card->pages > 1 ? phrase('pages') : phrase('page')) ?>
                             </p>
                         </div>
                     </div>
@@ -185,7 +187,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('cms/galleries'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage galleries'); ?>">
+            <a href="<?= base_url('cms/galleries') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage galleries') ?>">
                 <div class="card rounded-4 border-0 text-bg-danger text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
@@ -195,10 +197,10 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate">
-                                <?= phrase('Galleries'); ?>
+                                <?= phrase('Galleries') ?>
                             </h5>
                             <p class="mb-0">
-                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')); ?>
+                                <?= number_format($card->galleries) . ' ' . ($card->galleries > 1 ? phrase('albums') : phrase('album')) ?>
                             </p>
                         </div>
                     </div>
@@ -206,7 +208,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             </a>
         </div>
         <div class="col-6 col-lg-3 mb-3">
-            <a href="<?= base_url('administrative/users'); ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage users'); ?>">
+            <a href="<?= base_url('administrative/users') ?>" class="d-block --xhr" data-bs-toggle="tooltip" title="<?= phrase('Manage users') ?>">
                 <div class="card rounded-4 border-0 text-bg-dark text-center text-sm-start" style="overflow:hidden">
                     <div class="row align-items-center">
                         <div class="col-sm-4 col-xl-3" style="background:rgba(0, 0, 0, .1)">
@@ -216,10 +218,10 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         </div>
                         <div class="col-sm-8 col-xl-9">
                             <h5 class="m-0 text-truncate">
-                                <?= phrase('Users'); ?>
+                                <?= phrase('Users') ?>
                             </h5>
                             <p class="mb-0">
-                                <?= number_format($card->users) . ' ' . ($card->users > 1 ? phrase('users') : phrase('user')); ?>
+                                <?= number_format($card->users) . ' ' . ($card->users > 1 ? phrase('users') : phrase('user')) ?>
                             </p>
                         </div>
                     </div>
@@ -240,7 +242,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="card rounded-4 overflow-hidden mb-3">
                             <div class="card-header border-0">
                                 <h5 class="card-title mb-0">
-                                    <?= phrase('Most used browsers'); ?>
+                                    <?= phrase('Most used browsers') ?>
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -248,25 +250,59 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 $num = 0;
 
                                 if (isset($visitors->browsers)) {
-                                    foreach ($visitors->browsers as $key => $val) {
-                                        echo '
-                                            ' . ($num ? '<hr class="border-secondary my-0" />' : null) . '
+                                  foreach ($visitors->browsers as $key => $val) {
+                                    echo '
+                                            ' .
+                                      ($num ? '<hr class="border-secondary my-0" />' : null) .
+                                      '
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-3 col-sm-2">
-                                                    <i class="mdi mdi-' . ($key == 'chrome' ? 'google-chrome text-success' : ($key == 'firefox' ? 'firefox text-warning' : ($key == 'safari' ? 'apple-safari text-primary' : ($key == 'edge' ? 'edge text-info' : ($key == 'opera' ? 'opera text-danger' : ($key == 'explorer' ? 'internet-explorer text-info' : 'web text-muted')))))) . ' mdi-3x"></i>
+                                                    <i class="mdi mdi-' .
+                                      ($key == 'chrome'
+                                        ? 'google-chrome text-success'
+                                        : ($key == 'firefox'
+                                          ? 'firefox text-warning'
+                                          : ($key == 'safari'
+                                            ? 'apple-safari text-primary'
+                                            : ($key == 'edge'
+                                              ? 'edge text-info'
+                                              : ($key == 'opera'
+                                                ? 'opera text-danger'
+                                                : ($key == 'explorer'
+                                                  ? 'internet-explorer text-info'
+                                                  : 'web text-muted')))))) .
+                                      ' mdi-3x"></i>
                                                 </div>
                                                 <div class="col-9 col-sm-10 ps-3">
                                                     <b>
-                                                        ' . ($key == 'chrome' ? 'Google Chrome' : ($key == 'firefox' ? 'Mozilla Firefox' : ($key == 'safari' ? 'Safari' : ($key == 'edge' ? 'Microsoft Edge' : ($key == 'opera' ? 'Opera' : ($key == 'explorer' ? 'Internet Explorer' : phrase('Unknown'))))))) . '
+                                                        ' .
+                                      ($key == 'chrome'
+                                        ? 'Google Chrome'
+                                        : ($key == 'firefox'
+                                          ? 'Mozilla Firefox'
+                                          : ($key == 'safari'
+                                            ? 'Safari'
+                                            : ($key == 'edge'
+                                              ? 'Microsoft Edge'
+                                              : ($key == 'opera'
+                                                ? 'Opera'
+                                                : ($key == 'explorer'
+                                                  ? 'Internet Explorer'
+                                                  : phrase('Unknown'))))))) .
+                                      '
                                                     </b>
                                                     <p class="mb-0 text-sm text-muted">
-                                                        ' . number_format($val) . ' ' . phrase('usage in a week') . '
+                                                        ' .
+                                      number_format($val) .
+                                      ' ' .
+                                      phrase('usage in a week') .
+                                      '
                                                     </p>
                                                 </div>
                                             </div>
                                         ';
-                                        $num++;
-                                    }
+                                    $num++;
+                                  }
                                 }
                                 ?>
                             </div>
@@ -276,34 +312,48 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                         <div class="card rounded-4 overflow-hidden mb-3">
                             <div class="card-header border-0">
                                 <h5 class="card-title mb-0">
-                                    <?= phrase('Recent sign in'); ?>
+                                    <?= phrase('Recent sign in') ?>
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <?php
-                                foreach ($recentSigned as $key => $val) {
-                                    echo '
-                                        ' . ($key ? '<hr class="mt-2 mb-2" />' : null) . '
+                                <?php foreach ($recentSigned as $key => $val) {
+                                  echo '
+                                        ' .
+                                    ($key ? '<hr class="mt-2 mb-2" />' : null) .
+                                    '
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-3 col-sm-2">
-                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
-                                                    <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" alt="' . htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) . '" loading="lazy" decoding="async" />
+                                                <a href="' .
+                                    base_url('user', ['user_id' => $val->user_id]) .
+                                    '" target="_blank">
+                                                    <img src="' .
+                                    get_image('users', $val->photo, 'icon') .
+                                    '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
+                                    htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
+                                    '" loading="lazy" decoding="async" />
                                                 </a>
                                             </div>
                                             <div class="col-9 col-sm-10 ps-3">
-                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                <a href="' .
+                                    base_url('user', ['user_id' => $val->user_id]) .
+                                    '" target="_blank">
                                                     <b>
-                                                        ' . $val->first_name . ' ' . $val->last_name . '
+                                                        ' .
+                                    $val->first_name .
+                                    ' ' .
+                                    $val->last_name .
+                                    '
                                                     </b>
                                                 </a>
                                                 <p class="mb-0 text-sm text-muted">
-                                                    ' . $val->group_name . '
+                                                    ' .
+                                    $val->group_name .
+                                    '
                                                 </p>
                                             </div>
                                         </div>
                                     ';
-                                }
-                                ?>
+                                } ?>
                             </div>
                         </div>
                     </div>
@@ -311,7 +361,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 <div class="card overflow-hidden rounded-4 mb-3">
                     <div class="card-header border-0 p-4">
                         <h5 class="card-title mb-0">
-                            <?= phrase('Recent Activities'); ?>
+                            <?= phrase('Recent Activities') ?>
                         </h5>
                     </div>
                     <div class="card-body p-0">
@@ -319,10 +369,10 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date'); ?></th>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform'); ?></th>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser'); ?></th>
-                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address'); ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date') ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Platform') ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Browser') ?></th>
+                                        <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('IP Address') ?></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -330,23 +380,23 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                         <?php foreach ($logs as $log): ?>
                                             <tr>
                                                 <td class="px-4 align-middle">
-                                                    <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)); ?></span>
+                                                    <span class="text-sm"><?= date('d/m/Y H:i', strtotime($log->timestamp)) ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform; ?></span>
+                                                    <span class="badge bg-body-tertiary text-body rounded-pill border"><?= $log->platform ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <span class="text-sm"><?= $log->browser; ?></span>
+                                                    <span class="text-sm"><?= $log->browser ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <code class="text-sm text-primary"><?= $log->ip_address; ?></code>
+                                                    <code class="text-sm text-primary"><?= $log->ip_address ?></code>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
                                             <td colspan="4" class="text-center p-4 text-muted">
-                                                <?= phrase('No activity recorded yet.'); ?>
+                                                <?= phrase('No activity recorded yet.') ?>
                                             </td>
                                         </tr>
                                     <?php endif; ?>
@@ -362,25 +412,25 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 <div class="card overflow-hidden rounded-4 mb-3">
                     <div class="card-header bg-transparent border-0 p-4">
                         <h5 class="fw-bold mb-0">
-                            <?= phrase('Announcements'); ?>
+                            <?= phrase('Announcements') ?>
                         </h5>
                     </div>
                     <div class="card-body p-4">
                         <?php if ($announcements): ?>
                             <?php foreach ($announcements as $announcement): ?>
                                 <div class="mb-3 pb-3 border-bottom last-child-border-0">
-                                    <a href="<?= base_url('announcements/' . $announcement->announcement_slug); ?>" class="fw-bold text-decoration-none --xhr">
-                                        <?= $announcement->title; ?>
+                                    <a href="<?= base_url('announcements/' . $announcement->announcement_slug) ?>" class="fw-bold text-decoration-none --xhr">
+                                        <?= $announcement->title ?>
                                     </a>
                                     <div class="text-muted small mt-1">
-                                        <?= truncate($announcement->content, 100); ?>
+                                        <?= truncate($announcement->content, 100) ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="text-center py-4 text-muted">
                                 <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
-                                <?= phrase('No announcements available.'); ?>
+                                <?= phrase('No announcements available.') ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -389,7 +439,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 <div class="card rounded-4 overflow-hidden mb-3">
                     <div class="card-header border-0">
                         <h5 class="card-title mb-0">
-                            <?= phrase('Application Information'); ?>
+                            <?= phrase('Application Information') ?>
                         </h5>
                     </div>
                     <div class="card-body">
@@ -400,47 +450,47 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                         AKSARA
                                     </span>
                                     <p>
-                                        <?= aksara('version'); ?>
+                                        <?= aksara('version') ?>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Build Version'); ?>
+                                        <?= phrase('Build Version') ?>
                                     </span>
                                     <p>
-                                        <?= aksara('build_version'); ?>
+                                        <?= aksara('build_version') ?>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <span class="d-block text-muted mb-0">
-                                <?= phrase('Last Modified'); ?>
+                                <?= phrase('Last Modified') ?>
                             </span>
                             <p>
-                                <?= format_date(aksara('date_modified'), 'long', true); ?>
+                                <?= format_date(aksara('date_modified'), 'long', true) ?>
                             </p>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('System Language'); ?>
+                                        <?= phrase('System Language') ?>
                                     </span>
                                     <p>
-                                        <?= (isset($systemLanguage) ? $systemLanguage : null); ?>
+                                        <?= $systemLanguage ?? null ?>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Membership'); ?>
+                                        <?= phrase('Membership') ?>
                                     </span>
                                     <p>
-                                        <?= (get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('Enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= get_setting('frontend_registration') ? '<span class="badge bg-success">' . phrase('Enabled') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>' ?>
                                     </p>
                                 </div>
                             </div>
@@ -449,20 +499,20 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Secure Login Attempt'); ?>
+                                        <?= phrase('Secure Login Attempt') ?>
                                     </span>
                                     <p>
-                                        <?= (get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= get_setting('login_attempt') ? '<span class="badge bg-success">' . get_setting('login_attempt') . ' ' . phrase('times') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>' ?>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <span class="d-block text-muted mb-0">
-                                        <?= phrase('Blocking Time'); ?>
+                                        <?= phrase('Blocking Time') ?>
                                     </span>
                                     <p>
-                                        <?= (get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>'); ?>
+                                        <?= get_setting('blocking_time') ? '<span class="badge bg-success">' . get_setting('blocking_time') . ' ' . phrase('minutes') . '</span>' : '<span class="badge bg-danger">' . phrase('Disabled') . '</span>' ?>
                                     </p>
                                 </div>
                             </div>
@@ -482,14 +532,14 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
             var interval;
         }
 
-        require.js('<?= base_url('assets/echarts/echarts.min.js'); ?>', function() {
+        require.js('<?= base_url('assets/echarts/echarts.min.js') ?>', function() {
             // Initialize chart
             const visitorChart = echarts.init(document.getElementById('visitor-chart'));
 
             // Render chart
             visitorChart.setOption({
                 title: {
-                    text: '<?= phrase('Visitor Graph'); ?>',
+                    text: '<?= phrase('Visitor Graph') ?>',
                     textStyle: {
                         fontWeight: 'bold'
                     }
@@ -497,7 +547,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 tooltip: {
                     trigger: 'axis',
                     valueFormatter: function(value) {
-                        return value + ' <?= phrase('Visits'); ?>';
+                        return value + ' <?= phrase('Visits') ?>';
                     }
                 },
                 grid: {
@@ -509,23 +559,23 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: <?= (isset($visitors->categories) ? json_encode($visitors->categories) : '[]'); ?>
+                    data: <?= isset($visitors->categories) ? json_encode($visitors->categories) : '[]' ?>
                 },
                 yAxis: {
                     type: 'value',
-                    name: '<?= phrase('Visitor Total'); ?>',
+                    name: '<?= phrase('Visitor Total') ?>',
                     nameLocation: 'middle',
                     nameGap: 20,
                     minInterval: 1
                 },
                 series: [{
-                    name: '<?= phrase('Visitors'); ?>',
+                    name: '<?= phrase('Visitors') ?>',
                     type: 'line',
                     smooth: true,
                     areaStyle: {
                         opacity: 0.5
                     },
-                    data: <?= (isset($visitors->visits) ? json_encode($visitors->visits) : '[]'); ?>,
+                    data: <?= isset($visitors->visits) ? json_encode($visitors->visits) : '[]' ?>,
                 }]
             });
 
@@ -536,7 +586,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
         });
 
         $.ajax ({
-            url: '<?= current_page(); ?>',
+            url: '<?= current_page() ?>',
             method: 'POST',
             data: {
                 request: 'fetch_information'
@@ -549,15 +599,15 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                 $('.updater-placeholder').html(`
                     <div class="alert alert-info rounded-0 border-0 p-3 mb-0">
                         <h4 class="h5">
-                            <?= phrase('Update Available'); ?>
+                            <?= phrase('Update Available') ?>
                         </h4>
                         <p>
-                            <?= phrase('A newer version of Aksara is available.') . ' ' . phrase('Click the button below to update your core system directly.') . ' ' . phrase('Your created module and theme will not be overwritten.'); ?>
+                            <?= phrase('A newer version of Aksara is available.') . ' ' . phrase('Click the button below to update your core system directly.') . ' ' . phrase('Your created module and theme will not be overwritten.') ?>
                         </p>
                         <hr />
-                        <a href="<?= base_url('administrative/updater'); ?>" class="btn btn-sm btn-success rounded-pill --xhr">
+                        <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-success rounded-pill --xhr">
                             <i class="mdi mdi-update"></i>
-                            <?= phrase('Update Now'); ?>
+                            <?= phrase('Update Now') ?>
                         </a>
                     </div>
                 `)
@@ -569,7 +619,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
         $('body').off('click.greeting touch.greeting'),
         $('body').on('click.greeting touch.greeting', '.btn-greeting', function(e) {
             $.ajax({
-                url: '<?= base_url('xhr/settings'); ?>',
+                url: '<?= base_url('xhr/settings') ?>',
                 method: 'POST',
                 data: {
                     hide_greeting: true

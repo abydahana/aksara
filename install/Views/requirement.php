@@ -6,26 +6,26 @@
  */
 $error = false;
 $required = ['mbstring', 'intl', 'gd', 'json', 'xml'];
-$missing  = array_diff($required, $extension);
+$missing = array_diff($required, $extension);
 
-if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
-    $error = true;
+if (version_compare(phpversion(), '8.2', '<') || !empty($missing)) {
+  $error = true;
 }
 ?>
-<form action="<?= site_url('database'); ?>" method="POST" class="--validate-form">
+<form action="<?= site_url('database') ?>" method="POST" class="--validate-form">
     <h4>
-        <?= phrase('Awesome!'); ?>
+        <?= phrase('Awesome!') ?>
     </h4>
     <p>
-        <?= phrase('You just read our notes and pretend to agree with it.'); ?>
+        <?= phrase('You just read our notes and pretend to agree with it.') ?>
     </p>
     <div class="text-muted opacity-50">
         <hr class="row" />
     </div>
     <p>
-        <?= phrase('We will help you to prepare your application using this installation wizard.'); ?>
-        <?= phrase('Before you go, make sure this pre-requirements are fulfilled without any warning.'); ?>
-        <?= phrase('Otherwise your application will not work properly.'); ?>
+        <?= phrase('We will help you to prepare your application using this installation wizard.') ?>
+        <?= phrase('Before you go, make sure this pre-requirements are fulfilled without any warning.') ?>
+        <?= phrase('Otherwise your application will not work properly.') ?>
     </p>
     <div class="text-muted opacity-50">
         <hr class="row" />
@@ -33,17 +33,17 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('PHP Version'); ?></span>
+                <span class="d-block mb-0"><?= phrase('PHP Version') ?></span>
                 <p>
-                    <?= (phpversion() < 8.2 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>8.2</b>' : '<b class="text-success">' . phpversion() . '</b>'); ?>
+                    <?= phpversion() < 8.2 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>8.2</b>' : '<b class="text-success">' . phpversion() . '</b>' ?>
                 </p>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('Rewrite Module'); ?></span>
+                <span class="d-block mb-0"><?= phrase('Rewrite Module') ?></span>
                 <p>
-                    <?= (! $modRewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= !$modRewrite ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>' ?>
                 </p>
             </div>
         </div>
@@ -51,17 +51,17 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('Internationalization'); ?> (intl)</span>
+                <span class="d-block mb-0"><?= phrase('Internationalization') ?> (intl)</span>
                 <p>
-                    <?= (! in_array('intl', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= !in_array('intl', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>' ?>
                 </p>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('ZIP Archiver'); ?></span>
+                <span class="d-block mb-0"><?= phrase('ZIP Archiver') ?></span>
                 <p>
-                    <?= (! class_exists('ZipArchive') ? '<b class="text-danger">' . phrase('Disabled') . '</b>' : '<b class="text-success">' . phrase('Available') . '</b>'); ?>
+                    <?= !class_exists('ZipArchive') ? '<b class="text-danger">' . phrase('Disabled') . '</b>' : '<b class="text-success">' . phrase('Available') . '</b>' ?>
                 </p>
             </div>
         </div>
@@ -69,17 +69,17 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('Multibyte String'); ?> (mbstring)</span>
+                <span class="d-block mb-0"><?= phrase('Multibyte String') ?> (mbstring)</span>
                 <p>
-                    <?= (! in_array('mbstring', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= !in_array('mbstring', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>' ?>
                 </p>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('PHP GD'); ?></span>
+                <span class="d-block mb-0"><?= phrase('PHP GD') ?></span>
                 <p>
-                    <?= (! in_array('gd', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= !in_array('gd', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>' ?>
                 </p>
             </div>
         </div>
@@ -87,36 +87,48 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('JSON'); ?></span>
+                <span class="d-block mb-0"><?= phrase('JSON') ?></span>
                 <p>
-                    <?= (! in_array('json', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= !in_array('json', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>' ?>
                 </p>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <span class="d-block mb-0"><?= phrase('XML'); ?></span>
+                <span class="d-block mb-0"><?= phrase('XML') ?></span>
                 <p>
-                    <?= (! in_array('xml', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>'); ?>
+                    <?= !in_array('xml', $extension) ? '<b class="text-danger">' . phrase('Off') . '</b>, ' . phrase('Turn it on!') : '<b class="text-success">' . phrase('On') . '</b>' ?>
                 </p>
             </div>
         </div>
     </div>
-    <?= ($error ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>' : (! $modRewrite ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>' : null)); ?>
+    <?= $error
+      ? '<div class="alert alert-warning failure"><b>' .
+        phrase('Whoops!') .
+        '</b> ' .
+        phrase('Some requirement are not yet fulfilled.') .
+        ' ' .
+        phrase('Please update your server configuration and click on refresh button to continue the installation.') .
+        '</div>'
+      : (!$modRewrite
+        ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>'
+        : null) ?>
     <div class="text-muted opacity-50">
         <hr class="row" />
     </div>
     <div class="--validation-callback"></div>
     <div class="row">
         <div class="col-md-6">
-            <?= ($error ? '<div class="d-grid"><a href="' . site_url('requirement') . '" class="btn btn-outline-secondary btn-sm --xhr" aria-label="' . phrase('Refresh') . '"><i class="mdi mdi-reload"></i> ' . phrase('Refresh') . '</a></div>' : '&nbsp;'); ?>
+            <?= $error
+              ? '<div class="d-grid"><a href="' . site_url('requirement') . '" class="btn btn-outline-secondary btn-sm --xhr" aria-label="' . phrase('Refresh') . '"><i class="mdi mdi-reload"></i> ' . phrase('Refresh') . '</a></div>'
+              : '&nbsp;' ?>
         </div>
         <div class="col-md-6 text-right">
             <div class="d-grid">
-                <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue'); ?>"<?= ($error ? ' disabled' : null); ?>>
+                <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
+                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue') ?>"<?= $error ? ' disabled' : null ?>>
                     <i class="mdi mdi-check"></i>
-                    <?= phrase('Continue'); ?>
+                    <?= phrase('Continue') ?>
                 </button>
             </div>
         </div>

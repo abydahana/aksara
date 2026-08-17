@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title><?= phrase('Aksara Maintenance'); ?></title>
+        <title><?= phrase('Aksara Maintenance') ?></title>
         <script>
             (() => {
                 const storedTheme = window.localStorage.getItem('aksara-maintenance-theme');
@@ -387,51 +387,52 @@
     <body>
         <button class="theme-toggle" type="button" id="theme-toggle">
             <span class="theme-toggle-icon" id="theme-toggle-icon">◐</span>
-            <span id="theme-toggle-label"><?= phrase('Dark mode'); ?></span>
+            <span id="theme-toggle-label"><?= phrase('Dark mode') ?></span>
         </button>
         <div class="ready-alert" id="ready-alert" role="alert">
-            <p><?= phrase('The website is ready to access again.'); ?></p>
-            <button class="btn" type="button" id="refresh-page"><?= phrase('Refresh'); ?></button>
+            <p><?= phrase('The website is ready to access again.') ?></p>
+            <button class="btn" type="button" id="refresh-page"><?= phrase('Refresh') ?></button>
         </div>
         <main class="shell">
             <section class="notice" aria-labelledby="maintenance-title">
                 <div class="logo-container">
-                    <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" alt="Logo" />
+                    <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')) ?>" alt="Logo" />
                 </div>
-                <p class="eyebrow"><?= phrase('Under Maintenance'); ?></p>
-                <h1 id="maintenance-title"><?= phrase('We will be right back.'); ?></h1>
+                <p class="eyebrow"><?= phrase('Under Maintenance') ?></p>
+                <h1 id="maintenance-title"><?= phrase('We will be right back.') ?></h1>
                 <p class="message">
-                    <?= phrase('We\'re currently performing maintenance.'); ?> <?= phrase('While the system is being tuned up, you can pass the time by sliding a few tiles into place.'); ?>
+                    <?= phrase('We\'re currently performing maintenance.') ?> <?= phrase('While the system is being tuned up, you can pass the time by sliding a few tiles into place.') ?>
                 </p>
-                <div class="meta" aria-label="<?= phrase('Maintenance details'); ?>">
+                <div class="meta" aria-label="<?= phrase('Maintenance details') ?>">
                     <span class="pill">HTTP 503</span>
-                    <span class="pill"><?= phrase('No data is affected.'); ?></span>
-                    <span class="pill"><?= phrase('Refresh later'); ?></span>
+                    <span class="pill"><?= phrase('No data is affected.') ?></span>
+                    <span class="pill"><?= phrase('Refresh later') ?></span>
                 </div>
             </section>
 
             <section class="game" aria-labelledby="game-title">
                 <div class="game-head">
                     <h2 class="game-title" id="game-title">2048 Mini</h2>
-                    <span class="pill"><?= phrase('Reach 2048'); ?></span>
+                    <span class="pill"><?= phrase('Reach 2048') ?></span>
                 </div>
-                <div class="score" aria-label="<?= phrase('Score'); ?>">
-                    <span><?= phrase('Score'); ?><b id="score">0</b></span>
-                    <span><?= phrase('Best'); ?><b id="best">0</b></span>
+                <div class="score" aria-label="<?= phrase('Score') ?>">
+                    <span><?= phrase('Score') ?><b id="score">0</b></span>
+                    <span><?= phrase('Best') ?><b id="best">0</b></span>
                 </div>
-                <div class="status" id="status" role="status" aria-live="polite"><?= phrase('Use arrow keys or swipe.'); ?></div>
-                <div class="board" id="board" aria-label="<?= phrase('2048 board'); ?>" tabindex="0"></div>
+                <div class="status" id="status" role="status" aria-live="polite"><?= phrase('Use arrow keys or swipe.') ?></div>
+                <div class="board" id="board" aria-label="<?= phrase('2048 board') ?>" tabindex="0"></div>
                 <div class="actions">
-                    <button class="btn" type="button" id="reset"><?= phrase('New game'); ?></button>
-                    <button class="btn secondary" type="button" id="robot"><?= phrase('Watch robot'); ?></button>
+                    <button class="btn" type="button" id="reset"><?= phrase('New game') ?></button>
+                    <button class="btn secondary" type="button" id="robot"><?= phrase('Watch robot') ?></button>
                 </div>
-                <p class="hint"><?= phrase('Merge matching tiles. The board works with keyboard arrows and touch swipe.'); ?></p>
+                <p class="hint"><?= phrase('Merge matching tiles. The board works with keyboard arrows and touch swipe.') ?></p>
             </section>
         </main>
 
         <script>
             (() => {
-                const i18n = <?= json_encode([
+                const i18n = <?= json_encode(
+                  [
                     'emptyTile' => phrase('Tile {{number}}, empty'),
                     'darkMode' => phrase('Dark mode'),
                     'keepSliding' => phrase('Keep sliding.'),
@@ -446,7 +447,9 @@
                     'useArrows' => phrase('Use arrow keys or swipe.'),
                     'watchRobot' => phrase('Watch robot'),
                     'won' => phrase('2048 reached. Maintenance may now end with dignity.'),
-                ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+                  ],
+                  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                ) ?>;
                 const translate = (key, params = {}) => Object.keys(params).reduce(
                     (text, name) => text.replaceAll(`{{${name}}}`, params[name]),
                     i18n[key] || key

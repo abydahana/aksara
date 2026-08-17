@@ -1,17 +1,11 @@
 <?php
 
 /** @var int $expiresAt */
-$expiresAt = isset($expiresAt)
-    ? (int) $expiresAt
-    : 0;
+$expiresAt = isset($expiresAt) ? (int) $expiresAt : 0;
 
-$remainingSeconds = $expiresAt > time()
-    ? $expiresAt - time()
-    : 0;
+$remainingSeconds = $expiresAt > time() ? $expiresAt - time() : 0;
 
-$remainingMinutes = $remainingSeconds > 0
-    ? (int) ceil($remainingSeconds / 60)
-    : 0;
+$remainingMinutes = $remainingSeconds > 0 ? (int) ceil($remainingSeconds / 60) : 0;
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +16,7 @@ $remainingMinutes = $remainingSeconds > 0
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
-        <title>403 - <?= phrase('Access Banned'); ?></title>
+        <title>403 - <?= phrase('Access Banned') ?></title>
         <style>
             html, body {
                 min-height: 100vh;
@@ -112,19 +106,21 @@ $remainingMinutes = $remainingSeconds > 0
     <body>
         <div class="content-wrapper">
             <div class="forbidden-icon">
-                <img src="<?= base_url('assets/forbidden.png'); ?>" alt="Forbidden" width="128" />
+                <img src="<?= base_url('assets/forbidden.png') ?>" alt="Forbidden" width="128" />
             </div>
-            <h1 class="text-danger">403 - <?= phrase('Access Banned'); ?></h1>
-            <p class="text-muted"><?= phrase('Your network address has been temporarily banned because it repeatedly submitted URLs containing disallowed characters.'); ?></p>
+            <h1 class="text-danger">403 - <?= phrase('Access Banned') ?></h1>
+            <p class="text-muted"><?= phrase('Your network address has been temporarily banned because it repeatedly submitted URLs containing disallowed characters.') ?></p>
 
             <?php if ($remainingMinutes > 0): ?>
                 <p>
-                    <b><?= ($remainingMinutes > 1 ? phrase('Access will be restored in approximately {{remaining}} minutes.', ['remaining' => $remainingMinutes]) : phrase('Access will be restored in approximately {{remaining}} minute.', ['remaining' => $remainingMinutes])); ?></b>
+                    <b><?= $remainingMinutes > 1
+                      ? phrase('Access will be restored in approximately {{remaining}} minutes.', ['remaining' => $remainingMinutes])
+                      : phrase('Access will be restored in approximately {{remaining}} minute.', ['remaining' => $remainingMinutes]) ?></b>
                 </p>
             <?php endif; ?>
 
             <div class="logo-container">
-                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" alt="Logo" />
+                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')) ?>" alt="Logo" />
             </div>
         </div>
     </body>

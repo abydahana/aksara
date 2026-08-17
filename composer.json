@@ -38,7 +38,8 @@
     },
     "scripts": {
         "cs-fix": [
-            "php-cs-fixer fix --ansi"
+            "php-cs-fixer fix --ansi",
+            "node bin/js-build.js"
         ]
     },
     "scripts-descriptions": {

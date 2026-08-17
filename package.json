@@ -1,0 +1,19 @@
+{
+  "name": "aksara",
+  "version": "1.0.0",
+  "description": "<img width=\"2982\" height=\"1978\" alt=\"frame_generic_dark\" src=\"https://github.com/user-attachments/assets/e449a43f-2f42-4bd1-96fb-619e98c5779e\" />",
+  "main": "index.js",
+  "bin": {
+    "aksara": "bin/js-build.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.25.0",
+    "prettier": "^3.9.6"
+  }
+}

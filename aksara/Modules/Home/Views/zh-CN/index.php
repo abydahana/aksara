@@ -5,21 +5,21 @@
  * @var mixed $meta
  * @var mixed $error
  */
-if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
+if (isset($permission) && (!$permission->uploads || !$permission->writable)): ?>
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
                 注意！
             </h2>
-            <?php if (! $permission->uploads): ?>
+            <?php if (!$permission->uploads): ?>
                 <p class="mb-0 text-danger">
-                    <b><?= FCPATH . UPLOAD_PATH; ?></b> 不可写。
+                    <b><?= FCPATH . UPLOAD_PATH ?></b> 不可写。
                 </p>
             <?php endif; ?>
 
-            <?php if (! $permission->uploads): ?>
+            <?php if (!$permission->uploads): ?>
                 <p class="mb-0 text-danger">
-                    <b><?= WRITEPATH; ?></b> 不可写。
+                    <b><?= WRITEPATH ?></b> 不可写。
                 </p>
             <?php endif; ?>
 
@@ -34,10 +34,10 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
                 <h1 class="text-center">
-                    <?= $meta->title; ?>
+                    <?= $meta->title ?>
                 </h1>
                 <p class="fs-5 text-center">
-                    <?= truncate($meta->description, 256); ?>
+                    <?= truncate($meta->description, 256) ?>
                 </p>
                 <h3 class="mb-3 text-center">
                     您正在使用 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>！
@@ -57,12 +57,12 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                     <p>
                         此模块位于
                         <br />
-                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR; ?>Home</code>。
+                        <code><?= ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Modules' . DIRECTORY_SEPARATOR ?>Home</code>。
                     </p>
                     <p>
                         您可以将此模块<b>覆盖</b>到
                         <br />
-                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR; ?>Home</code>，而无需删除原始模块。
+                        <code><?= ROOTPATH . 'modules' . DIRECTORY_SEPARATOR ?>Home</code>，而无需删除原始模块。
                     </p>
                     <p>
                         <b>这是怎么做到的？</b> 因为您使用的是 <a href="//www.aksaracms.com" class="text-primary" target="blank"><b>Aksara</b></a>！

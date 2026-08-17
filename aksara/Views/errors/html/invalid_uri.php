@@ -4,13 +4,9 @@
  * @var int $attempts
  * @var int $remainingAttempts
  */
-$attempts = isset($attempts)
-    ? (int) $attempts
-    : 0;
+$attempts = isset($attempts) ? (int) $attempts : 0;
 
-$remainingAttempts = isset($remainingAttempts)
-    ? (int) $remainingAttempts
-    : 0;
+$remainingAttempts = isset($remainingAttempts) ? (int) $remainingAttempts : 0;
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +17,7 @@ $remainingAttempts = isset($remainingAttempts)
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
-        <title>400 - <?= phrase('Invalid Request'); ?></title>
+        <title>400 - <?= phrase('Invalid Request') ?></title>
         <style>
             html, body {
                 min-height: 100vh;
@@ -109,22 +105,28 @@ $remainingAttempts = isset($remainingAttempts)
     <body>
         <div class="content-wrapper">
             <div class="logo-container">
-                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')); ?>" alt="Forbidden" />
+                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')) ?>" alt="Forbidden" />
             </div>
-            <h1>400 - <?= phrase('Invalid Request'); ?></h1>
-            <p class="text-muted"><?= phrase('The requested URL contains characters that are not allowed.'); ?></p>
+            <h1>400 - <?= phrase('Invalid Request') ?></h1>
+            <p class="text-muted"><?= phrase('The requested URL contains characters that are not allowed.') ?></p>
 
             <p>
-                <?= ($remainingAttempts > 1 ? phrase('You have {{remaining}} attempts remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts]) : phrase('You have {{remaining}} attempt remaining before your network address is temporarily banned.', ['remaining' => $remainingAttempts])); ?>
+                <?= $remainingAttempts > 1
+                  ? phrase('You have {{remaining}} attempts remaining before your network address is temporarily banned.', [
+                    'remaining' => $remainingAttempts,
+                  ])
+                  : phrase('You have {{remaining}} attempt remaining before your network address is temporarily banned.', [
+                    'remaining' => $remainingAttempts,
+                  ]) ?>
             </p>
 
-            <a href="<?= base_url(); ?>" class="btn-back">
+            <a href="<?= base_url() ?>" class="btn-back">
                 <span>
                     <img
                     src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 404.43'><path fill='%23fff' d='m68.69 184.48 443.31.55v34.98l-438.96-.54 173.67 159.15-23.6 25.79L0 199.94 218.6.02l23.6 25.79z'/></svg>"
                     alt="Arrow">
                 </span>
-                <span><?= phrase('Back to Home'); ?></span>
+                <span><?= phrase('Back to Home') ?></span>
             </a>
         </div>
     </body>

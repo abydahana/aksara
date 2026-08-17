@@ -800,39 +800,7 @@ class Template
      */
     private function _minify(?string $buffer = null): ?string
     {
-        if (! is_string($buffer) || trim($buffer) === '') {
-            return $buffer;
-        }
-
-        // Save content inside tags that must not be minified
-        $preserve = [];
-        $tags = ['pre', 'code', 'textarea', 'script', 'style'];
-
-        foreach ($tags as $tag) {
-            $pattern = '#<' . $tag . '\b[^>]*>.*?</' . $tag . '>#si';
-            $buffer = preg_replace_callback($pattern, function ($match) use (&$preserve) {
-                $key = '@@PRESERVE_' . count($preserve) . '@@';
-                $preserve[$key] = $match[0];
-                return $key;
-            }, $buffer);
-        }
-
-        // Minify HTML outside preserved tags
-        // Remove whitespace between tags
-        $buffer = preg_replace('/>\s+</', '><', $buffer);
-
-        // Remove multiple spaces
-        $buffer = preg_replace('/\s{2,}/', ' ', $buffer);
-
-        // Remove spaces before/after tags
-        $buffer = preg_replace('/^\s+|\s+$/m', '', $buffer);
-
-        // Restore preserved areas
-        foreach ($preserve as $key => $content) {
-            $buffer = str_replace($key, $content, $buffer);
-        }
-
-        return $buffer;
+        return html_minify($buffer);
     }
 
     /**

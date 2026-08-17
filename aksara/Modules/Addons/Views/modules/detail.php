@@ -7,36 +7,50 @@ $carousel = null;
 $attribution = null;
 
 if (isset($detail->screenshot) && $detail->screenshot) {
-    foreach ($detail->screenshot as $key => $val) {
-        if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $detail->screenshot[0]->src)) {
-            $screenshot = base_url('modules/' . $detail->folder . '/' . $val->src);
-        } else {
-            $screenshot = get_image(null, 'placeholder_thumb.png');
-        }
+  foreach ($detail->screenshot as $key => $val) {
+    if (file_exists(ROOTPATH . 'modules' . DIRECTORY_SEPARATOR . $detail->folder . DIRECTORY_SEPARATOR . $detail->screenshot[0]->src)) {
+      $screenshot = base_url('modules/' . $detail->folder . '/' . $val->src);
+    } else {
+      $screenshot = get_image(null, 'placeholder_thumb.png');
+    }
 
-        $carousel .= '
-            <div class="carousel-item rounded' . (! $key ? ' active' : null) . '">
-                <a href="' . $screenshot . '" target="_blank">
-                    <img src="' . $screenshot . '" class="d-block rounded w-100" alt="' . $val->alt . '">
+    $carousel .=
+      '
+            <div class="carousel-item rounded' .
+      (!$key ? ' active' : null) .
+      '">
+                <a href="' .
+      $screenshot .
+      '" target="_blank">
+                    <img src="' .
+      $screenshot .
+      '" class="d-block rounded w-100" alt="' .
+      $val->alt .
+      '">
                 </a>
             </div>
         ';
-    }
+  }
 }
 
 if (isset($detail->attribution) && $detail->attribution) {
-    foreach ($detail->attribution as $key => $val) {
-        $attribution .= '
+  foreach ($detail->attribution as $key => $val) {
+    $attribution .=
+      '
             <div class="row">
                 <div class="col-4 text-muted">
-                    ' . $key . '
+                    ' .
+      $key .
+      '
                 </div>
                 <div class="col-8">
-                    ' . $val . '
+                    ' .
+      $val .
+      '
                 </div>
             </div>
         ';
-    }
+  }
 }
 ?>
 
@@ -46,13 +60,13 @@ if (isset($detail->attribution) && $detail->attribution) {
             <div class="position-relative rounded" style="overflow: hidden">
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        <?= $carousel; ?>
+                        <?= $carousel ?>
                     </div>
                     <?php if (isset($detail->screenshot) && sizeof($detail->screenshot) > 1): ?>
-                        <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev" aria-label="<?= phrase('Previous'); ?>">
+                        <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev" aria-label="<?= phrase('Previous') ?>">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         </a>
-                        <a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-bs-slide="next" aria-label="<?= phrase('Next'); ?>">
+                        <a class="carousel-control-next gradient-left" href="#carouselExampleControls" role="button" data-bs-slide="next" aria-label="<?= phrase('Next') ?>">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         </a>
                     <?php endif; ?>
@@ -61,29 +75,29 @@ if (isset($detail->attribution) && $detail->attribution) {
         </div>
         <div class="col-md-6 col-lg-5">
             <h5>
-                <?= $detail->name; ?>
+                <?= $detail->name ?>
             </h5>
             <hr class="mt-1 mb-1" />
             <div class="row">
                 <div class="col-4 text-muted">
-                    <?= phrase('Author'); ?>
+                    <?= phrase('Author') ?>
                 </div>
                 <div class="col-8">
-                    <?= (isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>'); ?>
+                    <?= isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>' ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-4 text-muted">
-                    <?= phrase('Version'); ?>
+                    <?= phrase('Version') ?>
                 </div>
                 <div class="col-8">
-                    <?= $detail->version; ?>
+                    <?= $detail->version ?>
                 </div>
             </div>
-            <?= $attribution; ?>
+            <?= $attribution ?>
             <hr class="mt-1" />
             <div class="mb-0">
-                <?= nl2br($detail->description); ?>
+                <?= nl2br($detail->description) ?>
             </div>
         </div>
     </div>
@@ -93,17 +107,21 @@ if (isset($detail->attribution) && $detail->attribution) {
             <div class="row">
                 <div class="col-sm-6">
                     <div class="d-grid">
-                        <a href="<?= current_page('../update', ['item' => $detail->folder]); ?>" class="btn btn-outline-primary btn-sm --modal">
+                        <a href="<?= current_page('../update', [
+                          'item' => $detail->folder,
+                        ]) ?>" class="btn btn-outline-primary btn-sm --modal">
                             <i class="mdi mdi-auto-fix"></i>
-                            <?= phrase('Update'); ?>
+                            <?= phrase('Update') ?>
                         </a>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="d-grid">
-                        <a href="<?= current_page('../delete', ['item' => $detail->folder]); ?>" class="btn btn-outline-danger btn-sm --modal">
+                        <a href="<?= current_page('../delete', [
+                          'item' => $detail->folder,
+                        ]) ?>" class="btn btn-outline-danger btn-sm --modal">
                             <i class="mdi mdi-delete"></i>
-                            <?= phrase('Uninstall'); ?>
+                            <?= phrase('Uninstall') ?>
                         </a>
                     </div>
                 </div>

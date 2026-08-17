@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var mixed $meta
  */
@@ -7,10 +6,10 @@
 <section class="section-padding fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold">
-            <?= $meta->title; ?>
+            <?= $meta->title ?>
         </h1>
         <p class="fs-5 text-muted mb-0">
-            <?= truncate($meta->description, 256); ?>
+            <?= truncate($meta->description, 256) ?>
         </p>
     </div>
 </section>
@@ -19,30 +18,30 @@
         <div class="row">
             <div class="col-md-4">
                 <h6 class="mb-3">
-                    <?= phrase('Local Variables'); ?>
+                    <?= phrase('Local Variables') ?>
                 </h3>
                 <div class="row">
                     <div class="col-6 col-sm-6 col-md-12">
                         <div class="mb-3">
                             <span class="d-block text-muted mb-0">AKSARA</span>
-                            <span class="d-block fw-bold"><?= aksara('version'); ?></span>
+                            <span class="d-block fw-bold"><?= aksara('version') ?></span>
                         </div>
                     </div>
                     <div class="col-6 col-sm-6 col-md-12">
                         <div class="mb-3">
                             <span class="d-block text-muted mb-0">Build Version</span>
-                            <span class="d-block fw-bold"><?= aksara('build_version'); ?></span>
+                            <span class="d-block fw-bold"><?= aksara('build_version') ?></span>
                         </div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <span class="d-block text-muted mb-0">Last Modified</span>
-                    <span class="d-block"><?= aksara('date_modified'); ?></span>
+                    <span class="d-block"><?= aksara('date_modified') ?></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <h6 class="mb-3">
-                    <?= phrase('The Laborant'); ?>
+                    <?= phrase('The Laborant') ?>
                 </h3>
                 <div class="mb-3">
                     <a href="//abydahana.github.io" target="_blank">
@@ -55,7 +54,7 @@
             </div>
             <div class="col-md-4">
                 <h6 class="mb-3">
-                    <?= phrase('Contributors'); ?>
+                    <?= phrase('Contributors') ?>
                 </h3>
                 <div class="mb-3">
                     <a href="//ganjar.id" target="_blank">
@@ -69,7 +68,7 @@
         </div>
         <br />
         <h6 class="mb-3">
-            <?= phrase('Dependencies'); ?>
+            <?= phrase('Dependencies') ?>
         </h3>
         <div class="mb-3">
             <a href="//codeigniter.com" target="_blank">
@@ -106,7 +105,7 @@
         </div>
         <br />
         <h6 class="mb-3">
-            JS/CSS <small class="text-muted">(<?= phrase('sorted ascending'); ?>)</small>
+            JS/CSS <small class="text-muted">(<?= phrase('sorted ascending') ?>)</small>
         </h3>
         <div class="mb-3">
             <a href="//github.com/dreamerslab/jquery.actual" target="_blank">

@@ -1,5 +1,5 @@
 <div class="container-fluid py-3">
-    <form action="<?= current_page(); ?>" method="POST" class="--api-debug no-ajax">
+    <form action="<?= current_page() ?>" method="POST" class="--api-debug no-ajax">
         <div class="row --apply-increase-one border-bottom">
             <div class="col-md-10">
                 <div class="input-group mb-3">
@@ -14,14 +14,14 @@
                             DELETE
                         </option>
                     </select>
-                    <input type="text" name="url" class="form-control" placeholder="<?= phrase('Enter service URL'); ?>" />
+                    <input type="text" name="url" class="form-control" placeholder="<?= phrase('Enter service URL') ?>" />
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-dark">
                         <i class="mdi mdi-send"></i>
-                        <?= phrase('Send'); ?>
+                        <?= phrase('Send') ?>
                     </button>
                 </div>
             </div>
@@ -30,13 +30,13 @@
             <nav class="--apply-increase-two" style="margin-top:-1px">
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link rounded-0" data-bs-toggle="tab" href="#params-headers" role="tab" style="border-left:0">
-                        <?= phrase('Request Header'); ?>
+                        <?= phrase('Request Header') ?>
                     </a>
                     <a class="nav-item nav-link rounded-0" data-bs-toggle="tab" href="#params-body" role="tab">
-                        <?= phrase('Request Body'); ?>
+                        <?= phrase('Request Body') ?>
                     </a>
                     <a class="nav-item nav-link rounded-0 active response-result" data-bs-toggle="tab" href="#results-pretty" role="tab">
-                        <?= phrase('Response'); ?>
+                        <?= phrase('Response') ?>
                     </a>
                 </div>
             </nav>
@@ -61,7 +61,7 @@
                     </div>
                     <button type="button" class="btn btn-secondary btn-sm --add-parameter" data-parameter="header">
                         <i class="mdi mdi-plus"></i>
-                        <?= phrase('Add Parameter'); ?>
+                        <?= phrase('Add Parameter') ?>
                     </button>
                 </div>
                 <div class="tab-pane border-bottom p-3" id="params-body" role="tabpanel">
@@ -84,7 +84,7 @@
                     </div>
                     <button type="button" class="btn btn-secondary btn-sm --add-parameter" data-parameter="body">
                         <i class="mdi mdi-plus"></i>
-                        <?= phrase('Add Parameter'); ?>
+                        <?= phrase('Add Parameter') ?>
                     </button>
                 </div>
                 <div class="tab-pane border-bottom p-3 p-3 show active" id="results-pretty" role="tabpanel">
@@ -106,13 +106,13 @@
                 '<div class="row">' +
                     '<div class="text-muted col-6 col-md-4">' +
                         '<div class="mb-3">' +
-                            '<input type="text" name="' + initial + '_key[]" class="form-control form-control-sm param-' + initial + '-key" placeholder="<?= phrase('Key'); ?>" />' +
+                            '<input type="text" name="' + initial + '_key[]" class="form-control form-control-sm param-' + initial + '-key" placeholder="<?= phrase('Key') ?>" />' +
                         '</div>' +
                     '</div>' +
                     '<div class="text-muted col-6 col-md-6 ps-0">' +
                         '<div class="mb-3">' +
                             '<div class="input-group">' +
-                                '<input type="text" name="' + initial + '_value[]" class="form-control form-control-sm param-' + initial + '-value" placeholder="<?= phrase('Value'); ?>" />' +
+                                '<input type="text" name="' + initial + '_value[]" class="form-control form-control-sm param-' + initial + '-value" placeholder="<?= phrase('Value') ?>" />' +
                                 '<button type="button" class="btn btn-secondary btn-sm" onclick="jExec($(this).closest(\'.row\').remove())">' +
                                     '<i class="mdi mdi-window-close"></i>' +
                                 '</button>' +
@@ -132,7 +132,7 @@
 
             if (! $(this).find('input[name=url]').val()) {
                 $('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');
-                $('pre code').text(JSON.stringify({error: "<?= phrase('No service URL are given.'); ?>"}, null, 4));
+                $('pre code').text(JSON.stringify({error: "<?= phrase('No service URL are given.') ?>"}, null, 4));
                 Prism.highlightAll();
 
                 return;
@@ -165,14 +165,14 @@
                 data: body,
                 headers: header,
                 beforeSend: function() {
-                    $('pre code').text('<?= phrase('Requesting...'); ?>'),
+                    $('pre code').text('<?= phrase('Requesting...') ?>'),
                     $('.result-html').html('')
                 }
             })
             .always(function(response, status, error) {
                 if (typeof response !== 'object') {
                     response = {
-                        error: '<?= phrase('The response is not a valid object.'); ?>'
+                        error: '<?= phrase('The response is not a valid object.') ?>'
                     };
                 }
 

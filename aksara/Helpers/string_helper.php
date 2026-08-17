@@ -69,6 +69,50 @@ if (! function_exists('is_json')) {
     }
 }
 
+if (! function_exists('html_minify')) {
+    /**
+     * Minify HTML content while preserving pre, code, textarea, script, and style blocks
+     */
+    function html_minify(?string $buffer = null): ?string
+    {
+        if (! is_string($buffer) || trim($buffer) === '') {
+            return $buffer;
+        }
+
+        // Save content inside tags that must not be minified
+        $preserve = [];
+        $tags = ['pre', 'code', 'textarea', 'script', 'style'];
+
+        foreach ($tags as $tag) {
+            $pattern = '#<' . $tag . '\b[^>]*>.*?</' . $tag . '>#si';
+            $buffer = preg_replace_callback($pattern, function ($match) use (&$preserve) {
+                $key = '@@PRESERVE_' . count($preserve) . '@@';
+                $preserve[$key] = $match[0];
+                return $key;
+            }, $buffer);
+        }
+
+        // Remove HTML comments
+        $buffer = preg_replace('/<!--(.|\s)*?-->/', '', $buffer);
+
+        // Remove whitespace between tags
+        $buffer = preg_replace('/>\s+</', '><', $buffer);
+
+        // Remove multiple spaces/newlines
+        $buffer = preg_replace('/\s{2,}/', ' ', $buffer);
+
+        // Remove spaces at line starts/ends
+        $buffer = preg_replace('/^\s+|\s+$/m', '', $buffer);
+
+        // Restore preserved areas
+        foreach ($preserve as $key => $content) {
+            $buffer = str_replace($key, $content, $buffer);
+        }
+
+        return trim($buffer);
+    }
+}
+
 if (! function_exists('make_json')) {
     /**
      * Generate the response as JSON format
@@ -84,13 +128,29 @@ if (! function_exists('make_json')) {
 
         $data = encoding_fixer($data);
 
-        $minifyPattern = [
-            '/\>[^\S ]+/s' => '>',      // Strip whitespaces after tags, except space
-            '/[^\S ]+\</s' => '<',      // Strip whitespaces before tags, except space
-            '/<!--(.|\s)*?-->/' => ''   // Remove HTML comments
-        ];
+        $minifyHtmlRecursive = function ($input) use (&$minifyHtmlRecursive) {
+            if (is_string($input)) {
+                if (str_contains($input, '<')) {
+                    return html_minify($input);
+                }
+                return $input;
+            } elseif (is_array($input)) {
+                foreach ($input as $key => $val) {
+                    $input[$key] = $minifyHtmlRecursive($val);
+                }
+                return $input;
+            } elseif (is_object($input)) {
+                foreach ($input as $key => $val) {
+                    $input->$key = $minifyHtmlRecursive($val);
+                }
+                return $input;
+            }
+            return $input;
+        };
 
-        $output = preg_replace(array_keys($minifyPattern), array_values($minifyPattern), json_encode($data));
+        $data = $minifyHtmlRecursive($data);
+
+        $output = json_encode($data);
 
         $response = Services::response();
         $response->setStatusCode(200);

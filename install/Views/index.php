@@ -2,26 +2,26 @@
 
 $language = session()->get('language') ?? 'en';
 $isRtl = in_array(session()->get('language'), [
-    'ar',  // Arabic
-    'arc', // Aramaic
-    'dv',  // Dhivehi/Maldivian
-    'fa',  // Persian/Farsi
-    'ha',  // Hausa
-    'he',  // Hebrew
-    'khw', // Khowar
-    'ks',  // Kashmiri
-    'ku',  // Kurdish
-    'ps',  // Pashto
-    'ur',  // Urdu
-    'yi',  // Yiddish
-    'sd',  // Sindhi
-    'ug',  // Uyghur
+  'ar', // Arabic
+  'arc', // Aramaic
+  'dv', // Dhivehi/Maldivian
+  'fa', // Persian/Farsi
+  'ha', // Hausa
+  'he', // Hebrew
+  'khw', // Khowar
+  'ks', // Kashmiri
+  'ku', // Kurdish
+  'ps', // Pashto
+  'ur', // Urdu
+  'yi', // Yiddish
+  'sd', // Sindhi
+  'ug', // Uyghur
 ]);
 ?>
 <!DOCTYPE html>
-<html lang="<?= $language ?? 'en'; ?>"<?= ($isRtl ? ' dir="rtl"' : null); ?>>
+<html lang="<?= $language ?? 'en' ?>"<?= $isRtl ? ' dir="rtl"' : null ?>>
     <head>
-        <title><?= phrase('Aksara Installer'); ?></title>
+        <title><?= phrase('Aksara Installer') ?></title>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="msapplication-navbutton-color" content="#212529" />
@@ -29,7 +29,7 @@ $isRtl = in_array(session()->get('language'), [
         <meta name="apple-mobile-web-app-status-bar-style" content="#212529" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="description" content="<?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.'); ?>" />
+        <meta name="description" content="<?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.') ?>" />
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
@@ -70,7 +70,7 @@ $isRtl = in_array(session()->get('language'), [
         </style>
     </head>
     <body class="bg-light">
-        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill shadow-sm theme-toggle" data-theme-toggle aria-label="<?= phrase('Toggle theme'); ?>" title="<?= phrase('Toggle theme'); ?>">
+        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill shadow-sm theme-toggle" data-theme-toggle aria-label="<?= phrase('Toggle theme') ?>" title="<?= phrase('Toggle theme') ?>">
             <i class="mdi mdi-weather-night" aria-hidden="true"></i>
         </button>
         <main class="container-fluid h-100" id="installer-main">
@@ -101,39 +101,41 @@ $isRtl = in_array(session()->get('language'), [
                                         </div>
                                         <p class="step requirement py-1">
                                             <b>
-                                                <?= phrase('Checking Requirements'); ?>
+                                                <?= phrase('Checking Requirements') ?>
                                             </b>
                                         </p>
                                         <p class="step database py-1">
                                             <b>
-                                                <?= phrase('Database Configuration'); ?>
+                                                <?= phrase('Database Configuration') ?>
                                             </b>
                                         </p>
                                         <p class="step security py-1">
                                             <b>
-                                                <?= phrase('Security Configuration'); ?>
+                                                <?= phrase('Security Configuration') ?>
                                             </b>
                                         </p>
                                         <p class="step system py-1">
                                             <b>
-                                                <?= phrase('System Configuration'); ?>
+                                                <?= phrase('System Configuration') ?>
                                             </b>
                                         </p>
                                         <p class="step final py-1">
                                             <b>
-                                                <?= phrase('Finalizing'); ?>
+                                                <?= phrase('Finalizing') ?>
                                             </b>
                                         </p>
                                     </div>
 
                                     <div class="position-absolute start-0 end-0 bottom-0 w-100 p-3">
-                                        <a href="//youtube.com/abydahana?sub_confirmation=1" class="btn btn-danger btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Subscribe to my channel'); ?>" aria-label="<?= phrase('Subscribe to my channel'); ?>">
+                                        <a href="//youtube.com/abydahana?sub_confirmation=1" class="btn btn-danger btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Subscribe to my channel') ?>" aria-label="<?= phrase(
+  'Subscribe to my channel',
+) ?>">
                                             <i class="mdi mdi-youtube"></i>
                                         </a>
-                                        <a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Be my friend'); ?>" aria-label="<?= phrase('Be my friend'); ?>">
+                                        <a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Be my friend') ?>" aria-label="<?= phrase('Be my friend') ?>">
                                             <i class="mdi mdi-facebook"></i>
                                         </a>
-                                        <a href="//github.com/abydahana" class="btn btn-dark btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Follow my GitHub'); ?>" aria-label="<?= phrase('Follow my GitHub'); ?>">
+                                        <a href="//github.com/abydahana" class="btn btn-dark btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Follow my GitHub') ?>" aria-label="<?= phrase('Follow my GitHub') ?>">
                                             <i class="mdi mdi-github-circle"></i>
                                         </a>
                                         <a href="//trakteer.id/aksaralaboratory" class="btn btn-outline-danger btn-sm rounded-pill float-end" target="_blank" data-bs-toggle="tooltip" title="Trakteer!" aria-label="Trakteer">
@@ -153,67 +155,67 @@ $isRtl = in_array(session()->get('language'), [
                                         </div>
                                     </div>
                                     <div class="sticky-top step-content" style="top:15px">
-                                        <form action="<?= site_url('requirement'); ?>" method="POST" class="--validate-form">
+                                        <form action="<?= site_url('requirement') ?>" method="POST" class="--validate-form">
                                             <div class="row">
                                                 <div class="col-7">
                                                     <h4>
-                                                        <?= phrase('Hello there'); ?>,
+                                                        <?= phrase('Hello there') ?>,
                                                     </h4>
                                                 </div>
                                                 <div class="col-5">
-                                                    <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language'); ?>" aria-label="<?= phrase('Choose language'); ?>">
-                                                        <option value="en"<?= ($language == 'en' ? ' selected' : null); ?>>English</option>
-                                                        <option value="en-PIR"<?= ($language == 'en-PIR' ? ' selected' : null); ?>>English (Pirate)</option>
-                                                        <option value="id"<?= ($language == 'id' ? ' selected' : null); ?>>Indonesia</option>
-                                                        <option value="es"<?= ($language == 'es' ? ' selected' : null); ?>>Español</option>
-                                                        <option value="pt"<?= ($language == 'pt' ? ' selected' : null); ?>>Português</option>
-                                                        <option value="fr"<?= ($language == 'fr' ? ' selected' : null); ?>>Français</option>
-                                                        <option value="de"<?= ($language == 'de' ? ' selected' : null); ?>>Deutsch</option>
-                                                        <option value="nl"<?= ($language == 'nl' ? ' selected' : null); ?>>Nederlands</option>
-                                                        <option value="ru"<?= ($language == 'ru' ? ' selected' : null); ?>>Русский</option>
-                                                        <option value="zh-CN"<?= ($language == 'zh-CN' ? ' selected' : null); ?>>简体中文</option>
-                                                        <option value="zh-TW"<?= ($language == 'zh-TW' ? ' selected' : null); ?>>繁體中文</option>
-                                                        <option value="ar"<?= ($language == 'ar' ? ' selected' : null); ?>>العربية</option>
-                                                        <option value="ja"<?= ($language == 'ja' ? ' selected' : null); ?>>日本語</option>
-                                                        <option value="ko"<?= ($language == 'ko' ? ' selected' : null); ?>>한국어</option>
-                                                        <option value="th"<?= ($language == 'th' ? ' selected' : null); ?>>ไทย</option>
-                                                        <option value="vi"<?= ($language == 'vi' ? ' selected' : null); ?>>Tiếng Việt</option>
+                                                    <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language') ?>" aria-label="<?= phrase('Choose language') ?>">
+                                                        <option value="en"<?= $language == 'en' ? ' selected' : null ?>>English</option>
+                                                        <option value="en-PIR"<?= $language == 'en-PIR' ? ' selected' : null ?>>English (Pirate)</option>
+                                                        <option value="id"<?= $language == 'id' ? ' selected' : null ?>>Indonesia</option>
+                                                        <option value="es"<?= $language == 'es' ? ' selected' : null ?>>Español</option>
+                                                        <option value="pt"<?= $language == 'pt' ? ' selected' : null ?>>Português</option>
+                                                        <option value="fr"<?= $language == 'fr' ? ' selected' : null ?>>Français</option>
+                                                        <option value="de"<?= $language == 'de' ? ' selected' : null ?>>Deutsch</option>
+                                                        <option value="nl"<?= $language == 'nl' ? ' selected' : null ?>>Nederlands</option>
+                                                        <option value="ru"<?= $language == 'ru' ? ' selected' : null ?>>Русский</option>
+                                                        <option value="zh-CN"<?= $language == 'zh-CN' ? ' selected' : null ?>>简体中文</option>
+                                                        <option value="zh-TW"<?= $language == 'zh-TW' ? ' selected' : null ?>>繁體中文</option>
+                                                        <option value="ar"<?= $language == 'ar' ? ' selected' : null ?>>العربية</option>
+                                                        <option value="ja"<?= $language == 'ja' ? ' selected' : null ?>>日本語</option>
+                                                        <option value="ko"<?= $language == 'ko' ? ' selected' : null ?>>한국어</option>
+                                                        <option value="th"<?= $language == 'th' ? ' selected' : null ?>>ไทย</option>
+                                                        <option value="vi"<?= $language == 'vi' ? ' selected' : null ?>>Tiếng Việt</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <p>
-                                                <?= phrase('Thank you for choosing Aksara.'); ?>
+                                                <?= phrase('Thank you for choosing Aksara.') ?>
                                             </p>
                                             <div class="text-muted opacity-50">
                                                 <hr class="row" />
                                             </div>
                                             <p>
-                                                <?= phrase('Before we start the installation, please take a moment to read this few notes.'); ?>
-                                                <?= phrase('You could check the agreement box and skip reading as usual.'); ?>
+                                                <?= phrase('Before we start the installation, please take a moment to read this few notes.') ?>
+                                                <?= phrase('You could check the agreement box and skip reading as usual.') ?>
                                             </p>
                                             <ol>
                                                 <li>
                                                     <p>
-                                                        <?= phrase('Article 1'); ?>
+                                                        <?= phrase('Article 1') ?>
                                                     </p>
                                                 </li>
                                                 <li>
                                                     <p>
-                                                        <?= phrase('Article 2'); ?>
+                                                        <?= phrase('Article 2') ?>
                                                     </p>
                                                 </li>
                                                 <li>
                                                     <p>
-                                                        <?= phrase('Article 3'); ?>
+                                                        <?= phrase('Article 3') ?>
                                                     </p>
                                                 </li>
                                             </ol>
                                             <p>
-                                                <?= phrase('Three notes should be enough.'); ?>
-                                                <?= phrase('I look forward to your support.'); ?>
+                                                <?= phrase('Three notes should be enough.') ?>
+                                                <?= phrase('I look forward to your support.') ?>
                                             </p>
                                             <p class="mb-0">
-                                                <?= phrase('The fool'); ?>,
+                                                <?= phrase('The fool') ?>,
                                             </p>
                                             <p>
                                                 <a href="//abydahana.github.io" class="text-primary text-decoration-none" target="_blank">
@@ -230,16 +232,16 @@ $isRtl = in_array(session()->get('language'), [
                                                 <div class="col-md-6">
                                                     <label class="mb-3 mb-md-0" for="agree_input">
                                                         <input type="checkbox" name="agree" class="form-check-input" id="agree_input" value="1" />
-                                                        <?= phrase('Pretend to agree'); ?>
+                                                        <?= phrase('Pretend to agree') ?>
                                                     </label>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="d-grid">
-                                                        <?= (! session()->get('timezone') ? '<input type="hidden" name="timezone" />' : null); ?>
-                                                        <input type="hidden" name="_token" value="<?= sha1(time()); ?>" />
-                                                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Start Installation'); ?>" disabled>
+                                                        <?= !session()->get('timezone') ? '<input type="hidden" name="timezone" />' : null ?>
+                                                        <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Start Installation') ?>" disabled>
                                                             <i class="mdi mdi-check"></i>
-                                                            <?= phrase('Start Installation'); ?>
+                                                            <?= phrase('Start Installation') ?>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -317,7 +319,7 @@ $isRtl = in_array(session()->get('language'), [
 
                             return;
                         } else if (response.status !== 200) {
-                            $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!'); ?></b> ' + response.message + '</div>'),
+                            $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!') ?></b> ' + response.message + '</div>'),
                             $('html, body').animate({
                                 scrollTop: $('.failure').offset().top - 60
                             }, 500)
@@ -331,7 +333,7 @@ $isRtl = in_array(session()->get('language'), [
                     })
                     .fail(function(response, status, error) {
                         $(this).find('button[type=submit]').prop('disabled', false),
-                        $('.--validation-callback').html('<div class="alert alert-danger failure"><b><?= phrase('Whoops!'); ?></b> ' + error + '</div>'),
+                        $('.--validation-callback').html('<div class="alert alert-danger failure"><b><?= phrase('Whoops!') ?></b> ' + error + '</div>'),
                         $('html, body').animate({
                             scrollTop: $('.failure').offset().top - 60
                         }, 500)
@@ -362,7 +364,7 @@ $isRtl = in_array(session()->get('language'), [
                     .done(function(response) {
                         if (typeof response.code !== 'undefined' && response.code === 200) {
                             // Indicates that the Aksara was successfully installed
-                            window.location.href = '<?= base_url(); ?>';
+                            window.location.href = '<?= base_url() ?>';
 
                             return;
                         }
@@ -384,7 +386,7 @@ $isRtl = in_array(session()->get('language'), [
                                 num++;
                             })
                         } else {
-                            $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!'); ?></b> ' + response.message + '</div>'),
+                            $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!') ?></b> ' + response.message + '</div>'),
                             $('html, body').animate({
                                 scrollTop: $('.failure').offset().top - 60
                             }, 500)
@@ -395,7 +397,7 @@ $isRtl = in_array(session()->get('language'), [
                     })
                     .fail(function(response, status, error) {
                         $(this).find('button[type=submit]').prop('disabled', false),
-                        $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!'); ?></b> ' + error + '</div>'),
+                        $('.--validation-callback').html('<div class="alert alert-warning failure"><b><?= phrase('Whoops!') ?></b> ' + error + '</div>'),
                         $('html, body').animate({
                             scrollTop: $('.failure').offset().top - 60
                         }, 500)

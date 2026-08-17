@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var mixed $languages
  */
@@ -12,11 +11,11 @@
 
         <?php if ($val->code == get_userdata('language')): ?>
             <b class="d-block">
-                <?= $val->language; ?>
+                <?= $val->language ?>
             </b>
         <?php else: ?>
-            <a href="<?= base_url('xhr/language/' . $val->code); ?>" class="d-block --xhr">
-                <?= $val->language; ?>
+            <a href="<?= base_url('xhr/language/' . $val->code) ?>" class="d-block --xhr">
+                <?= $val->language ?>
             </a>
         <?php endif; ?>
     <?php endforeach; ?>

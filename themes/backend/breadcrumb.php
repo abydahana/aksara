@@ -3,15 +3,15 @@
  * @var array $breadcrumb
  */
 ?>
-<nav data-role="breadcrumb" class="position-fixed w-100 border-bottom bg-body" id="breadcrumb-wrapper" aria-label="<?= phrase('Breadcrumb'); ?>">
+<nav data-role="breadcrumb" class="position-fixed w-100 border-bottom bg-body" id="breadcrumb-wrapper" aria-label="<?= phrase('Breadcrumb') ?>">
     <div class="container-fluid">
         <ol class="breadcrumb rounded-0 mb-0">
             <?php foreach ($breadcrumb as $key => $val): ?>
                 <li class="breadcrumb-item">
-                    <?= ($val->url ? '<a href="' . $val->url . '" class="--xhr">' : '<b class="text-muted">'); ?>
-                        <?= ($val->icon ? '<i class="' . $val->icon . '"></i>' : null); ?>
-                        <?= $val->label; ?>
-                    <?= ($val->url ? '</a>' : '</b>'); ?>
+                    <?= $val->url ? '<a href="' . $val->url . '" class="--xhr">' : '<b class="text-muted">' ?>
+                        <?= $val->icon ? '<i class="' . $val->icon . '"></i>' : null ?>
+                        <?= $val->label ?>
+                    <?= $val->url ? '</a>' : '</b>' ?>
                 </li>
             <?php endforeach; ?>
         </ol>
