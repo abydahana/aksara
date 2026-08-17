@@ -94,7 +94,7 @@ $fieldData = $results[0]; ?>
         </div>
         <div class="opt-btn-overlap-fix"></div>
         <div class="row opt-btn">
-            <div class="col-md-12">
+            <div class="col-12 col-md-12 d-flex justify-content-between align-items-center gap-2">
                 <a href="<?= current_page('../', [
                   'id' => null,
                   'code' => null,
@@ -104,10 +104,12 @@ $fieldData = $results[0]; ?>
                     <i class="mdi mdi-arrow-left"></i>
                     <?= phrase('Back') ?>
                 </a>
-                <button type="submit" class="btn btn-primary float-end">
-                    <i class="mdi mdi-check"></i>
-                    <?= phrase('Translate') ?>
-                </button>
+                <div class="d-flex justify-content-end align-items-center gap-1">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-check"></i>
+                        <?= phrase('Translate') ?>
+                    </button>
+                </div>
             </div>
         </div>
     </form>

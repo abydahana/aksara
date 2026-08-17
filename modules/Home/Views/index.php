@@ -448,10 +448,8 @@
                     <div class="col-6 col-md-12">
                         <div class="card border-light-subtle border-hover rounded-5 mb-md-4 overflow-hidden">
                             <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-6 offset-3 text-center">
-                                        <i class="mdi mdi-post-outline mdi-5x text-secondary"></i>
-                                    </div>
+                                <div class="text-center">
+                                    <i class="mdi mdi-post-outline mdi-5x text-secondary"></i>
                                 </div>
                                 <div class="text-center">
                                     <h4 class="card-title fw-semibold color">
@@ -467,10 +465,8 @@
                     <div class="col-6 col-md-12">
                         <div class="card border-light-subtle border-hover rounded-5 overflow-hidden">
                             <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-6 offset-3 text-center">
-                                        <i class="mdi mdi-image-multiple mdi-5x text-secondary"></i>
-                                    </div>
+                                <div class="text-center">
+                                    <i class="mdi mdi-image-multiple mdi-5x text-secondary"></i>
                                 </div>
                                 <div class="text-center">
                                     <h4 class="card-title fw-semibold color">
@@ -488,10 +484,8 @@
             <div class="col-md-3 col-sm-6 mt-3 mt-sm-0">
                 <div class="card border-light-subtle border-hover rounded-5 overflow-hidden">
                     <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-6 offset-3 text-center">
-                                <i class="mdi mdi-comment-processing mdi-5x text-secondary"></i>
-                            </div>
+                        <div class="text-center">
+                            <i class="mdi mdi-comment-processing mdi-5x text-secondary"></i>
                         </div>
                         <div class="text-center">
                             <h4 class="card-title fw-semibold color">

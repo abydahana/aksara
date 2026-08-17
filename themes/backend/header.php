@@ -14,7 +14,12 @@
         <a href="<?= current_page() ?>" class="--xhr navbar-brand pt-0 pb-0 d-block d-lg-none text-truncate" data-role="title">
             <?= $meta->title ?>
         </a>
-        <button class="navbar-toggler mobile-menu-toggle border-0" type="button" data-toggle="sidebar" aria-label="<?= phrase('Toggle sidebar') ?>" aria-expanded="false">
+        <div class="d-flex align-items-center d-lg-none ms-auto me-2">
+            <a href="<?= current_page() ?>" class="nav-link px-2" data-toggle="theme" aria-label="<?= phrase('Toggle theme') ?>">
+                <i class="mdi mdi-weather-night"></i>
+            </a>
+        </div>
+        <button class="navbar-toggler mobile-menu-toggle border-0 d-lg-none" type="button" data-toggle="sidebar" aria-label="<?= phrase('Toggle sidebar') ?>" aria-expanded="false">
             <span class="mobile-menu-toggle-lines" aria-hidden="true">
                 <span class="mobile-menu-toggle-line"></span>
                 <span class="mobile-menu-toggle-line"></span>
