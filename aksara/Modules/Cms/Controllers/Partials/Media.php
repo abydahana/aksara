@@ -179,7 +179,7 @@ class Media extends Core
             return throw_exception(403, phrase('Access denied'));
         }
 
-        /* load required helper */
+        // Load required helper
         helper('filesystem');
 
         $fullPath = UPLOAD_PATH;

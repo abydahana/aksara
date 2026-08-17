@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => 'Afbeeldingsdimensie mag alleen numeriek zijn!',
     'Thumbnail dimension must be numeric only!' => 'Thumbnaildimensie mag alleen numeriek zijn!',
     'Icon dimension must be numeric only!' => 'Icoondimensie mag alleen numeriek zijn!',
-    'All catched up!' => 'Helemaal bij!',
+    'All caught up!' => 'Helemaal bij!',
     'Your application is ready to install using provided settings.' => 'Je applicatie is klaar om te installeren met de opgegeven instellingen.',
     'Just one more step' => 'Nog maar één stap,',
     'Make sure what you filled in on the previous form is correct.' => 'Zorg ervoor dat wat je in het vorige formulier hebt ingevuld correct is.',

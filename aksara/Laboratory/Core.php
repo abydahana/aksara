@@ -2085,9 +2085,9 @@ abstract class Core extends Controller
         // Create core component if not exists
         $renderer->render();
 
-        // Check if given table is exists in database
+        // Check if given table exists in database
         if ($this->_table) {
-            // Check if table is exists
+            // Check if table exists
             if (! $this->model->tableExists($this->_table)) {
                 return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
             }
@@ -2149,7 +2149,7 @@ abstract class Core extends Controller
                 $this->_setPrimary = array_unique($this->_setPrimary);
             }
 
-            // Apply primary from where if it's were sets
+            // Apply primary from where if it was set
             if (! $this->_setPrimary && $this->_where) {
                 // Get array keys
                 $this->_setPrimary = array_keys($this->_where);
@@ -2733,7 +2733,7 @@ abstract class Core extends Controller
                             'arguments' => [$this->_table . '.' . $checkField, get_userdata('sort_order')]
                         ];
                     } elseif ($this->_compiledTable) {
-                        // Otherwhise, find it from the relation table
+                        // Otherwise, find it from the relation table
                         foreach ($this->_compiledTable as $key => $dbTable) {
                             // Validate the column to check if column is exist in table
                             if ($this->model->fieldExists($checkField, $dbTable)) {
@@ -3676,7 +3676,7 @@ abstract class Core extends Controller
                         preg_match('/callback_(.*?)(\[|$)/', $callback, $callbackMatch);
 
                         if (isset($callbackMatch[1]) && method_exists($this, $callbackMatch[1])) {
-                            // Apply callback only when method is exists
+                            // Apply callback only when method exists
                             $val['validation'][$index] = [$this, $callbackMatch[1]];
                         }
                     }
@@ -4056,16 +4056,16 @@ abstract class Core extends Controller
                     }
                 }
 
-                // Check if the field is sets to use the default value
+                // Check if the field is set to use the default value
                 if (isset($this->_setDefault[$field]) && ($this->_setDefault[$field] || is_numeric($this->_setDefault[$field]))) {
-                        // Push the default value to the data preparation
-                        $prepare[$field] = $this->_setDefault[$field];
+                    // Push the default value to the data preparation
+                    $prepare[$field] = $this->_setDefault[$field];
                 }
 
                 // Or when it's a boolean and no value
                 elseif (array_intersect(['boolean'], $type) && ! $this->request->getPost($field) && ! in_array($field, $this->_unsetField)) {
-                        // Sets to "0" instead of null
-                        $prepare[$field] = 0;
+                    // Sets to "0" instead of null
+                    $prepare[$field] = 0;
                 }
 
                 if (! array_intersect(['wysiwyg', 'encryption'], $type) && isset($prepare[$field])) {
@@ -5833,7 +5833,7 @@ abstract class Core extends Controller
             if ('select' == $function) {
                 // Slice unnecessary select
                 if (! is_array($arguments[0])) {
-                    // Explode comma sparated string to array
+                    // Explode comma separated string to array
                     $arguments[0] = array_map('trim', explode(',', $arguments[0]));
                 }
 

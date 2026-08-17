@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => '画像の寸法は数値である必要があります！',
     'Thumbnail dimension must be numeric only!' => 'サムネイルの寸法は数値である必要があります！',
     'Icon dimension must be numeric only!' => 'アイコンの寸法は数値である必要があります！',
-    'All catched up!' => '準備完了！',
+    'All caught up!' => '準備完了！',
     'Your application is ready to install using provided settings.' => '提供された設定でアプリケーションをインストールする準備が整いました。',
     'Just one more step' => 'あと一歩です。',
     'Make sure what you filled in on the previous form is correct.' => '前のフォームで入力した内容が正しいか確認してください。',

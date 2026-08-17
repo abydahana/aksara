@@ -1,6 +1,6 @@
 <form action="<?= site_url('run'); ?>" method="POST" class="--validate-form">
     <h4>
-        <?= phrase('All catched up!'); ?>
+        <?= phrase('All caught up!'); ?>
     </h4>
     <p>
         <?= phrase('Your application is ready to install using the provided configurations.'); ?>

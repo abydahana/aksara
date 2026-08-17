@@ -74,7 +74,7 @@ return [
     'Image dimension must be numeric only!' => 'Размер изображения должен быть только числовым!',
     'Thumbnail dimension must be numeric only!' => 'Размер миниатюры должен быть только числовым!',
     'Icon dimension must be numeric only!' => 'Размер иконки должен быть только числовым!',
-    'All catched up!' => 'Все готово!',
+    'All caught up!' => 'Все готово!',
     'Your application is ready to install using provided settings.' => 'Ваше приложение готово к установке с использованием предоставленных настроек.',
     'Just one more step' => 'Остался всего один шаг,',
     'Make sure what you filled in on the previous form is correct.' => 'Убедитесь, что вы правильно заполнили предыдущую форму.',

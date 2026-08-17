@@ -355,13 +355,13 @@ $isRtl = in_array(session()->get('language'), [
                             $('[data-bs-toggle=popover]').popover('hide')
                         },
                         complete: function(progress) {
-                            /* animate the submit button */
+                            // Animate the submit button
                             $(this).find('button[type=submit]:not(.btn-link)').prop('disabled', false).removeClass('disabled').find('i.mdi').removeClass('mdi-loading mdi-spin').addClass('mdi-check')
                         },
                     })
                     .done(function(response) {
                         if (typeof response.code !== 'undefined' && response.code === 200) {
-                            /* indicates that the Aksara was successfully installed */
+                            // Indicates that the Aksara was successfully installed
                             window.location.href = '<?= base_url(); ?>';
 
                             return;

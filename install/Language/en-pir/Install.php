@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => 'Portrait size must be in numbers!',
     'Thumbnail dimension must be numeric only!' => 'Tiny portrait size must be in numbers!',
     'Icon dimension must be numeric only!' => 'Badge size must be in numbers!',
-    'All catched up!' => 'Everything in the hold!',
+    'All caught up!' => 'Everything in the hold!',
     'Your application is ready to install using provided settings.' => 'Yer ship be ready to sail with these charts.',
     'Just one more step' => 'One more knot to tie,',
     'Make sure what you filled in on the previous form is correct.' => 'Make sure yer treasure map be accurate.',

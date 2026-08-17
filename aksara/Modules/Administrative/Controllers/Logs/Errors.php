@@ -154,7 +154,7 @@ class Errors extends Core
             ]);
         }
 
-        /* load required helper */
+        // Load required helper
         helper('filesystem');
 
         $data = directory_map(WRITEPATH . 'logs', 1);
@@ -187,7 +187,7 @@ class Errors extends Core
 
     private function _logs()
     {
-        /* load required helper */
+        // Load required helper
         helper('filesystem');
 
         $data = directory_map(WRITEPATH . 'logs', 1);

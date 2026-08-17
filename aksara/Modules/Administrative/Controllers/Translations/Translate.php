@@ -296,7 +296,7 @@ class Translate extends Core
         $phrases = [];
         $scopes = [];
 
-        // Check if translation file is exists
+        // Check if translation file exists
         if (file_exists($this->_translationFile) || is_dir(WRITEPATH . 'translations')) {
             foreach ($this->_translationDocuments($this->_code) as $scope => $document) {
                 foreach ($document['phrases'] as $key => $val) {

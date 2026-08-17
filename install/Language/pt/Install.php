@@ -63,7 +63,7 @@ return [
     'Image dimension must be numeric only!' => 'A dimensão da imagem deve ser apenas numérica!',
     'Thumbnail dimension must be numeric only!' => 'A dimensão da miniatura deve ser apenas numérica!',
     'Icon dimension must be numeric only!' => 'A dimensão do ícone deve ser apenas numérica!',
-    'All catched up!' => 'Tudo pronto!',
+    'All caught up!' => 'Tudo pronto!',
     'Your application is ready to install using provided settings.' => 'Sua aplicação está pronta para ser instalada com as configurações fornecidas.',
     'Just one more step' => 'Apenas mais um passo,',
     'Make sure what you filled in on the previous form is correct.' => 'Certifique-se de que o que você preencheu no formulário anterior está correto.',

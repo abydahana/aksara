@@ -111,15 +111,15 @@ class Document
         $widthHeight = ($width ? array_map('trim', explode(' ', $width)) : []);
 
         if (2 == sizeof($widthHeight)) {
-            // The page size and orientation is sets with units
+            // The page size and orientation is set with units
             $this->_params['page-width'] = $widthHeight[0];
             $this->_params['page-height'] = $widthHeight[1];
         } elseif ('landscape' == strtolower($height)) {
-            // The page size and orientation is sets with initial, ex: A4, landscape
+            // The page size and orientation is set with initial, ex: A4, landscape
             $this->_params['page-size'] = $width;
             $this->_params['orientation'] = $height;
         } else {
-            // The page size and orientation is sets with initial, ex: A4, landscape
+            // The page size and orientation is set with initial, ex: A4, landscape
             $this->_params['page-width'] = $width;
             $this->_params['page-height'] = $height;
         }

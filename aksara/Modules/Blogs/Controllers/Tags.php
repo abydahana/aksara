@@ -43,10 +43,10 @@ class Tags extends Core
         ->setOutput([
             'keywords' => $this->_keywords,
 
-            /* list of category */
+            // List of category
             'categories' => $this->_getCategories(),
 
-            /* latest post */
+            // Latest post
             'latest' => $this->_getLatest()
         ])
 

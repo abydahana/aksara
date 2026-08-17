@@ -66,9 +66,9 @@ class Privileges extends Core
         )
         ->row();
 
-        /* check if user is exists */
+        // Check if user exists
         if (! $this->_user || in_array($this->_user->group_id, [1])) {
-            /* otherwise, throw the exception */
+            // Otherwise, throw the exception
             return throw_exception(404, phrase('You are not permitted to modify the selected user.'), current_page('../', ['user_id' => null]));
         }
     }
