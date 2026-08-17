@@ -7,35 +7,32 @@
 $output = null;
 
 if ($results) {
-  foreach ($results as $key => $val) {
-    $images = json_decode($val->gallery_images, true);
-    $labels = explode(',', $val->gallery_tags);
+    ob_start();
 
-    if (is_array($images) && sizeof($images) > 0) {
-      foreach ($images as $src => $alt) {
-        if (!$src) {
-          continue;
-        }
+    foreach ($results as $key => $val) {
+        $images = json_decode($val->gallery_images, true);
+        $labels = explode(',', $val->gallery_tags);
 
-        $output .=
-          '
+        if (is_array($images) && sizeof($images) > 0) {
+            foreach ($images as $src => $alt) {
+                if (! $src) {
+                    continue;
+                }
+                ?>
+
                     <div class="col-sm-6 col-md-3">
                         <div class="rounded-5 border-hover mb-4">
-                            <a href="' .
-          current_page($src) .
-          '" class="d-block --xhr">
-                                <img src="' .
-          get_image('galleries', $src, 'thumb') .
-          '" class="rounded-5 w-100 fade-in" alt="' .
-          $alt .
-          '" loading="lazy" decoding="async" />
+                            <a href="<?= current_page($src) ?>" class="d-block --xhr">
+                                <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="rounded-5 w-100 fade-in" alt="<?= $alt ?>" loading="lazy" decoding="async" />
                             </a>
                         </div>
                     </div>
-                ';
-      }
+                <?php
+            }
+        }
     }
-  }
+
+    $output = ob_get_clean();
 }
 
 if ($output): ?>

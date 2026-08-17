@@ -36,14 +36,14 @@ class Documentation extends Core
         $this->setMethod('index');
 
         $this->_primary = $this->request->getGet('slug');
-
-        if ($this->_primary && 'fetch' == $this->request->getPost('mode')) {
-            return $this->_fetchProperties($this->_primary, $this->request->getPost('group'));
-        }
     }
 
     public function index()
     {
+        if ($this->_primary && 'fetch' == $this->request->getPost('mode')) {
+            return $this->_fetchProperties($this->_primary, $this->request->getPost('group'));
+        }
+
         $this->setTitle(phrase('API Documentations'))
         ->setIcon('mdi mdi-book-open-page-variant')
 

@@ -2,22 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// 1. Format PHP View templates using Prettier with @prettier/plugin-php
-console.log('1. Formatting PHP view templates with Prettier...');
-try {
-    const viewPatterns = [
-        '"aksara/Views/**/*.php"',
-        '"install/Views/**/*.php"',
-        '"themes/**/*.php"',
-        '"aksara/Modules/**/Views/**/*.php"',
-        '"modules/**/Views/**/*.php"'
-    ].join(' ');
-    execSync(`npx -y prettier --write ${viewPatterns}`, { stdio: 'inherit' });
-} catch (e) {
-    console.error('PHP view formatting failed:', e.message);
-}
-
-// 2. Find and format JS source files
+// Find and format JS source files
 function findJsFiles(dir, fileList = []) {
     if (!fs.existsSync(dir)) return fileList;
     const files = fs.readdirSync(dir);
@@ -55,14 +40,14 @@ if (srcFiles.length > 0) {
     }
 }
 
-// 3. Minify JS source files to .min.js
+// Minify JS source files to .min.js
 console.log('\n3. Minifying JavaScript source files to .min.js...');
 
 let minifiedCount = 0;
-const tempFile = path.join(__dirname, '_temp_build.js');
 
 for (const srcFile of srcFiles) {
     const minFile = srcFile.replace(/\.js$/, '.min.js');
+    const tempFile = path.join(__dirname, `_temp_${path.basename(srcFile)}`);
     try {
         let code = fs.readFileSync(srcFile, 'utf8');
         // Strip unnecessary newlines and leading spaces inside multi-line template literals for minification

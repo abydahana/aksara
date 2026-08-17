@@ -7,20 +7,21 @@
 $videoType = null;
 
 if ($results && $results->field_data) {
-  if (stripos($results->field_data->video_url->value, 'youtube.com') !== false) {
-    $videoType = 'video/x-youtube';
-  } elseif (stripos($results->field_data->video_url->value, 'facebook.com') !== false) {
-    $videoType = 'video/facebook';
-  } elseif (stripos($results->field_data->video_url->value, 'vimeo.com') !== false) {
-    $videoType = 'video/vimeo';
-  } elseif (stripos($results->field_data->video_url->value, 'dailymotion.com') !== false || stripos($results->field_data->video_url->value, 'dai.ly') !== false) {
-    $videoType = 'video/dailymotion';
-  } elseif (stripos($results->field_data->video_url->value, 'twitch.tv') !== false) {
-    $videoType = 'video/twitch';
-  }
+    if (stripos($results->field_data->video_url->value, 'youtube.com') !== false) {
+        $videoType = 'video/x-youtube';
+    } elseif (stripos($results->field_data->video_url->value, 'facebook.com') !== false) {
+        $videoType = 'video/facebook';
+    } elseif (stripos($results->field_data->video_url->value, 'vimeo.com') !== false) {
+        $videoType = 'video/vimeo';
+    } elseif (stripos($results->field_data->video_url->value, 'dailymotion.com') !== false || stripos($results->field_data->video_url->value, 'dai.ly') !== false) {
+        $videoType = 'video/dailymotion';
+    } elseif (stripos($results->field_data->video_url->value, 'twitch.tv') !== false) {
+        $videoType = 'video/twitch';
+    }
 }
 
 if ($results && $videoType): ?>
+
     <div class="row g-0">
         <div class="col-lg-8">
             <div class="sticky-top">

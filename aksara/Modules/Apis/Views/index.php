@@ -1,7 +1,8 @@
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-5 col-xl-4">
-            <a href="<?= go_to('services') ?>" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
+            <a href="<?= go_to('services') ?>
+" class="card rounded-4 text-white bg-secondary mb-3 --xhr">
                 <div class="card-body py-2 px-3">
                     <div class="row align-items-center">
                         <div class="col-3">

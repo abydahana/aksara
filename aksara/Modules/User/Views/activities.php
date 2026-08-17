@@ -7,6 +7,7 @@
  * @var mixed $user
  */
 if ($user): ?>
+
     <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">
@@ -73,7 +74,7 @@ if ($user): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <?php if (!$results): ?>
+                    <?php if (! $results): ?>
                         <div class="alert alert-warning callout rounded-4">
                             <h3 class="mb-0"><?= phrase('No Activities') ?></h3>
                             <hr />
@@ -86,8 +87,8 @@ if ($user): ?>
                         <?php
                         $metadata = fetch_metadata($val->post_path);
 
-                        if (!$metadata || !isset($metadata->title)) {
-                          continue;
+                        if (! $metadata || ! isset($metadata->title)) {
+                            continue;
                         }
                         ?>
                         <div class="activity-item mb-3">

@@ -10,7 +10,7 @@ parse_str(parse_url($pager->getLast(), PHP_URL_QUERY), $output);
 $lastPage = $output['page'] ?? 0;
 
 if (is_numeric(service('request')->getGet('page')) && service('request')->getGet('page')) {
-  $currentPage = service('request')->getGet('page');
+    $currentPage = service('request')->getGet('page');
 }
 ?>
 

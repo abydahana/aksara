@@ -1,5 +1,4 @@
 {
-  "plugins": ["@prettier/plugin-php"],
   "semi": true,
   "singleQuote": true,
   "tabWidth": 2,

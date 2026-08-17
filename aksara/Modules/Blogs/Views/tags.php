@@ -5,6 +5,7 @@
  * @var mixed $pagination
  */
 ?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row align-items-center">
@@ -43,26 +44,26 @@
                     $tags = null;
 
                     if (sizeof($itemTags) > 0) {
-                      foreach ($itemTags as $label => $badge) {
-                        if ($label == 2) {
-                          break;
-                        }
+                        foreach ($itemTags as $label => $badge) {
+                            if (2 == $label) {
+                                break;
+                            }
 
-                        if ($badge) {
-                          $tags .=
-                            '
+                            if ($badge) {
+                                $tags .=
+                                  '
                                     <a href="' .
-                            go_to('../tags', ['q' => $badge]) .
-                            '" class="--xhr">
+                                  go_to('../tags', ['q' => $badge]) .
+                                  '" class="--xhr">
                                         <span class="badge bg-secondary me-2">
                                             #' .
-                            trim($badge) .
-                            '
+                                  trim($badge) .
+                                  '
                                         </span>
                                     </a>
                                 ';
+                            }
                         }
-                      }
                     }
                     ?>
 

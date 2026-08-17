@@ -5,7 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title><?= phrase('Aksara Maintenance') ?></title>
+        <title><?= phrase('Aksara Maintenance') ?>
+</title>
         <script>
             (() => {
                 const storedTheme = window.localStorage.getItem('aksara-maintenance-theme');
@@ -432,23 +433,23 @@
         <script>
             (() => {
                 const i18n = <?= json_encode(
-                  [
-                    'emptyTile' => phrase('Tile {{number}}, empty'),
-                    'darkMode' => phrase('Dark mode'),
-                    'keepSliding' => phrase('Keep sliding.'),
-                    'lightMode' => phrase('Light mode'),
-                    'mergedPoints' => phrase('Merged {{points}} points.'),
-                    'movesLeft' => phrase('No moves left. New game?'),
-                    'paused' => phrase('Robot paused. Your move.'),
-                    'playing' => phrase('Robot is playing...'),
-                    'ranOut' => phrase('Robot ran out of moves. New game?'),
-                    'stopRobot' => phrase('Stop robot'),
-                    'tileValue' => phrase('Tile {{number}}, {{value}}'),
-                    'useArrows' => phrase('Use arrow keys or swipe.'),
-                    'watchRobot' => phrase('Watch robot'),
-                    'won' => phrase('2048 reached. Maintenance may now end with dignity.'),
-                  ],
-                  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                    [
+                      'emptyTile' => phrase('Tile {{number}}, empty'),
+                      'darkMode' => phrase('Dark mode'),
+                      'keepSliding' => phrase('Keep sliding.'),
+                      'lightMode' => phrase('Light mode'),
+                      'mergedPoints' => phrase('Merged {{points}} points.'),
+                      'movesLeft' => phrase('No moves left. New game?'),
+                      'paused' => phrase('Robot paused. Your move.'),
+                      'playing' => phrase('Robot is playing...'),
+                      'ranOut' => phrase('Robot ran out of moves. New game?'),
+                      'stopRobot' => phrase('Stop robot'),
+                      'tileValue' => phrase('Tile {{number}}, {{value}}'),
+                      'useArrows' => phrase('Use arrow keys or swipe.'),
+                      'watchRobot' => phrase('Watch robot'),
+                      'won' => phrase('2048 reached. Maintenance may now end with dignity.'),
+                    ],
+                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
                 ) ?>;
                 const translate = (key, params = {}) => Object.keys(params).reduce(
                     (text, name) => text.replaceAll(`{{${name}}}`, params[name]),

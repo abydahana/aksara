@@ -39,7 +39,8 @@
                 width: 40px;
                 height: 60px;
                 transform: translateY(-50%);
-                background-image: url("<?= base_url('assets/yao-ming-hand.png') ?>");
+                background-image: url("<?= base_url('assets/yao-ming-hand.png') ?>
+");
                 background-repeat: no-repeat;
                 background-size: 80px 60px;
                 pointer-events: none;
@@ -129,7 +130,7 @@
                 </div>
                 <h1>404 - <?= phrase('File Not Found') ?></h1>
                 <p>
-                    <?php if (!empty($message) && $message !== '(null)'): ?>
+                    <?php if (! empty($message) && '(null)' !== $message): ?>
                         <?= esc($message) ?>
                     <?php else: ?>
                         Sorry! Cannot seem to find the page you were looking for.

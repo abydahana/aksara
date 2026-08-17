@@ -7,6 +7,7 @@
  * @var mixed $pagination
  */
 ?>
+
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container">
         <div class="row">

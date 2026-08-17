@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@prettier/plugin-php": "^0.25.0",
     "prettier": "^3.9.6"
   }
 }

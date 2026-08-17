@@ -8,6 +8,7 @@
  * @var array $phraseScopes
  */
 $fieldData = $results[0]; ?>
+
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-lg-6">
@@ -101,13 +102,11 @@ $fieldData = $results[0]; ?>
                   'page' => null,
                   'q' => null,
                 ]) ?>" class="btn btn-link --xhr">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
                 <div class="d-flex justify-content-end align-items-center gap-1">
                     <button type="submit" class="btn btn-primary">
-                        <i class="mdi mdi-check"></i>
-                        <?= phrase('Translate') ?>
+                        <i class="mdi mdi-check"></i> <?= phrase('Translate') ?>
                     </button>
                 </div>
             </div>

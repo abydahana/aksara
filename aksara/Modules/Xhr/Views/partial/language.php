@@ -3,13 +3,14 @@
  * @var mixed $languages
  */
 ?>
+
 <div>
     <?php foreach ($languages as $key => $val): ?>
         <?php if ($key): ?>
             <hr />
         <?php endif; ?>
 
-        <?php if ($val->code == get_userdata('language')): ?>
+        <?php if (get_userdata('language') == $val->code): ?>
             <b class="d-block">
                 <?= $val->language ?>
             </b>

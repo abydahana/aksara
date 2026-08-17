@@ -6,7 +6,7 @@
 ?>
 
 <div>
-    <?php if (!$writable): ?>
+    <?php if (! $writable): ?>
         <div class="alert alert-danger">
             <div class="container">
                 <h5>
@@ -136,8 +136,7 @@
                     <em class="text-sm">(esc)</em>
                 </button>
                 <button type="submit" class="btn btn-primary">
-                    <i class="mdi mdi-check"></i>
-                    <?= phrase('Update') ?>
+                    <i class="mdi mdi-check"></i> <?= phrase('Update') ?>
                     <em class="text-sm">(ctrl+s)</em>
                 </button>
             </div>

@@ -39,7 +39,8 @@
                 width: 40px;
                 height: 60px;
                 transform: translateY(-50%);
-                background-image: url("<?= base_url('assets/yao-ming-hand.png') ?>");
+                background-image: url("<?= base_url('assets/yao-ming-hand.png') ?>
+");
                 background-repeat: no-repeat;
                 background-size: 80px 60px;
                 pointer-events: none;
@@ -130,7 +131,7 @@
                 <h1>400 - <?= phrase('Bad Request') ?></h1>
                 <p>
                     <?php if (ENVIRONMENT !== 'production'): ?>
-                        <?= nl2br(esc(isset($message) && $message !== '(null)' ? $message : lang('Errors.sorryBadRequest'))) ?>
+                        <?= nl2br(esc(isset($message) && '(null)' !== $message ? $message : lang('Errors.sorryBadRequest'))) ?>
                     <?php else: ?>
                         <?= lang('Errors.sorryBadRequest') ?>
                     <?php endif; ?>

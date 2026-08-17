@@ -45,24 +45,24 @@
                 </div>
 
                 <?php if ($years) {
-                  $option = null;
+                    $option = null;
 
-                  foreach ($years as $key => $val) {
-                    $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
-                  }
+                    foreach ($years as $key => $val) {
+                        $option .= '<option value="' . $val->value . '"' . ($val->selected ? ' selected' : null) . '>' . $val->label . '</option>';
+                    }
 
-                  echo '
+                    echo '
                         <div class="form-group mb-3">
                             <div class="input-group">
                                 <span class="input-group-text rounded-pill rounded-end-0">
                                     <i class="mdi mdi-calendar-check" style="width:22px"></i>
                                 </span>
                                 <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' .
-                    phrase('Choose year') .
-                    '" id="year_input">
+                      phrase('Choose year') .
+                      '" id="year_input">
                                     ' .
-                    $option .
-                    '
+                      $option .
+                      '
                                 </select>
                             </div>
                         </div>
@@ -100,8 +100,7 @@
                     <?php if (get_setting('google_client_id') && get_setting('google_client_secret')): ?>
                         <div class="d-grid mb-2">
                             <a href="<?= base_url('auth/sso/google') ?>" class="btn btn-outline-danger rounded-pill">
-                                <i class="mdi mdi-google"></i>
-                                <?= phrase('Sign in with Google') ?>
+                                <i class="mdi mdi-google"></i> <?= phrase('Sign in with Google') ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -109,16 +108,14 @@
                     <?php if (get_setting('facebook_app_id') && get_setting('facebook_app_secret')): ?>
                         <div class="d-grid mb-2">
                             <a href="<?= base_url('auth/sso/facebook') ?>" class="btn btn-outline-primary rounded-pill">
-                                <i class="mdi mdi-facebook"></i>
-                                <?= phrase('Sign in with Facebook') ?>
+                                <i class="mdi mdi-facebook"></i> <?= phrase('Sign in with Facebook') ?>
                             </a>
                         </div>
                     <?php endif; ?>
 
                     <div class="d-grid">
                         <a href="<?= base_url('auth/register') ?>" class="btn btn-outline-primary rounded-pill">
-                            <i class="mdi mdi-account-plus"></i>
-                            <?= phrase('Register an Account') ?>
+                            <i class="mdi mdi-account-plus"></i> <?= phrase('Register an Account') ?>
                         </a>
                     </div>
                 </div>

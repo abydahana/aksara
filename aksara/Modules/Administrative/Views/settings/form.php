@@ -3,6 +3,7 @@
  * @var mixed $results
  */
 ?>
+
 <div class="container-fluid">
     <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
         <div class="sticky-top bg-body overflow-x-auto py-1 px-3 mx--3 border-bottom">
@@ -319,13 +320,11 @@
             <div class="row opt-btn">
                 <div class="col-12 col-md-8 d-flex justify-content-between align-items-center gap-2">
                     <a href="<?= current_page('../') ?>" class="btn btn-link --xhr">
-                        <i class="mdi mdi-arrow-left"></i>
-                        <?= phrase('Administrative') ?>
+                        <i class="mdi mdi-arrow-left"></i> <?= phrase('Administrative') ?>
                     </a>
                     <div class="d-flex justify-content-end align-items-center gap-1">
                         <button type="submit" class="btn btn-primary">
-                            <i class="mdi mdi-check"></i>
-                            <?= phrase('Update') ?>
+                            <i class="mdi mdi-check"></i> <?= phrase('Update') ?>
                             <em class="text-sm d-none d-lg-inline">(ctrl+s)</em>
                         </button>
                     </div>

@@ -18,6 +18,7 @@ $isRtl = in_array(session()->get('language'), [
   'ug', // Uyghur
 ]);
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= $language ?? 'en' ?>"<?= $isRtl ? ' dir="rtl"' : null ?>>
     <head>
@@ -128,8 +129,8 @@ $isRtl = in_array(session()->get('language'), [
 
                                     <div class="position-absolute start-0 end-0 bottom-0 w-100 p-3">
                                         <a href="//youtube.com/abydahana?sub_confirmation=1" class="btn btn-danger btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Subscribe to my channel') ?>" aria-label="<?= phrase(
-  'Subscribe to my channel',
-) ?>">
+                                            'Subscribe to my channel',
+                                        ) ?>">
                                             <i class="mdi mdi-youtube"></i>
                                         </a>
                                         <a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Be my friend') ?>" aria-label="<?= phrase('Be my friend') ?>">
@@ -164,22 +165,22 @@ $isRtl = in_array(session()->get('language'), [
                                                 </div>
                                                 <div class="col-5">
                                                     <select name="language" class="form-select form-select-sm rounded-pill" placeholder="<?= phrase('Choose language') ?>" aria-label="<?= phrase('Choose language') ?>">
-                                                        <option value="en"<?= $language == 'en' ? ' selected' : null ?>>English</option>
-                                                        <option value="en-PIR"<?= $language == 'en-PIR' ? ' selected' : null ?>>English (Pirate)</option>
-                                                        <option value="id"<?= $language == 'id' ? ' selected' : null ?>>Indonesia</option>
-                                                        <option value="es"<?= $language == 'es' ? ' selected' : null ?>>Español</option>
-                                                        <option value="pt"<?= $language == 'pt' ? ' selected' : null ?>>Português</option>
-                                                        <option value="fr"<?= $language == 'fr' ? ' selected' : null ?>>Français</option>
-                                                        <option value="de"<?= $language == 'de' ? ' selected' : null ?>>Deutsch</option>
-                                                        <option value="nl"<?= $language == 'nl' ? ' selected' : null ?>>Nederlands</option>
-                                                        <option value="ru"<?= $language == 'ru' ? ' selected' : null ?>>Русский</option>
-                                                        <option value="zh-CN"<?= $language == 'zh-CN' ? ' selected' : null ?>>简体中文</option>
-                                                        <option value="zh-TW"<?= $language == 'zh-TW' ? ' selected' : null ?>>繁體中文</option>
-                                                        <option value="ar"<?= $language == 'ar' ? ' selected' : null ?>>العربية</option>
-                                                        <option value="ja"<?= $language == 'ja' ? ' selected' : null ?>>日本語</option>
-                                                        <option value="ko"<?= $language == 'ko' ? ' selected' : null ?>>한국어</option>
-                                                        <option value="th"<?= $language == 'th' ? ' selected' : null ?>>ไทย</option>
-                                                        <option value="vi"<?= $language == 'vi' ? ' selected' : null ?>>Tiếng Việt</option>
+                                                        <option value="en"<?= 'en' == $language ? ' selected' : null ?>>English</option>
+                                                        <option value="en-PIR"<?= 'en-PIR' == $language ? ' selected' : null ?>>English (Pirate)</option>
+                                                        <option value="id"<?= 'id' == $language ? ' selected' : null ?>>Indonesia</option>
+                                                        <option value="es"<?= 'es' == $language ? ' selected' : null ?>>Español</option>
+                                                        <option value="pt"<?= 'pt' == $language ? ' selected' : null ?>>Português</option>
+                                                        <option value="fr"<?= 'fr' == $language ? ' selected' : null ?>>Français</option>
+                                                        <option value="de"<?= 'de' == $language ? ' selected' : null ?>>Deutsch</option>
+                                                        <option value="nl"<?= 'nl' == $language ? ' selected' : null ?>>Nederlands</option>
+                                                        <option value="ru"<?= 'ru' == $language ? ' selected' : null ?>>Русский</option>
+                                                        <option value="zh-CN"<?= 'zh-CN' == $language ? ' selected' : null ?>>简体中文</option>
+                                                        <option value="zh-TW"<?= 'zh-TW' == $language ? ' selected' : null ?>>繁體中文</option>
+                                                        <option value="ar"<?= 'ar' == $language ? ' selected' : null ?>>العربية</option>
+                                                        <option value="ja"<?= 'ja' == $language ? ' selected' : null ?>>日本語</option>
+                                                        <option value="ko"<?= 'ko' == $language ? ' selected' : null ?>>한국어</option>
+                                                        <option value="th"<?= 'th' == $language ? ' selected' : null ?>>ไทย</option>
+                                                        <option value="vi"<?= 'vi' == $language ? ' selected' : null ?>>Tiếng Việt</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -237,11 +238,10 @@ $isRtl = in_array(session()->get('language'), [
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="d-grid">
-                                                        <?= !session()->get('timezone') ? '<input type="hidden" name="timezone" />' : null ?>
+                                                        <?= ! session()->get('timezone') ? '<input type="hidden" name="timezone" />' : null ?>
                                                         <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
                                                         <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Start Installation') ?>" disabled>
-                                                            <i class="mdi mdi-check"></i>
-                                                            <?= phrase('Start Installation') ?>
+                                                            <i class="mdi mdi-check"></i> <?= phrase('Start Installation') ?>
                                                         </button>
                                                     </div>
                                                 </div>

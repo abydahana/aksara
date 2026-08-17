@@ -13,109 +13,84 @@
                     <?php
                     $errors = null;
 
-                    if ($logs) {
-                      foreach ($logs as $key => $val) {
-                        $errors .=
-                          '
-                                <li class="list-group-item px-0">
-                                    <a href="' .
-                          current_page('remove', ['log' => $val]) .
-                          '" class="float-end text-danger --modal" data-bs-toggle="tooltip" title="' .
-                          phrase('Remove') .
-                          '">
-                                        <i class="mdi mdi-window-close"></i>
-                                    </a>
-                                    <a href="' .
-                          current_page(null, ['report' => $val]) .
-                          '" class="' .
-                          ($val == service('request')->getGet('report') ? ' fw-bold' : null) .
-                          ' --xhr">' .
-                          $val .
-                          '</a>
-                                </li>
-                            ';
-                      }
+if ($logs):
+    ob_start();
 
-                      echo '
-                            <div class="d-grid mt-3 mb-3">
-                                <a href="' .
-                        current_page('clear') .
-                        '" class="btn btn-danger btn-sm --modal">
-                                    <i class="mdi mdi-delete-empty"></i>
-                                    ' .
-                        phrase('Clear Logs') .
-                        '
-                                </a>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                ' .
-                        $errors .
-                        '
-                            </ul>
-                        ';
-                    } else {
-                      echo '<div class="pt-3 pb-3">' . phrase('No error log') . '</div>';
-                    }
-                    ?>
+    foreach ($logs as $key => $val): ?>
+        <li class="list-group-item px-0">
+            <a href="<?= current_page('remove', ['log' => $val]) ?>" class="float-end text-danger --modal" data-bs-toggle="tooltip" title="<?= phrase('Remove') ?>">
+                <i class="mdi mdi-window-close"></i>
+            </a>
+            <a href="<?= current_page(null, ['report' => $val]) ?>" class="<?= service('request')->getGet('report') == $val ? ' fw-bold' : '' ?> --xhr"><?= $val ?></a>
+        </li>
+    <?php endforeach;
+
+    $errors = ob_get_clean();
+    ?>
+    <div class="d-grid mt-3 mb-3">
+        <a href="<?= current_page('clear') ?>" class="btn btn-danger btn-sm --modal">
+            <i class="mdi mdi-delete-empty"></i> <?= phrase('Clear Logs') ?>
+        </a>
+    </div>
+    <ul class="list-group list-group-flush">
+        <?= $errors ?>
+    </ul>
+<?php else: ?>
+    <div class="pt-3 pb-3"><?= phrase('No error log') ?></div>
+<?php endif; ?>
                 </div>
             </div>
         </div>
         <div class="col-md-9 order-1 order-md-2 stretch-height">
             <div class="sticky-top font-monospace">
                 <?php if ($report) {
-                  $errors = [];
-                  $num = 0;
+                    $errors = [];
+                    $num = 0;
 
-                  foreach ($report as $key => $val) {
-                    if (!$val || !trim($val)) {
-                      continue;
+                    foreach ($report as $key => $val) {
+                        if (! $val || ! trim($val)) {
+                            continue;
+                        }
+
+                        $title = null;
+
+                        if (
+                            strpos($val, 'CRITICAL - ') !== false ||
+                            strpos($val, 'ALERT - ') !== false ||
+                            strpos($val, 'EMERGENCY - ') !== false ||
+                            strpos($val, 'DEBUG - ') !== false ||
+                            strpos($val, 'ERROR - ') !== false ||
+                            strpos($val, 'INFO - ') !== false ||
+                            strpos($val, 'NOTICE - ') !== false ||
+                            strpos($val, 'WARNING - ') !== false
+                        ) {
+                            $errors[$num] = [
+                                'title' => $val,
+                                'traces' => [],
+                            ];
+
+                            $num++;
+                        } elseif (isset($errors[$num - 1])) {
+                            $errors[$num - 1]['traces'][] = htmlspecialchars($val);
+                        }
                     }
 
-                    $title = null;
+                    foreach ($errors as $key => $val):
+                        $traces = null;
 
-                    if (
-                      strpos($val, 'CRITICAL - ') !== false ||
-                      strpos($val, 'ALERT - ') !== false ||
-                      strpos($val, 'EMERGENCY - ') !== false ||
-                      strpos($val, 'DEBUG - ') !== false ||
-                      strpos($val, 'ERROR - ') !== false ||
-                      strpos($val, 'INFO - ') !== false ||
-                      strpos($val, 'NOTICE - ') !== false ||
-                      strpos($val, 'WARNING - ') !== false
-                    ) {
-                      $errors[$num] = [
-                        'title' => $val,
-                        'traces' => [],
-                      ];
-
-                      $num++;
-                    } elseif (isset($errors[$num - 1])) {
-                      $errors[$num - 1]['traces'][] = htmlspecialchars($val);
-                    }
-                  }
-
-                  foreach ($errors as $key => $val) {
-                    $traces = null;
-
-                    foreach ($val['traces'] as $_key => $_val) {
-                      $traces .= '<li>' . preg_replace('/^[\d\\s]+/', '', $_val) . '</li>';
-                    }
-
-                    echo '
-                            <div>
-                                <h6 class="text-danger">
-                                    ' .
-                      $val['title'] .
-                      '
-                                </h6>
-                                ' .
-                      ($traces ? '<ol>' . $traces . '</ol>' : null) .
-                      '
-                            </div>
-                        ';
-                  }
+                        foreach ($val['traces'] as $_key => $_val) {
+                            $traces .= '<li>' . preg_replace('/^[\d\\s]+/', '', $_val) . '</li>';
+                        }
+                        ?>
+                        <div>
+                            <h6 class="text-danger">
+                                <?= $val['title'] ?>
+                            </h6>
+                            <?= $traces ? '<ol>' . $traces . '</ol>' : null ?>
+                        </div>
+                    <?php endforeach;
                 } else {
-                  echo '<div class="pt-3 pb-3">' . ($errors ? phrase('Click on the log file to show the error details.') : phrase('Yay! Your application is working fine.')) . '</div>';
+                    echo '<div class="pt-3 pb-3">' . ($errors ? phrase('Click on the log file to show the error details.') : phrase('Yay! Your application is working fine.')) . '</div>';
                 } ?>
             </div>
         </div>

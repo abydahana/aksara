@@ -4,6 +4,7 @@
  * @var mixed $cookieName
  */
 ?>
+
 <form action="<?= site_url('system') ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('Security Configuration') ?>
@@ -113,8 +114,7 @@
         <div class="col-6">
             <div class="d-grid">
                 <a href="<?= site_url('database') ?>" class="btn btn-outline-secondary btn-sm rounded-pill --xhr" aria-label="<?= phrase('Back') ?>">
-                    <i class="mdi mdi-arrow-left"></i>
-                    <?= phrase('Back') ?>
+                    <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
                 </a>
             </div>
         </div>
@@ -122,8 +122,7 @@
             <div class="d-grid">
                 <input type="hidden" name="_token" value="<?= sha1(time()) ?>" />
                 <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" aria-label="<?= phrase('Continue') ?>">
-                    <i class="mdi mdi-check"></i>
-                    <?= phrase('Continue') ?>
+                    <i class="mdi mdi-check"></i> <?= phrase('Continue') ?>
                 </button>
             </div>
         </div>

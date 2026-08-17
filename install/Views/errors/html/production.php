@@ -6,7 +6,8 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
         <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
-        <title><?= phrase('Whoops!') ?></title>
+        <title><?= phrase('Whoops!') ?>
+</title>
         <style>
             html, body {
                 min-height: 100vh;

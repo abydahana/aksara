@@ -68,9 +68,9 @@ $errorId = uniqid('error', true); ?>
                     <!-- Trace info -->
                     <?php if (isset($row['file']) && is_file((string) $row['file'])): ?>
                         <?php if (isset($row['function']) && in_array($row['function'], ['include', 'include_once', 'require', 'require_once'], true)) {
-                          echo esc((string) $row['function'] . ' ' . clean_path((string) $row['file']));
+                            echo esc((string) $row['function'] . ' ' . clean_path((string) $row['file']));
                         } else {
-                          echo esc(clean_path((string) $row['file']) . ' : ' . (string) $row['line']);
+                            echo esc(clean_path((string) $row['file']) . ' : ' . (string) $row['line']);
                         } ?>
                     <?php else: ?>
                         {PHP internal code}
@@ -79,7 +79,7 @@ $errorId = uniqid('error', true); ?>
                     <!-- Class/Method -->
                     <?php if (isset($row['class'])): ?>
                         &nbsp;&nbsp;&mdash;&nbsp;&nbsp;<?= esc((string) $row['class'] . (string) $row['type'] . (string) $row['function']) ?>
-                        <?php if (!empty($row['args'])): ?>
+                        <?php if (! empty($row['args'])): ?>
                             <?php $argsId = $errorId . 'args' . $index; ?>
                             ( <a href="#" onclick="return toggle('<?= esc($argsId, 'attr') ?>');">arguments</a> )
                             <div class="args" id="<?= esc($argsId, 'attr') ?>">
@@ -87,19 +87,19 @@ $errorId = uniqid('error', true); ?>
 
                                 <?php
                                 $params = null;
-                                // Reflection by name is not available for closure function
-                                if (substr($row['function'], -1) !== '}') {
-                                  $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
-                                  $params = $mirror->getParameters();
-                                }
+                            // Reflection by name is not available for closure function
+                            if (substr($row['function'], -1) !== '}') {
+                                $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
+                                $params = $mirror->getParameters();
+                            }
 
-                                foreach ($row['args'] as $key => $value): ?>
+                            foreach ($row['args'] as $key => $value): ?>
                                     <tr>
                                         <td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
                                         <td><pre><?= esc(print_r($value, true)) ?></pre></td>
                                     </tr>
                                 <?php endforeach;
-                                ?>
+                            ?>
 
                                 </table>
                             </div>
@@ -108,7 +108,7 @@ $errorId = uniqid('error', true); ?>
                         <?php endif; ?>
                     <?php endif; ?>
 
-                    <?php if (!isset($row['class']) && isset($row['function'])): ?>
+                    <?php if (! isset($row['class']) && isset($row['function'])): ?>
                         &nbsp;&nbsp;&mdash;&nbsp;&nbsp;    <?= esc((string) $row['function']) ?>()
                     <?php endif; ?>
                 </p>

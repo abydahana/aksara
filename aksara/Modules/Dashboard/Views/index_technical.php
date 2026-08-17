@@ -10,6 +10,7 @@
  * @var mixed $logs
  */
 $logs = $logs ?? []; ?>
+
 <div class="container-fluid py-3">
     <div class="row mb-3">
         <div class="col-lg-8">
@@ -142,62 +143,62 @@ $logs = $logs ?? []; ?>
                                 <?php
                                 $num = 0;
 
-                                if (isset($visitors->browsers)) {
-                                  foreach ($visitors->browsers as $key => $val) {
-                                    echo '
+if (isset($visitors->browsers)) {
+    foreach ($visitors->browsers as $key => $val) {
+        echo '
                                             ' .
-                                      ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) .
-                                      '
+          ($num ? '<hr class="border-secondary mt-2 mb-2" />' : null) .
+          '
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-3 col-sm-2">
                                                     <i class="mdi mdi-' .
-                                      ($key == 'chrome'
-                                        ? 'google-chrome text-success'
-                                        : ($key == 'firefox'
-                                          ? 'firefox text-warning'
-                                          : ($key == 'safari'
-                                            ? 'apple-safari text-primary'
-                                            : ($key == 'edge'
-                                              ? 'edge text-primary'
-                                              : ($key == 'opera'
-                                                ? 'opera text-danger'
-                                                : ($key == 'explorer'
-                                                  ? 'internet-explorer text-info'
-                                                  : 'web text-muted')))))) .
-                                      ' mdi-3x"></i>
+          ('chrome' == $key
+            ? 'google-chrome text-success'
+            : ('firefox' == $key
+              ? 'firefox text-warning'
+              : ('safari' == $key
+                ? 'apple-safari text-primary'
+                : ('edge' == $key
+                  ? 'edge text-primary'
+                  : ('opera' == $key
+                    ? 'opera text-danger'
+                    : ('explorer' == $key
+                      ? 'internet-explorer text-info'
+                      : 'web text-muted')))))) .
+          ' mdi-3x"></i>
                                                 </div>
                                                 <div class="col-9 col-sm-10 ps-3">
                                                     <b>
                                                         ' .
-                                      ($key == 'chrome'
-                                        ? 'Google Chrome'
-                                        : ($key == 'firefox'
-                                          ? 'Mozilla Firefox'
-                                          : ($key == 'safari'
-                                            ? 'Safari'
-                                            : ($key == 'edge'
-                                              ? 'Microsoft Edge'
-                                              : ($key == 'opera'
-                                                ? 'Opera'
-                                                : ($key == 'explorer'
-                                                  ? 'Internet Explorer'
-                                                  : phrase('Unknown'))))))) .
-                                      '
+          ('chrome' == $key
+            ? 'Google Chrome'
+            : ('firefox' == $key
+              ? 'Mozilla Firefox'
+              : ('safari' == $key
+                ? 'Safari'
+                : ('edge' == $key
+                  ? 'Microsoft Edge'
+                  : ('opera' == $key
+                    ? 'Opera'
+                    : ('explorer' == $key
+                      ? 'Internet Explorer'
+                      : phrase('Unknown'))))))) .
+          '
                                                     </b>
                                                     <p class="mb-0 text-sm text-muted">
                                                         ' .
-                                      number_format($val) .
-                                      ' ' .
-                                      phrase('usage in a week') .
-                                      '
+          number_format($val) .
+          ' ' .
+          phrase('usage in a week') .
+          '
                                                     </p>
                                                 </div>
                                             </div>
                                         ';
-                                    $num++;
-                                  }
-                                }
-                                ?>
+        $num++;
+    }
+}
+?>
                             </div>
                         </div>
                     </div>
@@ -210,38 +211,38 @@ $logs = $logs ?? []; ?>
                             </div>
                             <div class="card-body p-3">
                                 <?php foreach ($recentSigned as $key => $val) {
-                                  echo '
+                                    echo '
                                         ' .
-                                    ($key ? '<hr class="mt-2 mb-2" />' : null) .
-                                    '
+                                      ($key ? '<hr class="mt-2 mb-2" />' : null) .
+                                      '
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-3 col-sm-2">
                                                 <a href="' .
-                                    base_url('user', ['user_id' => $val->user_id]) .
-                                    '" target="_blank">
+                                      base_url('user', ['user_id' => $val->user_id]) .
+                                      '" target="_blank">
                                                     <img src="' .
-                                    get_image('users', $val->photo, 'icon') .
-                                    '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
-                                    htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
-                                    '" />
+                                      get_image('users', $val->photo, 'icon') .
+                                      '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
+                                      htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
+                                      '" />
                                                 </a>
                                             </div>
                                             <div class="col-9 col-sm-10 ps-3">
                                                 <a href="' .
-                                    base_url('user', ['user_id' => $val->user_id]) .
-                                    '" target="_blank">
+                                      base_url('user', ['user_id' => $val->user_id]) .
+                                      '" target="_blank">
                                                     <b>
                                                         ' .
-                                    $val->first_name .
-                                    ' ' .
-                                    $val->last_name .
-                                    '
+                                      $val->first_name .
+                                      ' ' .
+                                      $val->last_name .
+                                      '
                                                     </b>
                                                 </a>
                                                 <p class="mb-0 text-sm text-muted">
                                                     ' .
-                                    $val->group_name .
-                                    '
+                                      $val->group_name .
+                                      '
                                                 </p>
                                             </div>
                                         </div>
@@ -312,18 +313,18 @@ $logs = $logs ?? []; ?>
                         <?php
                         $announcement = null;
 
-                        foreach ($announcements as $key => $val) {
-                          $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
-                        }
+                    foreach ($announcements as $key => $val) {
+                        $announcement .= '<li class="list-group-item"><a href="' . base_url('announcements/' . $val->announcement_slug) . '" class="fw-bold --xhr">' . $val->title . '</a></li>';
+                    }
 
-                        echo '
+                    echo '
                             <ul class="list-group list-group-flush">
                                 ' .
-                          $announcement .
-                          '
+                      $announcement .
+                      '
                             </ul>
                         ';
-                        ?>
+                    ?>
                     </div>
                 <?php endif; ?>
 
@@ -347,8 +348,7 @@ $logs = $logs ?? []; ?>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="text-center py-4 text-muted">
-                                <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i>
-                                <?= phrase('No announcements available.') ?>
+                                <i class="mdi mdi-bullhorn-outline mdi-36px d-block mb-2"></i> <?= phrase('No announcements available.') ?>
                             </div>
                         <?php endif; ?>
                     </div>
