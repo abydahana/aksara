@@ -227,7 +227,7 @@ class Validation
     }
 
     /**
-     * Check if field is valid year (between 1970 and 2100).
+     * Check if field is valid year.
      *
      * @param mixed|null $value The value to check
      */
@@ -237,7 +237,7 @@ class Validation
             return true;
         }
 
-        $validYear = range(1970, 2100);
+        $validYear = range(1000, 9999);
 
         if (! in_array($value, $validYear)) {
             return false;
