@@ -35,22 +35,13 @@ class Testimonials extends Core
         $this->unsetMethod('clone');
 
         $this->setUploadPath('testimonials');
-
-        // Ignore query string signature
-        $this->ignoreQueryString('language');
     }
 
     public function index()
     {
-        $this->addFilter($this->_filter());
-
-        if ($this->request->getGet('language')) {
-            $this->where('language_id', $this->request->getGet('language'));
-        }
-
         $this->setTitle(phrase('Testimonials'))
         ->setIcon('mdi mdi-comment-account-outline')
-        ->unsetColumn('testimonial_id, language')
+        ->unsetColumn('testimonial_id')
         ->unsetField('testimonial_id, created_by')
         ->unsetView('testimonial_id')
 
@@ -58,14 +49,6 @@ class Testimonials extends Core
             'created_by',
             'app_users.user_id',
             '{{app_users.first_name}} {{app_users.last_name}}'
-        )
-        ->setRelation(
-            'language_id',
-            'app_languages.id',
-            '{{ app_languages.language }}',
-            [
-                'app_languages.status' => 1
-            ]
         )
 
         ->setField([
@@ -82,7 +65,6 @@ class Testimonials extends Core
             'last_name' => 'string',
             'testimonial_content' => 'required|string',
             'rating' => 'numeric|greater_than_equal_to[0]|less_than_equal_to[5]',
-            'language_id' => 'required',
             'status' => 'boolean'
         ])
         ->setAlias([
@@ -90,52 +72,11 @@ class Testimonials extends Core
             'last_name' => phrase('Last Name'),
             'testimonial_content' => phrase('Testimony'),
             'rating' => phrase('Rating'),
-            'language_id' => phrase('Language'),
             'status' => phrase('Status'),
             'created_at' => phrase('Created At'),
             'created_by' => phrase('Created By')
         ])
 
         ->render($this->_table);
-    }
-
-    private function _filter()
-    {
-        $languages = [
-            [
-                'id' => 0,
-                'label' => phrase('All languages')
-            ]
-        ];
-
-        $languagesQuery = $this->model->select('
-            id,
-            language AS label
-        ')
-        ->getWhere(
-            'app_languages',
-            [
-                'status' => 1
-            ]
-        )
-        ->result();
-
-        if ($languagesQuery) {
-            foreach ($languagesQuery as $key => $val) {
-                $languages[] = [
-                    'id' => $val->id,
-                    'label' => $val->label,
-                    'selected' => $this->request->getGet('language') === $val->id
-                ];
-            }
-        }
-
-        return [
-            'language' => [
-                'type' => 'select',
-                'label' => phrase('Language'),
-                'values' => $languages
-            ]
-        ];
     }
 }
