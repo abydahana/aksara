@@ -5,17 +5,41 @@ $tbody = null;
 $singlePrint = false;
 $method = $method ?? null;
 $pagination = $pagination ?? new stdClass();
+$path = service('uri')->getPath();
+$cleanPath = trim(preg_replace('#/(export|print|pdf)$#i', '', trim($path, '/')), '/');
+$sessionHidden = get_userdata('hidden_cols_' . md5($cleanPath)) ?? get_userdata('hidden_cols_' . md5($path)) ?? [];
+$getHiddenCols = service('request')->getGet('hidden_cols');
+$getSelectedCols = service('request')->getGet('selected_cols');
+$hiddenColumns = is_array($sessionHidden) ? $sessionHidden : [];
+$selectedColumns = [];
+
+if ($getSelectedCols) {
+    $selectedColumns = is_array($getSelectedCols) ? $getSelectedCols : array_filter(array_map('trim', explode(',', $getSelectedCols)));
+}
+
+if ($getHiddenCols) {
+    $getHiddenArray = is_array($getHiddenCols) ? $getHiddenCols : array_filter(array_map('trim', explode(',', $getHiddenCols)));
+    $hiddenColumns = array_merge($hiddenColumns, $getHiddenArray);
+}
+
+$hiddenColumns = array_unique(array_filter($hiddenColumns));
 
 if (isset($results->table_data)) {
     foreach ($results->table_data as $key => $row) {
         $rows = null;
 
         foreach ($row->field_data as $fields => $params) {
-            if ($params->hidden) {
+            $label = $params->label ?? null;
+            $fieldName = $params->name ?? $fields;
+
+            if (
+                ! empty($params->hidden) ||
+                ($hiddenColumns && (in_array($fields, $hiddenColumns) || in_array($fieldName, $hiddenColumns) || ($label && in_array($label, $hiddenColumns)))) ||
+                ($selectedColumns && ! in_array($fields, $selectedColumns) && ! in_array($fieldName, $selectedColumns) && (! $label || ! in_array($label, $selectedColumns)))
+            ) {
                 continue;
             }
 
-            $label = $params->label; // Backup label
             $params->label = null; // Remove label
 
             if (0 == $key) {
@@ -29,24 +53,38 @@ if (isset($results->table_data)) {
     }
 } elseif (isset($results->field_data)) {
     $singlePrint = true;
+    $filteredFields = [];
 
     foreach ($results->field_data as $field => $params) {
-        $label = $params->label; // Backup label
-        $params->label = null; // Remove label
+        $label = $params->label ?? null;
+        $fieldName = $params->name ?? $field;
 
-        $tbody .=
-          '
+        if (
+            ! empty($params->hidden) ||
+            ($hiddenColumns && (in_array($field, $hiddenColumns) || in_array($fieldName, $hiddenColumns) || ($label && in_array($label, $hiddenColumns)))) ||
+            ($selectedColumns && ! in_array($field, $selectedColumns) && ! in_array($fieldName, $selectedColumns) && (! $label || ! in_array($label, $selectedColumns)))
+        ) {
+            continue;
+        }
+        $filteredFields[$field] = $params;
+    }
+
+    $totalFields = count($filteredFields);
+    $currentIndex = 0;
+
+    foreach ($filteredFields as $field => $params) {
+        $currentIndex++;
+        $label = $params->label ?? null; // Backup label
+        $params->label = null; // Remove label
+        $isLast = ($currentIndex === $totalFields);
+
+        $tbody .= '
             <tr>
                 <td class="text-muted text-uppercase text-end">
-                    ' .
-          $label .
-          '
+                    ' . $label . '
                 </td>
-                <td width="70%">
-                    ' .
-          form_read($params) .
-          '
-                    <hr />
+                <td width="70%"' . (! $isLast ? ' class="border-between"' : null) . '>
+                    ' . form_read($params) . '
                 </td>
             </tr>
         ';
@@ -73,11 +111,12 @@ if (isset($results->table_data)) {
                 }
             }
             @page {
-                sheet-size: <?= $singlePrint ? '8.5in 13.5in' : '13.5in 8.5in' ?>;;
-                footer: html_footer
+                sheet-size: <?= $singlePrint ? '8.5in 13.5in' : '13.5in 8.5in' ?>;
+                footer: html_footer;
+                margin: 10mm
             }
-            * {
-                font-family: Tahoma
+            body {
+                font-family: 'bookos', Tahoma
             }
             label,
             h4 {
@@ -92,15 +131,14 @@ if (isset($results->table_data)) {
                 color: #000
             }
             hr {
-                border-top: 1px solid #999999;
+                border-top: 1px solid #999;
                 border-bottom: 0;
                 margin-bottom: 15px
             }
             .separator {
-                border-top: 3px solid #000000;
-                border-bottom: 1px solid #000000;
+                border-bottom: 1px solid <?= $singlePrint ? '#888' : '#fff' ?>;
                 padding: 1px;
-                margin-bottom: 30px
+                margin: 1rem 0;
             }
             .text-sm {
                 font-size: 10px
@@ -109,7 +147,7 @@ if (isset($results->table_data)) {
                 text-transform: uppercase
             }
             .text-muted {
-                color: #888888
+                color: #888
             }
             .text-sm-start {
                 text-align: left!important
@@ -131,12 +169,15 @@ if (isset($results->table_data)) {
                 padding: 5px;
                 vertical-align: top
             }
+            .letterhead td {
+                vertical-align: middle!important
+            }
             .table {
                 border-collapse: collapse
             }
             .table th.bordered,
             .table td.bordered {
-                border: 1px solid #000
+                border: 1px solid #aaa
             }
             .table .table th.bordered:first-child,
             .table .table td.bordered:first-child {
@@ -145,6 +186,13 @@ if (isset($results->table_data)) {
             .table .table th.bordered:last-child,
             .table .table td.bordered:last-child {
                 border-right: 0
+            }
+            img,
+            .table img,
+            td img {
+                max-width: 80px;
+                width: 80px;
+                height: auto;
             }
             .col-sm-6 {
                 width: 50%;
@@ -195,60 +243,48 @@ if (isset($results->table_data)) {
             .no-margin {
                 margin: 0
             }
+            .border-between,
+            td.border-between {
+                border-bottom: 1px solid #aaa;
+            }
         </style>
     </head>
     <body>
-        <table>
-            <thead>
+        <table class="letterhead">
+            <tbody>
                 <tr>
-                    <th>
-                        <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" alt="<?= get_setting('app_name') ?>" />
-                    </th>
-                    <th>
-                        <h3 class="no-margin">
-                            <?= get_setting('app_name') ?>
-                        </h3>
-                        <h2 class="no-margin">
-                            <?= get_setting('office_name') ?>
-                        </h2>
-                        <p class="text-sm no-margin">
-                            <?= get_setting('office_address') ?>
-                        </p>
-                        <p class="text-sm no-margin">
-                            <?= phrase('Phone') ?>: <?= get_setting('office_phone') ?>
-                            /
-                            <?= phrase('Fax') ?>: <?= get_setting('office_fax') ?>
-                            /
-                            <?= get_setting('office_email') ?>
-                        </p>
-                    </th>
+                    <td width="100" valign="middle">
+                        <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" alt="<?= get_setting('app_name') ?>" width="80" />
+                    </td>
+                    <td valign="middle">
+                        <h3 class="no-margin"><?= get_setting('app_name') ?></h3>
+                        <h2 class="no-margin"><?= get_setting('office_name') ?></h2>
+                        <p class="text-sm no-margin"><?= get_setting('office_address') ?></p>
+                        <p class="text-sm no-margin"><?= phrase('Phone') ?>: <?= get_setting('office_phone') ?> / <?= get_setting('office_email') ?></p>
+                    </td>
                 </tr>
-            </thead>
+            </tbody>
         </table>
 
         <div class="separator"></div>
 
         <table class="table">
             <thead>
-                <tr>
-                    <?= $thead ?>
-                </tr>
+                <tr><?= $thead ?></tr>
             </thead>
-            <tbody>
-                <?= $tbody ?>
-            </tbody>
+            <tbody><?= $tbody ?></tbody>
         </table>
 
         <?php if ('pdf' == $method): ?>
-            <htmlpagefooter name="footer" class="print">
+            <htmlpagefooter name="footer">
                 <table>
                     <tfoot>
                         <tr>
                             <td class="text-muted text-sm">
                                 <i>
                                     <?= phrase('The document was generated from {{app_name}} at {{datetime}}', [
-                                      'app_name' => get_setting('app_name'),
-                                      'datetime' => date('Y-m-d H:i:s'),
+                                        'app_name' => get_setting('app_name'),
+                                        'datetime' => date('Y-m-d H:i:s'),
                                     ]) ?>
                                 </i>
                             </td>
@@ -259,7 +295,9 @@ if (isset($results->table_data)) {
                     </tfoot>
                 </table>
             </htmlpagefooter>
-        <?php elseif ('print' == $method): ?>
+        <?php endif; ?>
+
+        <?php if ('print' == $method): ?>
             <div class="no-print">
                 <?= pagination($pagination) ?>
             </div>

@@ -1386,6 +1386,16 @@ $(document).ready(function () {
         }
       }
       sessionStorage.setItem(pageKey, JSON.stringify(hiddenCols));
+
+      // Sync hidden columns to server session via XHR service
+      $.ajax({
+        url: config.baseUrl + 'xhr/columns',
+        method: 'POST',
+        data: {
+          path: window.location.pathname,
+          columns: hiddenCols
+        }
+      });
     }
   });
 
