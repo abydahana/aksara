@@ -181,8 +181,7 @@ $logs = $logs ?? []; ?>
 
                                         $num++;
                                     }
-                                }
-                                ?>
+                                } ?>
                             </div>
                         </div>
                     </div>
@@ -194,9 +193,8 @@ $logs = $logs ?? []; ?>
                                 </h5>
                             </div>
                             <div class="card-body p-3">
-                                <?php
-                                foreach ($recentSigned as $key => $val) {
-                                    echo ($key ? '<hr class="mt-2 mb-2" />' : null);
+                                <?php foreach ($recentSigned as $key => $val) {
+                                    echo($key ? '<hr class="mt-2 mb-2" />' : null);
 
                                     echo '
                                         <div class="row no-gutters align-items-center">
@@ -215,8 +213,7 @@ $logs = $logs ?? []; ?>
                                             </div>
                                         </div>
                                     ';
-                                }
-                                ?>
+                                } ?>
                             </div>
                         </div>
                     </div>

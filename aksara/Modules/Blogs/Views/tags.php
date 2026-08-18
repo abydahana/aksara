@@ -57,8 +57,7 @@
                                 ';
                             }
                         }
-                    }
-                    ?>
+                    } ?>
 
                     <div class="col-sm-6 col-lg-4 mb-3 mb-lg-4">
                         <div class="h-100 d-flex flex-column fade-in">

@@ -63,8 +63,7 @@
                             </div>
                         </div>
                     ';
-                }
-                ?>
+                } ?>
 
                 <div class="row align-items-center g-0 mt-3">
                     <div class="col-7">

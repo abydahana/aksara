@@ -17,7 +17,6 @@ if ($images) {
 
     foreach ($images as $key => $val) {
         ?>
-
         <div class="carousel-item text-center<?= $current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null ?>">
             <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
                 <img src="<?= get_image('galleries', $key) ?>" class="img-fluid" alt="<?= $val ?>" loading="lazy" decoding="async">
@@ -92,8 +91,8 @@ if ($fieldData): ?>
                     <?php foreach ($attributes as $label => $value):
                         if (! $value) {
                             continue;
-                        }
-                        ?>
+                        } ?>
+
                         <div class="row">
                             <div class="col-sm-4 col-lg-3 text-muted">
                                 <?= $label ?>
