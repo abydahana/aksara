@@ -363,9 +363,7 @@
                             <div class="border border-hover rounded-5 p-3">
                                 <div class="d-flex align-items-end">
                                     <div>
-                                        <img src="<?= get_image('testimonials', $val->photo, 'icon') ?>" class="rounded-circle me-3 border p-1" width="80" alt="<?= $val->first_name .
-  ' ' .
-  $val->last_name ?>" style="object-fit: cover;" loading="lazy" decoding="async" />
+                                        <img src="<?= get_image('testimonials', $val->photo, 'icon') ?>" class="rounded-circle me-3 border p-1" width="80" alt="<?= $val->first_name . ' ' .$val->last_name ?>" style="object-fit: cover;" loading="lazy" decoding="async" />
                                     </div>
                                     <div>
                                         <?php if (isset($val->rating) && $val->rating > 0): ?>

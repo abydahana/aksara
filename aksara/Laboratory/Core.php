@@ -550,7 +550,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setBreadcrumb = array_merge($this->_setBreadcrumb, $params);
+        $this->_setBreadcrumb = array_merge(is_array($this->_setBreadcrumb) ? $this->_setBreadcrumb : [], $params);
 
         return $this;
     }
@@ -566,7 +566,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setTitle = array_merge($this->_setTitle, $params);
+        $this->_setTitle = array_merge(is_array($this->_setTitle) ? $this->_setTitle : [], $params);
         $this->_setTitleFallback = $fallback;
 
         return $this;
@@ -583,7 +583,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setDescription = array_merge($this->_setDescription, $params);
+        $this->_setDescription = array_merge(is_array($this->_setDescription) ? $this->_setDescription : [], $params);
         $this->_setDescriptionFallback = $fallback;
 
         return $this;
@@ -600,7 +600,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setIcon = array_merge($this->_setIcon, $params);
+        $this->_setIcon = array_merge(is_array($this->_setIcon) ? $this->_setIcon : [], $params);
         $this->_setIconFallback = $fallback;
 
         return $this;
@@ -620,7 +620,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setMessages = array_merge($this->_setMessages, $params);
+        $this->_setMessages = array_merge(is_array($this->_setMessages) ? $this->_setMessages : [], $params);
 
         return $this;
     }
@@ -654,7 +654,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setTemplate = array_merge($this->_setTemplate, $params);
+        $this->_setTemplate = array_merge(is_array($this->_setTemplate) ? $this->_setTemplate : [], $params);
 
         return $this;
     }
@@ -670,7 +670,7 @@ abstract class Core extends Controller
             ];
         }
 
-        $this->_setOutput = array_merge($this->_setOutput ?? [], $params);
+        $this->_setOutput = array_merge(is_array($this->_setOutput) ? $this->_setOutput : [], $params);
 
         return $this;
     }
