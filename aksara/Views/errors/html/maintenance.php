@@ -434,22 +434,22 @@
             (() => {
                 const i18n = <?= json_encode(
                     [
-                      'emptyTile' => phrase('Tile {{number}}, empty'),
-                      'darkMode' => phrase('Dark mode'),
-                      'keepSliding' => phrase('Keep sliding.'),
-                      'lightMode' => phrase('Light mode'),
-                      'mergedPoints' => phrase('Merged {{points}} points.'),
-                      'movesLeft' => phrase('No moves left. New game?'),
-                      'paused' => phrase('Robot paused. Your move.'),
-                      'playing' => phrase('Robot is playing...'),
-                      'ranOut' => phrase('Robot ran out of moves. New game?'),
-                      'stopRobot' => phrase('Stop robot'),
-                      'tileValue' => phrase('Tile {{number}}, {{value}}'),
-                      'useArrows' => phrase('Use arrow keys or swipe.'),
-                      'watchRobot' => phrase('Watch robot'),
-                      'won' => phrase('2048 reached. Maintenance may now end with dignity.'),
+                        'emptyTile' => phrase('Tile {{number}}, empty'),
+                        'darkMode' => phrase('Dark mode'),
+                        'keepSliding' => phrase('Keep sliding.'),
+                        'lightMode' => phrase('Light mode'),
+                        'mergedPoints' => phrase('Merged {{points}} points.'),
+                        'movesLeft' => phrase('No moves left. New game?'),
+                        'paused' => phrase('Robot paused. Your move.'),
+                        'playing' => phrase('Robot is playing...'),
+                        'ranOut' => phrase('Robot ran out of moves. New game?'),
+                        'stopRobot' => phrase('Stop robot'),
+                        'tileValue' => phrase('Tile {{number}}, {{value}}'),
+                        'useArrows' => phrase('Use arrow keys or swipe.'),
+                        'watchRobot' => phrase('Watch robot'),
+                        'won' => phrase('2048 reached. Maintenance may now end with dignity.')
                     ],
-                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
                 ) ?>;
                 const translate = (key, params = {}) => Object.keys(params).reduce(
                     (text, name) => text.replaceAll(`{{${name}}}`, params[name]),
@@ -649,10 +649,12 @@
                     }
 
                     const gained = next.gained;
+
                     score += gained;
                     best = Math.max(best, score);
                     window.localStorage.setItem(storageKey, String(best));
                     board = next.state;
+                    
                     const spawnedIndex = addTileTo(board);
 
                     if (! won && board.some((value) => value >= 2048)) {
@@ -768,6 +770,7 @@
                     sampled.forEach((index) => {
                         const withTwo = [...state];
                         const withFour = [...state];
+                        
                         withTwo[index] = 2;
                         withFour[index] = 4;
                         total += robotSearch(withTwo, depth - 1, true) * .9;
@@ -838,11 +841,13 @@
                     }
 
                     isAnimating = true;
+
                     const metrics = getCellMetrics();
                     const ghosts = movements.map((movement) => {
                         const from = getCellPosition(movement.from, metrics);
                         const to = getCellPosition(movement.to, metrics);
                         const ghost = document.createElement('div');
+
                         ghost.className = `tile-ghost ${getTileClass(movement.value)}`;
                         ghost.textContent = movement.value;
                         ghost.style.left = `${from.x}px`;
@@ -872,13 +877,21 @@
 
                     board.forEach((value, index) => {
                         const className = getTileClass(value);
-                        const animationClass = value
-                            ? (hidden.has(index) ? ' hidden-during-move' : (index === spawnedIndex ? ' spawned' : ''))
-                            : '';
+                        let animationClass = '';
+
+                        if (value) {
+                            if (hidden.has(index)) {
+                                animationClass = ' hidden-during-move';
+                            } else if (index === spawnedIndex) {
+                                animationClass = ' spawned';
+                            }
+                        }
+
                         if (index === spawnedIndex) {
                             cells[index].className = 'tile';
                             void cells[index].offsetWidth;
                         }
+
                         cells[index].className = `tile ${className}${animationClass}`;
                         cells[index].textContent = value || '';
                         cells[index].setAttribute('aria-label', value ? translate('tileValue', { number: index + 1, value }) : translate('emptyTile', { number: index + 1 }));
@@ -894,6 +907,7 @@
                         window.clearInterval(robotTimer);
                         robotTimer = null;
                         statusElement.textContent = translate('paused');
+
                         render();
                     }
                 };
@@ -906,6 +920,7 @@
                     }
 
                     statusElement.textContent = translate('playing');
+
                     robotTimer = window.setInterval(() => {
                         if (isAnimating) {
                             return;
@@ -944,9 +959,11 @@
                 resetButton.addEventListener('click', reset);
                 robotButton.addEventListener('click', toggleRobot);
                 themeToggle.addEventListener('click', toggleTheme);
+
                 refreshButton.addEventListener('click', () => {
                     window.location.reload();
                 });
+
                 window.addEventListener('keydown', (event) => {
                     const direction = {
                         ArrowLeft: 'left',
@@ -963,10 +980,13 @@
                     stopRobot();
                     move(direction);
                 });
+
                 boardElement.addEventListener('touchstart', (event) => {
                     const touch = event.changedTouches[0];
+
                     touchStart = { x: touch.clientX, y: touch.clientY };
                 }, { passive: true });
+
                 boardElement.addEventListener('touchend', (event) => {
                     if (! touchStart) {
                         return;
@@ -975,20 +995,27 @@
                     const touch = event.changedTouches[0];
                     const dx = touch.clientX - touchStart.x;
                     const dy = touch.clientY - touchStart.y;
+
                     touchStart = null;
 
                     if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) {
                         return;
                     }
 
-                    stopRobot();
-                    move(Math.abs(dx) > Math.abs(dy)
-                        ? (dx > 0 ? 'right' : 'left')
-                        : (dy > 0 ? 'down' : 'up'));
+                    let direction;
+
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        direction = dx > 0 ? 'right' : 'left';
+                    } else {
+                        direction = dy > 0 ? 'down' : 'up';
+                    }
+
+                    move(direction);
                 }, { passive: true });
 
                 const checkMaintenanceStatus = () => {
                     const url = new URL(window.location.href);
+
                     url.searchParams.set('maintenance_status', '1');
                     url.searchParams.set('_', Date.now().toString());
 

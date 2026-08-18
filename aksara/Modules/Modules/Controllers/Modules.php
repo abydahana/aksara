@@ -113,11 +113,7 @@ class Modules extends Core
 
         header('Content-Type: ' . $mimeType);
         header('Content-Length: ' . filesize($realPath));
-        header(
-            'Content-Disposition: inline; filename="' .
-            addslashes(basename($realPath)) .
-            '"'
-        );
+        header('Content-Disposition: inline; filename="' . addslashes(basename($realPath)) . '"');
         header('X-Content-Type-Options: nosniff');
         header('Cache-Control: public, max-age=3600');
 

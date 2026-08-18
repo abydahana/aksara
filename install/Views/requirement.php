@@ -104,16 +104,10 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
         </div>
     </div>
     <?= $error
-      ? '<div class="alert alert-warning failure"><b>' .
-        phrase('Whoops!') .
-        '</b> ' .
-        phrase('Some requirement are not yet fulfilled.') .
-        ' ' .
-        phrase('Please update your server configuration and click on refresh button to continue the installation.') .
-        '</div>'
-      : (! $modRewrite
-        ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>'
-        : null) ?>
+        ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>'
+        : (! $modRewrite
+            ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('The rewrite module is disabled by your server.') . ' ' . phrase('You can continue the installation but we recommend to enable it.') . '</div>'
+            : null) ?>
     <div class="text-muted opacity-50">
         <hr class="row" />
     </div>

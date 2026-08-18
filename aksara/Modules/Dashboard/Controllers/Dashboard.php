@@ -135,7 +135,6 @@ class Dashboard extends Core
             'safari' => 0,
             'edge' => 0,
             'opera' => 0,
-            'explorer' => 0,
             'unknown' => 0
         ];
 
@@ -157,8 +156,6 @@ class Dashboard extends Core
                     $browsers['edge']++;
                 } elseif (stripos($val->browser, 'opera') !== false) {
                     $browsers['opera']++;
-                } elseif (stripos($val->browser, 'explorer') !== false) {
-                    $browsers['explorer']++;
                 } else {
                     $browsers['unknown']++;
                 }

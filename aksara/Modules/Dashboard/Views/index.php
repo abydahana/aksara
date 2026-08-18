@@ -232,7 +232,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
     </div>
     <div class="row">
         <div class="col-lg-8">
-            <div class="sticky-top" style="top:6rem">
+            <div class="sticky-lg-top" style="top:6rem">
                 <div class="card rounded-4 overflow-hidden mb-3">
                     <div class="card-body">
                         <div id="visitor-chart" class=" rounded-4" style="width:100%; height:300px"></div>
@@ -248,64 +248,48 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             </div>
                             <div class="card-body">
                                 <?php
-                                                                       $num = 0;
+                                $num = 0;
 
-if (isset($visitors->browsers)) {
-    foreach ($visitors->browsers as $key => $val) {
-        echo '
-                                            ' .
-          ($num ? '<hr class="border-secondary my-0" />' : null) .
-          '
+                                if (isset($visitors->browsers)) {
+                                    foreach ($visitors->browsers as $key => $val) {
+                                        $icon = match ($key) {
+                                            'chrome' => 'google-chrome text-success',
+                                            'firefox' => 'firefox text-warning',
+                                            'safari' => 'apple-safari text-primary',
+                                            'edge' => 'edge text-info',
+                                            'opera' => 'opera text-danger',
+                                            default => 'web text-muted'
+                                        };
+
+                                        $label = match ($key) {
+                                            'chrome' => 'Google Chrome',
+                                            'firefox' => 'Mozilla Firefox',
+                                            'safari' => 'Safari',
+                                            'edge' => 'Microsoft Edge',
+                                            'opera' => 'Opera',
+                                            default => phrase('Unknown')
+                                        };
+
+                                        echo ($num ? '<hr class="border-secondary my-0" />' : null);
+
+                                        echo '
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-3 col-sm-2">
-                                                    <i class="mdi mdi-' .
-          ('chrome' == $key
-            ? 'google-chrome text-success'
-            : ('firefox' == $key
-              ? 'firefox text-warning'
-              : ('safari' == $key
-                ? 'apple-safari text-primary'
-                : ('edge' == $key
-                  ? 'edge text-info'
-                  : ('opera' == $key
-                    ? 'opera text-danger'
-                    : ('explorer' == $key
-                      ? 'internet-explorer text-info'
-                      : 'web text-muted')))))) .
-          ' mdi-3x"></i>
+                                                    <i class="mdi mdi-' . $icon . ' mdi-3x"></i>
                                                 </div>
                                                 <div class="col-9 col-sm-10 ps-3">
-                                                    <b>
-                                                        ' .
-          ('chrome' == $key
-            ? 'Google Chrome'
-            : ('firefox' == $key
-              ? 'Mozilla Firefox'
-              : ('safari' == $key
-                ? 'Safari'
-                : ('edge' == $key
-                  ? 'Microsoft Edge'
-                  : ('opera' == $key
-                    ? 'Opera'
-                    : ('explorer' == $key
-                      ? 'Internet Explorer'
-                      : phrase('Unknown'))))))) .
-          '
-                                                    </b>
+                                                    <b>' . $label . '</b>
                                                     <p class="mb-0 text-sm text-muted">
-                                                        ' .
-          number_format($val) .
-          ' ' .
-          phrase('usage in a week') .
-          '
+                                                        ' . number_format($val) . ' ' . phrase('usage in a week') . '
                                                     </p>
                                                 </div>
                                             </div>
                                         ';
-        $num++;
-    }
-}
-?>
+
+                                        $num++;
+                                    }
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -317,44 +301,29 @@ if (isset($visitors->browsers)) {
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <?php foreach ($recentSigned as $key => $val) {
+                                <?php
+                                foreach ($recentSigned as $key => $val) {
+                                    echo ($key ? '<hr class="mt-2 mb-2" />' : null);
+
                                     echo '
-                                        ' .
-                                      ($key ? '<hr class="mt-2 mb-2" />' : null) .
-                                      '
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-3 col-sm-2">
-                                                <a href="' .
-                                      base_url('user', ['user_id' => $val->user_id]) .
-                                      '" target="_blank">
-                                                    <img src="' .
-                                      get_image('users', $val->photo, 'icon') .
-                                      '" class="img-fluid rounded-4" style="max-width:48px" alt="' .
-                                      htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) .
-                                      '" loading="lazy" decoding="async" />
+                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                    <img src="' . get_image('users', $val->photo, 'icon') . '" class="img-fluid rounded-4" style="max-width:48px" alt="' . htmlspecialchars((string) ($val->first_name . ' ' . $val->last_name)) . '" loading="lazy" decoding="async" />
                                                 </a>
                                             </div>
                                             <div class="col-9 col-sm-10 ps-3">
-                                                <a href="' .
-                                      base_url('user', ['user_id' => $val->user_id]) .
-                                      '" target="_blank">
-                                                    <b>
-                                                        ' .
-                                      $val->first_name .
-                                      ' ' .
-                                      $val->last_name .
-                                      '
-                                                    </b>
+                                                <a href="' . base_url('user', ['user_id' => $val->user_id]) . '" target="_blank">
+                                                    <b>' . $val->first_name . ' ' . $val->last_name . '</b>
                                                 </a>
                                                 <p class="mb-0 text-sm text-muted">
-                                                    ' .
-                                      $val->group_name .
-                                      '
+                                                    ' . $val->group_name . '
                                                 </p>
                                             </div>
                                         </div>
                                     ';
-                                } ?>
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -409,7 +378,7 @@ if (isset($visitors->browsers)) {
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="sticky-top" style="top:6rem">
+            <div class="sticky-lg-top" style="top:6rem">
                 <div class="card overflow-hidden rounded-4 mb-3">
                     <div class="card-header bg-transparent border-0 p-4">
                         <h5 class="fw-bold mb-0">
