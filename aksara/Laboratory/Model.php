@@ -2694,7 +2694,7 @@ class Model
                         foreach ($this->_prepare as $val) {
                             if (isset($val['function'])) {
                                 $func = strtolower($val['function']);
-                                if (in_array($func, ['groupby', 'group_by'])) {
+                                if (in_array($func, ['groupby', 'selectmax', 'selectmin', 'selectsum', 'selectavg', 'selectcount'])) {
                                     $hasAggregation = true;
                                     break;
                                 } elseif ('select' === $func) {
