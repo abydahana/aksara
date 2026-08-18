@@ -30,7 +30,7 @@ jobs:
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
     - name: Install NPM Dependencies
-      run: npm ci --silent
+      run: npm install
 
     - name: Run Code Style Check & Build
       run: |
