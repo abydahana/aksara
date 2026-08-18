@@ -76,4 +76,31 @@ class XHR extends Core
 
         return make_json(generate_captcha());
     }
+
+    public function columns()
+    {
+        $path = $this->request->getPost('path');
+        $columns = $this->request->getPost('columns') ?? $this->request->getGet('columns') ?? $this->request->getPost('hidden_cols') ?? $this->request->getGet('hidden_cols');
+
+        // Clean path (strip leading/trailing slashes and domain/query string)
+        $path = trim(parse_url($path, PHP_URL_PATH) ?? '', '/');
+
+        $hiddenCols = [];
+        if (is_array($columns)) {
+            $hiddenCols = array_values(array_filter(array_map('trim', $columns)));
+        } elseif (is_string($columns) && strlen(trim($columns))) {
+            $hiddenCols = array_values(array_filter(array_map('trim', explode(',', $columns))));
+        }
+
+        // Store hidden columns in PHP session for this path
+        $sessionKey = 'hidden_cols_' . md5($path);
+
+        set_userdata($sessionKey, $hiddenCols);
+
+        return make_json([
+            'status' => 200,
+            'path' => $path,
+            'hidden_cols' => $hiddenCols
+        ]);
+    }
 }
