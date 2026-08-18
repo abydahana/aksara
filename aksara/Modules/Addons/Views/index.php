@@ -2,9 +2,7 @@
     <div class="sticky-top bg-body overflow-x-auto py-1 px-3 mx--3 mb-3 border-bottom">
         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to() ?>
-
-" class="nav-link rounded-pill active no-wrap --xhr">
+                <a href="<?= go_to() ?>" class="nav-link rounded-pill active no-wrap --xhr">
                     <i class="mdi mdi-cart"></i> <?= phrase('Market') ?>
                 </a>
             </li>

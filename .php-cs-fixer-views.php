@@ -28,6 +28,7 @@ class NoTrailingWhitespaceInInlineHtmlFixer extends PhpCsFixer\AbstractFixer
             if ($token->isGivenKind(T_INLINE_HTML)) {
                 $content = $token->getContent();
                 $fixed = preg_replace('/^[ \t]+(\r?\n)/m', '$1', $content);
+                $fixed = preg_replace('/^(\r?\n)+[ \t]*"/', '"', $fixed);
 
                 if ($fixed !== $content) {
                     if ($fixed === '') {
@@ -70,6 +71,21 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
     {
         for ($index = count($tokens) - 1; $index >= 0; $index--) {
             if ($tokens[$index]->isGivenKind(T_CLOSE_TAG)) {
+                $nextIndex = $index + 1;
+
+                if (isset($tokens[$nextIndex]) && $tokens[$nextIndex]->isGivenKind(T_INLINE_HTML)) {
+                    $htmlContent = $tokens[$nextIndex]->getContent();
+                    $trimmedHtml = ltrim($htmlContent, " \t\r\n");
+
+                    if (str_starts_with($trimmedHtml, '"') || str_starts_with($trimmedHtml, "'")) {
+                        $tokens[$index] = new PhpCsFixer\Tokenizer\Token([T_CLOSE_TAG, '?>']);
+
+                        if ($trimmedHtml !== $htmlContent) {
+                            $tokens[$nextIndex] = new PhpCsFixer\Tokenizer\Token([T_INLINE_HTML, $trimmedHtml]);
+                        }
+                    }
+                }
+
                 $prevIndex = $tokens->getPrevNonWhitespace($index);
 
                 if ($prevIndex !== null) {
@@ -235,7 +251,7 @@ return $config->setRules([
     'whitespace_after_comma_in_array' => [
         'ensure_single_space' => true
     ],
-    'single_space_after_construct' => true,
+    'single_space_around_construct' => true,
     'not_operator_with_successor_space' => true,
     // 'echo_tag_syntax' => [
     //     'format' => 'short'

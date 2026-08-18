@@ -51,7 +51,7 @@ return $config->setRules
     'whitespace_after_comma_in_array' => [
         'ensure_single_space' => true
     ],
-    'single_space_after_construct' => true,
+    'single_space_around_construct' => true,
     'not_operator_with_successor_space' => true,
     'method_chaining_indentation' => false,
     'phpdoc_indent' => true,

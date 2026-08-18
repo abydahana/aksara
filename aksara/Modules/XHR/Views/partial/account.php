@@ -1,6 +1,5 @@
 <div>
-    <a href="<?= base_url('dashboard') ?>
-" class="d-block --xhr">
+    <a href="<?= base_url('dashboard') ?>" class="d-block --xhr">
         <i class="mdi mdi-monitor-dashboard"></i>
         <span><?= phrase('Dashboard') ?></span>
     </a>

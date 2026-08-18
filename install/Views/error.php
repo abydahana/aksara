@@ -1,6 +1,4 @@
-<form action="<?= site_url('run') ?>
-
-" method="POST" class="--validate-form">
+<form action="<?= site_url('run') ?>" method="POST" class="--validate-form">
     <h4>
         <?= phrase('The installer was interrupted!') ?>
     </h4>

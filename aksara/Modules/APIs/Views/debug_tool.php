@@ -1,7 +1,5 @@
 <div class="container-fluid py-3">
-    <form action="<?= current_page() ?>
-
-" method="POST" class="--api-debug no-ajax">
+    <form action="<?= current_page() ?>" method="POST" class="--api-debug no-ajax">
         <div class="row --apply-increase-one border-bottom">
             <div class="col-md-10">
                 <div class="input-group mb-3">
