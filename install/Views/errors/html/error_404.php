@@ -5,8 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
-        <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/logo.png') ?>
-">
+        <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/logo.png') ?>">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
         <title><?= phrase('Aksara is not installed!') ?></title>
         <style>
