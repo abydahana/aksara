@@ -89,8 +89,7 @@ $errorId = uniqid('error', true); ?>
                                             <td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
                                             <td><pre><?= esc(print_r($value, true)) ?></pre></td>
                                         </tr>
-                                    <?php endforeach;
-                                ?>
+                                    <?php endforeach; ?>
 
                                     </table>
                                 </div>

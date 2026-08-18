@@ -42,8 +42,7 @@ if ($fieldData):
                 <?php endif; ?>
             </div>
         </section>
-    <?php endif;
-?>
+    <?php endif; ?>
 <?php else: ?>
     <section class="section-padding fade-in">
         <div class="container">

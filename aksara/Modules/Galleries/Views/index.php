@@ -58,8 +58,7 @@ if ($results): ?>
 
                             if (1 == $num) {
                                 $cover = $src;
-                            } elseif ($num > 1) {
-                                ?>
+                            } elseif ($num > 1) { ?>
                                 <a href="<?= go_to([$val->gallery_slug, $src]) ?>" class="d-block --xhr">
                                     <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="w-100" alt="<?= htmlspecialchars((string) ($alt ?: $val->gallery_title)) ?>" loading="lazy" decoding="async" />
                                 </a>

@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   aksara-tests:
+    name: Code Quality & Assets Build
     runs-on: ubuntu-latest
 
     steps:
