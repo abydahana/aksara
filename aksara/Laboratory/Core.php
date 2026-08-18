@@ -6326,7 +6326,7 @@ abstract class Core extends Controller
 
                     if ($helper && $helper !== $field) {
                         $isMainTableField = $this->model->fieldExists($helper, $this->_table);
-                        
+
                         if (
                             ! $isMainTableField
                             && ! in_array($helper, $this->_unsetColumn, true)
@@ -6334,7 +6334,7 @@ abstract class Core extends Controller
                         ) {
                             $this->_unsetColumn[] = $helper;
                         }
-                        
+
                         if (! $isMainTableField && ! in_array($helper, $this->_unsetView, true)) {
                             $this->_unsetView[] = $helper;
                         }

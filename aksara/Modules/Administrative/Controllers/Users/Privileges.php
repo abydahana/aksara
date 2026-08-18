@@ -45,7 +45,7 @@ class Privileges extends Core
             app_users.photo,
             app_users.group_id,
             app_groups.group_name,
-            ' . $this->_table . '.sub_level_1,
+            ' . $this->_table . '.sub_level,
             ' . $this->_table . '.access_year
         ')
         ->join(
