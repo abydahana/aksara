@@ -1,10 +1,3 @@
-# Language detection
-* linguist-detectable
-*.php linguist-vendored=false
-*.css linguist-vendored=false
-*.js linguist-vendored=false
-*.twig linguist-vendored=false
-
 # Ignore export
 .git* export-ignore
 .prettier* export-ignore
