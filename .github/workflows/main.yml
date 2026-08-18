@@ -3,7 +3,7 @@ name: Aksara
 on:
   push:
     branches: ["main"]
-  pull_request:
+  pull_request_target:
     branches: ["main"]
 
 permissions:
@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -32,11 +34,6 @@ jobs:
 
     - name: Install NPM Dependencies
       run: npm install
-
-    - name: Checkout Official CS Fixer Rules from Main Branch
-      run: |
-        git fetch origin main
-        git checkout origin/main -- .php-cs-fixer.php .php-cs-fixer-views.php
 
     - name: Run Code Style Check & Build
       run: |
