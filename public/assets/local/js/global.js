@@ -183,10 +183,7 @@ $(document).ready(function () {
       if ($('a[data-role=reload]').length) {
         $('a[data-role=reload]').trigger('click');
       } else {
-        $('<a href="' + window.location.href + '" class="--xhr"></a>')
-          .appendTo('body')
-          .trigger('click')
-          .remove();
+        $('<a></a>').attr('href', window.location.href).addClass('--xhr').appendTo('body').trigger('click').remove();
       }
     } else if ((keycode == 115 || keycode == 83) && (e.ctrlKey || e.metaKey || keycode == 19) && $('form.--validate-form:visible').length) {
       e.preventDefault();
@@ -559,16 +556,9 @@ $(document).ready(function () {
         if (typeof response.target !== 'undefined') {
           // Redirect into target
           if (typeof response.popup !== 'undefined' && response.popup) {
-            ($('.modal').modal('hide'),
-              $('<a href="' + response.target + '" class="--modal"></a>')
-                .appendTo('body')
-                .trigger('click')
-                .remove());
+            ($('.modal').modal('hide'), $('<a></a>').attr('href', response.target).addClass('--modal').appendTo('body').trigger('click').remove());
           } else {
-            $('<a href="' + response.target + '" class="--xhr"></a>')
-              .appendTo('body')
-              .trigger('click')
-              .remove();
+            $('<a></a>').attr('href', response.target).addClass('--xhr').appendTo('body').trigger('click').remove();
           }
 
           return;
@@ -676,10 +666,7 @@ $(document).ready(function () {
     const finalUrl = queryString ? `${actionUrl}${actionUrl.includes('?') ? '&' : '?'}${queryString}` : actionUrl;
 
     // Create and trigger link
-    $('<a href="' + finalUrl + '" class="--xhr"></a>')
-      .appendTo('body')
-      .trigger('click')
-      .remove();
+    $('<a></a>').attr('href', finalUrl).addClass('--xhr').appendTo('body').trigger('click').remove();
   });
 
   /**
@@ -838,16 +825,9 @@ $(document).ready(function () {
         if (typeof response.target !== 'undefined') {
           // Redirect into target
           if (typeof response.popup !== 'undefined' && response.popup) {
-            ($('.modal').modal('hide'),
-              $('<a href="' + response.target + '" class="--modal"></a>')
-                .appendTo('body')
-                .trigger('click')
-                .remove());
+            ($('.modal').modal('hide'), $('<a></a>').attr('href', response.target).addClass('--modal').appendTo('body').trigger('click').remove());
           } else if (response.target) {
-            $('<a href="' + response.target + '" class="--xhr"></a>')
-              .appendTo('body')
-              .trigger('click')
-              .remove();
+            $('<a></a>').attr('href', response.target).addClass('--xhr').appendTo('body').trigger('click').remove();
           } else {
             // Indicates the response is exception
             return throw_exception(response.code, response?.message, response?.target, response?.redirect);
@@ -1475,20 +1455,20 @@ $(document).ready(function () {
     $(`
       <div class="row mb-1">
         <div class="col-4 pe-0">
-          <input type="text" name="${$(this).attr('data-label')}" class="form-control form-control-sm" placeholder="${$(this).attr('data-label-placeholder')}" autocomplete="off" />
+          <input type="text" name="${htmlspecialchars($(this).attr('data-label'))}" class="form-control form-control-sm" placeholder="${htmlspecialchars($(this).attr('data-label-placeholder'))}" autocomplete="off" />
         </div>
         <div class="col-5 pe-0">
-          <input type="text" name="${$(this).attr('data-value')}" class="form-control form-control-sm" placeholder="${$(this).attr('data-value-placeholder')}" autocomplete="off" />
+          <input type="text" name="${htmlspecialchars($(this).attr('data-value'))}" class="form-control form-control-sm" placeholder="${htmlspecialchars($(this).attr('data-value-placeholder'))}" autocomplete="off" />
         </div>
         <div class="col-3">
           <div class="btn-group btn-group-sm float-end">
-            <button type="button" class="btn btn-secondary --move-up" data-element=".row" data-bs-toggle="tooltip" title="${phrase('Move Up')}">
+            <button type="button" class="btn btn-secondary --move-up" data-element=".row" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Move Up'))}">
               <i class="mdi mdi-arrow-collapse-up"></i>
             </button>
-            <button type="button" class="btn btn-secondary --move-down" data-element=".row" data-bs-toggle="tooltip" title="${phrase('Move Down')}">
+            <button type="button" class="btn btn-secondary --move-down" data-element=".row" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Move Down'))}">
               <i class="mdi mdi-arrow-collapse-down"></i>
             </button>
-            <button type="button" class="btn btn-secondary float-end" data-role="remove-attribution" data-element=".row" data-bs-toggle="tooltip" title="${phrase('Remove')}">
+            <button type="button" class="btn btn-secondary float-end" data-role="remove-attribution" data-element=".row" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Remove'))}">
               <i class="mdi mdi-delete"></i>
             </button>
           </div>
@@ -1524,20 +1504,20 @@ $(document).ready(function () {
       <div class="card mb-3">
         <div class="card-header p-2">
           <div class="input-group input-group-sm">
-            <input type="text" name="${$(this).attr('data-field')}[title][]" class="form-control" placeholder="${phrase('Accordion Title')}" id="${$(this).attr('data-field')}_input" />
-            <button type="button" class="btn btn-secondary --move-up" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Move Up')}">
+            <input type="text" name="${htmlspecialchars($(this).attr('data-field'))}[title][]" class="form-control" placeholder="${htmlspecialchars(phrase('Accordion Title'))}" id="${htmlspecialchars($(this).attr('data-field'))}_input" />
+            <button type="button" class="btn btn-secondary --move-up" data-element=".card" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Move Up'))}">
               <i class="mdi mdi-arrow-collapse-up"></i>
             </button>
-            <button type="button" class="btn btn-secondary --move-down" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Move Down')}">
+            <button type="button" class="btn btn-secondary --move-down" data-element=".card" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Move Down'))}">
               <i class="mdi mdi-arrow-collapse-down"></i>
             </button>
-            <button type="button" class="btn btn-secondary" data-role="remove-accordion" data-element=".card" data-bs-toggle="tooltip" title="${phrase('Remove')}">
+            <button type="button" class="btn btn-secondary" data-role="remove-accordion" data-element=".card" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Remove'))}">
               <i class="mdi mdi-delete"></i>
             </button>
           </div>
         </div>
         <div class="card-body p-2">
-          <textarea name="${$(this).attr('data-field')}[body][]" class="form-control" data-role="wysiwyg" placeholder="${phrase('Accordion Body')}" id="${$(this).attr('data-field')}_input" rows="1"></textarea>
+          <textarea name="${htmlspecialchars($(this).attr('data-field'))}[body][]" class="form-control" data-role="wysiwyg" placeholder="${htmlspecialchars(phrase('Accordion Body'))}" id="${htmlspecialchars($(this).attr('data-field'))}_input" rows="1"></textarea>
         </div>
       </div>
     `).insertBefore($(this));
@@ -1574,34 +1554,34 @@ $(document).ready(function () {
       <div class="card mb-3">
         <div class="card-body">
           <div class="form-group mb-3">
-            <label class="text-muted" for="${$(this).attr('data-field')}_bg_${length}_input">${phrase('Background')}</label>
+            <label class="text-muted" for="${htmlspecialchars($(this).attr('data-field'))}_bg_${length}_input">${htmlspecialchars(phrase('Background'))}</label>
             <div data-provides="fileupload" class="fileupload fileupload-new">
               <span class="btn btn-file d-block">
-                <input type="file" name="${$(this).attr('data-field')}[background][${length}]" accept="images/*" data-role="image-upload" id="${$(this).attr('data-field')}_bg_${length}_input" />
+                <input type="file" name="${htmlspecialchars($(this).attr('data-field'))}[background][${length}]" accept="images/*" data-role="image-upload" id="${htmlspecialchars($(this).attr('data-field'))}_bg_${length}_input" />
                 <div class="fileupload-new text-center">
-                  <img class="img-fluid upload_preview rounded" src="${$(this).attr('data-image-placeholder')}" alt="${phrase('Preview')}" loading="lazy" decoding="async" />
+                  <img class="img-fluid upload_preview rounded" src="${htmlspecialchars($(this).attr('data-image-placeholder'))}" alt="${htmlspecialchars(phrase('Preview'))}" loading="lazy" decoding="async" />
                 </div>
-                <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.fileupload').find('input[type=file]').val(''), $(this).closest('.fileupload').find('img').attr('src', '${$(this).attr('data-image-placeholder')}'))">
+                <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.fileupload').find('input[type=file]').val(''), $(this).closest('.fileupload').find('img').attr('src', '${htmlspecialchars($(this).attr('data-image-placeholder'))}'))">
                   <i class="mdi mdi-delete"></i>
                 </button>
               </span>
             </div>
           </div>
           <div class="form-group mb-3">
-            <input type="text" name="${$(this).attr('data-field')}[title][${length}]" class="form-control" placeholder="${phrase('Title')}" id="${$(this).attr('data-field')}_input" />
+            <input type="text" name="${htmlspecialchars($(this).attr('data-field'))}[title][${length}]" class="form-control" placeholder="${htmlspecialchars(phrase('Title'))}" id="${htmlspecialchars($(this).attr('data-field'))}_input" />
           </div>
           <div class="form-group mb-3">
-            <textarea name="${$(this).attr('data-field')}[description][${length}]" class="form-control" placeholder="${phrase('Description')}" id="${$(this).attr('data-field')}_input" rows="1"></textarea>
+            <textarea name="${htmlspecialchars($(this).attr('data-field'))}[description][${length}]" class="form-control" placeholder="${htmlspecialchars(phrase('Description'))}" id="${htmlspecialchars($(this).attr('data-field'))}_input" rows="1"></textarea>
           </div>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group mb-3">
-                <input type="text" name="${$(this).attr('data-field')}[link][${length}]" class="form-control" placeholder="${phrase('Target URL')}" id="${$(this).attr('data-field')}_input" />
+                <input type="text" name="${htmlspecialchars($(this).attr('data-field'))}[link][${length}]" class="form-control" placeholder="${htmlspecialchars(phrase('Target URL'))}" id="${htmlspecialchars($(this).attr('data-field'))}_input" />
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group mb-3">
-                <input type="text" name="${$(this).attr('data-field')}[label][${length}]" class="form-control" placeholder="${phrase('Button Label')}" id="${$(this).attr('data-field')}_input" />
+                <input type="text" name="${htmlspecialchars($(this).attr('data-field'))}[label][${length}]" class="form-control" placeholder="${htmlspecialchars(phrase('Button Label'))}" id="${htmlspecialchars($(this).attr('data-field'))}_input" />
               </div>
             </div>
           </div>

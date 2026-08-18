@@ -332,29 +332,27 @@ $(document).ready(function () {
       $backdrop = $('<div class="sub-sheet-backdrop"></div>').appendTo('body');
     }
 
-    /* Build list HTML */
-    var listHtml = '<ul class="sub-sheet-list">';
+    /* Build list element */
+    var $ul = $('<ul class="sub-sheet-list"></ul>');
     items.forEach(function (item) {
       if (item.type === 'divider') {
-        listHtml += '<li><hr style="border-color:var(--bs-sheet-divider);margin:4px 16px"></li>';
+        $ul.append('<li><hr style="border-color:var(--bs-sheet-divider);margin:4px 16px"></li>');
         return;
       }
-      var cls = [];
-      if (item.isNoAjax) cls.push('no-ajax');
-      if (item.isXhr) cls.push('--xhr');
-      if (item.isDanger) cls.push('text-danger');
 
-      listHtml += '<li>';
-      listHtml += '<a href="' + item.href + '"';
-      if (cls.length) listHtml += ' class="' + cls.join(' ') + '"';
-      if (item.hasChildren) listHtml += ' data-bs-submenu="true"';
-      listHtml += '>';
-      listHtml += item.icon;
-      listHtml += '<span>' + item.label + '</span>';
-      listHtml += '</a>';
-      listHtml += '</li>';
+      var $a = $('<a></a>').attr('href', item.href || '#');
+      if (item.isNoAjax) $a.addClass('no-ajax');
+      if (item.isXhr) $a.addClass('--xhr');
+      if (item.isDanger) $a.addClass('text-danger');
+      if (item.hasChildren) $a.attr('data-bs-submenu', 'true');
+
+      if (item.icon) {
+        $a.append($(item.icon));
+      }
+      $a.append($('<span></span>').text(item.label || ''));
+
+      $ul.append($('<li></li>').append($a));
     });
-    listHtml += '</ul>';
 
     /* Panel */
     var $sheet = $(
@@ -363,14 +361,15 @@ $(document).ready(function () {
         '<div class="sub-sheet-header" style="position:relative">',
         '<div class="drag-handle"></div>',
         '<button type="button" class="sub-sheet-back" aria-label="Back">&lsaquo;</button>',
-        '<span class="sub-sheet-title">' + title + '</span>',
+        '<span class="sub-sheet-title"></span>',
         '</div>',
-        '<div class="sub-sheet-body">',
-        listHtml,
-        '</div>',
+        '<div class="sub-sheet-body"></div>',
         '</div>'
       ].join('')
     );
+
+    $sheet.find('.sub-sheet-title').text(title || '');
+    $sheet.find('.sub-sheet-body').append($ul);
 
     $sheet.appendTo('body');
 
@@ -503,7 +502,7 @@ $(document).ready(function () {
         '<div class="sub-sheet-header" style="position:relative">',
         '<div class="drag-handle"></div>',
         '<button type="button" class="sub-sheet-back" aria-label="Back">&lsaquo;</button>',
-        '<span class="sub-sheet-title">' + title + '</span>',
+        '<span class="sub-sheet-title"></span>',
         '</div>',
         '<div class="sub-sheet-body" style="padding:8px 0">',
         '<div style="text-align:center;padding:32px 16px;color:var(--bs-sheet-text-muted)">',
@@ -514,6 +513,7 @@ $(document).ready(function () {
       ].join('')
     );
 
+    $sheet.find('.sub-sheet-title').text(title || '');
     $sheet.appendTo('body');
 
     /* Push to stack and assign z-index */
@@ -536,57 +536,60 @@ $(document).ready(function () {
       data: { prefer: 'dropdown' },
       dataType: 'json',
       success: function (data) {
-        /* JSON response — render based on structure */
-        var listHtml = '<ul class="sub-sheet-list">';
+        var $ul = $('<ul class="sub-sheet-list"></ul>');
 
         if (Array.isArray(data) && data.length) {
           data.forEach(function (item) {
             if (item.language && item.code) {
-              /* Language item */
               var href = config.baseUrl + 'xhr/language/' + item.code;
-
-              listHtml += '<li>';
-              listHtml += '<a href="' + href + '" class="--xhr">';
-              listHtml += '<i class="mdi mdi-translate" style="font-size:1.25rem;width:1.5rem;text-align:center;color:var(--bs-sheet-text-muted);flex-shrink:0"></i>';
-              listHtml += '<span>' + item.language + '</span>';
-              listHtml += '</a>';
-              listHtml += '</li>';
+              var $a = $('<a></a>').attr('href', href).addClass('--xhr');
+              $a.append('<i class="mdi mdi-translate" style="font-size:1.25rem;width:1.5rem;text-align:center;color:var(--bs-sheet-text-muted);flex-shrink:0"></i>');
+              $a.append($('<span></span>').text(item.language));
+              $ul.append($('<li></li>').append($a));
             } else if (item.user && item.text) {
-              /* Notification item (from Notifications::partials) */
               var nHref = item.url || '#';
-              listHtml += '<li>';
-              listHtml += '<a href="' + nHref + '" style="gap:10px">';
-              listHtml +=
-                '<img src="' + (item.avatar || '') + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" alt="' + (item.user || '') + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'" />';
-              listHtml += '<span style="display:flex;flex-direction:column;gap:2px;line-height:1.3">';
-              listHtml += '<strong style="font-size:0.9rem">' + item.user + '</strong>';
-              listHtml += '<span style="font-size:0.82rem;color:var(--bs-sheet-text-muted)">' + item.text + '</span>';
-              if (item.created_at || item.timestamp) {
-                listHtml += '<span style="font-size:0.75rem;color:var(--bs-sheet-accent)">' + (item.created_at || item.timestamp) + '</span>';
+              var $a = $('<a></a>').attr('href', nHref).css('gap', '10px');
+              if (item.avatar) {
+                $('<img>')
+                  .attr({ src: item.avatar, alt: item.user || '', loading: 'lazy', decoding: 'async' })
+                  .css({ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 })
+                  .on('error', function () {
+                    $(this).hide();
+                  })
+                  .appendTo($a);
               }
-              listHtml += '</span>';
-              listHtml += '</a>';
-              listHtml += '</li>';
+              var $spanCol = $('<span></span>').css({ display: 'flex', flexDirection: 'column', gap: '2px', lineHeight: '1.3' });
+              $('<strong></strong>')
+                .css('font-size', '0.9rem')
+                .text(item.user || '')
+                .appendTo($spanCol);
+              $('<span></span>')
+                .css({ fontSize: '0.82rem', color: 'var(--bs-sheet-text-muted)' })
+                .text(item.text || '')
+                .appendTo($spanCol);
+              if (item.created_at || item.timestamp) {
+                $('<span></span>')
+                  .css({ fontSize: '0.75rem', color: 'var(--bs-sheet-accent)' })
+                  .text(item.created_at || item.timestamp)
+                  .appendTo($spanCol);
+              }
+              $spanCol.appendTo($a);
+              $ul.append($('<li></li>').append($a));
             }
           });
         }
 
-        if (listHtml === '<ul class="sub-sheet-list">') {
-          /* Empty or unrecognised data */
-          listHtml += '<li style="text-align:center;padding:24px 16px;color:var(--bs-sheet-text-muted)">';
-          listHtml += '<i class="mdi mdi-emoticon-neutral-outline" style="font-size:1.5rem;display:block;margin-bottom:4px"></i> No items';
-          listHtml += '</li>';
+        if (!$ul.children().length) {
+          $ul.append('<li style="text-align:center;padding:24px 16px;color:var(--bs-sheet-text-muted)"><i class="mdi mdi-emoticon-neutral-outline" style="font-size:1.5rem;display:block;margin-bottom:4px"></i> No items</li>');
         }
 
-        listHtml += '</ul>';
-        $sheet.find('.sub-sheet-body').html(listHtml);
+        $sheet.find('.sub-sheet-body').empty().append($ul);
       },
       error: function (xhr) {
-        /* Might be HTML response — try parsing */
         var html = xhr.responseText || '';
         try {
           var $content = $(html);
-          var itemsHtml = '<ul class="sub-sheet-list">';
+          var $ulList = $('<ul class="sub-sheet-list"></ul>');
           var found = false;
 
           var $items = $content.find('a, .nav-link, .dropdown-item');
@@ -596,35 +599,36 @@ $(document).ready(function () {
             found = true;
             $items.each(function () {
               var $el = $(this);
-              var icon = '';
               var $icon = $el.find('i.mdi').first();
-              if ($icon.length) icon = $icon[0].outerHTML;
               var label = $el.clone().children('i').remove().end().text().trim();
               var elHref = $el.attr('href') || '#';
-              var cls = [];
-              if ($el.hasClass('no-ajax')) cls.push('no-ajax');
-              if ($el.hasClass('--xhr')) cls.push('--xhr');
 
-              itemsHtml += '<li>';
-              itemsHtml += '<a href="' + elHref + '"';
-              if (cls.length) itemsHtml += ' class="' + cls.join(' ') + '"';
-              itemsHtml += '>';
-              itemsHtml += icon;
-              itemsHtml += '<span>' + label + '</span>';
-              itemsHtml += '</a>';
-              itemsHtml += '</li>';
+              var $a = $('<a></a>').attr('href', elHref);
+              if ($el.hasClass('no-ajax')) $a.addClass('no-ajax');
+              if ($el.hasClass('--xhr')) $a.addClass('--xhr');
+
+              if ($icon.length) {
+                $a.append($icon.clone());
+              }
+              $a.append($('<span></span>').text(label));
+              $ulList.append($('<li></li>').append($a));
             });
-            itemsHtml += '</ul>';
-            $sheet.find('.sub-sheet-body').html(itemsHtml);
+            $sheet.find('.sub-sheet-body').empty().append($ulList);
           }
 
           if (!found) {
-            $sheet.find('.sub-sheet-body').html('<div style="padding:12px 20px">' + html + '</div>');
+            $sheet.find('.sub-sheet-body').empty().append($('<div></div>').css('padding', '12px 20px').html(html));
           }
         } catch (e) {
           $sheet
             .find('.sub-sheet-body')
-            .html('<div style="text-align:center;padding:32px 16px;color:var(--bs-sheet-text-muted)">' + '<i class="mdi mdi-alert-circle-outline" style="font-size:1.5rem"></i>' + '<p style="margin-top:8px">Failed to load content</p>' + '</div>');
+            .empty()
+            .append(
+              $('<div></div>')
+                .css({ textAlign: 'center', padding: '32px 16px', color: 'var(--bs-sheet-text-muted)' })
+                .append('<i class="mdi mdi-alert-circle-outline" style="font-size:1.5rem"></i>')
+                .append($('<p></p>').css('margin-top', '8px').text('Failed to load content'))
+            );
         }
       }
     });
