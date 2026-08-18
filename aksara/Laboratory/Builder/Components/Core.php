@@ -54,7 +54,7 @@ class Core
                         {% set colspan = 0 %}
                         {% for column in results.columns %}
                             {% set colspan = colspan + 1 %}
-                            <th align="{{ column.align }}" class="no-wrap">
+                            <th align="{{ column.align }}" class="no-wrap" data-column="{{ column.field }}">
                                 {% if column.url %}
                                     <a href="{{ column.url }}" class="fw-bold --xhr {{ column.class }}">
                                         {{ column.label }}
@@ -111,7 +111,7 @@ class Core
                                 </div>
                             </td>
                             {% for field in row.field_data %}
-                                <td colspan="{{ field.colspan }}">
+                                <td colspan="{{ field.colspan }}" data-column="{{ field.name }}">
                                     {# Include table component #}
                                     {% include 'table/' ~ field.type ~ '.twig' with field %}
                                 </td>
@@ -561,9 +561,28 @@ class Core
                                 </select>
                             {% endif %}
                         {% endfor %}
-                        <button type="submit" class="btn btn-primary" aria-label="{{ phrase('Search') }}">
+                        <button type="submit" class="btn btn-primary rounded-end" aria-label="{{ phrase('Search') }}">
                             <i class="mdi mdi-magnify"></i>
                         </button>
+                        {% if columns %}
+                            <div class="dropdown ms-2" data-bs-toggle="tooltip" title="{{ phrase('Show / Hide Columns') }}">
+                                <button type="button" class="btn btn-primary btn-sm rounded" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="{{ phrase('Show / Hide Columns') }}">
+                                    <i class="mdi mdi-table-column-remove"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end p-2 --toggle-table-columns" style="min-width: 200px; max-height: 300px; overflow-y: auto;">
+                                    {% for column in columns %}
+                                        <li>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input --toggle-column" id="col_toggle_{{ column.field }}" data-column="{{ column.field }}" checked>
+                                                <label class="form-check-label small text-truncate d-block mb-0" for="col_toggle_{{ column.field }}">
+                                                    {{ column.label }}
+                                                </label>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
                     </div>
                 </form>
             </div>
