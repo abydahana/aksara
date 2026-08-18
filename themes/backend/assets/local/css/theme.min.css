@@ -636,39 +636,74 @@
 
 /* Dark mode keeps semantic utilities colored while the backend chrome stays neutral. */
 [data-bs-theme="dark"] .bg-primary,
-[data-bs-theme="dark"] .text-bg-primary,
-[data-bs-theme="dark"] .badge.bg-primary {
+[data-bs-theme="dark"] .text-bg-primary {
   color: var(--bs-primary-text-emphasis);
   background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity, .16)) !important;
   border-color: rgba(var(--bs-primary-rgb), .32) !important;
 }
 [data-bs-theme="dark"] .bg-success,
-[data-bs-theme="dark"] .text-bg-success,
-[data-bs-theme="dark"] .badge.bg-success {
+[data-bs-theme="dark"] .text-bg-success {
   color: var(--bs-success-text-emphasis);
   background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity, .16)) !important;
   border-color: rgba(var(--bs-success-rgb), .32) !important;
 }
 [data-bs-theme="dark"] .bg-info,
-[data-bs-theme="dark"] .text-bg-info,
-[data-bs-theme="dark"] .badge.bg-info {
+[data-bs-theme="dark"] .text-bg-info {
   color: var(--bs-info-text-emphasis);
   background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity, .16)) !important;
   border-color: rgba(var(--bs-info-rgb), .32) !important;
 }
 [data-bs-theme="dark"] .bg-warning,
-[data-bs-theme="dark"] .text-bg-warning,
-[data-bs-theme="dark"] .badge.bg-warning {
+[data-bs-theme="dark"] .text-bg-warning {
   color: var(--bs-warning-text-emphasis);
   background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity, .14)) !important;
   border-color: rgba(var(--bs-warning-rgb), .32) !important;
 }
 [data-bs-theme="dark"] .bg-danger,
-[data-bs-theme="dark"] .text-bg-danger,
-[data-bs-theme="dark"] .badge.bg-danger {
+[data-bs-theme="dark"] .text-bg-danger {
   color: var(--bs-danger-text-emphasis);
   background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity, .16)) !important;
   border-color: rgba(var(--bs-danger-rgb), .32) !important;
+}
+[data-bs-theme="dark"] .badge.bg-primary:not([class*="text-"]) {
+  color: var(--bs-primary-text-emphasis) !important;
+  background-color: rgba(var(--bs-primary-rgb), .2) !important;
+  border: 1px solid rgba(var(--bs-primary-rgb), .35) !important;
+}
+[data-bs-theme="dark"] .badge.bg-secondary:not([class*="text-"]) {
+  color: var(--bs-secondary-text-emphasis) !important;
+  background-color: rgba(var(--bs-secondary-rgb), .2) !important;
+  border: 1px solid rgba(var(--bs-secondary-rgb), .35) !important;
+}
+[data-bs-theme="dark"] .badge.bg-success:not([class*="text-"]) {
+  color: var(--bs-success-text-emphasis) !important;
+  background-color: rgba(var(--bs-success-rgb), .2) !important;
+  border: 1px solid rgba(var(--bs-success-rgb), .35) !important;
+}
+[data-bs-theme="dark"] .badge.bg-info:not([class*="text-"]) {
+  color: var(--bs-info-text-emphasis) !important;
+  background-color: rgba(var(--bs-info-rgb), .2) !important;
+  border: 1px solid rgba(var(--bs-info-rgb), .35) !important;
+}
+[data-bs-theme="dark"] .badge.bg-warning:not([class*="text-"]) {
+  color: var(--bs-warning-text-emphasis) !important;
+  background-color: rgba(var(--bs-warning-rgb), .18) !important;
+  border: 1px solid rgba(var(--bs-warning-rgb), .35) !important;
+}
+[data-bs-theme="dark"] .badge.bg-danger:not([class*="text-"]) {
+  color: var(--bs-danger-text-emphasis) !important;
+  background-color: rgba(var(--bs-danger-rgb), .2) !important;
+  border: 1px solid rgba(var(--bs-danger-rgb), .35) !important;
+}
+[data-bs-theme="dark"] .badge.bg-light:not([class*="text-"]) {
+  color: var(--bs-dark-text-emphasis) !important;
+  background-color: rgba(var(--bs-light-rgb), .15) !important;
+  border: 1px solid rgba(var(--bs-light-rgb), .25) !important;
+}
+[data-bs-theme="dark"] .badge.bg-dark:not([class*="text-"]) {
+  color: var(--bs-light-text-emphasis) !important;
+  background-color: rgba(var(--bs-dark-rgb), .6) !important;
+  border: 1px solid rgba(var(--bs-border-color), .5) !important;
 }
 [data-bs-theme="dark"] .alert-primary { --bs-alert-bg: rgba(var(--bs-primary-rgb), .18); --bs-alert-border-color: rgba(var(--bs-primary-rgb), .34); }
 [data-bs-theme="dark"] .alert-secondary { --bs-alert-bg: rgba(var(--bs-secondary-rgb), .2); --bs-alert-border-color: rgba(var(--bs-secondary-rgb), .36); }
