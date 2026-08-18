@@ -71,9 +71,7 @@
                                 <?php if (get_setting('whatsapp_number')): ?>
                                     <div class="d-flex align-items-center justify-content-center justify-content-md-start mb-2 text-body">
                                         <i class="mdi mdi-whatsapp me-2 d-none d-md-block"></i>
-                                        <a href="https://api.whatsapp.com/send?phone=<?= str_replace(['+', '-', ' '], [null, null, null], get_setting('whatsapp_number')) ?>&text=<?= phrase('Hello') .
-  '%20' .
-  get_setting('app_name') ?>..." target="_blank" class="text-body text-decoration-none"><?= get_setting('whatsapp_number') ?></a>
+                                        <a href="https://api.whatsapp.com/send?phone=<?= str_replace(['+', '-', ' '], [null, null, null], get_setting('whatsapp_number')) ?>&text=<?= phrase('Hello') . '%20' . get_setting('app_name') ?>..." target="_blank" class="text-body text-decoration-none"><?= get_setting('whatsapp_number') ?></a>
                                     </div>
                                 <?php endif; ?>
                                 <?php if (get_setting('office_address')): ?>

@@ -114,7 +114,8 @@ class Miscellaneous
                 [
                     'hash' => $hash,
                     'url' => $params,
-                    'data' => json_encode($data)
+                    'data' => json_encode($data),
+                    'timestamp' => date('Y-m-d H:i:s')
                 ]
             );
         }
