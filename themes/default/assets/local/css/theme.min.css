@@ -122,6 +122,7 @@
   --bs-dark-bg-subtle: #101010;
   --bs-dark-border-subtle: #212121;
   --bs-body-bg: #101010;
+  --bs-body-bg-rgb: 16, 16, 16;
   --bs-body-color: #c7c7c7;
   --bs-body-color-rgb: 199, 199, 199;
   --bs-tertiary-bg: #181818;
@@ -143,7 +144,7 @@
 
 .bg-body {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-body-bg-rgb, 255, 255, 255), var(--bs-bg-opacity)) !important;
+  background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity, 1)) !important;
 }
 
 
