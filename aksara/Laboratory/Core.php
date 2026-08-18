@@ -6325,10 +6325,17 @@ abstract class Core extends Controller
                     }
 
                     if ($helper && $helper !== $field) {
-                        if (! in_array($helper, $this->_unsetColumn, true) && ! in_array($helper, $this->_itemReference ?? [], true)) {
+                        $isMainTableField = $this->model->fieldExists($helper, $this->_table);
+                        
+                        if (
+                            ! $isMainTableField
+                            && ! in_array($helper, $this->_unsetColumn, true)
+                            && ! in_array($helper, $this->_itemReference ?? [], true)
+                        ) {
                             $this->_unsetColumn[] = $helper;
                         }
-                        if (! in_array($helper, $this->_unsetView, true)) {
+                        
+                        if (! $isMainTableField && ! in_array($helper, $this->_unsetView, true)) {
                             $this->_unsetView[] = $helper;
                         }
                     }
