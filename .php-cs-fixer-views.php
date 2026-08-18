@@ -58,7 +58,7 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
 
     public function getPriority(): int
     {
-        return -20;
+        return 50;
     }
 
     public function isCandidate(PhpCsFixer\Tokenizer\Tokens $tokens): bool
@@ -165,6 +165,74 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
                         for ($w = $index + 1; $w < $nextIndex; $w++) {
                             if ($tokens[$w]->isGivenKind(T_WHITESPACE)) {
                                 $tokens->clearAt($w);
+                            }
+                        }
+                    }
+                } else {
+                    // Normalize indentation inside multi-line PHP blocks relative to HTML base indentation
+                    $baseIndentLength = 0;
+
+                    if ($index > 0 && $tokens[$index - 1]->isGivenKind(T_INLINE_HTML)) {
+                        $htmlContent = $tokens[$index - 1]->getContent();
+
+                        if (preg_match('/[ \t]*$/', $htmlContent, $matches)) {
+                            $baseIndentLength = strlen($matches[0]);
+                        }
+                    }
+
+                    $openTagStr = $token->getContent();
+                    $isMultiLine = str_contains($openTagStr, "\n");
+
+                    if (! $isMultiLine && isset($tokens[$index + 1]) && $tokens[$index + 1]->isGivenKind(T_WHITESPACE)) {
+                        if (str_contains($tokens[$index + 1]->getContent(), "\n")) {
+                            $isMultiLine = true;
+                        }
+                    }
+
+                    if ($isMultiLine) {
+                        $level = 0;
+
+                        if (str_contains($openTagStr, "\n")) {
+                            $tokens[$index] = new PhpCsFixer\Tokenizer\Token([T_OPEN_TAG, "<?php\n"]);
+                        }
+
+                        for ($w = $index + 1; $w < count($tokens); $w++) {
+                            if ($tokens[$w]->isGivenKind(T_CLOSE_TAG)) {
+                                break;
+                            }
+
+                            if ($tokens[$w]->equals('{')) {
+                                $level++;
+                            } elseif ($tokens[$w]->equals('}')) {
+                                $level = max(0, $level - 1);
+                            }
+
+                            if ($tokens[$w]->isGivenKind(T_WHITESPACE)) {
+                                $wsContent = $tokens[$w]->getContent();
+
+                                if ($w === $index + 1 && ! str_contains($wsContent, "\n") && str_contains($openTagStr, "\n")) {
+                                    $nextMeaningful = $tokens->getNextMeaningfulToken($w);
+                                    $isClosing = ($nextMeaningful !== null && $tokens[$nextMeaningful]->equals('}'));
+                                    $lineLevel = $isClosing ? max(0, $level - 1) : $level;
+                                    $targetIndent = $baseIndentLength + ($lineLevel * 4);
+
+                                    $fixedWs = str_repeat(' ', $targetIndent);
+
+                                    if ($fixedWs !== $wsContent) {
+                                        $tokens[$w] = new PhpCsFixer\Tokenizer\Token([T_WHITESPACE, $fixedWs]);
+                                    }
+                                } elseif (str_contains($wsContent, "\n")) {
+                                    $nextMeaningful = $tokens->getNextMeaningfulToken($w);
+                                    $isClosing = ($nextMeaningful !== null && $tokens[$nextMeaningful]->equals('}'));
+                                    $lineLevel = $isClosing ? max(0, $level - 1) : $level;
+                                    $targetIndent = $baseIndentLength + ($lineLevel * 4);
+
+                                    $fixedWs = preg_replace('/\n[ \t]*/', "\n" . str_repeat(' ', $targetIndent), $wsContent);
+
+                                    if ($fixedWs !== $wsContent) {
+                                        $tokens[$w] = new PhpCsFixer\Tokenizer\Token([T_WHITESPACE, $fixedWs]);
+                                    }
+                                }
                             }
                         }
                     }
