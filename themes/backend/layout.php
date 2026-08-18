@@ -76,8 +76,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid border-bottom py-3 py-md-0 description-collapse collapse alias-description-collapse<?= ($meta->description ? ' show' : '') .
-                  (str_contains($meta->description, '</div>') ? ' bg-info-subtle text-info-emphasis' : '') ?>" id="description-collapse" data-role="description">
+                <div class="container-fluid border-bottom py-3 py-md-0 description-collapse collapse alias-description-collapse<?= ($meta->description ? ' show' : '') . (! str_contains($meta->description, '</div>') ? ' bg-info-subtle text-info-emphasis' : '') ?>" id="description-collapse" data-role="description">
                     <?= $meta->description ?>
                 </div>
             </section>
@@ -92,10 +91,10 @@
 
         <?php
         echo aksara_footer();
-
-        $scripts = ['bootstrap/js/bootstrap.bundle.min.js', 'local/js/scripts.min.js'];
-
-        echo asset_loader($scripts);
+        echo asset_loader([
+            'bootstrap/js/bootstrap.bundle.min.js',
+            'local/js/scripts.min.js'
+        ]);
         ?>
 
         <?php if (get_setting('ai_enabled')): ?>
