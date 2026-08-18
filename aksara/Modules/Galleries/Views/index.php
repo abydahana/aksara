@@ -70,8 +70,8 @@ if ($results): ?>
                         }
 
                         $thumbnail = ob_get_clean();
-                    }
-                    ?>
+                    } ?>
+
                     <div class="col-lg-6">
                         <div class="rounded-5 border-hover overflow-hidden mb-4 fade-in">
                             <div class="row g-0">

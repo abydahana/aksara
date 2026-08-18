@@ -654,7 +654,7 @@
                     best = Math.max(best, score);
                     window.localStorage.setItem(storageKey, String(best));
                     board = next.state;
-                    
+
                     const spawnedIndex = addTileTo(board);
 
                     if (! won && board.some((value) => value >= 2048)) {
@@ -770,7 +770,7 @@
                     sampled.forEach((index) => {
                         const withTwo = [...state];
                         const withFour = [...state];
-                        
+
                         withTwo[index] = 2;
                         withFour[index] = 4;
                         total += robotSearch(withTwo, depth - 1, true) * .9;

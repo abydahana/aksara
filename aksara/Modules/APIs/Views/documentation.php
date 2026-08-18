@@ -38,8 +38,7 @@ if ($permission->groups) {
 
         $privileges[$selected] = $actions;
     }
-}
-?>
+} ?>
 
 <div class="container-fluid py-3">
     <div class="row">
@@ -51,13 +50,11 @@ if ($permission->groups) {
                     </a>
                     <br />
 
-                    <?php
-                    if ($modules) {
+                    <?php if ($modules) {
                         foreach ($modules as $key => $val) {
                             echo '<a href="' . current_page(null, ['slug' => $val, 'group' => null]) . '" class="' . ($val == $active ? 'text-primary fw-bold' : null) . ' --xhr">' . str_replace('/', ' &gt; ', $val) . '</a><br />';
                         }
-                    }
-                    ?>
+                    } ?>
                 </div>
             </div>
         </div>

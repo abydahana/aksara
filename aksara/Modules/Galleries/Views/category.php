@@ -17,17 +17,16 @@ if ($results) {
             foreach ($images as $src => $alt) {
                 if (! $src) {
                     continue;
-                }
-                ?>
+                } ?>
 
-                    <div class="col-sm-6 col-md-3">
-                        <div class="rounded-5 border-hover mb-4">
-                            <a href="<?= current_page($src) ?>" class="d-block --xhr">
-                                <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="rounded-5 w-100 fade-in" alt="<?= $alt ?>" loading="lazy" decoding="async" />
-                            </a>
-                        </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="rounded-5 border-hover mb-4">
+                        <a href="<?= current_page($src) ?>" class="d-block --xhr">
+                            <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="rounded-5 w-100 fade-in" alt="<?= $alt ?>" loading="lazy" decoding="async" />
+                        </a>
                     </div>
-                <?php
+                </div>
+            <?php
             }
         }
     }

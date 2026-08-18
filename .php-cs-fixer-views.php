@@ -84,6 +84,84 @@ class NoTrailingWhitespaceInInlineHtmlFixer extends PhpCsFixer\AbstractFixer
     }
 }
 
+class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
+{
+    public function getName(): string
+    {
+        return 'Aksara/view_php_tag_formatting';
+    }
+
+    public function getDefinition(): PhpCsFixer\FixerDefinition\FixerDefinitionInterface
+    {
+        return new PhpCsFixer\FixerDefinition\FixerDefinition(
+            'Formats PHP opening/closing tags in view files.',
+            []
+        );
+    }
+
+    public function getPriority(): int
+    {
+        return -20;
+    }
+
+    public function isCandidate(PhpCsFixer\Tokenizer\Tokens $tokens): bool
+    {
+        return $tokens->isAnyTokenKindsFound([T_OPEN_TAG, T_CLOSE_TAG]);
+    }
+
+    protected function applyFix(\SplFileInfo $file, PhpCsFixer\Tokenizer\Tokens $tokens): void
+    {
+        for ($index = count($tokens) - 1; $index >= 0; $index--) {
+            if ($tokens[$index]->isGivenKind(T_CLOSE_TAG)) {
+                $prevIndex = $tokens->getPrevNonWhitespace($index);
+
+                if ($prevIndex !== null && $tokens[$prevIndex]->equals('}')) {
+                    $whitespaceIndex = $index - 1;
+
+                    if ($whitespaceIndex > $prevIndex && $tokens[$whitespaceIndex]->isGivenKind(T_WHITESPACE)) {
+                        if (str_contains($tokens[$whitespaceIndex]->getContent(), "\n")) {
+                            $tokens[$whitespaceIndex] = new PhpCsFixer\Tokenizer\Token([T_WHITESPACE, ' ']);
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($tokens as $index => $token) {
+            if ($token->isGivenKind(T_OPEN_TAG)) {
+                $firstOpenTagIndex = $tokens->getNextNonWhitespace(0);
+
+                if ($index === 0 && $firstOpenTagIndex !== null && $tokens[$firstOpenTagIndex]->isGivenKind([T_DOC_COMMENT, T_COMMENT])) {
+                    continue;
+                }
+
+                $nextIndex = $tokens->getNextNonWhitespace($index);
+
+                if ($nextIndex !== null && $tokens[$nextIndex]->isGivenKind([T_IF, T_FOREACH, T_FOR, T_WHILE, T_SWITCH, T_TRY])) {
+                    $openTagContent = $token->getContent();
+                    $hasNewline = str_contains($openTagContent, "\n");
+
+                    for ($w = $index + 1; $w < $nextIndex; $w++) {
+                        if ($tokens[$w]->isGivenKind(T_WHITESPACE) && str_contains($tokens[$w]->getContent(), "\n")) {
+                            $hasNewline = true;
+                        }
+                    }
+
+                    if ($hasNewline) {
+                        $tokens[$index] = new PhpCsFixer\Tokenizer\Token([T_OPEN_TAG, "<?php "]);
+
+                        for ($w = $index + 1; $w < $nextIndex; $w++) {
+                            if ($tokens[$w]->isGivenKind(T_WHITESPACE)) {
+                                $tokens->clearAt($w);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/aksara',
@@ -98,14 +176,17 @@ $finder = PhpCsFixer\Finder::create()
 
 $customFixer1 = new BlankLineAfterFirstPhpClosingTagFixer();
 $customFixer2 = new NoTrailingWhitespaceInInlineHtmlFixer();
+$customFixer3 = new ViewPhpTagFormattingFixer();
 
 $config = new PhpCsFixer\Config();
-$config->registerCustomFixers([$customFixer1, $customFixer2]);
+$config->registerCustomFixers([$customFixer1, $customFixer2, $customFixer3]);
 
 return $config->setRules([
     '@PSR12' => true,
+    'statement_indentation' => false,
     $customFixer1->getName() => true,
     $customFixer2->getName() => true,
+    $customFixer3->getName() => true,
     'phpdoc_to_comment' => false,
     'no_empty_phpdoc' => false,
     'phpdoc_trim' => false,

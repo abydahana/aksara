@@ -283,8 +283,8 @@
                         if (! $images) {
                             continue;
                         }
-                        ?>
-                        <?php foreach ($images as $src => $alt): ?>
+
+                        foreach ($images as $src => $alt): ?>
                             <div class="swiper-slide">
                                 <div class="card border-hover rounded-5 overflow-hidden">
                                     <a href="<?= base_url(['galleries', $val->gallery_slug]) ?>" class="--xhr d-block">

@@ -288,8 +288,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
 
                                         $num++;
                                     }
-                                }
-                                ?>
+                                } ?>
                             </div>
                         </div>
                     </div>
@@ -301,9 +300,8 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <?php
-                                foreach ($recentSigned as $key => $val) {
-                                    echo ($key ? '<hr class="mt-2 mb-2" />' : null);
+                                <?php foreach ($recentSigned as $key => $val) {
+                                    echo($key ? '<hr class="mt-2 mb-2" />' : null);
 
                                     echo '
                                         <div class="row no-gutters align-items-center">
@@ -322,8 +320,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                             </div>
                                         </div>
                                     ';
-                                }
-                                ?>
+                                } ?>
                             </div>
                         </div>
                     </div>

@@ -7,8 +7,7 @@ $driverList = null;
 
 foreach ($drivers as $key => $val) {
     $driverList .= '<option value="' . $key . '"' . (session()->get('database_driver') == $key ? ' selected' : null) . '>' . $val . '</option>';
-}
-?>
+} ?>
 
 <form action="<?= site_url('security') ?>" method="POST" class="--validate-form">
     <h4>

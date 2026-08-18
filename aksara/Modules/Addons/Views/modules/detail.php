@@ -14,8 +14,7 @@ if (isset($detail->screenshot) && $detail->screenshot) {
             $screenshot = base_url('modules/' . $detail->folder . '/' . $val->src);
         } else {
             $screenshot = get_image(null, 'placeholder_thumb.png');
-        }
-        ?>
+        } ?>
 
         <div class="carousel-item rounded<?= ! $key ? ' active' : null ?>">
             <a href="<?= $screenshot ?>" target="_blank">
@@ -45,8 +44,7 @@ if (isset($detail->attribution) && $detail->attribution) {
     }
 
     $attribution = ob_get_clean();
-}
-?>
+} ?>
 
 <div class="container-fluid">
     <div class="row">

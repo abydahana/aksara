@@ -15,8 +15,7 @@ $timeZoneList = null;
 
 foreach ($timeZone as $key => $val) {
     $timeZoneList .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
-}
-?>
+} ?>
 
 <form action="<?= site_url('finalizing') ?>" method="POST" class="--validate-form">
     <h4>

@@ -7,7 +7,6 @@
  * @var mixed $user
  */
 if ($user): ?>
-
     <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">
@@ -89,8 +88,8 @@ if ($user): ?>
 
                         if (! $metadata || ! isset($metadata->title)) {
                             continue;
-                        }
-                        ?>
+                        } ?>
+
                         <div class="activity-item mb-3">
                             <div class="border rounded-4 mb-4 p-4">
                                 <div class="row g-0 align-items-center">
@@ -100,9 +99,13 @@ if ($user): ?>
                                     <div class="col-10 col-lg-9">
                                         <h5 class="fw-bold d-inline mb-0"> <?= $user->first_name . ' ' . $user->last_name ?> </h4>
                                         <p class="text-muted mb-0">
-                                            <?= time_ago($val->created_at) ?> &middot; <a href="<?= base_url($val->post_path, [
-   'comment_highlight' => $val->comment_id,
- ]) ?>" target="_blank"> <?= phrase('Commented') ?> </a>
+                                            <?= time_ago($val->created_at) ?>
+                                            &middot;
+                                            <a href="<?= base_url($val->post_path, [
+                                                'comment_highlight' => $val->comment_id,
+                                            ]) ?>" target="_blank">
+                                                <?= phrase('Commented') ?>
+                                            </a>
                                         </p>
                                     </div>
                                 </div>
@@ -118,9 +121,7 @@ if ($user): ?>
                                 <?php if (isset($metadata->title)): ?>
                                     <div class="rounded-4 border p-3">
                                         <h5>
-                                            <a href="<?= base_url($val->post_path, [
-                                              'comment_highlight' => $val->comment_id,
-                                            ]) ?>" class="text-body" target="_blank">
+                                            <a href="<?= base_url($val->post_path, ['comment_highlight' => $val->comment_id]) ?>" class="text-body" target="_blank">
                                                 <?= $metadata->title ?>
                                             </a>
                                         </h5>

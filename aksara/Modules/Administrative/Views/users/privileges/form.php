@@ -52,10 +52,10 @@
                             <?php
                             $options = null;
 
-                    foreach ($year as $key => $val) {
-                        $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
-                    }
-                    ?>
+                            foreach ($year as $key => $val) {
+                                $options .= '<option value="' . $val->year . '"' . (isset($fieldData->access_year) && $fieldData->access_year == $val->year ? ' selected' : null) . '>' . $val->year . '</option>';
+                            } ?>
+
                             <select name="access_year" class="form-control" id="access_year_input" placeholder="<?= phrase('Please choose') ?>">
                                 <?= $options ?>
                             </select>
@@ -94,8 +94,7 @@
                             }
 
                             $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level ? ' selected' : null) . '>' . $val->label . '</option>';
-                        }
-                        ?>
+                        } ?>
                         <select name="sub_level" class="form-control" id="sub_level_input" placeholder="<?= phrase('Please choose') ?>">
                             <?= $option ?>
                         </select>

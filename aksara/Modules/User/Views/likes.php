@@ -7,7 +7,6 @@
  * @var mixed $user
  */
 if ($user): ?>
-
     <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">
@@ -89,8 +88,8 @@ if ($user): ?>
 
                         if (! $metadata || ! isset($metadata->title)) {
                             continue;
-                        }
-                        ?>
+                        } ?>
+
                         <div class="activity-item mb-3">
                             <div class="border rounded-4 mb-4 p-4">
                                 <div class="row g-0 align-items-center">

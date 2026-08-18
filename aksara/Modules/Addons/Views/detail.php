@@ -36,8 +36,7 @@ if (isset($detail->attribution) && $detail->attribution) {
     <?php endforeach;
 
     $attribution = ob_get_clean();
-}
-?>
+} ?>
 
 <div class="container-fluid">
     <div class="row">

@@ -81,8 +81,7 @@
                                     </div>
                                 </div>
                             ';
-                        }
-                        ?>
+                        } ?>
 
                         <div class="row g-0 mb-5">
                             <div class="col-7">

@@ -10,8 +10,7 @@ $missing = array_diff($required, $extension);
 
 if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     $error = true;
-}
-?>
+} ?>
 
 <form action="<?= site_url('database') ?>" method="POST" class="--validate-form">
     <h4>
