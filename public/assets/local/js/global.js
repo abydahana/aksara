@@ -183,7 +183,7 @@ $(document).ready(function () {
       if ($('a[data-role=reload]').length) {
         $('a[data-role=reload]').trigger('click');
       } else {
-        $('<a></a>').attr('href', window.location.href).addClass('--xhr').appendTo('body').trigger('click').remove();
+        $(document.createElement('a')).attr('href', window.location.href).addClass('--xhr').appendTo('body').trigger('click').remove();
       }
     } else if ((keycode == 115 || keycode == 83) && (e.ctrlKey || e.metaKey || keycode == 19) && $('form.--validate-form:visible').length) {
       e.preventDefault();
@@ -556,9 +556,9 @@ $(document).ready(function () {
         if (typeof response.target !== 'undefined') {
           // Redirect into target
           if (typeof response.popup !== 'undefined' && response.popup) {
-            ($('.modal').modal('hide'), $('<a></a>').attr('href', response.target).addClass('--modal').appendTo('body').trigger('click').remove());
+            ($('.modal').modal('hide'), $(document.createElement('a')).attr('href', response.target).addClass('--modal').appendTo('body').trigger('click').remove());
           } else {
-            $('<a></a>').attr('href', response.target).addClass('--xhr').appendTo('body').trigger('click').remove();
+            $(document.createElement('a')).attr('href', response.target).addClass('--xhr').appendTo('body').trigger('click').remove();
           }
 
           return;
@@ -666,7 +666,7 @@ $(document).ready(function () {
     const finalUrl = queryString ? `${actionUrl}${actionUrl.includes('?') ? '&' : '?'}${queryString}` : actionUrl;
 
     // Create and trigger link
-    $('<a></a>').attr('href', finalUrl).addClass('--xhr').appendTo('body').trigger('click').remove();
+    $(document.createElement('a')).attr('href', finalUrl).addClass('--xhr').appendTo('body').trigger('click').remove();
   });
 
   /**
@@ -825,9 +825,9 @@ $(document).ready(function () {
         if (typeof response.target !== 'undefined') {
           // Redirect into target
           if (typeof response.popup !== 'undefined' && response.popup) {
-            ($('.modal').modal('hide'), $('<a></a>').attr('href', response.target).addClass('--modal').appendTo('body').trigger('click').remove());
+            ($('.modal').modal('hide'), $(document.createElement('a')).attr('href', response.target).addClass('--modal').appendTo('body').trigger('click').remove());
           } else if (response.target) {
-            $('<a></a>').attr('href', response.target).addClass('--xhr').appendTo('body').trigger('click').remove();
+            $(document.createElement('a')).attr('href', response.target).addClass('--xhr').appendTo('body').trigger('click').remove();
           } else {
             // Indicates the response is exception
             return throw_exception(response.code, response?.message, response?.target, response?.redirect);

@@ -184,7 +184,7 @@ function throw_exception(code, message, target, redirect) {
     return window.location.replace(target);
   } else {
     // Soft redirect to target
-    $('<a></a>').attr('href', target).addClass('--xhr').appendTo('body').trigger('click').remove();
+    $(document.createElement('a')).attr('href', target).addClass('--xhr').appendTo('body').trigger('click').remove();
   }
 
   if (!message) {
@@ -867,7 +867,7 @@ function reactivate(individual, ignoreSelf) {
           selectable: context.attr('data-crud-url') ? true : false,
           select: function (info) {
             if (context.attr('data-crud-url')) {
-              $('<a></a>')
+              $(document.createElement('a'))
                 .attr({
                   href: context.attr('data-crud-url'),
                   'data-start': info.startStr,
@@ -1078,12 +1078,19 @@ function reactivate(individual, ignoreSelf) {
           onSelect: function (suggestion) {
             if (typeof suggestion.target !== 'undefined' && suggestion.target) {
               // Create and click the temporary link
-              $('<a></a>').attr('href', suggestion.target).addClass('--xhr').appendTo('body').trigger('click').remove();
+              $(document.createElement('a')).attr('href', suggestion.target).addClass('--xhr').appendTo('body').trigger('click').remove();
             } else if (context.closest('form').hasClass('--xhr-form')) {
               context.closest('form.--xhr-form').trigger('submit');
             } else if (context.hasClass('on-autocomplete-trigger')) {
               $('input[data-mask-input=autocomplete]').remove();
-              $(`<input type="hidden" name="${context.attr('name')}" value="${suggestion.value}" data-mask-input="autocomplete" />`).insertAfter(context);
+              $(document.createElement('input'))
+                .attr({
+                  type: 'hidden',
+                  name: context.attr('name'),
+                  value: suggestion.value,
+                  'data-mask-input': 'autocomplete'
+                })
+                .insertAfter(context);
             }
 
             if (typeof suggestion.affected_field !== 'undefined') {
