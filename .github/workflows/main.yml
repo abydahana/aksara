@@ -33,6 +33,11 @@ jobs:
     - name: Install NPM Dependencies
       run: npm install
 
+    - name: Checkout Official CS Fixer Rules from Main Branch
+      run: |
+        git fetch origin main
+        git checkout origin/main -- .php-cs-fixer.php .php-cs-fixer-views.php
+
     - name: Run Code Style Check & Build
       run: |
         composer cs-fix
