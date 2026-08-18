@@ -50,16 +50,9 @@
                             }
 
                             if ($badge) {
-                                $tags .=
-                                  '
-                                    <a href="' .
-                                  go_to('../tags', ['q' => $badge]) .
-                                  '" class="--xhr">
-                                        <span class="badge bg-secondary me-2">
-                                            #' .
-                                  trim($badge) .
-                                  '
-                                        </span>
+                                $tags .= '
+                                    <a href="' . go_to('../tags', ['q' => $badge]) . '" class="--xhr">
+                                        <span class="badge bg-secondary me-2">#' . trim($badge) . '</span>
                                     </a>
                                 ';
                             }

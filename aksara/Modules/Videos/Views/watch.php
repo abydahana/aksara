@@ -37,9 +37,7 @@ if ($results && $videoType): ?>
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
                         <a href="<?= base_url('user/' . $results->field_data->username->value) ?>" class="d-block --xhr">
-                            <img src="<?= get_image('users', $results->field_data->photo->value, 'thumb') ?>" class="img-fluid rounded-circle" alt="<?= $results->field_data->first_name->value .
-  ' ' .
-  $results->field_data->last_name->value ?>" loading="lazy" decoding="async" />
+                            <img src="<?= get_image('users', $results->field_data->photo->value, 'thumb') ?>" class="img-fluid rounded-circle" alt="<?= $results->field_data->first_name->value . ' ' . $results->field_data->last_name->value ?>" loading="lazy" decoding="async" />
                         </a>
                     </div>
                     <div class="col-10">

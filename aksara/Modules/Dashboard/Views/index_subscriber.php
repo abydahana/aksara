@@ -5,7 +5,6 @@ $announcements = $announcements ?? [];
 $groupName = $groupName ?? phrase('Unknown');
 
 if (! get_userdata('username') || ! get_userdata('password')): ?>
-
     <div class="alert alert-danger border-0 rounded-0 mb-0">
         <h5>
             <?= phrase('Notice') ?>
@@ -25,8 +24,7 @@ if (! get_userdata('username') || ! get_userdata('password')): ?>
             <?= phrase('Update your profile') ?>
         </a>
     </div>
-<?php endif;
-?>
+<?php endif; ?>
 
 <div class="container-fluid py-3">
     <div class="row">

@@ -20,20 +20,13 @@ if ($fieldData) {
         foreach ($tags as $tag => $label) {
             if (! $label) {
                 continue;
-            } // empty label
+            }
 
-            $postTags .=
-              '
-                    <a href="' .
-              go_to('../tags', ['q' => trim($label)]) .
-              '" class="me-2 --xhr">
-                        <span class="badge bg-secondary">
-                            ' .
-              trim($label) .
-              '
-                        </span>
-                    </a>
-                ';
+            $postTags .= '
+                <a href="' . go_to('../tags', ['q' => trim($label)]) . '" class="me-2 --xhr">
+                    <span class="badge bg-secondary">' . trim($label) . '</span>
+                </a>
+            ';
         }
     }
 
@@ -53,7 +46,6 @@ if ($fieldData) {
 }
 
 if ($article): ?>
-
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <h1 class="display-4 fw-bold">
@@ -138,9 +130,7 @@ if ($article): ?>
                                     <?= $postTags ?>
                                 </div>
 
-                                <i class="text-muted text-sm"><?= $fieldData->updated_at->value
-                              ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value
-                              : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
+                                <i class="text-muted text-sm"><?= $fieldData->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
                             </div>
                             <div class="fade-in">
                                 <?= comment_widget(['post_id' => $fieldData->post_id->value, 'path' => service('uri')->getRoutePath()]) ?>

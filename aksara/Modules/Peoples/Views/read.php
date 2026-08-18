@@ -7,7 +7,6 @@
 $fieldData = $results->field_data ?? null;
 
 if ($fieldData): ?>
-
     <div class="border-fade-bottom">
         <div class="container">
             <br />
@@ -25,9 +24,7 @@ if ($fieldData): ?>
             <div class="col-md-8 offset-md-2">
                 <div class="text-center" style="margin-top:-150px">
                     <a href="<?= get_image('peoples', $fieldData->photo->value) ?>" class="d-block" target="_blank">
-                        <img src="<?= get_image('peoples', $fieldData->photo->value, 'thumb') ?>" class="img-fluid bg-body rounded-pill mb-5" width="300" style="border:5px solid #fff" alt="<?= $fieldData->first_name->value .
-  ' ' .
-  $fieldData->last_name->value ?>" />
+                        <img src="<?= get_image('peoples', $fieldData->photo->value, 'thumb') ?>" class="img-fluid bg-body rounded-pill mb-5" width="300" style="border:5px solid #fff" alt="<?= $fieldData->first_name->value . ' ' . $fieldData->last_name->value ?>" />
                     </a>
                 </div>
                 <div class="mb-3">

@@ -68,12 +68,8 @@ if ($activation): ?>
                                                 <span class="input-group-text rounded-pill rounded-end-0">
                                                     <i class="mdi mdi-calendar-check" style="width:22px"></i>
                                                 </span>
-                                                <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' .
-                                      phrase('Choose year') .
-                                      '" id="year_input">
-                                                    ' .
-                                      $option .
-                                      '
+                                                <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' . phrase('Choose year') . '" id="year_input">
+                                                    ' . $option . '
                                                 </select>
                                             </div>
                                         </div>

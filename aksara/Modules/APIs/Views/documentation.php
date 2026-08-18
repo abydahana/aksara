@@ -51,22 +51,13 @@ if ($permission->groups) {
                     </a>
                     <br />
 
-                    <?php if ($modules) {
+                    <?php
+                    if ($modules) {
                         foreach ($modules as $key => $val) {
-                            echo '
-                                <a href="' .
-                              current_page(null, ['slug' => $val, 'group' => null]) .
-                              '" class="' .
-                              ($val == $active ? ' text-primary fw-bold' : null) .
-                              ' --xhr">
-                                    ' .
-                              str_replace('/', ' &gt; ', $val) .
-                              '
-                                </a>
-                                <br />
-                            ';
+                            echo '<a href="' . current_page(null, ['slug' => $val, 'group' => null]) . '" class="' . ($val == $active ? 'text-primary fw-bold' : null) . ' --xhr">' . str_replace('/', ' &gt; ', $val) . '</a><br />';
                         }
-                    } ?>
+                    }
+                    ?>
                 </div>
             </div>
         </div>
@@ -120,7 +111,11 @@ if ($permission->groups) {
                             <div class="mb-3" id="--method-<?= $val ?>">
                                 <h5 class="mb-1">
                                     <span class="badge bg-primary bg-md">
-                                        <?= in_array($val, ['create', 'update']) ? 'POST' : (in_array($val, ['delete']) ? 'DELETE' : 'GET') ?>
+                                        <?= match ($val) {
+                                            'create', 'update' => 'POST',
+                                            'delete' => 'DELETE',
+                                            default => 'GET'
+                                        } ?>
                                     </span>
                                 </h5>
                                 <div class="rounded pt-2 pe-3 pb-2 ps-3 bg-dark">
