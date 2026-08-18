@@ -866,10 +866,14 @@ function reactivate(individual, ignoreSelf) {
           },
           selectable: context.attr('data-crud-url') ? true : false,
           select: function (info) {
-            if (context.attr('data-crud-url')) {
+            let crudUrl = context.attr('data-crud-url');
+            if (crudUrl) {
+              try {
+                crudUrl = encodeURI(crudUrl);
+              } catch (e) {}
               $(document.createElement('a'))
                 .attr({
-                  href: context.attr('data-crud-url'),
+                  href: crudUrl,
                   'data-start': info.startStr,
                   'data-finish': info.endStr
                 })
