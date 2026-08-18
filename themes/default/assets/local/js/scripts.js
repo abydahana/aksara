@@ -340,7 +340,7 @@ $(document).ready(function () {
         return;
       }
 
-      var $a = $('<a></a>').attr('href', item.href || '#');
+      var $a = $(document.createElement('a')).attr('href', item.href || '#');
       if (item.isNoAjax) $a.addClass('no-ajax');
       if (item.isXhr) $a.addClass('--xhr');
       if (item.isDanger) $a.addClass('text-danger');
@@ -542,13 +542,13 @@ $(document).ready(function () {
           data.forEach(function (item) {
             if (item.language && item.code) {
               var href = config.baseUrl + 'xhr/language/' + item.code;
-              var $a = $('<a></a>').attr('href', href).addClass('--xhr');
+              var $a = $(document.createElement('a')).attr('href', href).addClass('--xhr');
               $a.append('<i class="mdi mdi-translate" style="font-size:1.25rem;width:1.5rem;text-align:center;color:var(--bs-sheet-text-muted);flex-shrink:0"></i>');
               $a.append($('<span></span>').text(item.language));
               $ul.append($('<li></li>').append($a));
             } else if (item.user && item.text) {
               var nHref = item.url || '#';
-              var $a = $('<a></a>').attr('href', nHref).css('gap', '10px');
+              var $a = $(document.createElement('a')).attr('href', nHref).css('gap', '10px');
               if (item.avatar) {
                 $('<img>')
                   .attr({ src: item.avatar, alt: item.user || '', loading: 'lazy', decoding: 'async' })
@@ -603,7 +603,7 @@ $(document).ready(function () {
               var label = $el.clone().children('i').remove().end().text().trim();
               var elHref = $el.attr('href') || '#';
 
-              var $a = $('<a></a>').attr('href', elHref);
+              var $a = $(document.createElement('a')).attr('href', elHref);
               if ($el.hasClass('no-ajax')) $a.addClass('no-ajax');
               if ($el.hasClass('--xhr')) $a.addClass('--xhr');
 

@@ -867,16 +867,14 @@ function reactivate(individual, ignoreSelf) {
           selectable: context.attr('data-crud-url') ? true : false,
           select: function (info) {
             if (context.attr('data-crud-url')) {
-              $(document.createElement('a'))
-                .attr({
-                  href: context.attr('data-crud-url'),
-                  'data-start': info.startStr,
-                  'data-finish': info.endStr
-                })
-                .addClass('--modal')
-                .appendTo('body')
-                .trigger('click')
-                .remove();
+              const link = document.createElement('a');
+              link.href = context.attr('data-crud-url');
+              link.setAttribute('data-start', info.startStr);
+              link.setAttribute('data-finish', info.endStr);
+              link.className = '--modal';
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
             }
           }
         });
@@ -1083,14 +1081,7 @@ function reactivate(individual, ignoreSelf) {
               context.closest('form.--xhr-form').trigger('submit');
             } else if (context.hasClass('on-autocomplete-trigger')) {
               $('input[data-mask-input=autocomplete]').remove();
-              $(document.createElement('input'))
-                .attr({
-                  type: 'hidden',
-                  name: context.attr('name'),
-                  value: suggestion.value,
-                  'data-mask-input': 'autocomplete'
-                })
-                .insertAfter(context);
+              $(`<input type="hidden" name="${context.attr('name')}" value="${suggestion.value}" data-mask-input="autocomplete" />`).insertAfter(context);
             }
 
             if (typeof suggestion.affected_field !== 'undefined') {
