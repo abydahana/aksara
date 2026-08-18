@@ -1,7 +1,7 @@
 {
   "name": "aksara",
   "version": "1.0.0",
-  "description": "<img width=\"2982\" height=\"1978\" alt=\"frame_generic_dark\" src=\"https://github.com/user-attachments/assets/e449a43f-2f42-4bd1-96fb-619e98c5779e\" />",
+  "description": "JavaScript asset build and formatting tool for Aksara CMS to format and minify frontend scripts.",
   "main": "index.js",
   "bin": {
     "aksara": "bin/js-build.js"
