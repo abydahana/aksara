@@ -30,8 +30,7 @@ if (isset($detail->screenshot) && $detail->screenshot) {
 if (isset($detail->attribution) && $detail->attribution) {
     ob_start();
 
-    foreach ($detail->attribution as $key => $val) {
-        ?>
+    foreach ($detail->attribution as $key => $val) { ?>
         <div class="row">
             <div class="col-4 text-muted">
                 <?= $key ?>

@@ -15,8 +15,7 @@ $carousel = null;
 if ($images) {
     ob_start();
 
-    foreach ($images as $key => $val) {
-        ?>
+    foreach ($images as $key => $val) { ?>
         <div class="carousel-item text-center<?= $current == $key || (! $count && ! in_array($current, (array) $images)) ? ' active' : null ?>">
             <div class="full-height d-flex align-items-center justify-content-center bg-secondary">
                 <img src="<?= get_image('galleries', $key) ?>" class="img-fluid" alt="<?= $val ?>" loading="lazy" decoding="async">

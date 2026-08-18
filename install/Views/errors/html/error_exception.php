@@ -78,19 +78,19 @@ $errorId = uniqid('error', true); ?>
 
                                     <?php
                                     $params = null;
-                                // Reflection by name is not available for closure function
-                                if (substr($row['function'], -1) !== '}') {
-                                    $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
-                                    $params = $mirror->getParameters();
-                                }
 
-                                foreach ($row['args'] as $key => $value): ?>
+                                    // Reflection by name is not available for closure function
+                                    if (substr($row['function'], -1) !== '}') {
+                                        $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
+                                        $params = $mirror->getParameters();
+                                    }
+
+                                    foreach ($row['args'] as $key => $value): ?>
                                         <tr>
                                             <td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
                                             <td><pre><?= esc(print_r($value, true)) ?></pre></td>
                                         </tr>
-                                    <?php endforeach;
-                                ?>
+                                    <?php endforeach; ?>
 
                                     </table>
                                 </div>
