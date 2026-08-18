@@ -82,7 +82,7 @@
             </div>
             <div class="col-sm-6 col-md-5">
                 <div class="mb-3">
-                    <label class="text-muted d-block" for="sub_level_1_input">
+                    <label class="text-muted d-block" for="sub_level_input">
                         <?= phrase('The sub level can be accessed.') ?>
                     </label>
                     <?php if ($subLevel): ?>
@@ -93,10 +93,10 @@
                                 continue;
                             }
 
-                            $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level_1 ? ' selected' : null) . '>' . $val->label . '</option>';
+                            $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level ? ' selected' : null) . '>' . $val->label . '</option>';
                         }
                         ?>
-                        <select name="sub_level_1" class="form-control" id="sub_level_1_input" placeholder="<?= phrase('Please choose') ?>">
+                        <select name="sub_level" class="form-control" id="sub_level_input" placeholder="<?= phrase('Please choose') ?>">
                             <?= $option ?>
                         </select>
                     <?php else: ?>

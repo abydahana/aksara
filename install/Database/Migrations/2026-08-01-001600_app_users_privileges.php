@@ -30,7 +30,7 @@ class AppUsersPrivileges extends Migration
                 'unsigned' => true,
                 'null' => false
             ],
-            'sub_level_1' => [
+            'sub_level' => [
                 'type' => 'varchar',
                 'constraint' => 32,
                 'null' => true
