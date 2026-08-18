@@ -867,20 +867,26 @@ function reactivate(individual, ignoreSelf) {
           selectable: context.attr('data-crud-url') ? true : false,
           select: function (info) {
             let crudUrl = context.attr('data-crud-url');
+
             if (crudUrl) {
               try {
-                crudUrl = encodeURI(crudUrl);
+                const url = new URL(crudUrl, window.location.origin);
+
+                if (url.origin !== window.location.origin) {
+                  return;
+                }
+
+                const link = document.createElement('a');
+
+                link.href = url.href;
+                link.setAttribute('data-start', info.startStr);
+                link.setAttribute('data-finish', info.endStr);
+                link.className = '--modal';
+
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
               } catch (e) {}
-              $(document.createElement('a'))
-                .attr({
-                  href: crudUrl,
-                  'data-start': info.startStr,
-                  'data-finish': info.endStr
-                })
-                .addClass('--modal')
-                .appendTo('body')
-                .trigger('click')
-                .remove();
             }
           }
         });
