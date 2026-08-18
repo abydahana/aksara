@@ -509,6 +509,20 @@ function reactivate(individual, ignoreSelf) {
     });
 
     /**
+     * Restore table hidden columns if saved in sessionStorage
+     */
+    if ($('.--toggle-column').length) {
+      const pageKey = 'hidden_cols_' + window.location.pathname;
+      const hiddenCols = JSON.parse(sessionStorage.getItem(pageKey) || '[]');
+      if (hiddenCols.length) {
+        hiddenCols.forEach(function (col) {
+          $(`.form-check-input.--toggle-column[data-column="${col}"]`).prop('checked', false);
+          $(`th[data-column="${col}"], td[data-column="${col}"]`).addClass('d-none');
+        });
+      }
+    }
+
+    /**
      * Call your own function to run after AJAX call. Add anywhere to your
      * javascript file.
      *

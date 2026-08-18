@@ -1367,6 +1367,29 @@ $(document).ready(function () {
   });
 
   /**
+   * Column visibility toggle in data table
+   */
+  $('body').on('change', '.--toggle-column', function (e) {
+    const column = $(this).attr('data-column');
+    const isChecked = $(this).is(':checked');
+    const pageKey = 'hidden_cols_' + window.location.pathname;
+    let hiddenCols = JSON.parse(sessionStorage.getItem(pageKey) || '[]');
+
+    if (column) {
+      if (isChecked) {
+        $(`th[data-column="${column}"], td[data-column="${column}"]`).removeClass('d-none');
+        hiddenCols = hiddenCols.filter((item) => item !== column);
+      } else {
+        $(`th[data-column="${column}"], td[data-column="${column}"]`).addClass('d-none');
+        if (!hiddenCols.includes(column)) {
+          hiddenCols.push(column);
+        }
+      }
+      sessionStorage.setItem(pageKey, JSON.stringify(hiddenCols));
+    }
+  });
+
+  /**
    * Preview image before upload
    */
   $('body').on('change', '[data-role=image-upload]', function (e) {

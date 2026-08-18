@@ -363,7 +363,8 @@ class Table
             'toolbar' => [
                 'action' => current_page(null, ['page' => null]),
                 'buttons' => $buttons,
-                'filters' => $filters
+                'filters' => $filters,
+                'columns' => $columns
             ],
             'sortable' => $this->_sortable
         ];
