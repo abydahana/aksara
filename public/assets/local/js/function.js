@@ -184,10 +184,7 @@ function throw_exception(code, message, target, redirect) {
     return window.location.replace(target);
   } else {
     // Soft redirect to target
-    $('<a href="' + target + '" class="--xhr"></a>')
-      .appendTo('body')
-      .trigger('click')
-      .remove();
+    $('<a></a>').attr('href', target).addClass('--xhr').appendTo('body').trigger('click').remove();
   }
 
   if (!message) {
@@ -870,7 +867,13 @@ function reactivate(individual, ignoreSelf) {
           selectable: context.attr('data-crud-url') ? true : false,
           select: function (info) {
             if (context.attr('data-crud-url')) {
-              $(`<a href="${context.attr('data-crud-url')}" class="--modal" data-start="${info.startStr}" data-finish="${info.endStr}"></a>`)
+              $('<a></a>')
+                .attr({
+                  href: context.attr('data-crud-url'),
+                  'data-start': info.startStr,
+                  'data-finish': info.endStr
+                })
+                .addClass('--modal')
                 .appendTo('body')
                 .trigger('click')
                 .remove();
@@ -941,15 +944,15 @@ function reactivate(individual, ignoreSelf) {
             <div class="uploader-list w-100">
               <div class="row mb-2 align-items-center">
                 <div class="col-2 pe-0">
-                  <a href="${val.url}" target="_blank" download="${val.name}">
-                    ${val.icon ? '<img src="' + val.icon + '" class="img-fluid rounded" style="max-height:32px" alt="' + (val.name || '') + '" loading="lazy" decoding="async" />' : '<button type="button" class="btn btn-primary pe-2 ps-2">' + extension + '</button>'}
+                  <a href="${htmlspecialchars(val.url)}" target="_blank" download="${htmlspecialchars(val.name)}">
+                    ${val.icon ? '<img src="' + htmlspecialchars(val.icon) + '" class="img-fluid rounded" style="max-height:32px" alt="' + htmlspecialchars(val.name || '') + '" loading="lazy" decoding="async" />' : '<button type="button" class="btn btn-primary pe-2 ps-2">' + htmlspecialchars(extension) + '</button>'}
                   </a>
                 </div>
                 <div class="col-10 position-relative">
-                  <button type="button" class="btn btn-sm position-absolute end-0 me-2" onclick="jExec($(this).closest('.input-group').find('.custom-file-label').text(($(this).closest('.input-group').find('textarea').length - 1) + ' ' + (($(this).closest('.uploader-list').find('textarea').length - 1) > 1 ? phrase('files were chosen') : phrase('file was chosen'))), $('[data-bs-toggle=tooltip]').tooltip('hide'), $(this).closest('.uploader-list').remove())" data-bs-toggle="tooltip" title="${phrase('Remove')}">
+                  <button type="button" class="btn btn-sm position-absolute end-0 me-2" onclick="jExec($(this).closest('.input-group').find('.custom-file-label').text(($(this).closest('.input-group').find('textarea').length - 1) + ' ' + (($(this).closest('.uploader-list').find('textarea').length - 1) > 1 ? phrase('files were chosen') : phrase('file was chosen'))), $('[data-bs-toggle=tooltip]').tooltip('hide'), $(this).closest('.uploader-list').remove())" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Remove'))}">
                     <i class="mdi mdi-delete text-danger"></i>
                   </button>
-                  <textarea name="${context.attr('name').replace('[]', '')}_label[${val.file}]" class="form-control form-control-sm" rows="1">${val.name}</textarea>
+                  <textarea name="${htmlspecialchars(context.attr('name').replace('[]', ''))}_label[${htmlspecialchars(val.file)}]" class="form-control form-control-sm" rows="1">${htmlspecialchars(val.name)}</textarea>
                 </div>
               </div>
             </div>
@@ -994,15 +997,15 @@ function reactivate(individual, ignoreSelf) {
                 <div class="uploader-list w-100">
                   <div class="row mb-2 align-items-center">
                     <div class="col-2 pe-0">
-                      <a href="${response.target.result}" target="_blank" download="${file.name}">
-                        ${$.inArray(extension, ['.jpg', '.jpeg', '.png', '.gif']) !== -1 ? '<img src="' + response.target.result + '" class="img-fluid rounded" style="max-height:32px" alt="' + (file.name || '') + '" loading="lazy" decoding="async" />' : '<button type="button" class="btn btn-primary pe-2 ps-2">' + extension + '</button>'}
+                      <a href="${htmlspecialchars(response.target.result)}" target="_blank" download="${htmlspecialchars(file.name)}">
+                        ${$.inArray(extension, ['.jpg', '.jpeg', '.png', '.gif']) !== -1 ? '<img src="' + htmlspecialchars(response.target.result) + '" class="img-fluid rounded" style="max-height:32px" alt="' + htmlspecialchars(file.name || '') + '" loading="lazy" decoding="async" />' : '<button type="button" class="btn btn-primary pe-2 ps-2">' + htmlspecialchars(extension) + '</button>'}
                       </a>
                     </div>
                     <div class="col-10 position-relative uploader-file-input">
-                      <button type="button" class="btn btn-sm position-absolute end-0 me-2" onclick="jExec($(this).closest('.input-group').find('.custom-file-label').text(($(this).closest('.input-group').find('textarea').length - 1) + ' ' + (($(this).closest('.input-group').find('textarea').length - 1) > 1 ? phrase('files were chosen') : phrase('file was chosen'))), $('[data-bs-toggle=tooltip]').tooltip('hide'), $(this).closest('.uploader-list').remove())" data-bs-toggle="tooltip" title="${phrase('Remove')}">
+                      <button type="button" class="btn btn-sm position-absolute end-0 me-2" onclick="jExec($(this).closest('.input-group').find('.custom-file-label').text(($(this).closest('.input-group').find('textarea').length - 1) + ' ' + (($(this).closest('.input-group').find('textarea').length - 1) > 1 ? phrase('files were chosen') : phrase('file was chosen'))), $('[data-bs-toggle=tooltip]').tooltip('hide'), $(this).closest('.uploader-list').remove())" data-bs-toggle="tooltip" title="${htmlspecialchars(phrase('Remove'))}">
                         <i class="mdi mdi-delete text-danger"></i>
                       </button>
-                      <textarea name="${context.attr('name').replace('[]', '')}_label[]" class="form-control form-control-sm" rows="1">${file.name}</textarea>
+                      <textarea name="${htmlspecialchars(context.attr('name').replace('[]', ''))}_label[]" class="form-control form-control-sm" rows="1">${htmlspecialchars(file.name)}</textarea>
                     </div>
                   </div>
                 </div>
@@ -1075,7 +1078,7 @@ function reactivate(individual, ignoreSelf) {
           onSelect: function (suggestion) {
             if (typeof suggestion.target !== 'undefined' && suggestion.target) {
               // Create and click the temporary link
-              $(`<a href="${suggestion.target}" class="--xhr"></a>`).appendTo('body').trigger('click').remove();
+              $('<a></a>').attr('href', suggestion.target).addClass('--xhr').appendTo('body').trigger('click').remove();
             } else if (context.closest('form').hasClass('--xhr-form')) {
               context.closest('form.--xhr-form').trigger('submit');
             } else if (context.hasClass('on-autocomplete-trigger')) {
