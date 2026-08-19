@@ -36,13 +36,13 @@
     </div>
     <form action="<?= current_page() ?>" method="POST" class="--validate-form pb-3" enctype="multipart/form-data">
         <div class="form-group">
-            <div class="row g-0 align-items-center">
-                <div class="col-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-0">
                     <a href="<?= get_userdata('username') ? base_url('user/' . get_userdata('username')) : 'javascript:void(0)' ?>" class="--xhr">
-                        <img src="<?= get_image('users', get_userdata('photo'), 'icon') ?>" class="img-fluid rounded-circle" alt="<?= get_userdata('first_name') ?>" loading="lazy" decoding="async" />
+                        <img src="<?= get_image('users', get_userdata('photo'), 'icon') ?>" class="img-fluid rounded-circle" alt="<?= get_userdata('first_name') ?>" width="48" loading="lazy" decoding="async" />
                     </a>
                 </div>
-                <div class="col-11 ps-3">
+                <div class="flex-grow-1 ps-3">
                     <div class="position-relative">
                         <textarea name="comments" class="form-control nofocus" placeholder="<?= phrase('Type a comment') ?>" rows="1"></textarea>
                         <div class="btn-group position-absolute bottom-0 end-0">
@@ -65,8 +65,11 @@
                 </div>
             </div>
         </div>
-        <div class="row g-0 align-items-center">
-            <div class="col-11 offset-1 ps-3">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-0 pt-1">
+                <span class="d-block" style="width:48px">&nbsp;</span>
+            </div>
+            <div class="flex-grow-1 ps-3">
                 <div data-role="validation-callback"></div>
             </div>
         </div>
@@ -88,4 +91,4 @@
     </div>
 </div>
 
-<script type="text/javascript" src="<?= get_module_asset('js/comment.js') ?>"></script>
+<script type="text/javascript" src="<?= get_module_asset('js/comment.min.js') ?>"></script>
