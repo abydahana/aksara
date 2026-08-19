@@ -484,23 +484,24 @@
     modal.id = 'aksara-ai-modal';
     modal.tabIndex = -1;
     modal.innerHTML = `
-            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content border-hover rounded-4">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class="mdi mdi-creation"></i> ${escapeHtml(phrase('AI Assistant'))}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${escapeHtml(phrase('Close'))}"></button>
-                    </div>
-                    <div class="modal-body">
-                        <textarea class="form-control" data-ai-prompt rows="1" placeholder="${escapeHtml(phrase('Describe what should be filled or improved in this form...'))}"></textarea>
-                        <div class="list-group list-group-flush" data-ai-result></div>
-                    </div>
-                    <div class="modal-footer">
-                        <span class="small text-secondary me-auto" data-ai-status></span>
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">${escapeHtml(phrase('Close'))} <em class="text-sm d-none d-lg-inline">(esc)</em></button>
-                        <button type="button" class="btn btn-primary d-none" data-ai-use><i class="mdi mdi-check"></i> ${escapeHtml(phrase('Use This'))}</button>
-                    </div>
-                </div>
-            </div>`;
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-hover rounded-4">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="mdi mdi-creation"></i> ${escapeHtml(phrase('AI Assistant'))}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${escapeHtml(phrase('Close'))}"></button>
+          </div>
+          <div class="modal-body">
+            <textarea class="form-control" data-ai-prompt rows="1" placeholder="${escapeHtml(phrase('Describe what should be filled or improved in this form...'))}"></textarea>
+            <div class="list-group list-group-flush" data-ai-result></div>
+          </div>
+          <div class="modal-footer">
+            <span class="small text-secondary me-auto" data-ai-status></span>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">${escapeHtml(phrase('Close'))} <em class="text-sm d-none d-lg-inline">(esc)</em></button>
+            <button type="button" class="btn btn-primary d-none" data-ai-use><i class="mdi mdi-check"></i> ${escapeHtml(phrase('Use This'))}</button>
+          </div>
+        </div>
+      </div>
+    `;
     document.body.appendChild(modal);
 
     return modal;
@@ -716,11 +717,11 @@
 
       item.className = 'list-group-item';
       item.innerHTML = `
-                <div class="mb-2">
-                    <strong>${escapeHtml(field.label || name)}</strong>
-                </div>
-                <div class="small" data-ai-field-preview></div>
-            `;
+        <div class="mb-2">
+          <strong>${escapeHtml(field.label || name)}</strong>
+        </div>
+        <div class="small" data-ai-field-preview></div>
+      `;
 
       if (field.type === 'pagebuilder') {
         item.querySelector('[data-ai-field-preview]').innerHTML = pageBuilderPreviewHtml(value);
@@ -833,15 +834,15 @@
 
     stopLoading();
     result.innerHTML = `
-            <div class="list-group-item text-center py-5">
-                <div class="mb-3" data-ai-dots>
-                    <span class="d-inline-block rounded-circle bg-primary mx-1" style="width:8px;height:8px;opacity:.35;transition:all .25s ease"></span>
-                    <span class="d-inline-block rounded-circle bg-primary mx-1" style="width:8px;height:8px;opacity:.35;transition:all .25s ease"></span>
-                    <span class="d-inline-block rounded-circle bg-primary mx-1" style="width:8px;height:8px;opacity:.35;transition:all .25s ease"></span>
-                </div>
-                <div data-ai-loading-text>${escapeHtml(phrase(loadingTexts[index]))}</div>
-            </div>
-        `;
+      <div class="list-group-item text-center py-5">
+        <div class="mb-3" data-ai-dots>
+          <span class="d-inline-block rounded-circle bg-primary mx-1" style="width:8px;height:8px;opacity:.35;transition:all .25s ease"></span>
+          <span class="d-inline-block rounded-circle bg-primary mx-1" style="width:8px;height:8px;opacity:.35;transition:all .25s ease"></span>
+          <span class="d-inline-block rounded-circle bg-primary mx-1" style="width:8px;height:8px;opacity:.35;transition:all .25s ease"></span>
+        </div>
+        <div data-ai-loading-text>${escapeHtml(phrase(loadingTexts[index]))}</div>
+      </div>
+    `;
     status.innerHTML = '<i class="mdi mdi-loading mdi-spin"></i> ' + escapeHtml(phrase('Generating')) + '...';
     loadingTimer = setInterval(() => {
       index = (index + 1) % loadingTexts.length;

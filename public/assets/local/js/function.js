@@ -733,10 +733,17 @@ function reactivate(individual, ignoreSelf) {
     require.css([config.baseUrl + 'assets/swiper/swiper-bundle.min.css', config.baseUrl + 'assets/local/css/swiper.min.css']);
     require.js([config.baseUrl + 'assets/swiper/swiper-bundle.min.js'], function () {
       $('.swiper').each(function () {
-        let context = $(this),
-          _unique = Math.floor(Math.random() * 9999),
+        let context = $(this);
+
+        if (context.hasClass('swiper-initialized') || context.data('swiper-initialized')) {
+          return;
+        }
+        context.addClass('swiper-initialized').data('swiper-initialized', true);
+
+        let _unique = Math.floor(Math.random() * 9999),
           _autoplay = 1 == context.attr('data-autoplay') || 'true' == context.attr('data-autoplay') ? true : false,
-          _autoHeight = 1 == context.attr('data-auto-height') || 'true' == context.attr('data-auto-height') ? true : false;
+          _autoHeight = 1 == context.attr('data-auto-height') || 'true' == context.attr('data-auto-height') ? true : false,
+          _loop = 1 == context.attr('data-loop') || 'true' == context.attr('data-loop') ? true : false;
 
         context.addClass('swiper_' + _unique);
 
@@ -758,7 +765,7 @@ function reactivate(individual, ignoreSelf) {
 
         let swiper = new Swiper('.swiper_' + _unique, {
           watchSlidesProgress: true,
-          loop: true,
+          loop: _loop,
           autoHeight: _autoHeight,
           autoplay: _autoplay,
           speed: typeof context.attr('data-speed') !== 'undefined' ? parseInt(context.attr('data-speed')) : 300,
