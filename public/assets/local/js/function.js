@@ -1374,12 +1374,16 @@ function _viewport_modifier() {
   if (UA != 'mobile') {
     require.css([config.baseUrl + 'assets/overlayscrollbars/overlayscrollbars.min.css']);
     require.js([config.baseUrl + 'assets/overlayscrollbars/overlayscrollbars.min.js'], function () {
-      $('[data-role=sidebar]').height(fullHeight - 48);
-      $('[data-role=table]').width($(window).outerWidth(true) - ($('[data-role=sidebar]').outerWidth(true) + 24));
-      $('[data-role=table]').height(fullHeight - (($('[data-role=meta]').outerHeight(true) ?? 0) + ($('[data-role=toolbar]').outerHeight(true) ?? 0) + ($('[data-role=pagination]').outerHeight(true) ?? 0)));
-      $('[data-role=grid]').height(fullHeight - (($('[data-role=meta]').outerHeight(true) ?? 0) + ($('[data-role=toolbar]').outerHeight(true) ?? 0) + ($('[data-role=pagination]').outerHeight(true) ?? 0)));
+      const isExpanded = $('body').hasClass('content-expanded');
+      const sidebarWidth = isExpanded || !$('[data-role=sidebar]:visible').length ? 0 : ($('[data-role=sidebar]:visible').outerWidth(true) ?? 0);
+      const tableWidth = isExpanded ? $(window).outerWidth(true) : $(window).outerWidth(true) - (sidebarWidth + 24);
 
-      // Initialize OverlayScrollbars
+      $('[data-role=sidebar]').height(fullHeight - 48);
+      $('[data-role=table]').width(tableWidth);
+      $('[data-role=table]').height(fullHeight - (($('[data-role=meta]:visible').outerHeight(true) ?? 0) + ($('[data-role=toolbar]:visible').outerHeight(true) ?? 0) + ($('[data-role=pagination]:visible').outerHeight(true) ?? 0)));
+      $('[data-role=grid]').height(fullHeight - (($('[data-role=meta]:visible').outerHeight(true) ?? 0) + ($('[data-role=toolbar]:visible').outerHeight(true) ?? 0) + ($('[data-role=pagination]:visible').outerHeight(true) ?? 0)));
+
+      // Initialize or update OverlayScrollbars
       const osOptions = {
         overflow: {
           x: 'hidden',
@@ -1394,7 +1398,12 @@ function _viewport_modifier() {
       };
 
       $('[data-role=sidebar], [data-role=table], [data-role=grid], .pretty-scrollbar').each(function () {
-        OverlayScrollbarsGlobal.OverlayScrollbars(this, osOptions);
+        const instance = typeof OverlayScrollbarsGlobal !== 'undefined' && OverlayScrollbarsGlobal.OverlayScrollbars ? OverlayScrollbarsGlobal.OverlayScrollbars(this) : null;
+        if (instance) {
+          instance.update(true);
+        } else if (typeof OverlayScrollbarsGlobal !== 'undefined' && OverlayScrollbarsGlobal.OverlayScrollbars) {
+          OverlayScrollbarsGlobal.OverlayScrollbars(this, osOptions);
+        }
       });
     });
   }
