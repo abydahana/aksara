@@ -68,6 +68,15 @@ if (cssFiles.length > 0) {
     console.log(' No CSS source files found.');
 }
 
+function minifyTemplateLiterals(code) {
+    return code.replace(/`([\s\S]*?)`/g, (match, inner) => {
+        if (!inner.includes('\n')) return match;
+        let cleaned = inner.replace(/>\r?\n\s*</g, '><');
+        cleaned = cleaned.replace(/\r?\n\s*/g, ' ');
+        return '`' + cleaned + '`';
+    });
+}
+
 // -------------------------------------------------------------
 // STEP 2: Minify JS & CSS source files to .min.js and .min.css
 // -------------------------------------------------------------
@@ -79,12 +88,7 @@ for (const srcFile of jsFiles) {
     const tempFile = path.join(__dirname, `_temp_${path.basename(srcFile)}`);
     try {
         let code = fs.readFileSync(srcFile, 'utf8');
-        code = code.replace(/`([^`]+)`/g, (match, inner) => {
-            if (inner.includes('\n')) {
-                return '`' + inner.replace(/\n\s*/g, '') + '`';
-            }
-            return match;
-        });
+        code = minifyTemplateLiterals(code);
 
         fs.writeFileSync(tempFile, code, 'utf8');
         execSync(`npx -y terser "${tempFile}" -o "${minFile}" --compress --mangle`, { stdio: 'pipe' });
