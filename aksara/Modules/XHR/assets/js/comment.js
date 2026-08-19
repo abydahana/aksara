@@ -314,7 +314,10 @@ $(document).ready(function () {
             .first();
         }
 
-        const $form = $('<form method="POST" enctype="multipart/form-data" class="--validate-form"></form>').attr('action', $(this).attr('href') || '');
+        const formAction = htmlspecialchars($(this).attr('href') || '');
+        const profilePhoto = htmlspecialchars($(this).attr('data-profile-photo') || '');
+
+        const $form = $('<form method="POST" enctype="multipart/form-data" class="--validate-form"></form>').attr('action', formAction);
 
         const $headerRow = $('<div class="row g-0"><div class="col-11 offset-1 ps-3 text-sm"></div></div>');
         $headerRow
@@ -345,7 +348,7 @@ $(document).ready(function () {
           </div>
         `);
 
-        $formGroup.find('img.rounded-circle').attr('src', $(this).attr('data-profile-photo') || '');
+        $formGroup.find('img.rounded-circle').attr('src', profilePhoto);
         $formGroup.find('textarea').attr('placeholder', phrase('Type a reply'));
         $formGroup.find('button[type=button]').first().attr('data-bs-toggle', 'tooltip').attr('title', phrase('Attach photo'));
         $formGroup
