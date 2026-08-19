@@ -7,7 +7,7 @@
     "demo_url": "https://www.aksaracms.com",
     "type": "backend",
     "compatibility": [
-        "5.1"
+        "6.3"
     ],
     "configs": {
         "wrapper": {

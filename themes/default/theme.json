@@ -1,13 +1,13 @@
 {
-    "name": "WebGIS Theme",
-    "description": "Modern WebGIS landing page theme",
+    "name": "Default Theme",
+    "description": "Default theme for Aksara CMS",
     "version": "1.0",
     "author": "Aby Dahana",
     "website": "https://abydahana.github.io",
     "demo_url": "https://www.aksaracms.com",
     "type": "frontend",
     "compatibility": [
-        "5.1"
+        "6.3"
     ],
     "configs": {
         "wrapper": {
