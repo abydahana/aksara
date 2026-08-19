@@ -6,7 +6,7 @@ Fixes # (issue reference, if applicable)
 ---
 
 ## Type of Change
-Please select the relevant option(s):
+*(Replace `[ ]` with `[x]` for the applicable item)*
 - [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
 - [ ] ✨ New feature (non-breaking change which adds functionality)
 - [ ] ♻️ Refactoring / Code cleanup (no logic/API breaking changes)
@@ -17,6 +17,7 @@ Please select the relevant option(s):
 
 ## Mandatory Checklist
 Before submitting this Pull Request, please ensure you have completed the following steps:
+*(Replace `[ ]` with `[x]` to confirm completed items)*
 
 - [ ] **I have run `composer cs-fix` locally and confirmed that code formatting, view tags, and minified JS/CSS assets pass with 0 errors.**
 - [ ] My code follows the coding standards and guidelines of Aksara.

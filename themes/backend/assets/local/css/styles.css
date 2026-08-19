@@ -577,6 +577,7 @@ a {
   .opt-btn .btn i.mdi {
     display: block;
     font-size: 2rem;
+    line-height: 1;
     margin: 0 auto;
   }
 
