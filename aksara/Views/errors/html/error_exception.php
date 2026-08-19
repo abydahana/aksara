@@ -10,7 +10,8 @@
  * @var array           $trace
  * @var \Throwable      $exception
  */
-$errorId = uniqid('error', true); ?>
+$errorId = uniqid('error', true);
+?>
 
 <!DOCTYPE html>
 <html>
@@ -39,6 +40,7 @@ $errorId = uniqid('error', true); ?>
                 <?php
 /** @var \Throwable $exception */
 ?>
+
                 <?= nl2br(esc((string) $exception->getMessage())) ?>
                 <a href="//www.google.com/search?q=<?= urlencode((string) $title . ' ' . preg_replace('#\'.*\'|".*"#Us', '', $exception->getMessage())) ?>"
                    rel="noreferrer" target="_blank">search &rarr;</a>
@@ -100,7 +102,6 @@ $errorId = uniqid('error', true); ?>
                                         <td><pre><?= esc(print_r($value, true)) ?></pre></td>
                                     </tr>
                                 <?php endforeach; ?>
-
                                 </table>
                             </div>
                         <?php else: ?>
@@ -121,7 +122,6 @@ $errorId = uniqid('error', true); ?>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
-
     </div> <!-- /container -->
 
     <div class="footer">

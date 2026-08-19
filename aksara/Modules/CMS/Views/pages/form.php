@@ -4,7 +4,8 @@
  * @var mixed $results
  * @var mixed $forms
  */
-$pageContent = $results->field_data->page_content->value ?? '{"components":[]}'; ?>
+$pageContent = $results->field_data->page_content->value ?? '{"components":[]}';
+?>
 
 <style type="text/css">
     #title-wrapper, [data-role="meta"] {
@@ -15,7 +16,7 @@ $pageContent = $results->field_data->page_content->value ?? '{"components":[]}';
 <div class="pb-form-wrapper">
     <form action="<?= current_page() ?>" method="POST" class="--validate-form">
         <!-- Manually Placed Page Builder Toolbar -->
-        <div class="pb-toolbar container-fluid py-1 sticky-top bg-body border-bottom">
+        <div class="pb-toolbar container-fluid py-1 sticky-lg-top bg-body border-bottom">
             <div class="row">
                 <div class="col-4">
                     <div class="d-flex gap-2 justify-content-start">
@@ -91,7 +92,7 @@ $pageContent = $results->field_data->page_content->value ?? '{"components":[]}';
 
 <script type="text/javascript">
     $(document).ready(function() {
-        require.css('<?= get_module_asset('css/pagebuilder.css') ?>');
+        require.css('<?= get_module_asset('css/pagebuilder.min.css') ?>');
         require.js([
             '<?= get_module_asset('js/sortable.min.js') ?>',
             '<?= get_module_asset('js/pagebuilder.min.js') ?>'

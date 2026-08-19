@@ -82,6 +82,7 @@ if ($user): ?>
                             </p>
                         </div>
                     <?php endif; ?>
+
                     <?php foreach ($results as $key => $val): ?>
                         <?php
                         $metadata = fetch_metadata($val->post_path);
@@ -112,12 +113,14 @@ if ($user): ?>
                                 <hr class="border-secondary-subtle" />
                                 <blockquote class="blockquote">
                                     <p><?= truncate($val->comments, 160) ?></p>
+
                                     <?php if ($val->attachment): ?>
                                         <a href="<?= get_image('comment', $val->attachment) ?>" class="d-block" target="_blank">
                                             <img src="<?= get_image('comment', $val->attachment, 'icon') ?>" class="img-fluid rounded-4" alt="Attachment" />
                                         </a>
                                     <?php endif; ?>
                                 </blockquote>
+
                                 <?php if (isset($metadata->title)): ?>
                                     <div class="rounded-4 border p-3">
                                         <h5>

@@ -7,7 +7,6 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container">
             <div class="row align-items-center">
@@ -36,11 +35,9 @@ if ($results): ?>
                 </div>
                 <div class="col-lg-4">
                     <div class="d-none d-lg-block">
-
                         <?php if ($category): ?>
                             <img src="<?= get_image('blogs', $category->category_image) ?>" class="img-fluid rounded-5" alt="<?= $category->category_title ?>" />
                         <?php endif; ?>
-
                     </div>
                 </div>
             </div>

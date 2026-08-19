@@ -5,7 +5,8 @@
  * @var mixed $meta
  */
 
-$fieldData = $results->field_data; ?>
+$fieldData = $results->field_data;
+?>
 
 <section class="section-padding border-fade-bottom fade-in">
     <div class="container position-relative text-center text-md-start">
@@ -25,6 +26,7 @@ $fieldData = $results->field_data; ?>
                     <?php if ($fieldData->cover->value && 'placeholder.png' != $fieldData->cover->value): ?>
                         <img src="<?= get_image('announcements', $fieldData->cover->value) ?>" class="img-fluid rounded-4 mb-3 fade-in" alt="<?= $fieldData->title->value ?? phrase('Announcement') ?>" />
                     <?php endif; ?>
+
                     <div class="fs-5 fade-in">
                         <?= $fieldData->content->value ?>
                     </div>
@@ -37,8 +39,7 @@ $fieldData = $results->field_data; ?>
                     </p>
                     <a href="<?= current_page('../') ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
                         <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
-                    </a>
-                <?php else: ?>
+                    </a> <?php else: ?>
                     <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['page' => null]), 'searchLabel' => phrase('Search announcements...')]) ?>
                 <?php endif; ?>
             </div>

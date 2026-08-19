@@ -15,7 +15,8 @@ $timeZoneList = null;
 
 foreach ($timeZone as $key => $val) {
     $timeZoneList .= '<option value="' . $val . '"' . (session()->get('timezone') == $val ? ' selected' : null) . '>' . $val . '</option>';
-} ?>
+}
+?>
 
 <form action="<?= site_url('finalizing') ?>" method="POST" class="--validate-form">
     <h4>
@@ -91,8 +92,7 @@ foreach ($timeZone as $key => $val) {
             <?= phrase('Allowed File Extension') ?>
             <b class="text-danger">*</b>
         </label>
-        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" id="file_extension_input" placeholder="<?= phrase('Separate with comma') ?>" value="<?= session()->get('file_extension') ??
-  'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv' ?>" />
+        <input type="text" name="file_extension" class="form-control form-control-sm rounded-pill" id="file_extension_input" placeholder="<?= phrase('Separate with comma') ?>" value="<?= session()->get('file_extension') ?? 'jpg,jpeg,png,gif,pdf,xls,xlsx,doc,docx,csv' ?>" />
     </div>
     <div class="row">
         <div class="col-md-8">
@@ -101,8 +101,7 @@ foreach ($timeZone as $key => $val) {
                     <?= phrase('Allowed Image Extension') ?>
                     <b class="text-danger">*</b>
                 </label>
-                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" id="image_extension_input" placeholder="<?= phrase('Separate with comma') ?>" value="<?= session()->get('image_extension') ??
-  'jpg,jpeg,png,gif' ?>" />
+                <input type="text" name="image_extension" class="form-control form-control-sm rounded-pill" id="image_extension_input" placeholder="<?= phrase('Separate with comma') ?>" value="<?= session()->get('image_extension') ?? 'jpg,jpeg,png,gif' ?>" />
             </div>
         </div>
         <div class="col-md-4">
@@ -112,8 +111,7 @@ foreach ($timeZone as $key => $val) {
                     <b class="text-danger">*</b>
                 </label>
                 <div class="input-group input-group-sm">
-                    <input type="number" name="max_upload_size" class="form-control form-control-sm rounded-pill rounded-end" id="max_upload_size_input" placeholder="e.g: 2048" value="<?= session()->get('max_upload_size') ??
-                      ((int) ini_get('upload_max_filesize') ?? 10) ?>" />
+                    <input type="number" name="max_upload_size" class="form-control form-control-sm rounded-pill rounded-end" id="max_upload_size_input" placeholder="e.g: 2048" value="<?= session()->get('max_upload_size') ?? ((int) ini_get('upload_max_filesize') ?? 10) ?>" />
                     <span class="input-group-text rounded-pill rounded-start">
                         MB
                     </span>

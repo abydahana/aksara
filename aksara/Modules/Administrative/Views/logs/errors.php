@@ -8,7 +8,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-3 order-2 order-md-1">
-            <div class="sticky-top">
+            <div class="sticky-lg-top">
                 <div class="pretty-scrollbar">
                     <?php
                     $errors = null;
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="col-md-9 order-1 order-md-2 stretch-height">
-            <div class="sticky-top font-monospace">
+            <div class="sticky-lg-top font-monospace">
                 <?php if ($report) {
                     $errors = [];
                     $num = 0;
@@ -81,10 +81,12 @@
                         foreach ($val['traces'] as $_key => $_val) {
                             $traces .= '<li>' . preg_replace('/^[\d\\s]+/', '', $_val) . '</li>';
                         } ?>
+
                         <div>
                             <h6 class="text-danger">
                                 <?= $val['title'] ?>
                             </h6>
+
                             <?= $traces ? '<ol>' . $traces . '</ol>' : null ?>
                         </div>
                     <?php endforeach;

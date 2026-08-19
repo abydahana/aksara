@@ -38,12 +38,13 @@ if ($permission->groups) {
 
         $privileges[$selected] = $actions;
     }
-} ?>
+}
+?>
 
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col-md-3">
-            <div class="sticky-top --api-documentation-sidebar">
+            <div class="sticky-lg-top --api-documentation-sidebar">
                 <div class="pretty-scrollbar --api-documentation-list">
                     <a href="<?= base_url('apis/documentation') ?>" class="<?= ! $active ? 'text-primary fw-bold' : null ?> --xhr">
                         <?= phrase('Getting Started') ?>
@@ -102,6 +103,7 @@ if ($permission->groups) {
 
                         <h5 class="mt-3"><?= phrase('Request Method') ?></h5>
                     <?php endif; ?>
+
                     <?php if ($permission->privileges): ?>
                         <?php foreach ($permission->privileges as $key => $val): ?>
                             <?php $method[] = $val; ?>
@@ -145,6 +147,7 @@ if ($permission->groups) {
                                                 </span>
                                             </td>
                                         </tr>
+
                                         <?php if ($accessToken): ?>
                                         <tr>
                                             <td>

@@ -91,7 +91,8 @@ if (isset($results->table_data)) {
     }
 } else {
     exit(phrase('No results could be rendered!'));
-} ?>
+}
+?>
 
 <html>
     <head>

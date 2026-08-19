@@ -10,7 +10,6 @@
  * @var mixed $systemLanguage
  */
 if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $permission->writable)): ?>
-
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <h4 class="h5">
             <?= phrase('Notice') ?>
@@ -36,6 +35,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
         <h4 class="h5">
             <?= phrase('Notice') ?>
         </h4>
+
         <?= phrase('Please remove or rename the following directory to secure your application:') ?>
         <code class="text-danger"><?= str_replace('\\', '/', ROOTPATH) ?>install</code>
     </div>
@@ -51,6 +51,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                     <div class="card-body">
                         <h3>
                             <button type="button" class="btn btn-close btn-greeting float-end" aria-label="<?= phrase('Close') ?>"></button>
+
                             <?= phrase('Welcome to') ?> Aksara!
                         </h3>
                         <p class="text-muted">

@@ -61,19 +61,20 @@ if ($results): ?>
                                                 <?php endfor; ?>
                                             </div>
                                         <?php endif; ?>
-                                        <blockquote class="blockquote">
 
+                                        <blockquote class="blockquote">
                                             <div class="fs-5 mb-4">
                                                 <?= $val->testimonial_content ?>
                                             </div>
                                             <footer class="blockquote-footer">
                                                 <?php if ($val->username): ?>
-                                                <a href="<?= base_url('user/' . $val->username) ?>" class="--xhr">
-                                                    <b class="text-primary"><?= $val->first_name . ' ' . $val->last_name ?></b>
-                                                </a>
+                                                    <a href="<?= base_url('user/' . $val->username) ?>" class="--xhr">
+                                                        <b class="text-primary"><?= $val->first_name . ' ' . $val->last_name ?></b>
+                                                    </a>
                                                 <?php else: ?>
                                                     <b class="text-danger"><?= $val->first_name . ' ' . $val->last_name ?></b>
                                                 <?php endif; ?>
+
                                                 &middot;
                                                 <?= format_date($val->created_at, 'long', true) ?>
                                             </footer>
@@ -143,6 +144,7 @@ if ($results): ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
+
                                     <div class="form-group mb-3">
                                         <label for="testimonial_content_input" class="form-label"><?= phrase('Testimonial Content') ?> <span class="text-danger">*</span></label>
                                         <textarea name="testimonial_content" id="testimonial_content_input" class="form-control rounded-5" rows="1" placeholder="<?= phrase('Share your experience') ?>" required></textarea>
@@ -155,6 +157,7 @@ if ($results): ?>
                                             <?php for ($i = 1; $i <= 5; $i++): ?>
                                                 <i class="mdi mdi-star-outline star-icon" data-value="<?= $i ?>" style="font-size: 2rem; cursor: pointer; transition: color .15s, transform .15s;"></i>
                                             <?php endfor; ?>
+
                                             <input type="hidden" name="rating" id="ratingValue" value="" />
                                         </div>
                                         <small class="text-muted" id="ratingLabel"><?= phrase('Click to rate') ?></small>

@@ -1,6 +1,5 @@
 <div class="container-fluid py-3">
     <?php if (get_userdata('group_id') == 1): ?>
-
         <div class="row">
             <div class="col-md-5 col-xl-4">
                 <a href="<?= go_to('users') ?>" class="card rounded-4 mb-3 --xhr">

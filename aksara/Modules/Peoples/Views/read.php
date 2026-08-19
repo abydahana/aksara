@@ -76,6 +76,7 @@ if ($fieldData): ?>
                                 </a>
                             </div>
                         <?php endif; ?>
+
                         <?php if ($fieldData->facebook->value): ?>
                             <div class="col-sm-6 col-md-4">
                                 <a href="<?= $fieldData->facebook->value ?>" class="btn btn-outline-primary d-block rounded-pill mb-3" target="_blank">
@@ -84,6 +85,7 @@ if ($fieldData): ?>
                                 </a>
                             </div>
                         <?php endif; ?>
+
                         <?php if ($fieldData->twitter->value): ?>
                             <div class="col-sm-6 col-md-4">
                                 <a href="<?= $fieldData->twitter->value ?>" class="btn btn-outline-info d-block rounded-pill mb-3" target="_blank">

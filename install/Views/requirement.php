@@ -10,7 +10,8 @@ $missing = array_diff($required, $extension);
 
 if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
     $error = true;
-} ?>
+}
+?>
 
 <form action="<?= site_url('database') ?>" method="POST" class="--validate-form">
     <h4>
@@ -35,7 +36,7 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
             <div class="form-group">
                 <span class="d-block mb-0"><?= phrase('PHP Version') ?></span>
                 <p>
-                    <?= phpversion() < 8.2 ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>8.2</b>' : '<b class="text-success">' . phpversion() . '</b>' ?>
+                    <?= version_compare(phpversion(), '8.2', '<') ? '<b class="text-danger">' . phpversion() . '</b>, ' . phrase('The minimum required version is') . ' <b>8.2</b>' : '<b class="text-success">' . phpversion() . '</b>' ?>
                 </p>
             </div>
         </div>
@@ -102,6 +103,7 @@ if (version_compare(phpversion(), '8.2', '<') || ! empty($missing)) {
             </div>
         </div>
     </div>
+
     <?= $error
         ? '<div class="alert alert-warning failure"><b>' . phrase('Whoops!') . '</b> ' . phrase('Some requirement are not yet fulfilled.') . ' ' . phrase('Please update your server configuration and click on refresh button to continue the installation.') . '</div>'
         : (! $modRewrite

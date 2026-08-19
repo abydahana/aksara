@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
-        <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/logo.png') ?>">
+        <link rel="icon" type="image/x-icon" href="<?= base_url('uploads/settings/icons/placeholder.png') ?>">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
         <title><?= phrase('Aksara is not installed!') ?></title>
         <style>
@@ -117,7 +117,7 @@
     <body>
         <div class="content-wrapper">
             <div class="logo-container">
-                <img src="<?= base_url('uploads/settings/logo.png') ?>" alt="Aksara Logo" />
+                <img src="<?= base_url('uploads/settings/placeholder.png') ?>" alt="Aksara Logo" />
             </div>
             <h1><?= phrase('Aksara is not installed!') ?></h1>
             <p><?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.') ?></p>

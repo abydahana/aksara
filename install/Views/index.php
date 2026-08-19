@@ -31,7 +31,7 @@ $isRtl = in_array(session()->get('language'), [
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="description" content="<?= phrase('The system requires an initial configuration to work properly. Let\'s get things set up.') ?>" />
-        <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
+        <link rel="icon" type="image/x-icon" href="uploads/settings/icons/placeholder.png">
         <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="assets/materialdesignicons/css/materialdesignicons.min.css" type="text/css" />
 
@@ -81,7 +81,7 @@ $isRtl = in_array(session()->get('language'), [
                         <div class="card-body py-0 px-3">
                             <div class="row">
                                 <div class="col-md-4 border-end pt-3 d-none d-md-block position-relative">
-                                    <div class="sticky-top mb-3 pb-5" style="top:15px">
+                                    <div class="sticky-lg-top mb-3 pb-5" style="top:15px">
                                         <a href="//www.aksaracms.com" class="text-decoration-none" target="_blank" aria-label="Aksara CMS">
                                             <h4 class="fw-bold mb-3">
                                                 <b>
@@ -155,7 +155,7 @@ $isRtl = in_array(session()->get('language'), [
                                             <hr class="row" />
                                         </div>
                                     </div>
-                                    <div class="sticky-top step-content" style="top:15px">
+                                    <div class="sticky-lg-top step-content" style="top:15px">
                                         <form action="<?= site_url('requirement') ?>" method="POST" class="--validate-form">
                                             <div class="row">
                                                 <div class="col-7">
@@ -265,6 +265,8 @@ $isRtl = in_array(session()->get('language'), [
                     $('html').attr('data-bs-theme', theme);
                     $('body').toggleClass('bg-light', ! dark).toggleClass('bg-dark', dark);
                     $('[data-theme-toggle]').toggleClass('btn-light', dark).toggleClass('btn-dark', ! dark).find('i').toggleClass('mdi-weather-night', ! dark).toggleClass('mdi-white-balance-sunny', dark);
+                    localStorage.setItem('bs-theme', theme);
+                    document.cookie = "aksara_theme=" + theme + "; path=/; max-age=" + (86400 * 365);
                 }
 
                 applyTheme(localStorage.getItem('installer_theme') || 'light');

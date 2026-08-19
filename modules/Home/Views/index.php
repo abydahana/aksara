@@ -309,7 +309,6 @@
         </div>
     </section>
 <?php endif; ?>
-
 <?php if ($peoples): ?>
     <section class="section-padding fade-in">
         <div class="container">
@@ -373,17 +372,19 @@
                                                 <?php endfor; ?>
                                             </div>
                                         <?php endif; ?>
+
                                         <div class="fs-5 text-body">
                                             <?= $val->testimonial_content ?>
                                         </div>
                                         <div class="py-3">
                                             <?php if ($val->username): ?>
-                                            <a href="<?= base_url('user/' . $val->username) ?>" class="--xhr">
-                                                <b class="d-block fs-5 text-primary"><?= $val->first_name . ' ' . $val->last_name ?></b>
-                                            </a>
+                                                <a href="<?= base_url('user/' . $val->username) ?>" class="--xhr">
+                                                    <b class="d-block fs-5 text-primary"><?= $val->first_name . ' ' . $val->last_name ?></b>
+                                                </a>
                                             <?php else: ?>
                                                 <b class="d-block fs-5 text-danger"><?= $val->first_name . ' ' . $val->last_name ?></b>
                                             <?php endif; ?>
+
                                             <small class="text-muted"><?= format_date($val->created_at, 'long', true) ?></small>
                                         </div>
                                     </div>

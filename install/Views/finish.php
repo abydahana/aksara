@@ -1,6 +1,5 @@
 <h4>
     <?= phrase('Congratulations!') ?>
-
 </h4>
 <p>
     <?= phrase('Aksara has been successfully installed on your system!') ?>

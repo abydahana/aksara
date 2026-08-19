@@ -6,12 +6,12 @@
  * @var mixed $error
  */
 if (isset($permission) && (! $permission->uploads || ! $permission->writable)): ?>
-
     <div class="alert alert-danger rounded-0 border-0 mb-0">
         <div class="container">
             <h4>
                 Thông báo!
             </h2>
+
             <?php if (! $permission->uploads): ?>
                 <p class="mb-0 text-danger">
                     <b><?= FCPATH . UPLOAD_PATH ?></b> không thể ghi.
@@ -23,7 +23,6 @@ if (isset($permission) && (! $permission->uploads || ! $permission->writable)): 
                     <b><?= WRITEPATH ?></b> không thể ghi.
                 </p>
             <?php endif; ?>
-
             <br />
             <a href="//github.com/abydahana/Aksara/issues/2" target="_blank"><b>Nhấn vào đây</b></a> để nhận lời khuyên về cách giải quyết vấn đề này.
         </div>

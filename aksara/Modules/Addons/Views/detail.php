@@ -10,7 +10,6 @@ if ($detail->screenshot) {
     ob_start();
 
     foreach ($detail->screenshot as $key => $val): ?>
-
         <div class="carousel-item rounded<?= ! $key ? ' active' : null ?>">
             <a href="<?= $val->src ?>" target="_blank">
                 <img src="<?= $val->src ?>" class="d-block rounded w-100" alt="<?= $val->alt ?>">
@@ -46,6 +45,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <div class="carousel-inner">
                         <?= $carousel ?>
                     </div>
+
                     <?php if (sizeof($detail->screenshot) > 1): ?>
                         <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev" aria-label="<?= phrase('Previous') ?>">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -83,6 +83,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <?= $detail->version ?>
                 </div>
             </div>
+
             <?= $attribution ?>
             <hr class="mt-1" />
             <div class="mb-0">

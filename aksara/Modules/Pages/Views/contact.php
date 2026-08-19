@@ -109,6 +109,7 @@
                                         <?= form_input($results->field_data->sender_email) ?>
                                     </div>
                                 </div>
+
                                 <?= form_input($results->field_data->subject) ?>
                                 <?= form_input($results->field_data->messages) ?>
                                 <div class="form-group mb-4">

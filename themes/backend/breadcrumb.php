@@ -1,8 +1,10 @@
 <?php
+
 /**
  * @var array $breadcrumb
  */
 ?>
+
 <nav data-role="breadcrumb" class="position-fixed w-100 border-bottom bg-body" id="breadcrumb-wrapper" aria-label="<?= phrase('Breadcrumb') ?>">
     <div class="container-fluid">
         <ol class="breadcrumb rounded-0 mb-0">

@@ -11,8 +11,7 @@
                 <i class="mdi mdi-information-outline mdi-2x"></i>
             </div>
             <div class="flex-grow-1 ms-3">
-                <strong><?= phrase('Unsupported Device') ?>
-</strong>
+                <strong><?= phrase('Unsupported Device') ?></strong>
                 <p class="mb-0"><?= phrase('Page Builder is only accessible using desktop browser.') ?></p>
             </div>
         </div>

@@ -1,12 +1,13 @@
-    <?php
-    /**
-     * @var mixed $results
-     * @var mixed $meta
-     * @var mixed $recommendations
-     * @var mixed $related
-     * @var mixed $categories
-     */
-    $fieldData = $results->field_data ?? null;
+<?php
+
+/**
+ * @var mixed $results
+ * @var mixed $meta
+ * @var mixed $recommendations
+ * @var mixed $related
+ * @var mixed $categories
+ */
+$fieldData = $results->field_data ?? null;
 $toc = null;
 $article = null;
 $featuredImage = null;
@@ -60,22 +61,26 @@ if ($article): ?>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
-                    <main class="sticky-top">
+                    <main class="sticky-lg-top">
                         <div class="row align-items-center mb-3 fade-in">
-                            <div class="col-sm-6 col-md-8 mb-3 order-1 order-md-0">
-                                <div class="row align-items-center">
-                                    <div class="col-2 pe-0">
+                            <div class="col-sm-6 col-md-8 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-0">
                                         <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="d-block --xhr">
-                                            <img src="<?= get_image('users', $fieldData->photo->value, 'thumb') ?>" class="img-fluid rounded-circle" />
+                                            <img src="<?= get_image('users', $fieldData->photo->value, 'thumb') ?>" class="img-fluid rounded-circle" width="64" height="64" />
                                         </a>
                                     </div>
-                                    <div class="col-10">
-                                        <h2 class="h5" class="fw-bold mb-0">
-                                            <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="--xhr">
+                                    <div class="flex-grow-1 ps-3">
+                                        <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="lh-1 --xhr">
+                                            <strong class="fs-5 fw-bold mb-0">
                                                 <?= $fieldData->first_name->value . ' ' . $fieldData->last_name->value ?>
-                                            </a>
-                                        </h2>
+                                            </strong>
+                                        </a>
                                         <p class="mb-0">
+                                            <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="text-muted lh-1 --xhr">
+                                                @<?= $fieldData->username->value ?>
+                                            </a>
+                                            &middot;
                                             <span class="text-muted" data-bs-toggle="tooltip" title="<?= $fieldData->created_at->value ?>">
                                                 <?= time_ago($fieldData->created_at->value) ?>
                                             </span>
@@ -83,8 +88,8 @@ if ($article): ?>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-4 mb-3 order-0 order-md-1">
-                                <div class="btn-group btn-group-sm d-flex rounded-pill overflow-hidden">
+                            <div class="col-sm-6 col-md-4">
+                                <div class="btn-group d-flex rounded-pill overflow-hidden">
                                     <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page() ?>" class="btn btn-primary border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook') ?>" target="_blank">
                                         <i class="mdi mdi-facebook"></i>
                                     </a>
@@ -115,6 +120,7 @@ if ($article): ?>
                                     <div class="toc">
                                         <fieldset class="border border-light-subtle p-3 rounded-4 mb-3">
                                             <legend><?= phrase('Table of Contents') ?></legend>
+
                                             <?= $toc ?>
                                         </fieldset>
                                     </div>
@@ -132,6 +138,38 @@ if ($article): ?>
 
                                 <i class="text-muted text-sm"><?= $fieldData->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
                             </div>
+                            <section class="my-4">
+                                <div class="card bg-body-tertiary border-hover rounded-4 p-4 fade-in">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0">
+                                            <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="d-block --xhr">
+                                                <img src="<?= get_image('users', $fieldData->photo->value, 'thumb') ?>" class="img-fluid rounded-circle shadow-sm" width="72" height="72" alt="<?= $fieldData->first_name->value . ' ' . $fieldData->last_name->value ?>" loading="lazy" decoding="async" />
+                                            </a>
+                                        </div>
+                                        <div class="flex-grow-1 ps-3">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="text-body text-decoration-none --xhr">
+                                                        <h5 class="fw-bold mb-0">
+                                                            <?= $fieldData->first_name->value . ' ' . $fieldData->last_name->value ?>
+                                                        </h5>
+                                                    </a>
+                                                    <span class="text-muted small">@<?= $fieldData->username->value ?></span>
+                                                </div>
+                                                <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3 --xhr">
+                                                    <?= phrase('View Profile') ?>
+                                                </a>
+                                            </div>
+
+                                            <?php if (isset($fieldData->bio->value) && $fieldData->bio->value): ?>
+                                                <p class="mt-2 mb-0 text-secondary">
+                                                    <?= nl2br(htmlspecialchars($fieldData->bio->value)) ?>
+                                                </p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
                             <div class="fade-in">
                                 <?= comment_widget(['post_id' => $fieldData->post_id->value, 'path' => service('uri')->getRoutePath()]) ?>
                             </div>
@@ -141,7 +179,7 @@ if ($article): ?>
                     </main>
                 </div>
                 <div class="col-lg-4">
-                    <aside class="sticky-top fade-in">
+                    <aside class="sticky-lg-top fade-in">
                         <div class="mb-5">
                             <h4 class="mb-3">
                                 <?= phrase('Related Articles') ?>
@@ -218,6 +256,7 @@ if ($article): ?>
                     <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../search', ['page' => null]), 'searchLabel' => phrase('Search posts...')]) ?>
                 </div>
             </div>
+
             <?php if ($recommendations): ?>
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
@@ -242,6 +281,7 @@ if ($article): ?>
                                                         </a>
                                                     </div>
                                                 <?php endif; ?>
+
                                                 <div class="col">
                                                     <a href="<?= $link ?>" class="text-body fw-medium text-break text-decoration-none --xhr">
                                                         <?= $title ?>

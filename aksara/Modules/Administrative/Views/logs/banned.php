@@ -5,7 +5,7 @@
 ?>
 
 <div class="container-fluid py-3">
-    <?php if ($banned) { ?>
+    <?php if ($banned): ?>
         <div class="row">
             <?php foreach ($banned as $val) { ?>
                 <div class="col-sm-6 col-lg-4 col-xl-3 mb-3">
@@ -77,7 +77,7 @@
                 </div>
             <?php } ?>
         </div>
-    <?php } else { ?>
+    <?php else: ?>
         <div class="py-5 text-center">
             <i class="mdi mdi-shield-check-outline mdi-5x text-success"></i>
             <h5>
@@ -87,5 +87,5 @@
                 <?= phrase('There are no banned request cache files to show.') ?>
             </p>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>

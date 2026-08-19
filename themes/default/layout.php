@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var object $meta
  * @var string $content
  */
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= get_userdata('language') ?? 'en' ?>"<?= is_rtl() ? ' dir="rtl"' : null ?>>
     <head>
@@ -19,7 +21,7 @@
         <meta name="referrer" content="strict-origin-when-cross-origin">
         <script type="text/javascript">
             (function() {
-                var savedTheme = localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                var savedTheme = <?= json_encode(get_userdata('app_theme')) ?> || localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
             })();
         </script>
@@ -61,7 +63,7 @@
         <?php
         echo aksara_footer();
 
-        echo asset_loader(['bootstrap/js/bootstrap.bundle.min.js', 'local/js/scripts.min.js']);
+        echo asset_loader(['bootstrap/js/bootstrap.bundle.min.js', 'local/js/scripts.min.js', 'local/js/mobile.min.js']);
         ?>
     </body>
 </html>

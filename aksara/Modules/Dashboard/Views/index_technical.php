@@ -9,7 +9,8 @@
  * @var mixed $groupName
  * @var mixed $logs
  */
-$logs = $logs ?? []; ?>
+$logs = $logs ?? [];
+?>
 
 <div class="container-fluid py-3">
     <div class="row mb-3">

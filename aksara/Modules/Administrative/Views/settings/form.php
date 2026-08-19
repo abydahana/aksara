@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
-        <div class="sticky-top bg-body overflow-x-auto py-1 px-3 mx--3 border-bottom">
+        <div class="sticky-lg-top bg-body overflow-x-auto py-1 px-3 mx--3 border-bottom">
             <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                 <li class="nav-item">
                     <a href="#pills-setting" data-bs-toggle="pill" class="nav-link rounded-pill active no-wrap --xhr">
@@ -56,7 +56,6 @@
 
                             <?= form_input($results->field_data->app_name) ?>
                             <?= form_input($results->field_data->app_description) ?>
-
                             <div class="row align-items-center">
                                 <div class="col-6 col-sm-4">
                                     <?= form_input($results->field_data->app_logo) ?>
@@ -84,7 +83,6 @@
                             </h5>
 
                             <?= form_input($results->field_data->office_name) ?>
-
                             <div class="row">
                                 <div class="col-sm-6">
                                     <?= form_input($results->field_data->office_email) ?>
@@ -111,7 +109,6 @@
                             </div>
 
                             <?= form_input($results->field_data->office_address) ?>
-
                             <?= form_input($results->field_data->office_map) ?>
                         </div>
                         <div class="tab-pane fade" id="pills-membership">
@@ -165,6 +162,7 @@
                                     <?= form_input($results->field_data->provider) ?>
                                 </div>
                             </div>
+
                             <?= form_input($results->field_data->endpoint) ?>
                             <div class="row">
                                 <div class="col-md-6">
@@ -208,7 +206,6 @@
                             </div>
 
                             <?= form_input($results->field_data->default_map_tile) ?>
-
                             <hr class="border-secondary" />
 
                             <div class="row">
@@ -231,7 +228,6 @@
                             </div>
 
                             <?= form_input($results->field_data->ai_base_url) ?>
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <?= form_input($results->field_data->ai_api_key) ?>

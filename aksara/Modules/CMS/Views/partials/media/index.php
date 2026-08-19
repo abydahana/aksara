@@ -18,6 +18,7 @@ $breadcrumbs = null;
                     <button type="button" class="btn-close btn-cloud-storage-media-notice" aria-label="<?= phrase('Close') ?>"></button>
                 </div>
             <?php endif; ?>
+
             <div class="row align-items-center mb-3">
                 <div class="col-md-9">
                     <?php foreach ($directories as $key => $val) {
@@ -29,6 +30,7 @@ $breadcrumbs = null;
                     <nav class="d-none d-md-block" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a href="<?= current_page(null, ['directory' => null]) ?>" class="--xhr"><?= phrase('Media') ?></a></li>
+
                             <?= $breadcrumbs ?>
                         </ol>
                     </nav>
@@ -128,8 +130,7 @@ $breadcrumbs = null;
                                                 <i class="mdi mdi-chevron-right"></i>
                                             </div>
                                         </div>
-                                    </a>
-                                <?php else: ?>
+                                    </a> <?php else: ?>
                                     <a href="<?= current_page(null, [
                                       'file' => ($results->directory ? $results->directory . '/' : null) . $val->source,
                                       'mode' => $viewMode,
@@ -155,16 +156,16 @@ $breadcrumbs = null;
             <?php endif; ?>
         </div>
         <div class="col-lg-4 pt-3 pb-3 full-height bg-body border-start" style="margin-left:-1px">
-            <div class="sticky-top">
+            <div class="sticky-lg-top">
                 <?php if ($results->description): ?>
                     <?php if (in_array($results->description->mime_type, ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])): ?>
                         <div class="text-center mb-3">
                             <a href="<?= $results->description->url ?? base_url($results->description->server_path) ?>" target="_blank">
-                                <img src="<?= $results->description->url ?? base_url($results->description->server_path) ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ??
-  'Preview' ?>" style="max-width: 256px; max-height: 256px" />
+                                <img src="<?= $results->description->url ?? base_url($results->description->server_path) ?>" class="img-fluid rounded-4" alt="<?= $results->description->name ?? 'Preview' ?>" style="max-width: 256px; max-height: 256px" />
                             </a>
                         </div>
                     <?php endif; ?>
+
                     <div class="mb-3">
                         <span class="d-block text-muted mb-0">
                             <?= phrase('Filename') ?>
