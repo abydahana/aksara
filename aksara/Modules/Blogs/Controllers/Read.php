@@ -139,7 +139,7 @@ class Read extends Core
         ->groupBy('category_id, category_slug, category_title, category_description, category_image')
 
         // Order by current language first
-        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->orderBy('MIN(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
 
         // Normal ordering
         ->orderBy('total_data', 'DESC')
