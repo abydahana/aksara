@@ -315,7 +315,7 @@ $(document).ready(function () {
         }
 
         const formAction = $(this).attr('href') || '';
-        const profilePhoto = $(this).attr('data-profile-photo') || '';
+        const profilePhoto = htmlspecialchars($(this).attr('data-profile-photo') || '');
 
         const $form = $('<form method="POST" enctype="multipart/form-data" class="--validate-form"></form>').attr('action', formAction);
 
