@@ -222,7 +222,7 @@ class Errors extends Core
         $filename = basename($this->request->getGet('report'));
 
         if (file_exists(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename) && is_readable(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename)) {
-            $report = htmlspecialchars(file_get_contents(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename));
+            $report = file_get_contents(WRITEPATH . 'logs' . DIRECTORY_SEPARATOR . $filename);
             $report = explode("\n", $report);
 
             return $report;

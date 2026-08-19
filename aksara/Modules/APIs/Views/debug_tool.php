@@ -177,18 +177,17 @@
                 $('pre code').text(JSON.stringify((typeof response.responseJSON !== 'undefined' ? response.responseJSON : response), null, 4));
                 Prism.highlightAll();
 
-                if (UA !== 'mobile' && typeof mCustomScrollbar === 'function') {
-                    $('.pane-wrapper').mCustomScrollbar({
-                        autoHideScrollbar: true,
-                        axis: 'y',
-                        scrollInertia: 170,
-                        mouseWheelPixels: 170,
-                        setHeight: $(window).outerHeight(true) - (($('[data-role=header]').outerHeight(true) ?? 0) + ($('[data-role=breadcrumb]').outerHeight(true) ?? 0) + ($('[data-role=meta]').outerHeight(true) ?? 0) + ($('.--apply-increase-one').outerHeight(true) ?? 0) + ($('.--apply-increase-two').outerHeight(true) ?? 0) + 65),
-                        advanced: {
-                            updateOnContentResize: true
-                        },
-                        autoHideScrollbar: false
-                    })
+                if (UA !== 'mobile' && typeof OverlayScrollbarsGlobal !== 'undefined') {
+                    $('.pane-wrapper').each(function() {
+                        OverlayScrollbarsGlobal.OverlayScrollbars(this, {
+                            scrollbars: {
+                                theme: 'os-theme-dark',
+                                autoHide: 'leave',
+                                autoHideDelay: 500,
+                                clickScroll: true
+                            }
+                        });
+                    });
                 }
             })
         })
