@@ -1,9 +1,11 @@
 <?php
+
 /**
  * @var object $meta
  * @var string $content
  */
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= get_userdata('language') ?? 'en' ?>"<?= is_rtl() ? ' dir="rtl"' : null ?>>
     <head>
@@ -19,7 +21,7 @@
         <meta name="referrer" content="strict-origin-when-cross-origin">
         <script type="text/javascript">
             (function() {
-                var savedTheme = localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                var savedTheme = <?= json_encode(get_userdata('app_theme')) ?> || localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
             })();
         </script>
@@ -27,7 +29,7 @@
         <?php
         echo aksara_header();
 
-        echo asset_loader([is_rtl() ? 'bootstrap/css/bootstrap.rtl.min.css' : 'bootstrap/css/bootstrap.min.css', 'materialdesignicons/css/materialdesignicons.min.css', 'local/css/styles.min.css', 'local/css/theme.min.css']);
+        echo asset_loader([is_rtl() ? 'bootstrap/css/bootstrap.rtl.min.css' : 'bootstrap/css/bootstrap.min.css', 'materialdesignicons/css/materialdesignicons.min.css', 'local/css/styles.min.css', 'local/css/theme.min.css', 'local/css/mobile.min.css']);
         ?>
 
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" />
@@ -44,7 +46,11 @@
 
         <?php include_once 'header.php'; ?>
         <?php include_once 'breadcrumb.php'; ?>
-        <?php include_once 'sidebar.php'; ?>
+        <?php
+        $userAgent = service('request')->getUserAgent();
+        $suffix = (! is_cli() && $userAgent->isMobile() ? '_mobile' : '');
+        include_once 'sidebar' . $suffix . '.php';
+        ?>
 
         <main id="page-wrapper">
             <section data-role="meta" id="title-wrapper">
@@ -93,7 +99,8 @@
         echo aksara_footer();
         echo asset_loader([
             'bootstrap/js/bootstrap.bundle.min.js',
-            'local/js/scripts.min.js'
+            'local/js/scripts.min.js',
+            'local/js/mobile.min.js'
         ]);
         ?>
 
@@ -106,7 +113,7 @@
             </script>
             <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/purify.min.js') ?>"></script>
             <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/marked.min.js') ?>"></script>
-            <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/ai.js') ?>"></script>
+            <script type="text/javascript" src="<?= base_url('modules/XHR/assets/js/ai.min.js') ?>"></script>
         <?php endif; ?>
 
     </body>

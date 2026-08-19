@@ -6,7 +6,6 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <div class="row align-items-end">
@@ -82,8 +81,7 @@ if ($results): ?>
                                         <h2 class="h4 text-light">
                                             <span class="badge bg-primary float-end">
                                                 <?= count($images) ?>
-                                            </span>
-                                            <?= $val->gallery_title ?>
+                                            </span> <?= $val->gallery_title ?>
                                         </h4>
                                         <p class="text-light">
                                             <?= truncate($val->gallery_description, 160) ?>
@@ -92,8 +90,7 @@ if ($results): ?>
                                             <?php if (count($images) > 4): ?>
                                                 <a href="<?= go_to($val->gallery_slug) ?>" class="btn btn-outline-light rounded-pill --xhr">
                                                     <i class="mdi mdi-folder-multiple-image"></i> <?= phrase('Show all') ?>
-                                                </a>
-                                            <?php else: ?>
+                                                </a> <?php else: ?>
                                                 <a href="<?= go_to([$val->gallery_slug, $cover]) ?>" class="btn btn-outline-light rounded-pill px-4 --xhr">
                                                     <i class="mdi mdi-magnify-plus"></i> <?= phrase('Show') ?>
                                                 </a>
@@ -101,6 +98,7 @@ if ($results): ?>
                                         </p>
                                     </div>
                                 </div>
+
                                 <?php if (count($images) > 1): ?>
                                     <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 3 : 6) ?> bg-body-tertiary d-flex align-items-center">
                                         <div class="w-100">

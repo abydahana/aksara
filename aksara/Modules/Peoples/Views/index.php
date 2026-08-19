@@ -6,7 +6,6 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container text-center text-md-start">
             <div class="row align-items-end">
@@ -63,11 +62,13 @@ if ($results): ?>
                                             <i class="mdi mdi-instagram"></i>
                                         </a>
                                     <?php endif; ?>
+
                                     <?php if ($val->facebook): ?>
                                         <a href="<?= $val->facebook ?>" class="btn btn-outline-primary d-block rounded-circle mb-3" target="_blank">
                                             <i class="mdi mdi-facebook"></i>
                                         </a>
                                     <?php endif; ?>
+
                                     <?php if ($val->twitter): ?>
                                         <a href="<?= $val->twitter ?>" class="btn btn-outline-info d-block rounded-circle mb-3" target="_blank">
                                             <i class="mdi mdi-twitter"></i>

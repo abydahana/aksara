@@ -6,7 +6,6 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container position-relative text-center text-md-start">
             <h1 class="display-4 fw-bold">

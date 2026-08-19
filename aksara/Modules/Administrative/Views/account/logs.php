@@ -32,6 +32,7 @@
                                                 <i class="mdi mdi-logout"></i> <?= phrase('Kick') ?>
                                             </a>
                                         <?php endif; ?>
+
                                         <b>
                                             <?= format_date($session->timestamp, 'long', true) ?>
                                         </b>
@@ -43,6 +44,7 @@
                                                 <?= $session->ip_address ?> <i class="mdi mdi-launch"></i>
                                             </b>
                                         </a>
+
                                         <?php if (service('request')->getIPAddress() == $session->ip_address): ?>
                                             <br />
                                             <i class="mdi mdi-check-circle text-primary"></i> <?= phrase('Your current session') ?>

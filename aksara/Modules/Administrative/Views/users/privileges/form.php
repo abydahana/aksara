@@ -42,6 +42,7 @@
                         <?= $userdata->group_name ?>
                     </div>
                 </div>
+
                 <?php if ($year): ?>
                     <hr class="my-2" />
                     <div class="row">
@@ -70,8 +71,7 @@
                 <div class="mb-3">
                     <label class="text-muted d-block" for="menus_input">
                         <?= phrase('Accessible Menus') ?>
-                    </label>
-                    <?php if ($visibleMenu): ?>
+                    </label> <?php if ($visibleMenu): ?>
                         <?= $visibleMenu ?>
                     <?php else: ?>
                         <div class="alert alert-warning">
@@ -84,8 +84,7 @@
                 <div class="mb-3">
                     <label class="text-muted d-block" for="sub_level_input">
                         <?= phrase('The sub level can be accessed.') ?>
-                    </label>
-                    <?php if ($subLevel): ?>
+                    </label> <?php if ($subLevel): ?>
                         <?php
                         $option = null;
                         foreach ($subLevel as $key => $val) {
@@ -95,6 +94,7 @@
 
                             $option .= '<option value="' . $val->id . '"' . ($val->id == $userdata->sub_level ? ' selected' : null) . '>' . $val->label . '</option>';
                         } ?>
+
                         <select name="sub_level" class="form-control" id="sub_level_input" placeholder="<?= phrase('Please choose') ?>">
                             <?= $option ?>
                         </select>

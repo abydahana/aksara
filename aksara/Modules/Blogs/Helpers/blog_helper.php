@@ -48,12 +48,12 @@ if (! function_exists('article_with_recommendation')) {
             // Add additional content after every 5th paragraph
             if (0 == ($index + 1) % $perParagraph && ! empty(trim($paragraph)) && isset($recommendations[(int) ($index / $perParagraph)])) {
                 $applied = true;
-                $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[(int) ($index / $perParagraph)]['link'] . '" class="--xhr"><b>' . $recommendations[(int) ($index / $perParagraph)]['title'] . '</b></a></div>';
+                $updatedContent .= '<div class="alert alert-info callout rounded-4"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[(int) ($index / $perParagraph)]['link'] . '" class="--xhr"><b>' . $recommendations[(int) ($index / $perParagraph)]['title'] . '</b></a></div>';
             }
         }
 
         if (! $applied && $recommendations) {
-            $updatedContent .= '<div class="alert alert-info callout"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[0]['link'] . '" class="--xhr"><b>' . $recommendations[0]['title'] . '</b></a></div>';
+            $updatedContent .= '<div class="alert alert-info callout rounded-4"><p class="mb-0">' . phrase('Peoples also read') . '</p><a href="' . $recommendations[0]['link'] . '" class="--xhr"><b>' . $recommendations[0]['title'] . '</b></a></div>';
         }
 
         return $updatedContent;

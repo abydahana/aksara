@@ -24,6 +24,7 @@ if ($images) {
                 </div>
             </div>
         </div>
+
     <?php
         $count++;
     }
@@ -34,13 +35,14 @@ if ($images) {
 if ($fieldData): ?>
     <div class="row g-0 bg-body-tertiary">
         <div class="col-lg-8">
-            <div class="sticky-top">
+            <div class="sticky-lg-top">
                 <div class="photo-view">
                     <div class="position-relative overflow-hidden">
                         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
                                 <?= $carousel ?>
                             </div>
+
                             <?php if ($count > 1): ?>
                                 <button class="carousel-control-prev gradient-right" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev" aria-label="<?= phrase('Previous') ?>">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -61,7 +63,7 @@ if ($fieldData): ?>
             </div>
         </div>
         <div class="col-lg-4 p-3 bg-body">
-            <div class="sticky-top">
+            <div class="sticky-lg-top">
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
                         <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="d-block --xhr">
@@ -85,6 +87,7 @@ if ($fieldData): ?>
                 <div>
                     <?= custom_nl2br($fieldData->gallery_description->value, 1) ?>
                 </div>
+
                 <?php if ($attributes): ?>
                     <hr class="border-secondary" />
                     <?php foreach ($attributes as $label => $value):
@@ -102,6 +105,7 @@ if ($fieldData): ?>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
+
                 <div>
                     <?= comment_widget(['post_id' => $fieldData->gallery_id->value, 'path' => $path]) ?>
                 </div>

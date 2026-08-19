@@ -6,7 +6,6 @@
  * @var mixed $spotlight
  */
 if ($articles): ?>
-
     <section class="section-padding border-fade-bottom fade-in">
         <div class="container">
             <div class="row align-items-center">
@@ -71,12 +70,7 @@ if ($articles): ?>
                                                     </a>
                                                 </div>
                                                 <div class="col-3 text-end">
-                                                    <button type="button" class="btn btn-sm rounded-pill --modify <?= is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug)
-                                                      ? 'btn-danger'
-                                                      : 'btn-outline-danger' ?>" data-href="<?= base_url('xhr/widget/comment/repute', [
-  'post_id' => $val->post_id,
-  'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug,
-]) ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger" aria-label="<?= phrase('Like') ?>" data-bs-toggle="tooltip" title="<?= phrase('Like') ?>">
+                                                    <button type="button" class="btn btn-sm rounded-pill --modify <?= is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger' ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]) ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger" aria-label="<?= phrase('Like') ?>" data-bs-toggle="tooltip" title="<?= phrase('Like') ?>">
                                                         <i class="mdi mdi-heart"></i>
                                                     </button>
                                                 </div>

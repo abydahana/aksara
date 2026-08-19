@@ -1,14 +1,15 @@
 <?php
+
 /**
  * @var object $meta
  * @var array $menus
  */
-
 // Cache menu output once — generate_menu() mutates $menus by reference,
 // calling it twice would corrupt slugs (all links become target="_blank")
-$_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu'); ?>
+$headerMenus = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu'); ?>
+
 <header data-role="header" class="navbar navbar-expand-lg border-fade-bottom fixed-top bg-body" id="header-wrapper" data-hide-on-scroll="true">
-    <div class="container">
+    <div class="container flex-nowrap">
         <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url() ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name') ?> Icon" loading="lazy" decoding="async" />
             <img src="<?= get_image('settings', get_setting('app_logo')) ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name') ?> Logo" loading="lazy" decoding="async" />
@@ -23,7 +24,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
         </button>
         <!-- Desktop inline menu (lg+) -->
         <div class="collapse navbar-collapse d-none d-lg-flex">
-            <?= $_menu_html ?>
+            <?= $headerMenus ?>
             <ul class="navbar-nav ms-auto align-items-lg-center gap-3">
                 <li class="nav-item">
                     <a href="<?= current_page() ?>" class="nav-link" data-toggle="theme" aria-label="<?= phrase('Toggle theme') ?>">
@@ -90,7 +91,7 @@ $_menu_html = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav
         </h5>
     </div>
     <div class="offcanvas-body">
-        <?= $_menu_html ?>
+        <?= $headerMenus ?>
         <ul class="navbar-nav ml-auto align-items-lg-center gap-3">
             <?php if (get_userdata('is_logged')): ?>
                 <li class="nav-item dropdown">

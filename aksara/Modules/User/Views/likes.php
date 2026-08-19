@@ -82,6 +82,7 @@ if ($user): ?>
                             </p>
                         </div>
                     <?php endif; ?>
+
                     <?php foreach ($results as $key => $val): ?>
                         <?php
                         $metadata = fetch_metadata($val->post_path);

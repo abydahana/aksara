@@ -5,13 +5,13 @@
  * @var mixed $years
  */
 if ($activation): ?>
-
     <div class="alert alert-info border-0 rounded-0">
         <div class="container text-center">
             <i class="mdi mdi-check-circle mdi-5x"></i>
             <h3>
                 <?= phrase('Account Registered') ?>
             </h3>
+
             <?= phrase('Follow the link we sent to your email to activate your account.') ?>
         </div>
     </div>

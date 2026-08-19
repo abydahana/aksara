@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
-        <link rel="icon" type="image/x-icon" href="uploads/settings/icons/logo.png">
+        <link rel="icon" type="image/x-icon" href="uploads/settings/icons/placeholder.png">
         <title><?= phrase('Whoops!') ?>
 </title>
         <style>
@@ -126,7 +126,7 @@
             </div>
             <div class="banner">
                 <div class="logo-container">
-                    <img src="<?= base_url('uploads/settings/logo.png') ?>" height="48" alt="Logo" />
+                    <img src="<?= base_url('uploads/settings/placeholder.png') ?>" height="48" alt="Logo" />
                 </div>
                 <h1 class="text-danger"><?= phrase('Whoops!') ?></h1>
                 <p><?= phrase('We seem to have hit a snag. Please try again later...') ?></p>

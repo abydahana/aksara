@@ -11,7 +11,8 @@ $lastPage = $output['page'] ?? 0;
 
 if (is_numeric(service('request')->getGet('page')) && service('request')->getGet('page')) {
     $currentPage = service('request')->getGet('page');
-} ?>
+}
+?>
 
 <ul class="pagination pagination-sm mb-0">
     <li class="page-item<?= $currentPage <= 1 ? ' disabled' : null ?>">

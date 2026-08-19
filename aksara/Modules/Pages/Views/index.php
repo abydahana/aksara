@@ -20,7 +20,6 @@ if ($fieldData):
     $content = preg_replace('/(<[^>]+) style=".*?"/i', '$1', $content);
 
     if (json_last_error() === JSON_ERROR_NONE && isset($decoded['components'])): ?>
-
         <div class="fade-in">
             <?= $builder->render($decoded) ?>
         </div>

@@ -7,7 +7,8 @@
  * @var mixed $line
  * @var mixed $trace
  */
-$errorId = uniqid('error', true); ?>
+$errorId = uniqid('error', true);
+?>
 
 <!DOCTYPE html>
 <html>
@@ -91,7 +92,6 @@ $errorId = uniqid('error', true); ?>
                                             <td><pre><?= esc(print_r($value, true)) ?></pre></td>
                                         </tr>
                                     <?php endforeach; ?>
-
                                     </table>
                                 </div>
                             <?php else: ?>
@@ -100,7 +100,8 @@ $errorId = uniqid('error', true); ?>
                         <?php endif; ?>
 
                         <?php if (! isset($row['class']) && isset($row['function'])): ?>
-                            &nbsp;&nbsp;&mdash;&nbsp;&nbsp;    <?= esc($row['function']) ?>()
+                            &nbsp;&nbsp;&mdash;&nbsp;&nbsp;
+                            <?= esc($row['function']) ?>()
                         <?php endif; ?>
                     </p>
 
@@ -112,7 +113,6 @@ $errorId = uniqid('error', true); ?>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
-
         </div> <!-- /container -->
 
         <div class="footer">

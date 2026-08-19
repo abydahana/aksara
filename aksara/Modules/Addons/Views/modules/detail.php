@@ -53,6 +53,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <div class="carousel-inner">
                         <?= $carousel ?>
                     </div>
+
                     <?php if (isset($detail->screenshot) && sizeof($detail->screenshot) > 1): ?>
                         <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev" aria-label="<?= phrase('Previous') ?>">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -85,6 +86,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <?= $detail->version ?>
                 </div>
             </div>
+
             <?= $attribution ?>
             <hr class="mt-1" />
             <div class="mb-0">

@@ -23,6 +23,7 @@
                     <h3>
                         <?= phrase('Account Registered') ?>
                     </h3>
+
                     <?= phrase('Follow the link we sent to your email to activate your account.') ?>
                 </div>
             </div>

@@ -53,6 +53,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <div class="carousel-inner">
                         <?= $carousel ?>
                     </div>
+
                     <?php if (sizeof($detail->screenshot) > 1) { ?>
                         <a class="carousel-control-prev gradient-right" href="#carouselExampleControls" role="button" data-bs-slide="prev" aria-label="<?= phrase('Previous') ?>">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -86,6 +87,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <?= $detail->version ?>
                 </div>
             </div>
+
             <?= $attribution ?>
             <hr class="mt-1" />
             <div class="mb-0">
@@ -109,8 +111,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                         <?php if (('backend' == $detail->type && get_setting('backend_theme') == $detail->folder) || ('frontend' == $detail->type && get_setting('frontend_theme') == $detail->folder)): ?>
                             <a href="<?= current_page('../customize', ['theme' => $detail->folder]) ?>" class="btn btn-dark btn-sm --modal">
                                 <i class="mdi mdi-cogs"></i> <?= phrase('Customize') ?>
-                            </a>
-                        <?php else: ?>
+                            </a> <?php else: ?>
                             <a href="<?= current_page('../activate') ?>" class="btn btn-success btn-sm --modal">
                                 <i class="mdi mdi-check"></i> <?= phrase('Activate') ?>
                             </a>

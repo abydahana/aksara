@@ -7,7 +7,8 @@
  * @var mixed $phrases
  * @var array $phraseScopes
  */
-$fieldData = $results[0]; ?>
+$fieldData = $results[0];
+?>
 
 <div class="container-fluid py-3">
     <div class="row">

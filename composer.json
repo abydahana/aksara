@@ -38,9 +38,9 @@
     },
     "scripts": {
         "cs-fix": [
+            "node bin/js-build.js",
             "php-cs-fixer fix --ansi",
-            "php-cs-fixer fix --config=.php-cs-fixer-views.php --ansi",
-            "node bin/js-build.js"
+            "php-cs-fixer fix --config=.php-cs-fixer-views.php --ansi"
         ]
     },
     "scripts-descriptions": {

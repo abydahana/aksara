@@ -7,7 +7,6 @@
 $user = $results[0] ?? [];
 
 if ($user): ?>
-
     <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">

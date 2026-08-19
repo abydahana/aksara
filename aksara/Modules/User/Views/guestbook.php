@@ -5,7 +5,6 @@
  * @var mixed $user
  */
 if ($user): ?>
-
     <section class="section-padding">
         <div class="container">
             <div class="row align-items-center">
@@ -77,6 +76,7 @@ if ($user): ?>
                             <i class="mdi mdi-information-outline"></i> <?= phrase('Please be respectful to each other and be sure to follow our community standard.') ?>
                         </p>
                     </div>
+
                     <?= comment_widget(['post_id' => $user->user_id, 'path' => service('uri')->getRoutePath()]) ?>
                 </div>
             </div>

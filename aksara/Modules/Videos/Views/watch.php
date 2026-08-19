@@ -21,10 +21,9 @@ if ($results && $results->field_data) {
 }
 
 if ($results && $videoType): ?>
-
     <div class="row g-0">
         <div class="col-lg-8">
-            <div class="sticky-top">
+            <div class="sticky-lg-top">
                 <div class="full-height bg-body-tertiary p-3 d-flex align-items-center">
                     <video data-role="videoplayer" id="video" class="rounded-4">
                         <source src="<?= $results->field_data->video_url->value ?>" type="<?= $videoType ?>">
@@ -33,7 +32,7 @@ if ($results && $videoType): ?>
             </div>
         </div>
         <div class="col-lg-4 p-3 bg-body">
-            <div class="sticky-top">
+            <div class="sticky-lg-top">
                 <div class="row align-items-center mb-3">
                     <div class="col-2 pe-0">
                         <a href="<?= base_url('user/' . $results->field_data->username->value) ?>" class="d-block --xhr">
