@@ -23,8 +23,7 @@ class MainSeeder extends Seeder
 {
     public function run()
     {
-        // Insert main language (default)
-        $this->db->table('app_languages')->insertBatch([
+        $languages = [
             [
                 'language' => 'Default (English)',
                 'code' => 'en',
@@ -120,8 +119,21 @@ class MainSeeder extends Seeder
                 'code' => 'vi',
                 'locale' => 'vi-VN,vi_VN,vi_VN.UTF8,vi-vn,vi,vietnamese',
                 'status' => 1
-            ],
-        ]);
+            ]
+        ];
+
+        // Insert main language (default)
+        $this->db->table('app_languages')->insertBatch($languages);
+
+        $sessionLanguage = session()->get('language') ?? 'en';
+        $languageId = 1;
+
+        foreach ($languages as $index => $item) {
+            if ($item['code'] === $sessionLanguage) {
+                $languageId = $index + 1;
+                break;
+            }
+        }
 
         // Insert the main configuration to app_settings (Vertical Schema)
         $settingsData = [
@@ -163,12 +175,12 @@ class MainSeeder extends Seeder
             [
                 'key' => 'app_language',
                 'type' => 'varchar',
-                'value' => htmlspecialchars(trim(session()->get('language') == 'id' ? '2' : '1'))
+                'value' => (string) $languageId
             ],
             [
                 'key' => 'force_system_language',
                 'type' => 'tinyint',
-                'value' => '0'
+                'value' => '1'
             ],
             [
                 'key' => 'office_name',
@@ -655,12 +667,12 @@ class MainSeeder extends Seeder
             'first_name' => session()->get('first_name'),
             'last_name' => session()->get('last_name'),
             'gender' => 0,
-            'bio' => '',
+            'bio' => 'When the signs come, those who don\'t believe at "that time" will have only two choices: commit suicide or become brutal.',
             'photo' => '',
-            'address' => '',
-            'phone' => '',
-            'postal_code' => '',
-            'language_id' => (session()->get('language') == 'id' ? 2 : 1),
+            'address' => '2nd Floor Example Tower Building, Some Road Name, Any Region',
+            'phone' => '+6281234567890',
+            'postal_code' => '123456',
+            'language_id' => $languageId,
             'country_id' => 0,
             'group_id' => 1,
             'last_login' => date('Y-m-d H:i:s'),
