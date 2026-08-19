@@ -10,6 +10,7 @@ body.content-expanded [data-role='breadcrumb'] {
   display: none;
 }
 body.content-expanded #page-wrapper {
+  background: var(--bs-body-bg);
   z-index: 1081;
 }
 body.content-expanded [data-role='content'] {

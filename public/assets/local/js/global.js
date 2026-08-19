@@ -10,6 +10,19 @@
  */
 $(document).ready(function () {
   /**
+   * Fix Bootstrap 5 Tooltip _isWithActiveTrigger error when disposing active tooltips
+   */
+  if (window.bootstrap && bootstrap.Tooltip && bootstrap.Tooltip.prototype && bootstrap.Tooltip.prototype._isWithActiveTrigger) {
+    const _origIsWithActiveTrigger = bootstrap.Tooltip.prototype._isWithActiveTrigger;
+    bootstrap.Tooltip.prototype._isWithActiveTrigger = function () {
+      if (!this._activeTrigger) {
+        return false;
+      }
+      return _origIsWithActiveTrigger.call(this);
+    };
+  }
+
+  /**
    * Clear previous storage
    */
   sessionStorage.clear();
@@ -25,6 +38,9 @@ $(document).ready(function () {
         const instance = bootstrap.Tooltip.getInstance(this);
 
         if (instance) {
+          try {
+            instance.hide();
+          } catch (error) {}
           instance._activeTrigger = instance._activeTrigger || {};
 
           try {
@@ -40,7 +56,9 @@ $(document).ready(function () {
     }
 
     if (typeof $.fn.tooltip !== 'undefined') {
-      $('[data-bs-toggle=tooltip]').tooltip('dispose');
+      try {
+        $('[data-bs-toggle=tooltip]').tooltip('dispose');
+      } catch (error) {}
     }
   }
 
@@ -1019,15 +1037,22 @@ $(document).ready(function () {
     // Prevent browser to take place as well
     e.preventDefault();
 
+    const newTitle = $(this).find('.mdi').hasClass('mdi-arrow-expand') ? phrase('Collapse') : phrase('Expand');
+
     if ($(this).find('.mdi').hasClass('mdi-arrow-expand')) {
-      $(this).attr('data-bs-original-title', phrase('Collapse'));
+      $(this).attr('title', newTitle).attr('data-bs-original-title', newTitle);
       $(this).find('.mdi').removeClass('mdi-arrow-expand').addClass('mdi-arrow-collapse');
     } else {
-      $(this).attr('data-bs-original-title', phrase('Expand'));
+      $(this).attr('title', newTitle).attr('data-bs-original-title', newTitle);
       $(this).find('.mdi').removeClass('mdi-arrow-collapse').addClass('mdi-arrow-expand');
     }
 
     $('body').toggleClass('content-expanded');
+
+    if (typeof _viewport_modifier === 'function') {
+      _viewport_modifier();
+    }
+    $(window).trigger('resize');
 
     $('[data-role=table], [role=form]').height(function (index, height) {
       return (
@@ -1041,7 +1066,16 @@ $(document).ready(function () {
       );
     });
 
-    refreshTooltips();
+    const instance = window.bootstrap && bootstrap.Tooltip ? bootstrap.Tooltip.getInstance(this) : null;
+    if (instance) {
+      try {
+        instance.setContent({ '.tooltip-inner': newTitle });
+      } catch (err) {
+        refreshTooltips();
+      }
+    } else {
+      refreshTooltips();
+    }
   });
 
   /**

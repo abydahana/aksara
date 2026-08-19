@@ -26,7 +26,7 @@ body #page-wrapper {
   transition: padding-left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 body.content-expanded #page-wrapper {
-  background: #fff;
+  background: var(--bs-body-bg);
   padding-top: 0;
   padding-left: 0;
   transition: padding-left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
