@@ -118,45 +118,57 @@ $(document).ready(function () {
         response.comments.forEach(function (val) {
           if (!val) return;
 
+          const mentionUser = htmlspecialchars(val.mention && val.mention.user ? val.mention.user : '');
+          const mentionComment = htmlspecialchars(val.mention && val.mention.comment ? val.mention.comment : '');
           const mentionHtml =
             typeof val.mention !== 'undefined' && val.mention
               ? `<div class="alert alert-warning callout p-2 mb-2">
-                ${phrase('Replying to')} <b>${htmlspecialchars(val.mention.user || '')}</b>
+                ${phrase('Replying to')} <b>${mentionUser}</b>
                 <br />
-                ${htmlspecialchars(val.mention.comment || '')}
+                ${mentionComment}
               </div>`
               : '';
 
+          const attachmentOriginal = htmlspecialchars(val.attachment && val.attachment.original ? val.attachment.original : '#');
+          const attachmentThumbnail = htmlspecialchars(val.attachment && val.attachment.thumbnail ? val.attachment.thumbnail : '');
           const attachmentHtml =
             val.attachment && typeof val.attachment === 'object' && Object.keys(val.attachment).length
               ? `<div class="my-2">
-                <a href="${htmlspecialchars(val.attachment.original || '#')}" class="d-block" target="_blank">
-                  <img src="${htmlspecialchars(val.attachment.thumbnail || '')}" class="img-fluid rounded-4" style="max-width:320px" alt="${phrase('Attachment')}" loading="lazy" decoding="async" />
+                <a href="${attachmentOriginal}" class="d-block" target="_blank">
+                  <img src="${attachmentThumbnail}" class="img-fluid rounded-4" style="max-width:320px" alt="${phrase('Attachment')}" loading="lazy" decoding="async" />
                 </a>
               </div>`
               : '';
 
-          const commentContentHtml = val.status > 0 ? `${val.comments || ''}${attachmentHtml}` : `<i class="text-muted">${phrase('Comment is hidden')}</i>`;
+          const safeComments = htmlspecialchars(val.comments || '').replace(/\r?\n/g, '<br />');
+          const commentContentHtml = val.status > 0 ? `${safeComments}${attachmentHtml}` : `<i class="text-muted">${phrase('Comment is hidden')}</i>`;
 
           const links = val.links || {};
+          const updateUrl = links.update_url ? htmlspecialchars(links.update_url) : '';
+          const reportUrl = links.report_url ? htmlspecialchars(links.report_url) : '';
+          const hideUrl = links.hide_url ? htmlspecialchars(links.hide_url) : '';
+          const repliesUrl = links.replies_url ? htmlspecialchars(links.replies_url) : '';
+          const profileUrl = links.profile_url ? htmlspecialchars(links.profile_url) : '#';
+          const upvoteUrl = links.upvote_url ? htmlspecialchars(links.upvote_url) : '';
+          const replyUrl = links.reply_url ? htmlspecialchars(links.reply_url) : '#';
 
-          const menuItemsHtml = links.update_url
+          const menuItemsHtml = updateUrl
             ? `<li>
-                <a class="dropdown-item --modal" href="${htmlspecialchars(links.update_url)}">
+                <a class="dropdown-item --modal" href="${updateUrl}">
                   ${phrase('Update')}
                 </a>
               </li>`
-            : links.report_url
+            : reportUrl
               ? `<li>
-                <a class="dropdown-item --modal" href="${htmlspecialchars(links.report_url)}">
+                <a class="dropdown-item --modal" href="${reportUrl}">
                   ${phrase('Report')}
                 </a>
               </li>`
               : '';
 
-          const hideItemHtml = links.hide_url
+          const hideItemHtml = hideUrl
             ? `<li>
-                <a class="dropdown-item --modal" href="${htmlspecialchars(links.hide_url)}">
+                <a class="dropdown-item --modal" href="${hideUrl}">
                   ${phrase('Visibility')}
                 </a>
               </li>`
@@ -167,7 +179,7 @@ $(document).ready(function () {
               ? `<div class="load-more-container row g-0">
                 <div class="col-12">
                   <div class="mb-3">
-                    <a href="${htmlspecialchars(links.replies_url || window.location.href)}" data-href="${htmlspecialchars(links.replies_url || '')}" data-is-reply="1" class="load-more --fetch-comments text-body fw-bold">
+                    <a href="${repliesUrl || window.location.href}" data-href="${repliesUrl}" data-is-reply="1" class="load-more --fetch-comments text-body fw-bold">
                       <i class="mdi mdi-chevron-down"></i>
                       ${val.replies} ${val.replies > 1 ? phrase('Replies') : phrase('Reply')}
                     </a>
@@ -178,28 +190,31 @@ $(document).ready(function () {
 
           const fullName = `${val.first_name || ''} ${val.last_name || ''}`.trim();
           const escapedFullName = htmlspecialchars(fullName);
-          const escapedCommentId = htmlspecialchars(val.comment_id || '');
+          const escapedPhoto = htmlspecialchars(val.photo || '');
+          const escapedUserPhoto = htmlspecialchars(val.user_photo || '');
+          const escapedCreatedAt = htmlspecialchars(val.created_at || '');
+          const escapedCommentId = htmlspecialchars(String(val.comment_id || ''));
 
           const itemHtml = `
             <div class="comment-item">
               <div class="d-flex">
                 <div class="flex-grow-0 pt-1">
-                  <a href="${htmlspecialchars(links.profile_url || '#')}" class="--xhr">
-                    <img src="${htmlspecialchars(val.photo || '')}" class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />
+                  <a href="${profileUrl}" class="--xhr">
+                    <img src="${escapedPhoto}" class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />
                   </a>
                 </div>
                 <div class="flex-grow-1 ps-3">
                   <div class="d-flex align-items-center gap-1 comment-bubble">
                     <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${val.highlight ? 'border border-warning' : ''}">
                       <div class="comment-header">
-                        <a href="${htmlspecialchars(links.profile_url || '#')}" class="text-body --xhr">
+                        <a href="${profileUrl}" class="text-body --xhr">
                           <b id="comment-author-${escapedCommentId}">
                             ${escapedFullName}
                           </b>
                         </a>
                         &middot;
                         <span class="text-muted">
-                          ${htmlspecialchars(val.created_at || '')}
+                          ${escapedCreatedAt}
                         </span>
                       </div>
                       <div id="comment-text-${escapedCommentId}">
@@ -218,11 +233,11 @@ $(document).ready(function () {
                     </div>
                   </div>
                   <div class="py-1 ps-3">
-                    <a href="${htmlspecialchars(links.upvote_url || window.location.href)}" data-href="${htmlspecialchars(links.upvote_url || '')}" class="small text-body --upvote">
+                    <a href="${upvoteUrl || window.location.href}" data-href="${upvoteUrl}" class="small text-body --upvote">
                       <b><span id="comment-upvote-${escapedCommentId}">${val.upvotes > 0 ? val.upvotes : ''}</span> ${phrase('Upvote')}</b>
                     </a>
                     &middot;
-                    <a href="${htmlspecialchars(links.reply_url || '#')}" class="small text-body --reply" data-profile-photo="${htmlspecialchars(val.user_photo || '')}" data-mention="${escapedFullName}">
+                    <a href="${replyUrl}" class="small text-body --reply" data-profile-photo="${escapedUserPhoto}" data-mention="${escapedFullName}">
                       <b>${phrase('Reply')}</b>
                     </a>
                   </div>
@@ -243,12 +258,13 @@ $(document).ready(function () {
         });
 
         if (response.total === response.limit) {
+          const nextPageUrl = response.next_page ? htmlspecialchars(response.next_page) : '';
           const loadMoreHtml = `
             <div class="load-more-container row g-0">
               <div class="col-12">
                 <div class="mb-3">
                   <p class="text-${is_reply ? 'start' : 'center'}">
-                    <a href="${htmlspecialchars(response.next_page || window.location.href)}" data-href="${htmlspecialchars(response.next_page || '')}" data-is-reply="${is_reply}" class="load-more --fetch-comments">
+                    <a href="${nextPageUrl || window.location.href}" data-href="${nextPageUrl}" data-is-reply="${is_reply}" class="load-more --fetch-comments">
                       <b>${is_reply ? phrase('Load more replies') : phrase('Load more comments')}</b>
                     </a>
                   </p>
