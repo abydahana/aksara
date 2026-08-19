@@ -236,7 +236,7 @@ $(document).ready(function () {
           $item.append($dFlexMain);
 
           const $dFlexReply = $('<div class="d-flex"></div>');
-          const $replySpacer = $('<div class="flex-grow-0 pt-1"><span class="d-block" style="width:48px">&nbsp;</span></div>');
+          const $replySpacer = $('<div class="flex-grow-0 pt-1" style="width:48px"></div>');
           const $replyCol = $('<div class="flex-grow-1 ps-3" id="comment-reply"></div>');
 
           if (val.replies > 0) {
@@ -314,8 +314,8 @@ $(document).ready(function () {
             .first();
         }
 
-        const formAction = htmlspecialchars($(this).attr('href') || '');
-        const profilePhoto = htmlspecialchars($(this).attr('data-profile-photo') || '');
+        const formAction = $(this).attr('href') || '';
+        const profilePhoto = $(this).attr('data-profile-photo') || '';
 
         const $form = $('<form method="POST" enctype="multipart/form-data" class="--validate-form"></form>').attr('action', formAction);
 
@@ -327,9 +327,11 @@ $(document).ready(function () {
 
         const $formGroup = $(`
           <div class="form-group mb-3">
-            <div class="row g-0 align-items-center">
-              <div class="col-1 pt-1"><img class="img-fluid rounded-circle" /></div>
-              <div class="col-11 ps-3">
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-0 pt-1">
+                <img class="img-fluid rounded-circle" width="48" />
+              </div>
+              <div class="flex-grow-1 ps-3">
                 <div class="position-relative">
                   <textarea name="comments" class="form-control" rows="1"></textarea>
                   <div class="btn-group position-absolute bottom-0 end-0">
@@ -356,7 +358,7 @@ $(document).ready(function () {
           .attr('src', config.baseUrl + 'uploads/placeholder_icon.png')
           .attr('alt', phrase('Preview'));
 
-        const $valRow = $('<div class="row g-0 align-items-center"><div class="col-11 offset-1 ps-3"><div data-role="validation-callback"></div></div></div>');
+        const $valRow = $('<div class="d-flex align-items-center"><div class="flex-grow-0 pt-1" style="width:48px"></div><div class="flex-grow-1 ps-3"><div data-role="validation-callback"></div></div></div>');
         const $tokenInput = $('<input type="hidden" name="_token" />').attr('value', response.token || '');
 
         $form.append($headerRow).append($formGroup).append($valRow).append($tokenInput);

@@ -37,6 +37,15 @@ class Comment extends Core
 
     public function index()
     {
+        if ($this->request->getGet()) {
+            foreach ($this->request->getGet() as $key => $val) {
+                if (str_starts_with($key, 'amp;')) {
+                    $_GET[substr($key, 4)] = $val;
+                    $this->request->setGlobal('get', array_merge($this->request->getGet(), [substr($key, 4) => $val]));
+                }
+            }
+        }
+
         if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
             return $this->_fetchComments();
         } elseif ('token' === $this->request->getPost('fetch')) {
@@ -920,9 +929,7 @@ class Comment extends Core
                     </div>
                 </div>
                 <div class="d-flex">
-                    <div class="flex-grow-0 pt-1">
-                        <span class="d-block" style="width:48px">&nbsp;</span>
-                    </div>
+                    <div class="flex-grow-0 pt-1" style="width:48px"></div>
                     <div class="flex-grow-1 ps-3">
                         <div id="comment-reply"></div>
                     </div>
