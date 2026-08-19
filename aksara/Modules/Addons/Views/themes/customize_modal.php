@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $writable
  * @var mixed $detail

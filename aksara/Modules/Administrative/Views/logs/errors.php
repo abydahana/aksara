@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $logs
  * @var mixed $report
