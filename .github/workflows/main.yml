@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.2.2
       with:
         ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
@@ -25,7 +25,7 @@ jobs:
         php-version: '8.2'
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v4.2.0
       with:
         node-version: '22'
 
