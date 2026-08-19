@@ -118,161 +118,154 @@ $(document).ready(function () {
         response.comments.forEach(function (val) {
           if (!val) return;
 
-          const mentionUser = htmlspecialchars(val.mention && val.mention.user ? val.mention.user : '');
-          const mentionComment = htmlspecialchars(val.mention && val.mention.comment ? val.mention.comment : '');
-          const mentionHtml =
-            typeof val.mention !== 'undefined' && val.mention
-              ? `<div class="alert alert-warning callout p-2 mb-2">
-                ${phrase('Replying to')} <b>${mentionUser}</b>
-                <br />
-                ${mentionComment}
-              </div>`
-              : '';
+          const profileUrl = val.links && val.links.profile_url ? val.links.profile_url : '#';
+          const fullName = `${val.first_name || ''} ${val.last_name || ''}`.trim();
 
-          const attachmentOriginal = htmlspecialchars(val.attachment && val.attachment.original ? val.attachment.original : '#');
-          const attachmentThumbnail = htmlspecialchars(val.attachment && val.attachment.thumbnail ? val.attachment.thumbnail : '');
-          const attachmentHtml =
-            val.attachment && typeof val.attachment === 'object' && Object.keys(val.attachment).length
-              ? `<div class="my-2">
-                <a href="${attachmentOriginal}" class="d-block" target="_blank">
-                  <img src="${attachmentThumbnail}" class="img-fluid rounded-4" style="max-width:320px" alt="${phrase('Attachment')}" loading="lazy" decoding="async" />
-                </a>
-              </div>`
-              : '';
+          const $item = $('<div class="comment-item"></div>');
+          const $dFlexMain = $('<div class="d-flex"></div>');
 
-          const safeComments = htmlspecialchars(val.comments || '').replace(/\r?\n/g, '<br />');
-          const commentContentHtml = val.status > 0 ? `${safeComments}${attachmentHtml}` : `<i class="text-muted">${phrase('Comment is hidden')}</i>`;
+          const $avatarWrapper = $('<div class="flex-grow-0 pt-1"></div>');
+          const $avatarLink = $('<a class="--xhr"></a>').attr('href', profileUrl);
+          const $avatarImg = $('<img class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />').attr('src', val.photo || '');
+          $avatarWrapper.append($avatarLink.append($avatarImg));
+
+          const $contentWrapper = $('<div class="flex-grow-1 ps-3"></div>');
+          const $bubbleRow = $('<div class="d-flex align-items-center gap-1 comment-bubble"></div>');
+
+          const $bubble = $('<div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block"></div>');
+          if (val.highlight) {
+            $bubble.addClass('border border-warning');
+          }
+
+          const $header = $('<div class="comment-header"></div>');
+          const $authorLink = $('<a class="text-body --xhr"></a>').attr('href', profileUrl);
+          const $authorB = $('<b></b>')
+            .attr('id', `comment-author-${val.comment_id || ''}`)
+            .text(fullName);
+          $authorLink.append($authorB);
+
+          const $timeSpan = $('<span class="text-muted"></span>').text(val.created_at || '');
+          $header.append($authorLink).append(' &middot; ').append($timeSpan);
+
+          const $textDiv = $('<div></div>').attr('id', `comment-text-${val.comment_id || ''}`);
+
+          if (val.mention && typeof val.mention === 'object') {
+            const $mentionAlert = $('<div class="alert alert-warning callout p-2 mb-2"></div>');
+            const $mentionUser = $('<b></b>').text(val.mention.user || '');
+            $mentionAlert
+              .append(phrase('Replying to') + ' ')
+              .append($mentionUser)
+              .append('<br />')
+              .append(document.createTextNode(val.mention.comment || ''));
+            $textDiv.append($mentionAlert);
+          }
+
+          if (val.status > 0) {
+            const safeCommentsHtml = htmlspecialchars(val.comments || '').replace(/\r?\n/g, '<br />');
+            const $commentsBody = $('<span></span>').html(safeCommentsHtml);
+            $textDiv.append($commentsBody);
+
+            if (val.attachment && typeof val.attachment === 'object' && Object.keys(val.attachment).length) {
+              const $attachDiv = $('<div class="my-2"></div>');
+              const $attachLink = $('<a class="d-block" target="_blank"></a>').attr('href', val.attachment.original || '#');
+              const $attachImg = $('<img class="img-fluid rounded-4" style="max-width:320px" loading="lazy" decoding="async" />')
+                .attr('src', val.attachment.thumbnail || '')
+                .attr('alt', phrase('Attachment'));
+              $attachDiv.append($attachLink.append($attachImg));
+              $textDiv.append($attachDiv);
+            }
+          } else {
+            $textDiv.append($('<i class="text-muted"></i>').text(phrase('Comment is hidden')));
+          }
+
+          $bubble.append($header).append($textDiv);
+          $bubbleRow.append($bubble);
 
           const links = val.links || {};
-          const updateUrl = links.update_url ? htmlspecialchars(links.update_url) : '';
-          const reportUrl = links.report_url ? htmlspecialchars(links.report_url) : '';
-          const hideUrl = links.hide_url ? htmlspecialchars(links.hide_url) : '';
-          const repliesUrl = links.replies_url ? htmlspecialchars(links.replies_url) : '';
-          const profileUrl = links.profile_url ? htmlspecialchars(links.profile_url) : '#';
-          const upvoteUrl = links.upvote_url ? htmlspecialchars(links.upvote_url) : '';
-          const replyUrl = links.reply_url ? htmlspecialchars(links.reply_url) : '#';
+          const $dropdown = $('<div class="dropdown comment-dropdown flex-shrink-0"></div>');
+          const $dropdownBtn = $('<button class="btn btn-link btn-sm text-body-secondary p-0" type="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="mdi mdi-dots-horizontal fs-5"></i></button>').attr(
+            'id',
+            `dropdownMenuButton${val.comment_id || ''}`
+          );
+          const $dropdownMenu = $('<ul class="dropdown-menu dropdown-menu-end dropdown-menu-right"></ul>').attr('aria-labelledby', `dropdownMenuButton${val.comment_id || ''}`);
 
-          const menuItemsHtml = updateUrl
-            ? `<li>
-                <a class="dropdown-item --modal" href="${updateUrl}">
-                  ${phrase('Update')}
-                </a>
-              </li>`
-            : reportUrl
-              ? `<li>
-                <a class="dropdown-item --modal" href="${reportUrl}">
-                  ${phrase('Report')}
-                </a>
-              </li>`
-              : '';
+          if (links.update_url) {
+            const $li = $('<li></li>');
+            const $a = $('<a class="dropdown-item --modal"></a>').attr('href', links.update_url).text(phrase('Update'));
+            $dropdownMenu.append($li.append($a));
+          } else if (links.report_url) {
+            const $li = $('<li></li>');
+            const $a = $('<a class="dropdown-item --modal"></a>').attr('href', links.report_url).text(phrase('Report'));
+            $dropdownMenu.append($li.append($a));
+          }
 
-          const hideItemHtml = hideUrl
-            ? `<li>
-                <a class="dropdown-item --modal" href="${hideUrl}">
-                  ${phrase('Visibility')}
-                </a>
-              </li>`
-            : '';
+          if (links.hide_url) {
+            const $li = $('<li></li>');
+            const $a = $('<a class="dropdown-item --modal"></a>').attr('href', links.hide_url).text(phrase('Visibility'));
+            $dropdownMenu.append($li.append($a));
+          }
 
-          const repliesHtml =
-            val.replies > 0
-              ? `<div class="load-more-container row g-0">
-                <div class="col-12">
-                  <div class="mb-3">
-                    <a href="${repliesUrl || window.location.href}" data-href="${repliesUrl}" data-is-reply="1" class="load-more --fetch-comments text-body fw-bold">
-                      <i class="mdi mdi-chevron-down"></i>
-                      ${val.replies} ${val.replies > 1 ? phrase('Replies') : phrase('Reply')}
-                    </a>
-                  </div>
-                </div>
-              </div>`
-              : '';
+          if ($dropdownMenu.children().length) {
+            $dropdown.append($dropdownBtn).append($dropdownMenu);
+            $bubbleRow.append($dropdown);
+          }
 
-          const fullName = `${val.first_name || ''} ${val.last_name || ''}`.trim();
-          const escapedFullName = htmlspecialchars(fullName);
-          const escapedPhoto = htmlspecialchars(val.photo || '');
-          const escapedUserPhoto = htmlspecialchars(val.user_photo || '');
-          const escapedCreatedAt = htmlspecialchars(val.created_at || '');
-          const escapedCommentId = htmlspecialchars(String(val.comment_id || ''));
+          const $actionsDiv = $('<div class="py-1 ps-3"></div>');
 
-          const itemHtml = `
-            <div class="comment-item">
-              <div class="d-flex">
-                <div class="flex-grow-0 pt-1">
-                  <a href="${profileUrl}" class="--xhr">
-                    <img src="${escapedPhoto}" class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />
-                  </a>
-                </div>
-                <div class="flex-grow-1 ps-3">
-                  <div class="d-flex align-items-center gap-1 comment-bubble">
-                    <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block ${val.highlight ? 'border border-warning' : ''}">
-                      <div class="comment-header">
-                        <a href="${profileUrl}" class="text-body --xhr">
-                          <b id="comment-author-${escapedCommentId}">
-                            ${escapedFullName}
-                          </b>
-                        </a>
-                        &middot;
-                        <span class="text-muted">
-                          ${escapedCreatedAt}
-                        </span>
-                      </div>
-                      <div id="comment-text-${escapedCommentId}">
-                        ${mentionHtml}
-                        ${commentContentHtml}
-                      </div>
-                    </div>
-                    <div class="dropdown comment-dropdown flex-shrink-0">
-                      <button class="btn btn-link btn-sm text-body-secondary p-0" type="button" id="dropdownMenuButton${escapedCommentId}" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="mdi mdi-dots-horizontal fs-5"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-right" aria-labelledby="dropdownMenuButton${escapedCommentId}">
-                        ${menuItemsHtml}
-                        ${hideItemHtml}
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="py-1 ps-3">
-                    <a href="${upvoteUrl || window.location.href}" data-href="${upvoteUrl}" class="small text-body --upvote">
-                      <b><span id="comment-upvote-${escapedCommentId}">${val.upvotes > 0 ? val.upvotes : ''}</span> ${phrase('Upvote')}</b>
-                    </a>
-                    &middot;
-                    <a href="${replyUrl}" class="small text-body --reply" data-profile-photo="${escapedUserPhoto}" data-mention="${escapedFullName}">
-                      <b>${phrase('Reply')}</b>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex">
-                <div class="flex-grow-0 pt-1">
-                  <span class="d-block" style="width:48px">&nbsp;</span>
-                </div>
-                <div class="flex-grow-1 ps-3" id="comment-reply">
-                  ${repliesHtml}
-                </div>
-              </div>
-            </div>
-          `;
+          const $upvoteLink = $('<a class="small text-body --upvote"></a>')
+            .attr('href', links.upvote_url || window.location.href)
+            .attr('data-href', links.upvote_url || '');
+          const $upvoteB = $('<b></b>');
+          const $upvoteSpan = $('<span></span>')
+            .attr('id', `comment-upvote-${val.comment_id || ''}`)
+            .text(val.upvotes > 0 ? val.upvotes : '');
+          $upvoteB.append($upvoteSpan).append(' ' + phrase('Upvote'));
+          $upvoteLink.append($upvoteB);
 
-          $(itemHtml).appendTo(container);
+          const $replyLink = $('<a class="small text-body --reply"></a>')
+            .attr('href', links.reply_url || '#')
+            .attr('data-profile-photo', val.user_photo || '')
+            .attr('data-mention', fullName);
+          const $replyB = $('<b></b>').text(phrase('Reply'));
+          $replyLink.append($replyB);
+
+          $actionsDiv.append($upvoteLink).append(' &middot; ').append($replyLink);
+
+          $contentWrapper.append($bubbleRow).append($actionsDiv);
+          $dFlexMain.append($avatarWrapper).append($contentWrapper);
+          $item.append($dFlexMain);
+
+          const $dFlexReply = $('<div class="d-flex"></div>');
+          const $replySpacer = $('<div class="flex-grow-0 pt-1"><span class="d-block" style="width:48px">&nbsp;</span></div>');
+          const $replyCol = $('<div class="flex-grow-1 ps-3" id="comment-reply"></div>');
+
+          if (val.replies > 0) {
+            const $loadMoreContainer = $('<div class="load-more-container row g-0"><div class="col-12"><div class="mb-3"></div></div></div>');
+            const $repliesLink = $('<a class="load-more --fetch-comments text-body fw-bold" data-is-reply="1"><i class="mdi mdi-chevron-down"></i> </a>')
+              .attr('href', links.replies_url || window.location.href)
+              .attr('data-href', links.replies_url || '');
+            const replyLabel = val.replies + ' ' + (val.replies > 1 ? phrase('Replies') : phrase('Reply'));
+            $repliesLink.append(document.createTextNode(replyLabel));
+            $loadMoreContainer.find('.mb-3').append($repliesLink);
+            $replyCol.append($loadMoreContainer);
+          }
+
+          $dFlexReply.append($replySpacer).append($replyCol);
+          $item.append($dFlexReply);
+
+          $item.appendTo(container);
         });
 
         if (response.total === response.limit) {
-          const nextPageUrl = response.next_page ? htmlspecialchars(response.next_page) : '';
-          const loadMoreHtml = `
-            <div class="load-more-container row g-0">
-              <div class="col-12">
-                <div class="mb-3">
-                  <p class="text-${is_reply ? 'start' : 'center'}">
-                    <a href="${nextPageUrl || window.location.href}" data-href="${nextPageUrl}" data-is-reply="${is_reply}" class="load-more --fetch-comments">
-                      <b>${is_reply ? phrase('Load more replies') : phrase('Load more comments')}</b>
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </div>
-          `;
-          $(loadMoreHtml).appendTo(container);
+          const $loadMore = $('<div class="load-more-container row g-0"><div class="col-12"><div class="mb-3"><p></p></div></div></div>');
+          $loadMore.find('p').addClass(`text-${is_reply ? 'start' : 'center'}`);
+          const $link = $('<a class="load-more --fetch-comments"><b></b></a>')
+            .attr('href', response.next_page || window.location.href)
+            .attr('data-href', response.next_page || '')
+            .attr('data-is-reply', is_reply);
+          $link.find('b').text(is_reply ? phrase('Load more replies') : phrase('Load more comments'));
+          $loadMore.find('p').append($link);
+          $loadMore.appendTo(container);
         }
       })
       .fail(function (response) {
@@ -321,51 +314,50 @@ $(document).ready(function () {
             .first();
         }
 
-        const replyFormHtml = `
-          <form action="${htmlspecialchars($(this).attr('href'))}" method="POST" enctype="multipart/form-data" class="--validate-form">
-            <div class="row g-0">
-              <div class="col-11 offset-1 ps-3 text-sm">
-                ${phrase('Replying to')} <b>${htmlspecialchars($(this).attr('data-mention'))}</b>
-              </div>
-            </div>
-            <div class="form-group mb-3">
-              <div class="row g-0 align-items-center">
-                <div class="col-1 pt-1">
-                  <img src="${htmlspecialchars($(this).attr('data-profile-photo'))}" class="img-fluid rounded-circle" />
-                </div>
-                <div class="col-11 ps-3">
-                  <div class="position-relative">
-                    <textarea name="comments" class="form-control" placeholder="${phrase('Type a reply')}" rows="1"></textarea>
-                    <div class="btn-group position-absolute bottom-0 end-0">
-                      <button type="button" class="btn btn-link" data-bs-toggle="tooltip" title="${phrase('Attach photo')}" onclick="jExec($(this).closest('form').find('.fileupload').removeClass('d-none').find('input[type=file]').trigger('click'))">
-                        <i class="mdi mdi-camera text-body"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div data-provides="fileupload" class="fileupload fileupload-new d-none">
-                    <span class="btn btn-file" style="width:80px">
-                      <input type="file" name="attachment" accept=".jpg,.png,.gif" data-role="image-upload" id="attachment_input" />
-                      <div class="fileupload-new text-center">
-                        <img class="img-fluid upload_preview" src="${config.baseUrl + 'uploads/placeholder_icon.png'}" alt="${phrase('Preview')}" />
-                      </div>
-                      <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest('.btn-file').find('input[type=file]').val(''), $(this).closest('.btn-file').find('img').attr('src', config.baseUrl + 'uploads/placeholder_icon.png'), $(this).closest('.fileupload').addClass('d-none'))">
-                        <i class="mdi mdi-window-close"></i>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row g-0 align-items-center">
-              <div class="col-11 offset-1 ps-3">
-                <div data-role="validation-callback"></div>
-              </div>
-            </div>
-            <input type="hidden" name="_token" value="${response.token}" />
-          </form>
-        `;
+        const $form = $('<form method="POST" enctype="multipart/form-data" class="--validate-form"></form>').attr('action', $(this).attr('href') || '');
 
-        $(replyFormHtml).appendTo(targetContainer);
+        const $headerRow = $('<div class="row g-0"><div class="col-11 offset-1 ps-3 text-sm"></div></div>');
+        $headerRow
+          .find('.text-sm')
+          .text(phrase('Replying to') + ' ')
+          .append($('<b></b>').text($(this).attr('data-mention') || ''));
+
+        const $formGroup = $(`
+          <div class="form-group mb-3">
+            <div class="row g-0 align-items-center">
+              <div class="col-1 pt-1"><img class="img-fluid rounded-circle" /></div>
+              <div class="col-11 ps-3">
+                <div class="position-relative">
+                  <textarea name="comments" class="form-control" rows="1"></textarea>
+                  <div class="btn-group position-absolute bottom-0 end-0">
+                    <button type="button" class="btn btn-link" onclick="jExec($(this).closest(\'form\').find(\'.fileupload\').removeClass(\'d-none\').find(\'input[type=file]\').trigger(\'click\'))"><i class="mdi mdi-camera text-body"></i></button>
+                  </div>
+                </div>
+                <div data-provides="fileupload" class="fileupload fileupload-new d-none">
+                  <span class="btn btn-file" style="width:80px">
+                    <input type="file" name="attachment" accept=".jpg,.png,.gif" data-role="image-upload" id="attachment_input" />
+                    <div class="fileupload-new text-center"><img class="img-fluid upload_preview" /></div>
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0" onclick="jExec($(this).closest(\'.btn-file\').find(\'input[type=file]\').val(\'\'), $(this).closest(\'.btn-file\').find(\'img\').attr(\'src\', config.baseUrl + \'uploads/placeholder_icon.png\'), $(this).closest(\'.fileupload\').addClass(\'d-none\'))"><i class="mdi mdi-window-close"></i></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+
+        $formGroup.find('img.rounded-circle').attr('src', $(this).attr('data-profile-photo') || '');
+        $formGroup.find('textarea').attr('placeholder', phrase('Type a reply'));
+        $formGroup.find('button[type=button]').first().attr('data-bs-toggle', 'tooltip').attr('title', phrase('Attach photo'));
+        $formGroup
+          .find('img.upload_preview')
+          .attr('src', config.baseUrl + 'uploads/placeholder_icon.png')
+          .attr('alt', phrase('Preview'));
+
+        const $valRow = $('<div class="row g-0 align-items-center"><div class="col-11 offset-1 ps-3"><div data-role="validation-callback"></div></div></div>');
+        const $tokenInput = $('<input type="hidden" name="_token" />').attr('value', response.token || '');
+
+        $form.append($headerRow).append($formGroup).append($valRow).append($tokenInput);
+        $form.appendTo(targetContainer);
 
         targetContainer.find('form').find('textarea').trigger('focus');
 
