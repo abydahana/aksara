@@ -68,13 +68,129 @@ if (cssFiles.length > 0) {
     console.log(' No CSS source files found.');
 }
 
+function cleanStringPart(str) {
+    if (!str.includes('\n') && !str.includes('\r')) return str;
+    return str
+        .replace(/^\r?\n\s*/, '')
+        .replace(/\r?\n\s*$/, '')
+        .replace(/>\r?\n\s*</g, '><')
+        .replace(/>\r?\n\s*/g, '>')
+        .replace(/\r?\n\s*</g, '<')
+        .replace(/\r?\n\s*/g, ' ');
+}
+
 function minifyTemplateLiterals(code) {
-    return code.replace(/`([\s\S]*?)`/g, (match, inner) => {
-        if (!inner.includes('\n')) return match;
-        let cleaned = inner.replace(/>\r?\n\s*</g, '><');
-        cleaned = cleaned.replace(/\r?\n\s*/g, ' ');
-        return '`' + cleaned + '`';
-    });
+    let result = '';
+    let i = 0;
+    const n = code.length;
+    const stack = [];
+
+    let inString = null;
+    let inComment = null;
+    let currentPart = '';
+
+    while (i < n) {
+        const char = code[i];
+        const nextChar = code[i + 1];
+
+        if (!inString && (!stack.length || stack[stack.length - 1].inExpr)) {
+            if (!inComment && char === '/' && nextChar === '/') {
+                inComment = '//';
+            } else if (inComment === '//' && (char === '\n' || char === '\r')) {
+                inComment = null;
+            } else if (!inComment && char === '/' && nextChar === '*') {
+                inComment = '/*';
+            } else if (inComment === '/*' && char === '*' && nextChar === '/') {
+                inComment = null;
+                result += '*/';
+                i += 2;
+                continue;
+            }
+        }
+
+        if (inComment) {
+            result += char;
+            i++;
+            continue;
+        }
+
+        const top = stack.length ? stack[stack.length - 1] : null;
+
+        if (top && top.type === 'TEMPLATE' && !top.inExpr) {
+            if (char === '\\') {
+                currentPart += char + (nextChar || '');
+                i += 2;
+                continue;
+            }
+            if (char === '`') {
+                result += cleanStringPart(currentPart) + '`';
+                currentPart = '';
+                stack.pop();
+                i++;
+                continue;
+            }
+            if (char === '$' && nextChar === '{') {
+                result += cleanStringPart(currentPart) + '${';
+                currentPart = '';
+                top.inExpr = true;
+                top.braceDepth = 1;
+                i += 2;
+                continue;
+            }
+            currentPart += char;
+            i++;
+            continue;
+        }
+
+        if (inString) {
+            if (char === '\\') {
+                currentPart += char + (nextChar || '');
+                i += 2;
+                continue;
+            }
+            if (char === inString) {
+                inString = null;
+            }
+            result += char;
+            i++;
+            continue;
+        }
+
+        if (char === "'" || char === '"') {
+            inString = char;
+            result += char;
+            i++;
+            continue;
+        }
+
+        if (char === '`') {
+            stack.push({ type: 'TEMPLATE', inExpr: false, braceDepth: 0 });
+            currentPart = '';
+            result += '`';
+            i++;
+            continue;
+        }
+
+        if (top && top.type === 'TEMPLATE' && top.inExpr) {
+            if (char === '{') {
+                top.braceDepth++;
+            } else if (char === '}') {
+                top.braceDepth--;
+                if (top.braceDepth === 0) {
+                    top.inExpr = false;
+                    currentPart = '';
+                    result += '}';
+                    i++;
+                    continue;
+                }
+            }
+        }
+
+        result += char;
+        i++;
+    }
+
+    return result;
 }
 
 // -------------------------------------------------------------
