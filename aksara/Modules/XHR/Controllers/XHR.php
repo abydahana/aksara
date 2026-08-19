@@ -50,6 +50,9 @@ class XHR extends Core
 
         if (in_array($theme, ['dark', 'light'], true)) {
             set_userdata('app_theme', $theme);
+
+            helper('cookie');
+            set_cookie('aksara_theme', $theme, SESSION_EXPIRATION);
         }
 
         return make_json([
