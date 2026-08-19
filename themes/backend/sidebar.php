@@ -1,23 +1,25 @@
 <?php
+
 /**
  * @var array $menus
  */
 ?>
+
 <aside data-role="sidebar" class="sidebar-menu bg-body-tertiary" id="sidebar-wrapper">
     <div class="p-3 user-bg-masking hide-on-collapse mb-4">
-        <div class="row g-0 align-items-center">
-            <div class="col-3 col-sm-2 col-lg-3">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-0">
                 <a href="<?= base_url('user') ?>">
                     <img src="<?= get_image('users', get_userdata('photo'), 'thumb') ?>" class="img-fluid rounded-4" width="48" height="48" alt="<?= get_userdata('first_name') . ' ' . get_userdata('last_name') ?>" loading="lazy" decoding="async" />
                 </a>
             </div>
-            <div class="col-9 col-sm-10 col-lg-9 ps-2">
+            <div class="flex-grow-1 ps-3">
                 <a href="<?= base_url('user') ?>">
-                    <h6 class="mb-0 text-break-word mb-0">
+                    <strong class="user-name mb-0 text-break-word mb-0">
                         <?= get_userdata('first_name') . ' ' . get_userdata('last_name') ?>
-                    </h6>
+                    </strong>
                 </a>
-                <p class="text-sm mb-lg-0">
+                <p class="text-sm mb-2 mb-lg-0">
                     <i class="mdi mdi-circle text-success"></i>
 
                     <?= phrase('Online') . (get_userdata('year') ? '<span class="badge badge-warning d-md-none d-lg-none d-xl-none">' . get_userdata('year') . '</span>' : '') ?>
