@@ -111,7 +111,7 @@ if ($article): ?>
                             <?php endif; ?>
 
                             <?php if ($toc): ?>
-                                <div class="fade-in">
+                                <section id="post-description" class="fade-in">
                                     <div class="fs-5">
                                         <p class="text-lg-justify article text-break">
                                             <?= $meta->description ?>
@@ -124,21 +124,21 @@ if ($article): ?>
                                             <?= $toc ?>
                                         </fieldset>
                                     </div>
-                                </div>
+                                </section>
                             <?php endif; ?>
 
-                            <div class="fs-5 fade-in">
+                            <section id="post-article" class="fs-5 fade-in">
                                 <?= article_with_recommendation(preg_replace('/<img[^>]*src="(.*?)"/i', '<img id="og-image" src="$1" class="img-fluid rounded mb-4"', $article), $recommendations) ?>
-                            </div>
+                            </section>
 
-                            <div class="fade-in">
+                            <section id="post-meta" class="fade-in">
                                 <div class="my-3">
                                     <?= $postTags ?>
                                 </div>
 
                                 <i class="text-muted text-sm"><?= $fieldData->updated_at->value ? phrase('Updated at') . ' ' . phrase(date('l', strtotime($fieldData->updated_at->value))) . ', ' . $fieldData->updated_at->value : phrase('Created at') . ' ' . phrase(date('l', strtotime($fieldData->created_at->value))) . ', ' . $fieldData->created_at->value ?></i>
-                            </div>
-                            <section class="my-4">
+                            </section>
+                            <section id="post-author" class="my-4">
                                 <div class="card bg-body-tertiary border-hover rounded-4 p-4 fade-in">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
@@ -170,11 +170,9 @@ if ($article): ?>
                                     </div>
                                 </div>
                             </section>
-                            <div class="fade-in">
+                            <section id="post-comments" class="mb-3 fade-in">
                                 <?= comment_widget(['post_id' => $fieldData->post_id->value, 'path' => service('uri')->getRoutePath()]) ?>
-                            </div>
-
-                            <div class="d-md-none py-3">&nbsp;</div>
+                            </section>
                         </article>
                     </main>
                 </div>

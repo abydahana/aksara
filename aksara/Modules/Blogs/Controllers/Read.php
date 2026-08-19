@@ -101,7 +101,8 @@ class Read extends Core
             app_users.first_name,
             app_users.last_name,
             app_users.username,
-            app_users.photo
+            app_users.photo,
+            app_users.bio
         ')
         ->join(
             'blogs_categories',
