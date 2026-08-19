@@ -33,7 +33,10 @@ class Comment extends Core
         $this->permission->mustAjax();
 
         $this->limit(null);
+    }
 
+    public function index()
+    {
         if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
             return $this->_fetchComments();
         } elseif ('token' === $this->request->getPost('fetch')) {
@@ -45,10 +48,7 @@ class Comment extends Core
                 'token' => $token
             ]);
         }
-    }
 
-    public function index()
-    {
         if ($this->validToken($this->request->getPost('_token'))) {
             return $this->_validateForm();
         }
@@ -671,8 +671,11 @@ class Comment extends Core
                     $val->attachment = [];
                 }
 
-                if ($val->mention_id) {
-                    // Get mention
+                // Calculate comment depth level
+                $val->depth = $this->_getCommentDepth((int) $val->comment_id);
+
+                if ($val->mention_id && $val->depth >= $this->_maxDepth) {
+                    // Get mention (only show at max depth limit)
                     $mention = $this->model->select('
                         post_comments.comments,
                         app_users.first_name,
@@ -702,9 +705,6 @@ class Comment extends Core
 
                 // Convert creation time
                 $val->created_at = time_ago($val->created_at, true);
-
-                // Calculate comment depth level
-                $val->depth = $this->_getCommentDepth((int) $val->comment_id);
 
                 // Set highlight
                 $val->highlight = $this->request->getGet('comment_highlight') == $val->comment_id;
@@ -781,12 +781,12 @@ class Comment extends Core
         if ($targetReplyId) {
             $targetDepth = $this->_getCommentDepth($targetReplyId);
 
-            if ($targetDepth < $maxDepth) {
-                // Within allowed depth: attach as direct child
+            if ($targetDepth + 1 < $maxDepth) {
+                // Within allowed depth (below max depth): attach as direct child, no mention needed
                 $replyId = $targetReplyId;
-                $mentionId = ($targetMentionId ?: $targetReplyId);
+                $mentionId = 0;
             } else {
-                // At or exceeds max depth limit: cap reply_id to target's parent reply_id
+                // At or exceeds max depth limit: cap reply_id to target's parent reply_id & store mention_id
                 $targetComment = $this->model->select('reply_id')->getWhere('post_comments', ['comment_id' => $targetReplyId], 1)->row();
                 $replyId = ($targetComment && $targetComment->reply_id) ? (int) $targetComment->reply_id : $targetReplyId;
                 $mentionId = $targetReplyId;
@@ -796,15 +796,15 @@ class Comment extends Core
         $this->model->insert(
             $this->_table,
             [
-                'created_by' => get_userdata('user_id'),
                 'post_id' => $this->request->getGet('post_id'),
                 'post_path' => $this->request->getGet('path'),
                 'reply_id' => $replyId,
                 'mention_id' => $mentionId,
                 'comments' => htmlspecialchars($this->request->getPost('comments')),
                 'attachment' => $attachment,
-                'created_at' => date('Y-m-d H:i:s'),
-                'status' => 1
+                'status' => 1,
+                'created_by' => get_userdata('user_id'),
+                'created_at' => date('Y-m-d H:i:s')
             ]
         );
 
@@ -870,11 +870,11 @@ class Comment extends Core
 
         $html = '
             <div class="comment-item">
-                <div class="row g-0 mb-2">
-                    <div class="col-1 pt-1">
-                        <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" />
+                <div class="d-flex mb-2">
+                    <div class="flex-grow-0 pt-1">
+                        <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />
                     </div>
-                    <div class="col-11 ps-3">
+                    <div class="flex-grow-1">
                         <div class="d-flex align-items-center gap-1 comment-bubble">
                             <div class="bg-body-tertiary rounded-4 py-2 px-3 d-inline-block">
                                 <div class="comment-header">
@@ -919,8 +919,11 @@ class Comment extends Core
                         </div>
                     </div>
                 </div>
-                <div class="row g-0">
-                    <div class="col-11 offset-1 ps-3">
+                <div class="d-flex">
+                    <div class="flex-grow-0 pt-1">
+                        <span class="d-block" style="width:48px">&nbsp;</span>
+                    </div>
+                    <div class="flex-grow-1 ps-3">
                         <div id="comment-reply"></div>
                     </div>
                 </div>
