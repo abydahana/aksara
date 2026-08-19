@@ -2,10 +2,11 @@
 .git* export-ignore
 .prettier* export-ignore
 .php-cs-fixer* export-ignore
-bin/ export-ignore
-contributing export-ignore
-documentation export-ignore
+package.json export-ignore
 README.md export-ignore
+bin/ export-ignore
+contributing/ export-ignore
+documentation/ export-ignore
 
 # Ignore unminified JS development files in export/downloads
 public/assets/local/js/function.js export-ignore
