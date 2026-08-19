@@ -27,18 +27,17 @@ class Install extends BaseController
     public function __construct()
     {
         // Check user locale and apply language
-        if (service('request')->getGet('language') && is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . service('request')->getGet('language'))) {
-            // Set default language
-            if (is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . service('request')->getGet('language'))) {
-                session()->set('language', service('request')->getGet('language'));
+        $language = service('request')->getGet('language') ?? service('request')->getPost('language');
 
-                service('language')->setLocale(service('request')->getGet('language'));
-            }
-        } elseif (in_array(session()->get('language'), ['en', 'id'])) {
+        if ($language && is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . $language)) {
+            session()->set('language', $language);
+        }
+
+        if (session()->get('language') && is_dir(APPPATH . 'Language' . DIRECTORY_SEPARATOR . session()->get('language'))) {
             service('language')->setLocale(session()->get('language'));
         } else {
             session()->set('language', 'en');
-            service('language')->setLocale(session()->get('language'));
+            service('language')->setLocale('en');
         }
 
         // Set timezone
@@ -545,6 +544,36 @@ class Install extends BaseController
                         'html' => view('error')
                     ]);
                 }
+            }
+
+            // Set language and theme cookies for main application before destroying installer session
+            $sessionLanguage = session()->get('language') ?? 'en';
+            $languagesMap = [
+                'en' => 1,
+                'en-PIR' => 2,
+                'id' => 3,
+                'es' => 4,
+                'de' => 5,
+                'fr' => 6,
+                'nl' => 7,
+                'pt' => 8,
+                'ru' => 9,
+                'zh-CN' => 10,
+                'zh-TW' => 11,
+                'ar' => 12,
+                'ja' => 13,
+                'ko' => 14,
+                'th' => 15,
+                'vi' => 16,
+            ];
+            $languageId = $languagesMap[$sessionLanguage] ?? 1;
+
+            helper('cookie');
+            set_cookie('aksara_language', (string) $languageId, 86400 * 365);
+
+            $theme = service('request')->getPost('theme') ?? get_cookie('aksara_theme') ?? get_cookie('installer_theme') ?? 'light';
+            if (in_array($theme, ['dark', 'light'], true)) {
+                set_cookie('aksara_theme', $theme, 86400 * 365);
             }
 
             // Destroy session
