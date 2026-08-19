@@ -7,6 +7,7 @@ $remainingSeconds = $expiresAt > time() ? $expiresAt - time() : 0;
 
 $remainingMinutes = $remainingSeconds > 0 ? (int) ceil($remainingSeconds / 60) : 0;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>

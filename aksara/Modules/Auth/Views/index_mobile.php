@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var mixed $activation
  * @var mixed $years

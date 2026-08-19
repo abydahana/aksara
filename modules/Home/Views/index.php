@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var array<int, object> $categories
  * @var array<int, object> $articles

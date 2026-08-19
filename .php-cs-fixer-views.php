@@ -99,6 +99,48 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
                     }
                 }
 
+                $isAlternativeSyntaxColon = function (int $colonIndex) use ($tokens): bool {
+                    if (! $tokens[$colonIndex]->equals(':')) {
+                        return false;
+                    }
+
+                    $p = $tokens->getPrevNonWhitespace($colonIndex);
+
+                    if (null === $p) {
+                        return false;
+                    }
+
+                    if ($tokens[$p]->isGivenKind(T_ELSE)) {
+                        return true;
+                    }
+
+                    if ($tokens[$p]->equals(')')) {
+                        try {
+                            $matchingParenOpen = $tokens->findBlockStart(PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $p);
+
+                            if (null !== $matchingParenOpen) {
+                                $prevKeyword = $tokens->getPrevMeaningfulToken($matchingParenOpen);
+
+                                if (null !== $prevKeyword && $tokens[$prevKeyword]->isGivenKind([
+                                    T_IF,
+                                    T_ELSEIF,
+                                    T_FOR,
+                                    T_FOREACH,
+                                    T_WHILE,
+                                    T_SWITCH,
+                                    T_DECLARE
+                                ])) {
+                                    return true;
+                                }
+                            }
+                        } catch (\Throwable $e) {
+                            return false;
+                        }
+                    }
+
+                    return false;
+                };
+
                 $blockDepth = 0;
                 for ($h = 0; $h < $index; $h++) {
                     if ($tokens[$h]->equals('{')) {
@@ -106,8 +148,7 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
                     } elseif ($tokens[$h]->equals('}')) {
                         $blockDepth--;
                     } elseif ($tokens[$h]->equals(':')) {
-                        $p = $tokens->getPrevNonWhitespace($h);
-                        if (null !== $p && $tokens[$p]->equals(')')) {
+                        if ($isAlternativeSyntaxColon($h)) {
                             $blockDepth++;
                         }
                     } elseif ($tokens[$h]->isGivenKind([T_ENDIF, T_ENDFOREACH, T_ENDFOR, T_ENDWHILE, T_ENDSWITCH])) {
@@ -121,7 +162,7 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
                     if (null !== $prevIndex) {
                         if ($tokens[$prevIndex]->isGivenKind([T_DOC_COMMENT, T_COMMENT])) {
                             $isHeaderCloseTag = true;
-                        } elseif ($tokens[$prevIndex]->equals(':')) {
+                        } elseif ($tokens[$prevIndex]->equals(':') && $isAlternativeSyntaxColon($prevIndex)) {
                             $isOpeningBlockTag = true;
                         } elseif ($tokens[$prevIndex]->equals('}')) {
                             $isClosingBlockTag = true;
@@ -379,9 +420,24 @@ class ViewPhpTagFormattingFixer extends PhpCsFixer\AbstractFixer
                     }
                 }
             } elseif ($token->isGivenKind(T_OPEN_TAG)) {
-                $firstOpenTagIndex = $tokens->getNextNonWhitespace(0);
+                if (0 === $index) {
+                    $nextNonWs = $tokens->getNextNonWhitespace(0);
 
-                if (0 === $index && null !== $firstOpenTagIndex && $tokens[$firstOpenTagIndex]->isGivenKind([T_DOC_COMMENT, T_COMMENT])) {
+                    if (null !== $nextNonWs) {
+                        $firstTokenContent = $tokens[0]->getContent();
+                        $hasNewline = str_contains($firstTokenContent, "\n") || (isset($tokens[1]) && $tokens[1]->isGivenKind(T_WHITESPACE) && str_contains($tokens[1]->getContent(), "\n"));
+
+                        if ($hasNewline) {
+                            $tokens[0] = new PhpCsFixer\Tokenizer\Token([T_OPEN_TAG, "<?php\n\n"]);
+
+                            for ($w = 1; $w < $nextNonWs; $w++) {
+                                if ($tokens[$w]->isGivenKind(T_WHITESPACE)) {
+                                    $tokens->clearAt($w);
+                                }
+                            }
+                        }
+                    }
+
                     continue;
                 }
 
