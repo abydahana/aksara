@@ -11,7 +11,7 @@ body.content-expanded [data-role='breadcrumb'] {
 }
 body.content-expanded #page-wrapper {
   background: var(--bs-body-bg);
-  z-index: 1081;
+  z-index: 1030;
 }
 body.content-expanded [data-role='content'] {
   position: fixed !important;
