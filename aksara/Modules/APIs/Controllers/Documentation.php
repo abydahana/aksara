@@ -200,7 +200,66 @@ class Documentation extends Core
 
             $auditFields = ['created_at', 'created_by', 'updated_at', 'updated_by'];
 
-            // Fetch a sample row for data payloads (unformatted single row)
+            // Fetch metadata definition from /create endpoint to build field parameters and fallback sample payload
+            $rawMetadataResponse = [];
+            $fallbackRow = [];
+            $fieldDefinitions = [];
+            try {
+                $metaRequest = $curl->get(base_url($slug . '/create', ['format_result' => 'metadata']));
+                $rawMetadataResponse = json_decode($metaRequest->getBody()) ?? [];
+                $metaResponse = $rawMetadataResponse;
+
+                if (is_array($metaResponse) && isset($metaResponse[0]) && (is_object($metaResponse[0]) || is_array($metaResponse[0]))) {
+                    $metaResponse = (object) $metaResponse[0];
+                }
+
+                if (isset($metaResponse->field)) {
+                    $metaResponse = (object) $metaResponse->field;
+                } elseif (isset($metaResponse->results->field)) {
+                    $metaResponse = (object) $metaResponse->results->field;
+                }
+
+                if ($metaResponse && (is_object($metaResponse) || is_array($metaResponse))) {
+                    foreach ($metaResponse as $field => $params) {
+                        if (! is_object($params)) {
+                            continue;
+                        }
+
+                        if ((isset($params->hidden) && $params->hidden) || in_array($field, $auditFields)) {
+                            unset($metaResponse->$field);
+
+                            continue;
+                        }
+
+                        if (isset($params->validation) && is_array($params->validation) && in_array('required', $params->validation)) {
+                            $metaResponse->$field->required = true;
+                        }
+
+                        if (isset($params->type)) {
+                            $metaResponse->$field->type = is_array($params->type) ? array_keys($params->type) : array_keys((array) $params->type);
+                        }
+
+                        $typeKey = is_array($metaResponse->$field->type ?? null) ? ($metaResponse->$field->type[0] ?? 'text') : 'text';
+                        if (in_array($typeKey, ['number', 'integer', 'int', 'money', 'percent'])) {
+                            $fallbackRow[$field] = 1;
+                        } elseif (in_array($typeKey, ['boolean'])) {
+                            $fallbackRow[$field] = true;
+                        } elseif (in_array($typeKey, ['date'])) {
+                            $fallbackRow[$field] = date('Y-m-d');
+                        } elseif (in_array($typeKey, ['datetime', 'timestamp'])) {
+                            $fallbackRow[$field] = date('Y-m-d H:i:s');
+                        } else {
+                            $fallbackRow[$field] = 'string';
+                        }
+                    }
+
+                    $fieldDefinitions = $metaResponse;
+                }
+            } catch (Throwable $e) {
+                // Fallback
+            }
+
+            // Fetch a sample row for data payloads (unformatted single row) if table has data
             $sampleRow = [];
             try {
                 $sampleRequest = $curl->get(base_url($slug, ['limit' => 1]));
@@ -216,75 +275,13 @@ class Documentation extends Core
                 // Fallback
             }
 
+            $effectiveSamplePayload = $sampleRow ?: $fallbackRow;
+
             foreach ($method as $key => $val) {
                 $output[$val]['response'] = [
                     'success' => $exception,
                     'error' => $exception
                 ];
-
-                if (in_array($val, ['create', 'update'])) {
-                    // Get field data
-                    $request = $curl->get(base_url($slug . '/create', ['format_result' => 'metadata']));
-                    $response = json_decode($request->getBody()) ?? [];
-
-                    $fallbackRow = [];
-
-                    foreach ($response as $field => $params) {
-                        if ($params->hidden || in_array($field, $auditFields)) {
-                            unset($response->$field);
-
-                            continue;
-                        }
-
-                        if (in_array('required', $params->validation)) {
-                            $response->$field->required = true;
-                        }
-
-                        $response->$field->type = array_keys((array) $params->type);
-
-                        // Build fallback row value if sampleRow doesn't have this field
-                        $typeKey = $response->$field->type[0] ?? 'text';
-                        if (in_array($typeKey, ['number', 'integer', 'int', 'money', 'percent'])) {
-                            $fallbackRow[$field] = 1;
-                        } elseif (in_array($typeKey, ['boolean'])) {
-                            $fallbackRow[$field] = true;
-                        } elseif (in_array($typeKey, ['date'])) {
-                            $fallbackRow[$field] = date('Y-m-d');
-                        } elseif (in_array($typeKey, ['datetime', 'timestamp'])) {
-                            $fallbackRow[$field] = date('Y-m-d H:i:s');
-                        } else {
-                            $fallbackRow[$field] = 'string';
-                        }
-                    }
-
-                    $output[$val]['field_data'] = $response;
-
-                    $payloadData = $sampleRow ?: $fallbackRow;
-
-                    $output[$val]['response']['success'] = [
-                        'code' => 200,
-                        'message' => ('update' === $val ? phrase('The data was successfully updated.') : phrase('The data was successfully submitted.')),
-                        'data' => $payloadData
-                    ];
-                } elseif (in_array($val, ['read'])) {
-                    // Get field data for read
-                    $request = $curl->get(base_url($slug, $sampleParams));
-                    $response = json_decode($request->getBody());
-
-                    if ('complete' === $responseType) {
-                        $output[$val]['response']['success'] = $response ?? [];
-                    } elseif (is_array($response) && isset($response[0])) {
-                        $output[$val]['response']['success'] = $response[0];
-                    } else {
-                        $output[$val]['response']['success'] = $response ?? [];
-                    }
-                } elseif (! in_array($val, ['delete'])) {
-                    // Get field data for index/other
-                    $request = $curl->get(base_url($slug, $sampleParams));
-                    $response = json_decode($request->getBody());
-
-                    $output[$val]['response']['success'] = $response ?? [];
-                }
 
                 if (in_array($val, ['read', 'update', 'delete', 'export', 'print', 'pdf'])) {
                     $request = $curl->get(base_url($slug, ['format_result' => 'full', 'limit' => 1]));
@@ -292,6 +289,36 @@ class Documentation extends Core
 
                     if (isset($response->results->table_data[0]->primary)) {
                         $output[$val]['query_params'] = $response->results->table_data[0]->primary;
+                    }
+                }
+
+                if (in_array($val, ['create', 'update'])) {
+                    $output[$val]['field_data'] = $fieldDefinitions;
+
+                    $output[$val]['response']['success'] = [
+                        'code' => 200,
+                        'message' => ('update' === $val ? phrase('The data was successfully updated.') : phrase('The data was successfully submitted.')),
+                        'data' => $effectiveSamplePayload
+                    ];
+                } elseif (in_array($val, ['read'])) {
+                    // Get field data for read
+                    if ('complete' === $responseType) {
+                        $request = $curl->get(base_url($slug, $sampleParams));
+                        $response = json_decode($request->getBody());
+
+                        $output[$val]['response']['success'] = (is_array($response) || is_object($response)) && ! isset($response->code) ? $response : $rawMetadataResponse;
+                    } else {
+                        $output[$val]['response']['success'] = $effectiveSamplePayload;
+                    }
+                } elseif (! in_array($val, ['delete'])) {
+                    // Get field data for index/other
+                    $request = $curl->get(base_url($slug, $sampleParams));
+                    $response = json_decode($request->getBody());
+
+                    if ('complete' === $responseType) {
+                        $output[$val]['response']['success'] = (is_array($response) || is_object($response)) && ! isset($response->code) ? $response : $rawMetadataResponse;
+                    } else {
+                        $output[$val]['response']['success'] = (is_array($response) && $response) ? $response : [$effectiveSamplePayload];
                     }
                 }
             }
