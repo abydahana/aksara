@@ -3809,15 +3809,16 @@ abstract class Core extends Controller
                 } elseif (isset($this->_setRelation[$key])) {
                     $validation = true;
 
+                    $relationTable = (strpos($this->_setRelation[$key]['relation_table'], ' ') !== false ? substr($this->_setRelation[$key]['relation_table'], 0, strpos($this->_setRelation[$key]['relation_table'], ' ')) : $this->_setRelation[$key]['relation_table']);
+                    $relationKey = $this->_setRelation[$key]['relation_key'];
+
+                    if (is_array($relationKey) && isset($relationKey[0])) {
+                        $relationKey = $relationKey[0];
+                    }
+
                     // Relation table validation
                     if (in_array('required', $val['validation'])) {
-                        $relationKey = $this->_setRelation[$key]['relation_key'];
-
-                        if (is_array($relationKey) && isset($relationKey[0])) {
-                            $relationKey = $relationKey[0];
-                        }
-
-                        $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relation_table'], ' ') !== false ? substr($this->_setRelation[$key]['relation_table'], 0, strpos($this->_setRelation[$key]['relation_table'], ' ')) : $this->_setRelation[$key]['relation_table']) . '.' . $relationKey . ']';
+                        $relationChecker = 'relation_checker[' . $relationTable . '.' . $relationKey . ']';
 
                         if (! in_array($relationChecker, $val['validation'], true)) {
                             $val['validation'][] = $relationChecker;
@@ -3834,7 +3835,7 @@ abstract class Core extends Controller
                             // Find foreign data with loop
                             foreach ($foreignData as $_key => $_val) {
                                 // Table has foreign key
-                                if ($this->_setRelation[$key]['relation_table'] == $_val->foreign_table_name) {
+                                if ($relationTable == $_val->foreign_table_name) {
                                     // Set constraint
                                     $constrained = true;
                                 }
@@ -3847,8 +3848,11 @@ abstract class Core extends Controller
                                 : array_merge(['required'], $val['validation']);
 
                             if (! in_array('permit_empty', $relationValidation, true)) {
-                                $relationChecker = 'relation_checker[' . (strpos($this->_setRelation[$key]['relation_table'], ' ') !== false ? substr($this->_setRelation[$key]['relation_table'], 0, strpos($this->_setRelation[$key]['relation_table'], ' ')) : $this->_setRelation[$key]['relation_table']) . '.' . $this->_setRelation[$key]['relation_key'] . ']';
-                                $relationValidation[] = $relationChecker;
+                                $relationChecker = 'relation_checker[' . $relationTable . '.' . $relationKey . ']';
+
+                                if (! in_array($relationChecker, $relationValidation, true)) {
+                                    $relationValidation[] = $relationChecker;
+                                }
                             }
 
                             // Apply only for constrained table relation
