@@ -72,7 +72,7 @@
                                 <div class="d-flex g-0 align-items-center mb-3">
                                     <div class="pe-3">
                                         <a href="<?= base_url('user/' . $val->username) ?>" class="text-sm text-secondary d-block --xhr">
-                                            <img src="<?= get_image('users', $val->photo, 'icon') ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name ?>" width="48" />
+                                            <img src="<?= get_image('users', $val->photo, 'icon') ?>" class="img-fluid rounded-circle user-avatar" alt="<?= $val->first_name . ' ' . $val->last_name ?>" />
                                         </a>
                                     </div>
                                     <div class="flex-grow-1 d-flex justify-content-between align-items-center overflow-hidden gap-0">

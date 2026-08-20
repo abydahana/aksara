@@ -10,7 +10,7 @@
         <div class="d-flex align-items-center">
             <div class="flex-grow-0">
                 <a href="<?= base_url('user') ?>">
-                    <img src="<?= get_image('users', get_userdata('photo'), 'thumb') ?>" class="img-fluid rounded-4" width="48" height="48" alt="<?= get_userdata('first_name') . ' ' . get_userdata('last_name') ?>" loading="lazy" decoding="async" />
+                    <img src="<?= get_image('users', get_userdata('photo'), 'thumb') ?>" class="img-fluid rounded-4 user-avatar" alt="<?= get_userdata('first_name') . ' ' . get_userdata('last_name') ?>" loading="lazy" decoding="async" />
                 </a>
             </div>
             <div class="flex-grow-1 ps-3">
