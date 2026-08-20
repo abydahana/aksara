@@ -2857,12 +2857,19 @@ abstract class Core extends Controller
                 // Set view template property
                 $this->_view = (is_array($this->_setTemplate) && isset($this->_setTemplate['form']) ? $this->_setTemplate['form'] : ($view && 'index' != $view ? $view : 'form'));
 
+                if ($this->apiClient) {
+                    // Request from REST without format_result params
+                    if (! $this->request->getGet('format_result')) {
+                        // Simple results
+                        return make_json($results);
+                    } elseif ('metadata' == $this->request->getGet('format_result')) {
+                        // With metadata
+                        return make_json($this->serialize([$results]));
+                    }
+                }
+
                 // Get formatted results
                 $results = $this->renderForm($results);
-
-                if ($results instanceof ResponseInterface) {
-                    return $results;
-                }
 
                 // Set icon property
                 $this->_setIcon = ($this->_setMethod || (isset($this->_setIcon[$this->_method])) && $icon ? $icon : 'mdi mdi-plus');
@@ -2881,12 +2888,26 @@ abstract class Core extends Controller
                 // Set view template property
                 $this->_view = (is_array($this->_setTemplate) && isset($this->_setTemplate[$this->_method]) ? $this->_setTemplate['read'] : ($view && 'index' != $view ? $view : 'read'));
 
+                if ($this->apiClient) {
+                    // Request from REST without format_result params
+                    if (! $this->request->getGet('format_result')) {
+                        foreach ($results as $key => $val) {
+                            // Attempt to hide encrypted column
+                            if (isset($this->_setField[$key]) && array_intersect(['encryption', 'password'], array_keys($this->_setField[$key]))) {
+                                $results->{$key} = '******';
+                            }
+                        }
+
+                        // Simple results
+                        return make_json($results);
+                    } elseif ('metadata' == $this->request->getGet('format_result')) {
+                        // With metadata
+                        return make_json($this->serialize([$results]));
+                    }
+                }
+
                 // Get formatted results
                 $results = $this->renderRead($results);
-
-                if ($results instanceof ResponseInterface) {
-                    return $results;
-                }
 
                 // Set icon property
                 $this->_setIcon = ($this->_setMethod || (isset($this->_setIcon[$this->_method])) && $icon ? $icon : 'mdi mdi-magnify');
@@ -2905,12 +2926,26 @@ abstract class Core extends Controller
                 // Set view template property
                 $this->_view = (is_array($this->_setTemplate) && isset($this->_setTemplate['form']) ? $this->_setTemplate['form'] : ($view && 'index' != $view ? $view : 'form'));
 
+                if ($this->apiClient) {
+                    // Request from REST without format_result params
+                    if (! $this->request->getGet('format_result')) {
+                        foreach ($results as $key => $val) {
+                            // Attempt to hide encrypted column
+                            if (isset($this->_setField[$key]) && array_intersect(['encryption', 'password'], array_keys($this->_setField[$key]))) {
+                                $results->{$key} = '******';
+                            }
+                        }
+
+                        // Simple results
+                        return make_json($results);
+                    } elseif ('metadata' == $this->request->getGet('format_result')) {
+                        // With metadata
+                        return make_json($this->serialize([$results]));
+                    }
+                }
+
                 // Get formatted results
                 $results = $this->renderForm($results ?? []);
-
-                if ($results instanceof ResponseInterface) {
-                    return $results;
-                }
 
                 // Set icon property
                 $this->_setIcon = ($this->_setMethod || (isset($this->_setIcon[$this->_method])) && $icon ? $icon : 'mdi mdi-square-edit-outline');
@@ -2945,10 +2980,6 @@ abstract class Core extends Controller
                 // Get formatted results
                 $results = ($singlePrint ? $this->renderRead($results) : $this->renderTable($results));
 
-                if ($results instanceof ResponseInterface) {
-                    return $results;
-                }
-
                 // Set icon property
                 $this->_setIcon = ($icon ? $icon : ($this->_setIconFallback ?? 'mdi mdi-table'));
 
@@ -2969,12 +3000,35 @@ abstract class Core extends Controller
                 // Set description property
                 $this->_view = (is_array($this->_setTemplate) && isset($this->_setTemplate['index']) ? $this->_setTemplate['index'] : ($view && 'index' != $view ? $view : 'index'));
 
+                if ($this->apiClient) {
+                    // Request from REST without format_result params
+                    if (! $this->request->getGet('format_result')) {
+                        foreach ($results as $key => $val) {
+                            if (is_object($val)) {
+                                foreach ($val as $_key => $_val) {
+                                    // Attempt to hide encrypted column
+                                    if (isset($this->_setField[$_key]) && array_intersect(['encryption', 'password'], array_keys($this->_setField[$_key]))) {
+                                        $results[$key]->{$_key} = '******';
+                                    }
+                                }
+                            } else {
+                                // Attempt to hide encrypted column
+                                if (isset($this->_setField[$key]) && array_intersect(['encryption', 'password'], array_keys($this->_setField[$key]))) {
+                                    $results->{$key} = '******';
+                                }
+                            }
+                        }
+
+                        // Simple results
+                        return make_json($results);
+                    } elseif ('metadata' == $this->request->getGet('format_result')) {
+                        // With metadata
+                        return make_json(! $viewExist ? $this->serialize($results) : $results);
+                    }
+                }
+
                 // Get formatted results
                 $results = (! $viewExist ? $this->renderTable($results) : $results);
-
-                if ($results instanceof ResponseInterface) {
-                    return $results;
-                }
 
                 // Set icon property
                 $this->_setIcon = ($icon ? $icon : ($this->_setIconFallback ?? 'mdi mdi-table'));
@@ -3167,140 +3221,13 @@ abstract class Core extends Controller
     }
 
     /**
-     * Renders and formats the output data into a structured array ready for form view (Create/Update).
-     */
-    protected function renderForm(array|object $data): array|ResponseInterface
-    {
-        $this->_clearAiContextCache();
-
-        // --- Initial Validation ---
-        // Check if data is empty AND the upsert permission is not granted AND it's not an autocomplete request.
-        if (! $data && ! $this->_permitUpsert && 'autocomplete' != $this->request->getPost('method')) {
-            return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), current_page('../'));
-        }
-
-        // Serialize data (convert raw objects/arrays into a standardized format)
-        $serialized = $this->serializeRow($data);
-
-        if ($serialized instanceof ResponseInterface) {
-            return $serialized;
-        }
-
-        $fieldData = [];
-
-        if (is_array($serialized) && $serialized) {
-            // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
-
-            $whitelistedProperties = [
-                '_addClass', '_columnOrder', '_columnSize', '_defaultValue', '_dbDriver',
-                '_fieldAppend', '_fieldPrepend', '_fieldOrder', '_viewOrder',
-                '_fieldPosition', '_fieldSize', '_groupField', '_mergeField', '_mergeLabel',
-                '_method', '_modalSize', '_mockFields', '_setAlias', '_setAttribute', '_setAutocomplete',
-                '_setField', '_setHeading', '_setPlaceholder', '_setRelation', '_setTooltip',
-                '_setUploadPath', '_submitButton', '_table', 'apiClient', 'model'
-            ];
-
-            // Create an array containing only the whitelisted properties from the current object.
-            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
-
-            // Add theme property
-            $properties['_setTheme'] = $this->template->theme;
-
-            // --- Load Renderer ---
-            $renderer = new Renderer();
-            $renderer->setProperty($properties); // Send necessary context properties
-            $renderer->setPath('form'); // Specify the renderer path (form renderer)
-
-            // Run the renderer to format the serialized data into final form structure.
-            $fieldData = $renderer->render($serialized);
-        }
-
-        return $fieldData;
-    }
-
-    /**
-     * Renders and formats the output data into a structured array ready for the detailed 'read' view.
-     */
-    protected function renderRead(array|object $data): array|ResponseInterface
-    {
-        // --- Initial Validation ---
-        // If data is empty, keep the read payload contract stable without
-        // fabricating schema-only fields that look like a real record.
-        if (! $data) {
-            $queryParams = $this->request->getGet();
-
-            if ($this->apiClient) {
-                unset($queryParams['aksara'], $queryParams['limit']);
-            }
-
-            return [
-                'column_size' => [],
-                'column_total' => 1,
-                'extra_action' => [
-                    'submit' => $this->_submitButton
-                ],
-                'form_size' => '',
-                'field_size' => [],
-                'field_data' => [],
-                'merged_content' => [],
-                'merged_field' => [],
-                'set_heading' => [],
-                'grouped_field' => [],
-                'query_params' => $queryParams
-            ];
-        }
-
-        // Serialize data (convert raw objects/arrays into a standardized format)
-        $serialized = $this->serializeRow($data);
-
-        if ($serialized instanceof ResponseInterface) {
-            return $serialized;
-        }
-
-        $fieldData = [];
-
-        if (is_array($serialized) && $serialized) {
-            // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
-
-            $whitelistedProperties = [
-                '_columnOrder', '_columnSize', '_fieldAppend', '_fieldPrepend', '_fieldOrder',
-                '_viewOrder', '_fieldPosition', '_fieldSize', '_groupField', '_mergeContent',
-                '_mergeField', '_mergeLabel', '_method', '_modalSize', '_setAlias',
-                '_setAttribute', '_setField', '_setHeading', '_setRelation', '_setUploadPath',
-                '_submitButton', '_table', 'apiClient'
-            ];
-
-            // Create an array containing only the whitelisted properties from the current object.
-            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
-
-            // Add theme property
-            $properties['_setTheme'] = $this->template->theme;
-
-            // --- Load Renderer ---
-            $renderer = new Renderer();
-            $renderer->setProperty($properties); // Send necessary context properties
-            $renderer->setPath('view'); // Specify the renderer path (view/read renderer)
-
-            // Run the renderer to format the serialized data into final view structure.
-            $fieldData = $renderer->render($serialized);
-        }
-
-        return $fieldData;
-    }
-
-    /**
      * Renders and formats the output data into a structured array ready for table view.
      */
-    protected function renderTable(array $data): array|ResponseInterface
+    protected function renderTable(array $data): array
     {
         // If Primary Key is not defined, disable Update and Delete actions for safety.
         if (! $this->_setPrimary) {
             $this->_unsetMethod = array_merge($this->_unsetMethod, ['update', 'delete']);
-        }
-
-        if ($this->apiClient && ! in_array($this->request->getGet('format_result'), ['metadata', 'complete', 'full'])) {
-            // Requested from API Client in unformatted result
-            return make_json($data);
         }
 
         // Serialize data (convert raw objects/arrays into a standardized format)
@@ -3308,9 +3235,8 @@ abstract class Core extends Controller
         $serialized = $this->serialize($data);
         timer('Core::serialize() Data Formatting');
 
-        if ($this->apiClient && 'metadata' === $this->request->getGet('format_result')) {
-            // Requested from API Client with field data information
-            return make_json($serialized);
+        if ($this->apiClient && ! $this->request->getGet('format_result')) {
+            return $serialized;
         }
 
         $tableData = [];
@@ -3349,6 +3275,128 @@ abstract class Core extends Controller
     }
 
     /**
+     * Renders and formats the output data into a structured array ready for the detailed 'read' view.
+     */
+    protected function renderRead(array|object $data): array
+    {
+        // --- Initial Validation ---
+        // If data is empty, keep the read payload contract stable without
+        // fabricating schema-only fields that look like a real record.
+        if (! $data) {
+            $queryParams = $this->request->getGet();
+
+            if ($this->apiClient) {
+                unset($queryParams['aksara'], $queryParams['limit']);
+            }
+
+            return [
+                'column_size' => [],
+                'column_total' => 1,
+                'extra_action' => [
+                    'submit' => $this->_submitButton
+                ],
+                'form_size' => '',
+                'field_size' => [],
+                'field_data' => [],
+                'merged_content' => [],
+                'merged_field' => [],
+                'set_heading' => [],
+                'grouped_field' => [],
+                'query_params' => $queryParams
+            ];
+        }
+
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serializeRow($data);
+
+        if ($this->apiClient && ! $this->request->getGet('format_result')) {
+            return $serialized;
+        }
+
+        $fieldData = [];
+
+        if ($serialized) {
+            // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
+
+            $whitelistedProperties = [
+                '_columnOrder', '_columnSize', '_fieldAppend', '_fieldPrepend', '_fieldOrder',
+                '_viewOrder', '_fieldPosition', '_fieldSize', '_groupField', '_mergeContent',
+                '_mergeField', '_mergeLabel', '_method', '_modalSize', '_setAlias',
+                '_setAttribute', '_setField', '_setHeading', '_setRelation', '_setUploadPath',
+                '_submitButton', '_table', 'apiClient'
+            ];
+
+            // Create an array containing only the whitelisted properties from the current object.
+            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
+
+            // Add theme property
+            $properties['_setTheme'] = $this->template->theme;
+
+            // --- Load Renderer ---
+            $renderer = new Renderer();
+            $renderer->setProperty($properties); // Send necessary context properties
+            $renderer->setPath('view'); // Specify the renderer path (view/read renderer)
+
+            // Run the renderer to format the serialized data into final view structure.
+            $fieldData = $renderer->render($serialized);
+        }
+
+        return $fieldData;
+    }
+
+    /**
+     * Renders and formats the output data into a structured array ready for form view (Create/Update).
+     */
+    protected function renderForm(array|object $data): array
+    {
+        $this->_clearAiContextCache();
+
+        // --- Initial Validation ---
+        // Check if data is empty AND the upsert permission is not granted AND it's not an autocomplete request.
+        if (! $data && ! $this->_permitUpsert && 'autocomplete' != $this->request->getPost('method')) {
+            return throw_exception(404, phrase('The data you requested does not exist or has been removed.'), current_page('../'));
+        }
+
+        // Serialize data (convert raw objects/arrays into a standardized format)
+        $serialized = $this->serializeRow($data);
+
+        if ($this->apiClient && ! $this->request->getGet('format_result')) {
+            return $serialized;
+        }
+
+        $fieldData = [];
+
+        if ($serialized) {
+            // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
+
+            $whitelistedProperties = [
+                '_addClass', '_columnOrder', '_columnSize', '_defaultValue', '_dbDriver',
+                '_fieldAppend', '_fieldPrepend', '_fieldOrder', '_viewOrder',
+                '_fieldPosition', '_fieldSize', '_groupField', '_mergeField', '_mergeLabel',
+                '_method', '_modalSize', '_mockFields', '_setAlias', '_setAttribute', '_setAutocomplete',
+                '_setField', '_setHeading', '_setPlaceholder', '_setRelation', '_setTooltip',
+                '_setUploadPath', '_submitButton', '_table', 'apiClient', 'model'
+            ];
+
+            // Create an array containing only the whitelisted properties from the current object.
+            $properties = array_intersect_key(get_object_vars($this), array_flip($whitelistedProperties));
+
+            // Add theme property
+            $properties['_setTheme'] = $this->template->theme;
+
+            // --- Load Renderer ---
+            $renderer = new Renderer();
+            $renderer->setProperty($properties); // Send necessary context properties
+            $renderer->setPath('form'); // Specify the renderer path (form renderer)
+
+            // Run the renderer to format the serialized data into final form structure.
+            $fieldData = $renderer->render($serialized);
+        }
+
+        return $fieldData;
+    }
+
+    /**
      * Serializes data rows, detecting field types, primary keys, and applying formatting.
      */
     protected function serialize(array $data): array
@@ -3365,7 +3413,7 @@ abstract class Core extends Controller
 
         foreach ($data as $row => $array) {
             // Process single row
-            $output[$row] = $this->serializeRow($array, false, $fieldData, $mockFields, $fieldNames);
+            $output[$row] = $this->serializeRow($array, $fieldData, $mockFields, $fieldNames);
         }
 
         return $output;
@@ -3374,7 +3422,7 @@ abstract class Core extends Controller
     /**
      * Serializes a single row
      */
-    protected function serializeRow(array|object $data, bool $return = false, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|ResponseInterface
+    protected function serializeRow(array|object $data, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array
     {
         $fieldData ??= $this->_compiledFieldData();
 
@@ -3628,14 +3676,9 @@ abstract class Core extends Controller
                 'validation' => $validation
             ];
 
-            if ($this->apiClient && ('metadata' === $this->request->getGet('format_result') || $return)) {
+            if ($this->apiClient) {
                 $output[$field]['label'] = (isset($this->_setAlias[$field]) ? $this->_setAlias[$field] : ucwords(str_replace('_', ' ', $field) ?? ''));
             }
-        }
-
-        if ($this->apiClient && ('metadata' === $this->request->getGet('format_result') || $return)) {
-            // Requested from API Client with field data information
-            return make_json($output);
         }
 
         return $output;
