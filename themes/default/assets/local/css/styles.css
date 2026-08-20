@@ -210,8 +210,10 @@ a {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
 }
-.user-avatar {
+.user-avatar,
+.user-avatar-spacing {
   width: 48px;
+  min-width: 48px;
 }
 @keyframes iconFloat {
   0%,

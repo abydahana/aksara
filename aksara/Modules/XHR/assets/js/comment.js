@@ -358,7 +358,7 @@ $(document).ready(function () {
           .attr('src', config.baseUrl + 'uploads/placeholder_icon.png')
           .attr('alt', phrase('Preview'));
 
-        const $valRow = $('<div class="d-flex align-items-center"><div class="flex-grow-0 pt-1" style="width:48px"></div><div class="flex-grow-1 ps-3"><div data-role="validation-callback"></div></div></div>');
+        const $valRow = $('<div class="d-flex align-items-center"><div class="flex-grow-0 pt-1 user-avatar-spacing"></div><div class="flex-grow-1 ps-3"><div data-role="validation-callback"></div></div></div>');
         const $tokenInput = $('<input type="hidden" name="_token" />').attr('value', response.token || '');
 
         $form.append($headerRow).append($formGroup).append($valRow).append($tokenInput);
