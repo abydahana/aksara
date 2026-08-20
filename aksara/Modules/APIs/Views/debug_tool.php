@@ -125,7 +125,13 @@
             e.preventDefault();
 
             $('.mdi.mdi-send').removeClass('mdi-send').addClass('mdi-loading mdi-spin');
-            $('.response-result').trigger('click');
+
+            const tabEl = document.querySelector('.response-result');
+            if (tabEl && window.bootstrap && bootstrap.Tab) {
+                bootstrap.Tab.getOrCreateInstance(tabEl).show();
+            } else if (tabEl) {
+                tabEl.click();
+            }
 
             if (! $(this).find('input[name=url]').val()) {
                 $('.mdi.mdi-loading.mdi-spin').removeClass('mdi-loading mdi-spin').addClass('mdi-send');

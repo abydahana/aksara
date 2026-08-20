@@ -282,7 +282,7 @@ class Translate extends Core
 
                 clear_translations_cache($this->_code);
 
-                return throw_exception(301, phrase('Data was successfully submitted.'), current_page());
+                return throw_exception(301, phrase('The data was successfully submitted.'), current_page());
             } catch (Throwable $e) {
                 return throw_exception(403, $e->getMessage(), current_page());
             }
