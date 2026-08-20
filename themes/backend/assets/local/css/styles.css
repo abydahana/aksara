@@ -224,8 +224,10 @@ body.sidebar-collapsed .sidebar-toggle-wrapper {
   display: block;
   padding-left: 24px;
 }
-.user-avatar {
+.user-avatar,
+.user-avatar-spacing {
   width: 48px;
+  min-width: 48px;
 }
 .btn-group-xs > .btn,
 .btn-xs {

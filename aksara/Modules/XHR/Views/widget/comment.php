@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <div class="flex-grow-0 pt-1" style="width:48px"></div>
+            <div class="flex-grow-0 pt-1 user-avatar-spacing"></div>
             <div class="flex-grow-1 ps-3">
                 <div data-role="validation-callback"></div>
             </div>
