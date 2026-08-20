@@ -236,7 +236,7 @@ $(document).ready(function () {
           $item.append($dFlexMain);
 
           const $dFlexReply = $('<div class="d-flex"></div>');
-          const $replySpacer = $('<div class="flex-grow-0 pt-1" style="width:48px"></div>');
+          const $replySpacer = $('<div class="flex-grow-0 pt-1 user-avatar-spacing"></div>');
           const $replyCol = $('<div class="flex-grow-1 ps-3" id="comment-reply"></div>');
 
           if (val.replies > 0) {
