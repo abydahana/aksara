@@ -790,8 +790,8 @@ class Comment extends Core
         if ($targetReplyId) {
             $targetDepth = $this->_getCommentDepth($targetReplyId);
 
-            if ($targetDepth + 1 < $maxDepth) {
-                // Within allowed depth (below max depth): attach as direct child, no mention needed
+            if ($targetDepth + 1 <= $maxDepth) {
+                // Within allowed depth (at or below max depth): attach as direct child, no mention needed
                 $replyId = $targetReplyId;
                 $mentionId = 0;
             } else {
