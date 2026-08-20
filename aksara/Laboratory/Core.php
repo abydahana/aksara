@@ -2860,6 +2860,10 @@ abstract class Core extends Controller
                 // Get formatted results
                 $results = $this->renderForm($results);
 
+                if ($results instanceof ResponseInterface) {
+                    return $results;
+                }
+
                 // Set icon property
                 $this->_setIcon = ($this->_setMethod || (isset($this->_setIcon[$this->_method])) && $icon ? $icon : 'mdi mdi-plus');
 
@@ -2880,6 +2884,10 @@ abstract class Core extends Controller
                 // Get formatted results
                 $results = $this->renderRead($results);
 
+                if ($results instanceof ResponseInterface) {
+                    return $results;
+                }
+
                 // Set icon property
                 $this->_setIcon = ($this->_setMethod || (isset($this->_setIcon[$this->_method])) && $icon ? $icon : 'mdi mdi-magnify');
 
@@ -2899,6 +2907,10 @@ abstract class Core extends Controller
 
                 // Get formatted results
                 $results = $this->renderForm($results ?? []);
+
+                if ($results instanceof ResponseInterface) {
+                    return $results;
+                }
 
                 // Set icon property
                 $this->_setIcon = ($this->_setMethod || (isset($this->_setIcon[$this->_method])) && $icon ? $icon : 'mdi mdi-square-edit-outline');
@@ -3157,7 +3169,7 @@ abstract class Core extends Controller
     /**
      * Renders and formats the output data into a structured array ready for form view (Create/Update).
      */
-    protected function renderForm(array|object $data): array
+    protected function renderForm(array|object $data): array|ResponseInterface
     {
         $this->_clearAiContextCache();
 
@@ -3170,9 +3182,13 @@ abstract class Core extends Controller
         // Serialize data (convert raw objects/arrays into a standardized format)
         $serialized = $this->serializeRow($data);
 
+        if ($serialized instanceof ResponseInterface) {
+            return $serialized;
+        }
+
         $fieldData = [];
 
-        if ($serialized) {
+        if (is_array($serialized) && $serialized) {
             // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
 
             $whitelistedProperties = [
@@ -3205,7 +3221,7 @@ abstract class Core extends Controller
     /**
      * Renders and formats the output data into a structured array ready for the detailed 'read' view.
      */
-    protected function renderRead(array|object $data): array
+    protected function renderRead(array|object $data): array|ResponseInterface
     {
         // --- Initial Validation ---
         // If data is empty, keep the read payload contract stable without
@@ -3237,9 +3253,13 @@ abstract class Core extends Controller
         // Serialize data (convert raw objects/arrays into a standardized format)
         $serialized = $this->serializeRow($data);
 
+        if ($serialized instanceof ResponseInterface) {
+            return $serialized;
+        }
+
         $fieldData = [];
 
-        if ($serialized) {
+        if (is_array($serialized) && $serialized) {
             // --- Prepare Properties for Renderer (Whitelisting for Abstraction/Safety) ---
 
             $whitelistedProperties = [
@@ -3354,7 +3374,7 @@ abstract class Core extends Controller
     /**
      * Serializes a single row
      */
-    protected function serializeRow(array|object $data, bool $return = true, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|ResponseInterface
+    protected function serializeRow(array|object $data, bool $return = false, ?array $fieldData = null, ?array $mockFields = null, ?array $fieldNames = null): array|ResponseInterface
     {
         $fieldData ??= $this->_compiledFieldData();
 
@@ -3608,12 +3628,12 @@ abstract class Core extends Controller
                 'validation' => $validation
             ];
 
-            if ($this->apiClient && $return) {
+            if ($this->apiClient && ('metadata' === $this->request->getGet('format_result') || $return)) {
                 $output[$field]['label'] = (isset($this->_setAlias[$field]) ? $this->_setAlias[$field] : ucwords(str_replace('_', ' ', $field) ?? ''));
             }
         }
 
-        if ($this->apiClient && $return) {
+        if ($this->apiClient && ('metadata' === $this->request->getGet('format_result') || $return)) {
             // Requested from API Client with field data information
             return make_json($output);
         }
@@ -3642,7 +3662,7 @@ abstract class Core extends Controller
         }
 
         // Serialize data (convert raw objects/arrays into a standardized format)
-        $serialized = $this->serializeRow($data, false);
+        $serialized = $this->serializeRow($data);
 
         if ($this->request->getPost() && is_array($serialized) && sizeof($serialized) > 0) {
             // Store upload path to memory

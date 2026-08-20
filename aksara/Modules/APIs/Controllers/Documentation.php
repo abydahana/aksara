@@ -198,6 +198,24 @@ class Documentation extends Core
                 ]
             ]);
 
+            $auditFields = ['created_at', 'created_by', 'updated_at', 'updated_by'];
+
+            // Fetch a sample row for data payloads (unformatted single row)
+            $sampleRow = [];
+            try {
+                $sampleRequest = $curl->get(base_url($slug, ['limit' => 1]));
+                $sampleDecoded = json_decode($sampleRequest->getBody());
+                if (is_array($sampleDecoded) && isset($sampleDecoded[0])) {
+                    $sampleRow = (array) $sampleDecoded[0];
+                } elseif (is_object($sampleDecoded) && isset($sampleDecoded->results->table_data) && is_array($sampleDecoded->results->table_data) && isset($sampleDecoded->results->table_data[0])) {
+                    $sampleRow = (array) $sampleDecoded->results->table_data[0];
+                } elseif (is_object($sampleDecoded) && isset($sampleDecoded->results) && is_array($sampleDecoded->results) && isset($sampleDecoded->results[0])) {
+                    $sampleRow = (array) $sampleDecoded->results[0];
+                }
+            } catch (Throwable $e) {
+                // Fallback
+            }
+
             foreach ($method as $key => $val) {
                 $output[$val]['response'] = [
                     'success' => $exception,
@@ -209,8 +227,10 @@ class Documentation extends Core
                     $request = $curl->get(base_url($slug . '/create', ['format_result' => 'metadata']));
                     $response = json_decode($request->getBody()) ?? [];
 
+                    $fallbackRow = [];
+
                     foreach ($response as $field => $params) {
-                        if ($params->hidden) {
+                        if ($params->hidden || in_array($field, $auditFields)) {
                             unset($response->$field);
 
                             continue;
@@ -221,19 +241,45 @@ class Documentation extends Core
                         }
 
                         $response->$field->type = array_keys((array) $params->type);
+
+                        // Build fallback row value if sampleRow doesn't have this field
+                        $typeKey = $response->$field->type[0] ?? 'text';
+                        if (in_array($typeKey, ['number', 'integer', 'int', 'money', 'percent'])) {
+                            $fallbackRow[$field] = 1;
+                        } elseif (in_array($typeKey, ['boolean'])) {
+                            $fallbackRow[$field] = true;
+                        } elseif (in_array($typeKey, ['date'])) {
+                            $fallbackRow[$field] = date('Y-m-d');
+                        } elseif (in_array($typeKey, ['datetime', 'timestamp'])) {
+                            $fallbackRow[$field] = date('Y-m-d H:i:s');
+                        } else {
+                            $fallbackRow[$field] = 'string';
+                        }
                     }
 
                     $output[$val]['field_data'] = $response;
+
+                    $payloadData = $sampleRow ?: $fallbackRow;
+
+                    $output[$val]['response']['success'] = [
+                        'code' => 200,
+                        'message' => ('update' === $val ? phrase('The data was successfully updated.') : phrase('The data was successfully submitted.')),
+                        'data' => $payloadData
+                    ];
                 } elseif (in_array($val, ['read'])) {
-                    // Get field data
+                    // Get field data for read
                     $request = $curl->get(base_url($slug, $sampleParams));
                     $response = json_decode($request->getBody());
 
-                    if (isset($response[0])) {
+                    if ('complete' === $responseType) {
+                        $output[$val]['response']['success'] = $response ?? [];
+                    } elseif (is_array($response) && isset($response[0])) {
                         $output[$val]['response']['success'] = $response[0];
+                    } else {
+                        $output[$val]['response']['success'] = $response ?? [];
                     }
                 } elseif (! in_array($val, ['delete'])) {
-                    // Get field data
+                    // Get field data for index/other
                     $request = $curl->get(base_url($slug, $sampleParams));
                     $response = json_decode($request->getBody());
 
