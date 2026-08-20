@@ -224,6 +224,9 @@ body.sidebar-collapsed .sidebar-toggle-wrapper {
   display: block;
   padding-left: 24px;
 }
+.user-avatar {
+  width: 48px;
+}
 .btn-group-xs > .btn,
 .btn-xs {
   padding: 1px 5px;

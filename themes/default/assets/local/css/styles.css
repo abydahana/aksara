@@ -210,6 +210,9 @@ a {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity)) !important;
 }
+.user-avatar {
+  width: 48px;
+}
 @keyframes iconFloat {
   0%,
   100% {

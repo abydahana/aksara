@@ -881,7 +881,7 @@ class Comment extends Core
             <div class="comment-item">
                 <div class="d-flex mb-2">
                     <div class="flex-grow-0 pt-1">
-                        <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />
+                        <img src="' . get_image('users', get_userdata('photo'), 'icon') . '" class="img-fluid rounded-circle user-avatar" loading="lazy" decoding="async" />
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center gap-1 comment-bubble">

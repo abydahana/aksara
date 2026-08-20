@@ -126,7 +126,7 @@ $(document).ready(function () {
 
           const $avatarWrapper = $('<div class="flex-grow-0 pt-1"></div>');
           const $avatarLink = $('<a class="--xhr"></a>').attr('href', profileUrl);
-          const $avatarImg = $('<img class="img-fluid rounded-circle" width="48" loading="lazy" decoding="async" />').attr('src', val.photo || '');
+          const $avatarImg = $('<img class="img-fluid rounded-circle user-avatar" loading="lazy" decoding="async" />').attr('src', val.photo || '');
           $avatarWrapper.append($avatarLink.append($avatarImg));
 
           const $contentWrapper = $('<div class="flex-grow-1 ps-3"></div>');
@@ -329,7 +329,7 @@ $(document).ready(function () {
           <div class="form-group mb-3">
             <div class="d-flex align-items-center">
               <div class="flex-grow-0 pt-1">
-                <img class="img-fluid rounded-circle" width="48" />
+                <img class="img-fluid rounded-circle user-avatar" />
               </div>
               <div class="flex-grow-1 ps-3">
                 <div class="position-relative">

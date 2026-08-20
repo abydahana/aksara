@@ -40,7 +40,7 @@
             <div class="d-flex align-items-center">
                 <div class="flex-grow-0">
                     <a href="<?= get_userdata('username') ? base_url('user/' . get_userdata('username')) : 'javascript:void(0)' ?>" class="--xhr">
-                        <img src="<?= get_image('users', get_userdata('photo'), 'icon') ?>" class="img-fluid rounded-circle" alt="<?= get_userdata('first_name') ?>" width="48" loading="lazy" decoding="async" />
+                        <img src="<?= get_image('users', get_userdata('photo'), 'icon') ?>" class="img-fluid rounded-circle user-avatar" alt="<?= get_userdata('first_name') ?>" loading="lazy" decoding="async" />
                     </a>
                 </div>
                 <div class="flex-grow-1 ps-3">
