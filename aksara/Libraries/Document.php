@@ -230,6 +230,10 @@ class Document
         // Load generator
         $pdf = new Mpdf($params);
 
+        if (! empty($params['keepColumns'])) {
+            $pdf->keepColumns = true;
+        }
+
         // Render output
         $pdf->SetCreator('Aby Dahana (abydahana.github.io)');
         $pdf->SetAuthor('Aby Dahana (abydahana.github.io)');
