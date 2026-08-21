@@ -25,6 +25,7 @@ $routes->group(
         $routes->add('read', 'Read::index/$1');
         $routes->add('search', 'Search::index');
         $routes->add('tags', 'Tags::index');
+        $routes->add('(:segment)/(:segment)/pdf', 'Read::pdf/$1/$2');
         $routes->add('(:segment)/(:segment)', 'Read::index/$1/$2');
         $routes->add('(:segment)', 'Category::index/$1');
     }

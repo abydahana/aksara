@@ -17,6 +17,8 @@
 
 namespace Aksara\Modules\Blogs\Controllers;
 
+use Aksara\Libraries\Document;
+use Aksara\Libraries\Miscellaneous;
 use Aksara\Laboratory\Core;
 
 class Read extends Core
@@ -121,6 +123,82 @@ class Read extends Core
         ->limit(1)
 
         ->render($this->_table);
+    }
+
+    public function pdf($category = null, $slug = null)
+    {
+        $post = $this->_post($category, $slug);
+
+        if (! $post) {
+            return throw_exception(404, phrase('The post you requested was not found or has already been archived.'), base_url('blogs'));
+        }
+
+        $categorySlug = strtolower((string) $post->category_slug);
+        $postSlug = strtolower((string) $post->post_slug);
+        $postUrl = base_url('blogs/' . $categorySlug . '/' . $postSlug);
+
+        $miscellaneous = new Miscellaneous();
+        $qrcode = $miscellaneous->qrcodeGenerator($postUrl);
+
+        $html = view('Aksara\Modules\Blogs\Views\pdf', [
+            'post' => $post,
+            'title' => $post->post_title,
+            'qrcode' => $qrcode
+        ]);
+
+        $document = new Document();
+
+        $response = $document->generate($html, $post->post_title, 'embed', [
+            'page-width' => '8.5in',
+            'page-height' => '13in',
+            'margin-top' => 8,
+            'margin-right' => 8,
+            'margin-bottom' => 8,
+            'margin-left' => 8
+        ]);
+
+        return $response
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->setHeader('Pragma', 'no-cache')
+            ->setHeader('Expires', '0');
+    }
+
+    private function _post($category = null, $slug = null)
+    {
+        return $this->model->select('
+            blogs.post_id,
+            blogs.post_slug,
+            blogs.post_title,
+            blogs.post_excerpt,
+            blogs.post_content,
+            blogs.post_tags,
+            blogs.featured_image,
+            blogs.created_at,
+            blogs.updated_at,
+            blogs_categories.category_slug,
+            blogs_categories.category_title,
+            blogs_categories.category_description,
+            blogs_categories.category_image,
+            app_users.first_name,
+            app_users.last_name,
+            app_users.username,
+            app_users.photo,
+            app_users.bio
+        ')
+        ->join(
+            'blogs_categories',
+            'blogs_categories.category_id = blogs.post_category'
+        )
+        ->join(
+            'app_users',
+            'app_users.user_id = blogs.created_by'
+        )
+        ->where('blogs_categories.category_slug', $category)
+        ->where('blogs.post_slug', $slug)
+        ->where('blogs.status', 1)
+        ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')
+        ->get($this->_table, 1)
+        ->row();
     }
 
     private function _getCategories()
