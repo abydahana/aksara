@@ -19,11 +19,10 @@ namespace Aksara\Laboratory;
 
 use DateTime;
 use Throwable;
-use Config\Mimes;
 use Config\Services;
-use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Model;
 use Aksara\Libraries\Storage;
+use Aksara\Libraries\Uploader;
 
 class Validation
 {
@@ -431,156 +430,31 @@ class Validation
             $uploadPath = $uploadPath[1] ?? $uploadPath[0];
         }
 
-        $source = $request->getFile($filename);
-        $mimeType = new Mimes();
-        $validMime = [];
+        $file = $request->getFile($filename);
 
-        if (! $source || ! $source->getName() || ! $source->isValid()) {
-            if (is_object($source) && method_exists($source, 'getError') && $source->getError() && $source->getError() !== UPLOAD_ERR_NO_FILE) {
-                $this->_uploadError = $this->_getUploadErrorMessage($source->getError());
+        if (! $file || ! $file->getName()) {
+            return false;
+        }
+
+        if (! $file->isValid()) {
+            if ($file->getError() !== UPLOAD_ERR_NO_FILE) {
+                $this->_uploadError = $file->getErrorString() ?? phrase('No file uploaded.');
             }
 
             return false;
         }
 
-        if ('image' == $type) {
-            // The selected file is image format
-            $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
+        $uploader = new Uploader();
+        $uploadType = strtolower($type ?: 'file');
+        $filename = $uploader->upload($file, UPLOAD_PATH . '/' . $uploadPath, $uploadType);
 
-            foreach ($filetype as $key => $val) {
-                $validMime[] = $mimeType->guessTypeFromExtension($val);
-            }
-        } else {
-            // The selected file is non-image format
-            $filetype = array_map('trim', explode(',', DOCUMENT_FORMAT_ALLOWED));
-
-            foreach ($filetype as $key => $val) {
-                $validMime[] = $mimeType->guessTypeFromExtension($val);
-            }
-        }
-
-        if (! in_array($source->getMimeType(), $validMime)) {
-            // Mime is invalid
-            $this->_uploadError = phrase('The selected file format is not allowed to be uploaded.');
-
-            return false;
-        } elseif (! in_array(strtolower($source->getExtension()), $filetype)) {
-            // Extension is invalid (bypassed mime check)
-            $this->_uploadError = phrase('The selected file extension is not allowed to be uploaded.');
-
-            return false;
-        } elseif ((float) $source->getSizeByMetricUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE) {
-            // Size is exceeded the maximum allocation
-            $this->_uploadError = phrase('The selected file size exceeds the maximum allocation');
-
-            return false;
-        } elseif (! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
-            // Upload directory is unwritable
-            $this->_uploadError = phrase('The upload folder is not writable.');
+        if (! $filename) {
+            $this->_uploadError = $uploader->getErrorString();
 
             return false;
         }
 
-        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath)) {
-            // Attempt to create new directory
-            try {
-                mkdir(UPLOAD_PATH . '/' . $uploadPath, 0755, true);
-                if (is_file(UPLOAD_PATH . '/placeholder.png')) {
-                    copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/' . $uploadPath . '/placeholder.png');
-                }
-            } catch (Throwable $e) {
-                $this->_uploadError = $e->getMessage();
-
-                return false;
-            }
-        }
-
-        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs')) {
-            // Attempt to create new directory
-            try {
-                mkdir(UPLOAD_PATH . '/' . $uploadPath . '/thumbs', 0755, true);
-                if (is_file(UPLOAD_PATH . '/placeholder_thumb.png')) {
-                    copy(UPLOAD_PATH . '/placeholder_thumb.png', UPLOAD_PATH . '/' . $uploadPath . '/thumbs/placeholder.png');
-                }
-            } catch (Throwable $e) {
-                $this->_uploadError = $e->getMessage();
-
-                return false;
-            }
-        }
-
-        if (! is_dir(UPLOAD_PATH . '/' . $uploadPath . '/icons')) {
-            // Attempt to create new directory
-            try {
-                mkdir(UPLOAD_PATH . '/' . $uploadPath . '/icons', 0755, true);
-                if (is_file(UPLOAD_PATH . '/placeholder_icon.png')) {
-                    copy(UPLOAD_PATH . '/placeholder_icon.png', UPLOAD_PATH . '/' . $uploadPath . '/icons/placeholder.png');
-                }
-            } catch (Throwable $e) {
-                $this->_uploadError = $e->getMessage();
-
-                return false;
-            }
-        }
-
-        // Get encrypted filename
-        $filename = $source->getRandomName();
-        // Read file contents
-        $fileContent = file_get_contents($source->getPathName());
-
-        // Check for PHP tags
-        if (preg_match('/<\?(?:php\s|=\s)|<script\b/i', $fileContent, $match)) {
-            // Ensure the file is not contain exploit command
-            $this->_uploadError = phrase('The file is not allowed to be uploaded.');
-
-            return false;
-        }
-
-        if (str_starts_with($source->getMimeType(), 'image/')) {
-            // Uploaded file is image format, prepare image manipulation
-            $imageinfo = getimagesize($source);
-
-            if (! $imageinfo) {
-                $this->_uploadError = phrase('The selected image file is not valid.');
-
-                return false;
-            }
-
-            $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-            $originalDimension = (is_numeric(IMAGE_DIMENSION) ? IMAGE_DIMENSION : 1024);
-            $thumbnailDimension = (is_numeric(THUMBNAIL_DIMENSION) ? THUMBNAIL_DIMENSION : 256);
-            $iconDimension = (is_numeric(ICON_DIMENSION) ? ICON_DIMENSION : 64);
-
-            if ($source->getMimeType() != 'image/gif' && $imageinfo[0] > $originalDimension) {
-                // Resize image for non-gif format
-                $width = $originalDimension;
-                $height = $originalDimension;
-
-                // Load image manipulation library
-                $image = Services::image('gd');
-
-                try {
-                    // Resize image and move to upload directory
-                    $image->withFile($source)->resize($width, $height, true, $masterDimension)->save(UPLOAD_PATH . '/' . $uploadPath . '/' . $filename);
-                } catch (Throwable $e) {
-                    $this->_uploadError = phrase('Unable to process the uploaded image.');
-
-                    return false;
-                }
-            } else {
-                // Move file to upload directory
-                $source->move(UPLOAD_PATH . '/' . $uploadPath, $filename);
-            }
-
-            // Create thumbnail and icon of image
-            $this->_resizeImage($uploadPath, $filename, 'thumbs', $thumbnailDimension, $thumbnailDimension);
-            $this->_resizeImage($uploadPath, $filename, 'icons', $iconDimension, $iconDimension);
-        } else {
-            // Non-image format, move directly to upload directory
-            $source->move(UPLOAD_PATH . '/' . $uploadPath, $filename);
-        }
-
-        if (! $this->_syncToCloudStorage($uploadPath, $filename, 'image' == $type)) {
+        if (! $this->_syncToCloudStorage($uploadPath, $filename, 'image' === $uploadType)) {
             return false;
         }
 
@@ -674,37 +548,6 @@ class Validation
                 return phrase('File upload stopped by extension');
             default:
                 return phrase('The file is not allowed to be uploaded.');
-        }
-    }
-
-    /**
-     * Resize image to create thumbnail or icon.
-     */
-    private function _resizeImage(string $path, string $filename, string $type, int $width, int $height): bool
-    {
-        $source = UPLOAD_PATH . '/' . $path . '/' . $filename;
-        $target = UPLOAD_PATH . '/' . $path . ($type ? '/' . $type : null) . '/' . $filename;
-
-        $imageinfo = getimagesize($source);
-        $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-
-        try {
-            // Load image manipulation library
-            $image = Services::image('gd');
-
-            // Resize image
-            if ($image->withFile($source)->resize($width, $height, true, $masterDimension)->save($target)) {
-                // Crop image after resized
-                $image->withFile($target)
-                    ->fit($width, $height, 'center')
-                    ->save($target);
-            }
-
-            return true;
-        } catch (Throwable $e) {
-            log_message('error', 'Image resize failed: ' . $e->getMessage());
-
-            return false;
         }
     }
 }

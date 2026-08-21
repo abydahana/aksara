@@ -20,6 +20,7 @@ namespace Aksara\Modules\CMS\Controllers\Pages;
 use Throwable;
 use Aksara\Laboratory\Core;
 use Aksara\Libraries\AI\AI;
+use Aksara\Libraries\Uploader;
 use Aksara\Libraries\PageBuilder\PageBuilder;
 
 class Pages extends Core
@@ -263,24 +264,25 @@ class Pages extends Core
 
         $frontendTheme = get_setting('frontend_theme') ?: 'default';
 
-        echo '<!DOCTYPE html><html data-bs-theme="' . $theme . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . phrase('Page Preview') . '</title>';
-        echo '<meta charset="UTF-8" />';
-        echo '<meta http-equiv="X-UA-Compatible" content="IE=edge" />';
-        echo '<meta name="msapplication-navbutton-color" content="#212529" />';
-        echo '<meta name="theme-color" content="#212529" />';
-        echo '<meta name="apple-mobile-web-app-status-bar-style" content="#212529" />';
-        echo '<meta name="mobile-web-app-capable" content="yes" />';
-        echo '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />';
-        echo '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
-        echo '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
-        echo '<link rel="stylesheet" href="' . base_url('themes/' . $frontendTheme . '/assets/local/css/theme.min.css') . '">';
-        echo '<link rel="icon" type="image/x-icon" href="' . get_image('settings', get_setting('app_icon'), 'icon') . '" />';
-        echo '<style>.section-padding{padding:80px 0}</style>';
-        echo '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
-        echo '</head><body>' . $html;
-        echo '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';
-        echo '</body></html>';
-        exit;
+        $output = '<!DOCTYPE html><html data-bs-theme="' . $theme . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . phrase('Page Preview') . '</title>';
+        $output .= '<meta charset="UTF-8" />';
+        $output .= '<meta http-equiv="X-UA-Compatible" content="IE=edge" />';
+        $output .= '<meta name="msapplication-navbutton-color" content="#212529" />';
+        $output .= '<meta name="theme-color" content="#212529" />';
+        $output .= '<meta name="apple-mobile-web-app-status-bar-style" content="#212529" />';
+        $output .= '<meta name="mobile-web-app-capable" content="yes" />';
+        $output .= '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />';
+        $output .= '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
+        $output .= '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
+        $output .= '<link rel="stylesheet" href="' . base_url('themes/' . $frontendTheme . '/assets/local/css/theme.min.css') . '">';
+        $output .= '<link rel="icon" type="image/x-icon" href="' . get_image('settings', get_setting('app_icon'), 'icon') . '" />';
+        $output .= '<style>.section-padding{padding:80px 0}</style>';
+        $output .= '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
+        $output .= '</head><body>' . $html;
+        $output .= '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';
+        $output .= '</body></html>';
+
+        return $this->response->setBody($output);
     }
 
     public function builderImages()
@@ -291,12 +293,13 @@ class Pages extends Core
         $page = (int) ($this->request->getGet('page') ?? 1);
         $perPage = 12;
 
-        if (! is_dir($path)) {
-            mkdir($path, 0755, true);
+        if (! is_dir($path) && ! mkdir($path, 0755, true)) {
+            return make_json(['error' => phrase('The upload folder is not writable.')]);
         }
 
         $files = array_diff(scandir($path), ['.', '..', 'index.html', '.htaccess', 'thumbs', 'icons', 'placeholder.png']);
-        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+        $uploader = new Uploader();
+        $allowedExtensions = $uploader->imageExtensions();
 
         $images = [];
 
@@ -304,23 +307,22 @@ class Pages extends Core
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
             $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
-            if (! is_file($filePath) || ! in_array($ext, $validExtensions)) {
+            if (! is_file($filePath) || ! in_array($ext, $allowedExtensions)) {
                 continue;
             }
 
             try {
-                if ('svg' === $ext) {
-                    $fileContent = file_get_contents($filePath);
-                    // SVG is XML text: ensure it doesn't contain PHP tags or executable scripts
-                    if (preg_match('/<\?(?:php\s|=\s)|<script\b/i', $fileContent)) {
-                        continue;
-                    }
-                } else {
-                    // Raster images: verify MIME type and binary image structure & dimensions
-                    $mime = function_exists('mime_content_type') ? mime_content_type($filePath) : '';
-                    if (($mime && ! str_starts_with($mime, 'image/')) || ! getimagesize($filePath)) {
-                        continue;
-                    }
+                // Raster images: verify MIME type and binary image structure & dimensions
+                $mime = function_exists('mime_content_type') ? mime_content_type($filePath) : '';
+                if (
+                    ! $uploader->isSafeImage(
+                        $filePath,
+                        $ext,
+                        ($mime ?: null),
+                        $allowedExtensions
+                    )
+                ) {
+                    continue;
                 }
             } catch (\Throwable $e) {
                 // Skip unreadable or corrupted files
@@ -376,41 +378,34 @@ class Pages extends Core
      */
     public function builderUpload()
     {
-        if (! $this->request->getFile('file')) {
+        $file = $this->request->getFile('file');
+
+        if (! $file || ! $file->getName()) {
             return make_json(['error' => phrase('No file uploaded.')]);
         }
 
-        $file = $this->request->getFile('file');
-
         if (! $file->isValid()) {
-            return make_json(['error' => $file->getErrorString()]);
-        }
-
-        // Security: strictly validate image
-        if (! in_array($file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'])) {
-            return make_json(['error' => phrase('Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.')]);
-        }
-
-        $path = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . 'pages';
-
-        if (! is_dir($path)) {
-            mkdir($path, 0755, true);
-        }
-
-        $name = $file->getRandomName();
-
-        if ($file->move($path, $name)) {
-            // Generate thumbnails and icons
-            resize_image($path . DIRECTORY_SEPARATOR . $name);
-
             return make_json([
-                'success' => true,
-                'name' => $name,
-                'url' => get_image('pages', $name)
+                'error' => (
+                    $file->getError() !== UPLOAD_ERR_NO_FILE
+                    ? $file->getErrorString()
+                    : phrase('No file uploaded.')
+                )
             ]);
         }
 
-        return make_json(['error' => phrase('Failed to move uploaded file.')]);
+        $uploader = new Uploader();
+        $filename = $uploader->upload($file, UPLOAD_PATH . '/pages', 'image');
+
+        if ($filename) {
+            return make_json([
+                'success' => true,
+                'name' => $filename,
+                'url' => get_image('pages', $filename)
+            ]);
+        }
+
+        return make_json(['error' => ($uploader->getErrorString() ?: phrase('Failed to move uploaded file.'))]);
     }
 
     /**

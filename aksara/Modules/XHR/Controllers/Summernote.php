@@ -17,10 +17,8 @@
 
 namespace Aksara\Modules\XHR\Controllers;
 
-use Config\Mimes;
-use Config\Services;
-use CodeIgniter\Files\FileSizeUnit;
 use Aksara\Laboratory\Core;
+use Aksara\Libraries\Uploader;
 
 class Summernote extends Core
 {
@@ -39,73 +37,30 @@ class Summernote extends Core
 
     public function upload()
     {
-        if (! is_dir(UPLOAD_PATH . '/summernote')) {
-            if (mkdir(UPLOAD_PATH . '/summernote', 0755, true)) {
-                copy(UPLOAD_PATH . '/placeholder.png', UPLOAD_PATH . '/summernote/placeholder.png');
-            }
-        }
-
         $source = $this->request->getFile('image');
 
-        if (! $source->isValid() || $source->hasMoved()) {
-            return false;
-        }
-
-        $mimeType = new Mimes();
-        $validMime = [];
-
-        $filetype = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
-
-        foreach ($filetype as $key => $val) {
-            $validMime[] = $mimeType->guessTypeFromExtension($val);
-        }
-
-        if (! $source->getName() || $source->getSizeByMetricUnit(FileSizeUnit::MB) > MAX_UPLOAD_SIZE || ! is_dir(UPLOAD_PATH) || ! is_writable(UPLOAD_PATH)) {
+        if (! $source || ! $source->getName()) {
             return make_json([
                 'status' => 'error',
-                'messages' => phrase('Upload Error!')
+                'messages' => phrase('No file uploaded.')
             ]);
         }
 
-        $extension = strtolower($source->getClientExtension() ?: pathinfo($source->getName(), PATHINFO_EXTENSION));
-        $mimeType = strtolower($source->getMimeType());
-        $validExtensions = array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED));
-        $validMimeTypes = array_filter($validMime);
-
-        if (! in_array($extension, $validExtensions, true) || ! in_array($mimeType, $validMimeTypes, true)) {
+        if (! $source->isValid()) {
             return make_json([
                 'status' => 'error',
-                'messages' => phrase('Upload Error!')
+                'messages' => (
+                    $source->getError() !== UPLOAD_ERR_NO_FILE
+                    ? $source->getErrorString()
+                    : phrase('No file uploaded.')
+                )
             ]);
         }
 
-        $filename = $source->getRandomName();
+        $uploader = new Uploader();
+        $filename = $uploader->upload($source, UPLOAD_PATH . '/summernote', 'image');
 
-        // Read file contents
-        $fileContent = file_get_contents($source->getPathName());
-
-        // Reject embedded PHP / scripts in uploaded image files
-        if (preg_match('/<\?(php|=)|<script\b/i', $fileContent)) {
-            return make_json([
-                'status' => 'error',
-                'messages' => phrase('The file is not allowed to be uploaded.')
-            ]);
-        }
-
-        $imageinfo = @getimagesize($source->getPathName());
-        if (! $imageinfo || ! isset($imageinfo[2]) || ! in_array(image_type_to_mime_type($imageinfo[2]), $validMimeTypes, true)) {
-            return make_json([
-                'status' => 'error',
-                'messages' => phrase('Upload Error!')
-            ]);
-        }
-
-        $width = ($imageinfo[0] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[0]);
-        $height = ($imageinfo[1] > IMAGE_DIMENSION ? IMAGE_DIMENSION : $imageinfo[1]);
-        $masterDimension = ($imageinfo[0] > $imageinfo[1] ? 'width' : 'height');
-        $image = Services::image('gd');
-
-        if ($image->withFile($source)->resize($width, $height, true, $masterDimension)->save(UPLOAD_PATH . '/summernote/' . $filename)) {
+        if ($filename) {
             return make_json([
                 'status' => 'success',
                 'source' => get_image('summernote', $filename),
@@ -115,7 +70,7 @@ class Summernote extends Core
 
         return make_json([
             'status' => 'error',
-            'messages' => phrase('Upload Error!')
+            'messages' => ($uploader->getErrorString() ?: phrase('Upload Error!'))
         ]);
     }
 

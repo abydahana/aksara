@@ -706,7 +706,16 @@ function reactivate(individual, ignoreSelf) {
                 method: 'POST',
                 beforeSend: function () {},
                 success: function (response) {
+                  if (!response || 'success' !== response.status || !response.source) {
+                    return throw_exception(403, response && response.messages ? response.messages : phrase('Upload Error!'));
+                  }
+
                   context.summernote('insertImage', response.source);
+                },
+                error: function (response) {
+                  response = response && response.responseJSON ? response.responseJSON : response;
+
+                  return throw_exception(403, response && response.messages ? response.messages : phrase('Upload Error!'));
                 }
               });
             },
