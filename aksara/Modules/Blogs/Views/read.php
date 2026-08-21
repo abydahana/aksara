@@ -90,6 +90,9 @@ if ($article): ?>
                             </div>
                             <div class="col-sm-6 col-md-4">
                                 <div class="btn-group d-flex rounded-pill overflow-hidden">
+                                    <a href="<?= base_url('blogs/' . $fieldData->category_slug->value . '/' . $fieldData->post_slug->value . '/pdf', ['v' => strtotime($fieldData->updated_at->value ?: $fieldData->created_at->value)]) ?>" class="btn btn-danger border-0" data-bs-toggle="tooltip" title="<?= phrase('Download PDF') ?>" target="_blank">
+                                        <i class="mdi mdi-file-pdf-box"></i> <?= phrase('Download') ?>
+                                    </a>
                                     <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page() ?>" class="btn btn-primary border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook') ?>" target="_blank">
                                         <i class="mdi mdi-facebook"></i>
                                     </a>
