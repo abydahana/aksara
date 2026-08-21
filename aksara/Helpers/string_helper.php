@@ -175,7 +175,10 @@ if (! function_exists('make_json')) {
             $output = gzencode($output, 6); // Level 6 provides a good balance between compression ratio and speed
         }
 
-        return $response->setBody($output);
+        // Send response to client
+        $response->setBody($output)->send();
+
+        exit; // Escape from lifecycle
     }
 }
 
