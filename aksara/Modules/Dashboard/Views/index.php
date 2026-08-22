@@ -327,14 +327,14 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                     </div>
                 </div>
                 <div class="card overflow-hidden rounded-4 mb-3">
-                    <div class="card-header border-0 p-4">
+                    <div class="card-header border-0">
                         <h5 class="card-title mb-0">
                             <?= phrase('Recent Activities') ?>
                         </h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-sm table-hover mb-0">
                                 <thead>
                                     <tr>
                                         <th class="border-0 px-4 text-muted small text-uppercase"><?= phrase('Date') ?></th>
@@ -357,7 +357,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                                                     <span class="text-sm"><?= $log->browser ?></span>
                                                 </td>
                                                 <td class="px-4 align-middle">
-                                                    <code class="text-sm text-primary"><?= $log->ip_address ?></code>
+                                                    <a href="https://ipinfo.io/<?= $log->ip_address ?>" target="_blank" class="text-sm text-primary"><?= $log->ip_address ?><i class="mdi mdi-launch"></i></a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -378,7 +378,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
         <div class="col-lg-4">
             <div class="sticky-lg-top" style="top:6rem">
                 <div class="card overflow-hidden rounded-4 mb-3">
-                    <div class="card-header bg-transparent border-0 p-4">
+                    <div class="card-header bg-transparent border-0">
                         <h5 class="fw-bold mb-0">
                             <?= phrase('Announcements') ?>
                         </h5>

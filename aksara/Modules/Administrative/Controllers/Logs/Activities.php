@@ -56,6 +56,7 @@ class Activities extends Core
         ->setField('timestamp', 'current_timestamp')
         ->setField('path', 'hyperlink', '{{ path }}/{{ method }}', '{{ query }}')
         ->setField('user_id', 'hyperlink', 'user', ['user_id' => 'user_id'], true)
+        ->setField('ip_address', 'hyperlink', 'https://ipinfo.io/{{ip_address}}', null, true)
 
         ->orderBy('id', 'desc')
 
