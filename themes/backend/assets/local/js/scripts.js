@@ -126,6 +126,84 @@ $(document).ready(function () {
   });
 
   /**
+   * Notification picker
+   */
+  $('body').on('click touch', '[data-role=notifications]', function (e) {
+    let context = $(this);
+
+    $.ajax({
+      url: $(this).attr('href'),
+      method: 'POST',
+      context: this,
+      data: {
+        prefer: 'dropdown'
+      },
+      beforeSend: function () {
+        context.closest('li').find('ul').html('');
+      }
+    })
+      .done(function (response) {
+        if (typeof response === 'object') {
+          context.closest('li').find('ul').css('minWidth', 340);
+          context.closest('li').find('ul').html(`
+            <li class="nav-item px-3 mb-2 d-none d-md-block">
+              <h5>
+                <i class="mdi mdi-bell-ring"></i> ${phrase('Notifications')}
+              </h5>
+            </li>
+          `);
+
+          if (response.length) {
+            $.each(response, function (key, val) {
+              $(`
+                <li class="nav-item px-2 mb-2">
+                  <a href="${val.url}" class="nav-link rounded --xhr" target="${val.target}">
+                    <div class="row g-0">
+                      <div class="col-2">
+                        <div class="position-relative">
+                          <i class="mdi ${'comment' === val.type ? 'mdi-comment-processing bg-success' : 'reply' === val.type ? 'mdi-reply bg-dark' : 'like' === val.type ? 'mdi-thumb-up bg-primary' : 'upvote' === val.type ? 'mdi-arrow-up-circle bg-info' : 'mdi-heart bg-danger'} text-light px-1 rounded-circle gradient position-absolute end-0 bottom-0"></i>
+                          <img src="${val.avatar}" class="rounded-circle img-fluid" alt="${val.user}" loading="lazy" decoding="async" />
+                        </div>
+                      </div>
+                      <div class="col-10 ps-2">
+                        <p class="mb-0">
+                          <b>${val.user}</b> ${val.text}
+                        </p>
+                        <p class="mb-0 text-muted">
+                          ${val.created_at}
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              `).appendTo(context.closest('li').find('ul'));
+            });
+          } else {
+            $(`
+              <li class="nav-item px-3 mb-2">
+                <div class="text-warning">
+                  ${phrase('You have no notification at the moment.')}
+                </div>
+              </li>
+            `).appendTo(context.closest('li').find('ul'));
+          }
+        }
+      })
+      .fail(function (response, textStatus, errorThrown) {
+        if (textStatus === 'abort') {
+          return;
+        }
+
+        if (typeof response.responseJSON !== 'undefined') {
+          // Get response JSON
+          response = response.responseJSON;
+        }
+
+        return throw_exception(response.code, response?.message);
+      });
+  });
+
+  /**
    * Toggle theme dark/light
    */
   // Set initial icon based on saved theme
