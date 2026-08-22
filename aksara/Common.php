@@ -16,6 +16,8 @@
  */
 
 use CodeIgniter\CodeIgniter;
+use CodeIgniter\View\View;
+use Config\Services;
 use Aksara\Laboratory\Model;
 
 if (! function_exists('aksara')) {
@@ -566,5 +568,67 @@ if (! function_exists('translation_file')) {
     function translation_file(string $language, string $scope = 'core'): string
     {
         return WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . ('core' === $scope ? '' : $scope . DIRECTORY_SEPARATOR) . $language . '.json';
+    }
+}
+
+if (! function_exists('view')) {
+    /**
+     * Render a view template.
+     *
+     * Overrides CodeIgniter's view() helper to add automatic case-convention resolution
+     * (e.g. blogBook vs blog_book vs blog-book vs BlogBook) if the exact view path is not found.
+     *
+     * @param   string $name View file name or path
+     * @param   array  $data Data array to pass to view
+     * @param   array  $options Options array
+     * @return  string Rendered view HTML string
+     */
+    function view(string $name, array $data = [], array $options = []): string
+    {
+        /** @var View $renderer */
+        $renderer = Services::renderer();
+
+        $config = config('Views');
+        $saveData = $config->saveData ?? true;
+
+        if (array_key_exists('saveData', $options)) {
+            $saveData = (bool) $options['saveData'];
+            unset($options['saveData']);
+        }
+
+        $locator = Services::locator();
+
+        // Check if exact view name exists
+        if (! $locator->locateFile($name, 'Views')) {
+            $delimiter = str_contains($name, '\\') ? '\\' : '/';
+            $parts = explode($delimiter, $name);
+            $lastPart = array_pop($parts);
+            $prefix = $parts ? implode($delimiter, $parts) . $delimiter : '';
+
+            $words = str_replace(['_', '-'], ' ', preg_replace('/(?<!^)[A-Z]/', ' $0', $lastPart));
+            $words = preg_replace('/\s+/', ' ', trim($words));
+
+            $snakePart = strtolower(str_replace(' ', '_', $words));
+            $kebabPart = strtolower(str_replace(' ', '-', $words));
+            $camelPart = lcfirst(str_replace(' ', '', ucwords(strtolower($words))));
+            $pascalPart = str_replace(' ', '', ucwords(strtolower($words)));
+
+            $candidates = array_unique([
+                $prefix . $snakePart,
+                $prefix . $kebabPart,
+                $prefix . $camelPart,
+                $prefix . $pascalPart,
+            ]);
+
+            foreach ($candidates as $candidate) {
+                if ($locator->locateFile($candidate, 'Views')) {
+                    $name = $candidate;
+
+                    break;
+                }
+            }
+        }
+
+        return $renderer->setData($data, 'raw')->render($name, $options, $saveData);
     }
 }
