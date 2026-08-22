@@ -295,22 +295,23 @@ $content = $cleanContent($post->post_content);
             height: 80px !important;
         }
 
-        .author-box .author-name {
+        .author-name {
             font-size: 12pt;
             font-weight: 700;
             line-height: 1.2;
         }
 
-        .author-box .author-username {
+        .author-username {
             font-size: 10pt;
             font-weight: 400;
             color: #666666;
         }
 
-        .author-box .author-bio {
+        .author-bio {
             margin: 8px 0 0;
             color: #50483f;
             font-size: 9pt;
+            font-family: 'bookos';
             line-height: 1.45;
         }
 

@@ -25,7 +25,7 @@
             }
 
             $item = '
-				<div class="card border-hover rounded-4 mb-3 ' . (isset($val->color) ? $val->color : 'bg-body-secondary') . '">
+				<div class="card border border-hover rounded-4 mb-3 ' . (isset($val->color) ? $val->color : 'bg-body-secondary') . '">
 					<a href="#collapse_' . $key . '" class="card-header border-0" data-bs-toggle="collapse">
 						<div class="row align-items-center">
 							<div class="col-3 col-sm-2">
@@ -42,7 +42,7 @@
 						</div>
 					</a>
 					<div id="collapse_' . $key . '" class="collapse' . (! $key ? ' show' : null) . '" data-bs-parent="#accordion">
-						<div class="card-body rounded-4 bg-body p-3">
+						<div class="card-body rounded-4 bg-body-tertiary p-3">
 							<form action="' . go_to($val->controller) . '" method="GET" target="_blank" class="no-ajax">
 								<!--
 								<div class="form-group mb-3 alert alert-info">
