@@ -62,9 +62,9 @@ if ($article): ?>
             <div class="row">
                 <div class="col-lg-8">
                     <main class="sticky-lg-top">
-                        <div class="row align-items-center mb-3 fade-in">
-                            <div class="col-sm-6 col-md-8 mb-3">
-                                <div class="d-flex align-items-center">
+                        <div class="row align-items-center fade-in">
+                            <div class="col-sm-6 col-md-8">
+                                <div class="d-flex align-items-center mb-3">
                                     <div class="flex-grow-0">
                                         <a href="<?= base_url('user/' . $fieldData->username->value) ?>" class="d-block --xhr">
                                             <img src="<?= get_image('users', $fieldData->photo->value, 'thumb') ?>" class="img-fluid rounded-circle" width="64" height="64" />
@@ -89,9 +89,9 @@ if ($article): ?>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-4">
-                                <div class="btn-group d-flex rounded-pill overflow-hidden">
+                                <div class="btn-group d-flex align-items-center rounded-pill mb-3 overflow-hidden">
                                     <a href="<?= base_url('blogs/' . $fieldData->category_slug->value . '/' . $fieldData->post_slug->value . '/pdf', ['v' => strtotime($fieldData->updated_at->value ?: $fieldData->created_at->value)]) ?>" class="btn btn-danger border-0" data-bs-toggle="tooltip" title="<?= phrase('Download PDF') ?>" target="_blank">
-                                        <i class="mdi mdi-file-pdf-box"></i> <?= phrase('Download') ?>
+                                        <i class="mdi mdi-file-pdf-box"></i>
                                     </a>
                                     <a href="//www.facebook.com/sharer/sharer.php?u=<?= current_page() ?>" class="btn btn-primary border-0" data-bs-toggle="tooltip" title="<?= phrase('Share to Facebook') ?>" target="_blank">
                                         <i class="mdi mdi-facebook"></i>
