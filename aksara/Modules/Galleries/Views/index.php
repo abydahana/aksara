@@ -73,7 +73,7 @@ if ($results): ?>
                     <div class="col-lg-6">
                         <div class="rounded-5 border-hover overflow-hidden mb-4 fade-in">
                             <div class="row g-0">
-                                <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 9)) ?> text-center d-flex align-items-end" style="background:url(<?= get_image(
+                                <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 8)) ?> text-center d-flex align-items-end" style="background:url(<?= get_image(
                                     'galleries',
                                     $cover,
                                 ) ?>) center center no-repeat; background-size:cover; min-height:min(360px, 50vh)">
@@ -100,7 +100,7 @@ if ($results): ?>
                                 </div>
 
                                 <?php if (count($images) > 1): ?>
-                                    <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 3 : 6) ?> bg-body-tertiary d-flex align-items-center">
+                                    <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 4 : 6) ?> bg-body-tertiary d-flex align-items-center">
                                         <div class="w-100">
                                         <?= $thumbnail ?>
                                         </div>

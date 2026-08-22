@@ -38,9 +38,10 @@ if ($articles): ?>
                             <div class="carousel-inner rounded-5 border-hover overflow-hidden">
                                 <?php foreach ($spotlight as $key => $val): ?>
                                     <div class="carousel-item<?= ! $key ? ' active' : null ?>">
-                                        <div class="clip gradient-top"></div>
                                         <a href="<?= base_url(['blogs', $val->category_slug, $val->post_slug]) ?>" class="d-block --xhr">
-                                            <img src="<?= get_image('blogs', $val->featured_image) ?>" class="d-block w-100 carousel-headline" alt="<?= $val->post_title ?>">
+                                            <div class="ratio ratio-16x9">
+                                                <img src="<?= get_image('blogs', $val->featured_image) ?>" class="object-fit-cover carousel-headline" alt="<?= $val->post_title ?>">
+                                            </div>
                                         </a>
                                         <div class="carousel-caption text-start">
                                             <div class="mb-3">
@@ -51,25 +52,25 @@ if ($articles): ?>
                                                     <p class="fs-5 d-none d-md-inline text-outline-body">
                                                         <?= truncate($val->post_excerpt, 90) ?>
                                                     </p>
-                                                    <p class="text-muted">
+                                                    <p class="text-outline-body">
                                                         <i class="mdi mdi-clock-outline"></i> <?= time_ago($val->updated_at ?? $val->created_at) ?>
                                                     </p>
                                                 </a>
                                             </div>
-                                            <div class="row g-0 align-items-center">
-                                                <div class="col-1">
-                                                    <a href="<?= base_url('user/' . $val->username) ?>" class="text-sm text-outline-body d-block --xhr">
-                                                        <img src="<?= get_image('users', $val->photo, 'icon') ?>" class="img-fluid rounded-circle" alt="<?= $val->first_name . ' ' . $val->last_name ?>" />
-                                                    </a>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex align-items-center">
+                                                        <a href="<?= base_url('user/' . $val->username) ?>" class="text-sm text-outline-body d-block --xhr">
+                                                            <img src="<?= get_image('users', $val->photo, 'icon') ?>" class="img-fluid rounded-circle user-avatar" alt="<?= $val->first_name . ' ' . $val->last_name ?>" />
+                                                        </a>
+                                                        <a href="<?= base_url('user/' . $val->username) ?>" class="ps-2 text-outline-body lh-1 --xhr">
+                                                            <b><?= $val->first_name . ' ' . $val->last_name ?></b>
+                                                            <br />
+                                                            <span class="text-muted">@<?= $val->username ?></span>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                                <div class="col-8">
-                                                    <a href="<?= base_url('user/' . $val->username) ?>" class="ps-2 text-outline-body --xhr">
-                                                        <b>
-                                                            <?= $val->first_name . ' ' . $val->last_name ?>
-                                                        </b>
-                                                    </a>
-                                                </div>
-                                                <div class="col-3 text-end">
+                                                <div class="flex-shrink-0">
                                                     <button type="button" class="btn btn-sm rounded-pill --modify <?= is_liked($val->post_id, 'blogs/' . $val->category_slug . '/' . $val->post_slug) ? 'btn-danger' : 'btn-outline-danger' ?>" data-href="<?= base_url('xhr/widget/comment/repute', ['post_id' => $val->post_id, 'path' => 'blogs/' . $val->category_slug . '/' . $val->post_slug]) ?>" data-class-add="btn-danger" data-class-remove="btn-outline-danger" aria-label="<?= phrase('Like') ?>" data-bs-toggle="tooltip" title="<?= phrase('Like') ?>">
                                                         <i class="mdi mdi-heart"></i>
                                                     </button>

@@ -194,7 +194,7 @@
                                     <?= number_format($val->post_total) . ' ' . phrase('Articles') ?>
                                 </p>
                                 <div class="d-none d-md-block">
-                                    <a href="<?= base_url('blogs/' . $val->category_slug) ?>" class="btn btn-outline-light btn-sm rounded-pill px-3 --xhr">
+                                    <a href="<?= base_url('blogs/' . $val->category_slug) ?>" class="btn btn-outline-secondary btn-sm rounded-pill px-3 --xhr">
                                         <?= phrase('Browse Articles') ?> <i class="mdi mdi-arrow-right"></i>
                                     </a>
                                 </div>

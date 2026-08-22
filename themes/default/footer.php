@@ -5,7 +5,7 @@
                 <div class="col-12 col-sm-12 col-lg-3 mb-3 mb-lg-0">
                     <div class="text-center text-lg-start">
                         <a href="<?= base_url() ?>">
-                            <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" class="img-fluid mb-3" alt="<?= get_setting('app_name') . ' Icon' ?>" loading="lazy" decoding="async" />
+                            <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" class="img-fluid mb-3" width="80" alt="<?= get_setting('app_name') . ' Icon' ?>" loading="lazy" decoding="async" />
                         </a>
                         <p class="text-muted">
                             <?= nl2br(get_setting('app_description')) ?>
@@ -88,18 +88,16 @@
         </div>
     </section>
     <div class="container py-3">
+        <p class="text-body text-center text-md-start m-0">&copy; <?= date('Y') ?> <?= get_setting('office_name') ?></p>
         <div class="row">
-            <div class="col-md-6 text-center text-md-start">
-                <p class="text-body m-0">&copy; <?= date('Y') ?> <?= get_setting('office_name') ?></p>
-            </div>
-            <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+            <div class="col-md-6 text-center text-md-end order-md-2">
                 <span class="text-body">
                     <i class="mdi mdi-earth"></i> <?= get_user_language() ?>
                 </span>
             </div>
+            <div class="col-md-6 text-center text-md-start order-md-1">
+                <span class="text-sm text-muted">Powered by <a href="//aksaracms.com" target="_blank"><b>Aksara <?= aksara('build_version') ?></b></a></span>
+            </div>
         </div>
-        <p class="text-sm m-0 text-muted text-center text-md-start">
-            Powered by <a href="//aksaracms.com" target="_blank"><b>Aksara <?= aksara('build_version') ?></b></a>
-        </p>
     </div>
 </footer>
