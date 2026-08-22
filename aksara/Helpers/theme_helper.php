@@ -137,57 +137,164 @@ if (! function_exists('get_module_asset')) {
     }
 }
 
-if (! function_exists('generate_menu')) {
+if (! function_exists('theme_config')) {
     /**
-     * Menu generator
+     * Decode and parse the user's theme configuration cookie.
      */
-    function generate_menu(
-        array|object $menus,
-        string $ulClass = 'navbar-nav',
-        string $liClass = 'nav-item',
-        string $aClass = 'nav-link',
-        string $toggleClass = 'dropdown-toggle',
-        string $toggleInitial = 'data-bs-toggle="dropdown"',
-        string $dropdownClass = 'dropdown',
-        string $subUlClass = 'dropdown-menu',
-        bool $isChildren = false,
-        int $level = 0
-    ): string {
-        $output = null;
+    function theme_config(): ?array
+    {
+        helper('cookie');
 
-        foreach ($menus as $key => $val) {
-            if (isset($val->id) && isset($val->label) && isset($val->slug)) {
-                if (! $val->slug || '---' == $val->slug) {
-                    $output .= '
-                        <li class="' . $liClass . (isset($val->class) ? ' ' . $val->class : null) . '">
-                            <span class="' . $aClass . '">
-                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<b class="text-sm hide-on-collapse">' . ($val->label ? $val->label : null) . '</b>
-                            </span>
-                        </li>
-                    ';
-                } else {
-                    $segments = service('uri')->getSegments();
-                    $slug = $val->slug;
-                    $children = (isset($val->children) && $val->children ? $val->children : []);
+        $rawThemeConfig = get_cookie('aksara_theme_config') ?? ($_COOKIE['aksara_theme_config'] ?? null);
 
-                    if (preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $val->slug)) {
-                        $val->slug = $val->slug . '" target="_blank';
-                    } else {
-                        $val->slug = base_url($val->slug);
+        if (! $rawThemeConfig) {
+            return null;
+        }
+
+        $sanitizedConfig = str_replace(' ', '+', urldecode((string) $rawThemeConfig));
+        $decodedConfig = base64_decode($sanitizedConfig);
+
+        if (! $decodedConfig) {
+            return null;
+        }
+
+        $parsed = json_decode($decodedConfig, true);
+
+        return is_array($parsed) ? $parsed : null;
+    }
+}
+
+if (! function_exists('theme_mode')) {
+    /**
+     * Get active theme mode (light or dark).
+     */
+    function theme_mode(?array $theme = null): string
+    {
+        if (is_array($theme) && ! empty($theme['activeMode'])) {
+            return $theme['activeMode'];
+        }
+
+        helper('cookie');
+        $rawThemeMode = get_cookie('aksara_theme') ?? ($_COOKIE['aksara_theme'] ?? null);
+
+        return $rawThemeMode ?: 'light';
+    }
+}
+
+if (! function_exists('compile_theme')) {
+    /**
+     * Compile user theme overrides into CSS rulesets.
+     */
+    function compile_theme(?array $theme = null): ?string
+    {
+        if (! is_array($theme) || empty($theme['overrides']) || empty($theme['activeMode'])) {
+            return null;
+        }
+
+        $map = [
+            'primary' => ['--wg-primary', '--bs-primary', '--bs-link-color'],
+            'secondary' => ['--wg-text-light', '--bs-secondary'],
+            'accent' => ['--wg-primary-hover', '--bs-link-hover-color', '--bs-accent', '--range-color'],
+            'background' => ['--bs-body-bg'],
+            'surface' => ['--bs-surface-bg', '--bs-sidebar-bg'],
+            'foreground' => ['--wg-text', '--bs-body-color', '--bs-emphasis-color'],
+            'muted' => ['--wg-bg-light', '--bs-breadcrumb-bg'],
+            'secondaryBg' => ['--bs-secondary-bg'],
+            'tertiaryBg' => ['--bs-tertiary-bg'],
+            'border' => ['--wg-border', '--bs-border-color', '--range-track-border'],
+            'success' => ['--bs-success'],
+            'info' => ['--bs-info'],
+            'warning' => ['--bs-warning'],
+            'danger' => ['--bs-danger']
+        ];
+
+        $rgbMap = [
+            'primary' => ['--bs-primary-rgb'],
+            'secondary' => ['--bs-secondary-rgb'],
+            'accent' => ['--bs-accent-rgb'],
+            'success' => ['--bs-success-rgb'],
+            'info' => ['--bs-info-rgb'],
+            'warning' => ['--bs-warning-rgb'],
+            'danger' => ['--bs-danger-rgb'],
+            'background' => ['--bs-body-bg-rgb'],
+            'foreground' => ['--bs-body-color-rgb', '--bs-emphasis-color-rgb'],
+            'secondaryBg' => ['--bs-secondary-bg-rgb'],
+            'tertiaryBg' => ['--bs-tertiary-bg-rgb']
+        ];
+
+        $blocks = [];
+
+        foreach (['light', 'dark'] as $mode) {
+            $colors = $theme['overrides'][$mode] ?? [];
+            $css = [];
+
+            foreach ($map as $token => $variables) {
+                if (! empty($colors[$token]) && preg_match('/^#[0-9a-fA-F]{6}$/', $colors[$token])) {
+                    foreach ($variables as $variable) {
+                        $css[] = $variable . ':' . strtolower($colors[$token]);
                     }
-
-                    $output .= '
-                        <li class="' . $liClass . ($children && $dropdownClass ? ' ' . $dropdownClass : null) . ((! $children && isset($segments[$level]) && $segments[$level] == $slug) || service('uri')->getPath() == $slug || (service('uri')->getPath() && preg_replace(['/\/create/', '/\/read/', '/\/update/'], '', service('uri')->getPath()) == $slug) ? ' active' : '') . (isset($val->class) ? ' ' . $val->class : null) . '">
-                            <a href="' . ($children ? '#' : $val->slug) . '" class="' . $aClass . ($children ? ' ' . $toggleClass : null) . '"' . ($children ? ' ' . $toggleInitial : ' data-segmentation="' . preg_replace('/[^a-zA-Z0-9]/', '_', $slug) . '"') . (isset($val->new_tab) && $val->new_tab && ! $children ? ' target="_blank"' : '  data-bs-auto-close="outside"') . '>
-                                ' . (isset($val->icon) && $val->icon && ! in_array($val->icon, ['mdi mdi-blank']) ? '<i class="' . $val->icon . '"></i>' : null) . '<span class="hide-on-collapse">' . $val->label . '</span>
-                            </a>
-                            ' . ($children ? generate_menu($children, $ulClass, $liClass, $aClass, $toggleClass, $toggleInitial, $dropdownClass, $subUlClass, true, ($level + 1)) : null) . '
-                        </li>
-                    ';
                 }
+            }
+
+            foreach ($rgbMap as $token => $variables) {
+                if (! empty($colors[$token]) && preg_match('/^#[0-9a-fA-F]{6}$/', $colors[$token])) {
+                    $rgb = implode(', ', sscanf($colors[$token], '#%02x%02x%02x'));
+                    foreach ($variables as $variable) {
+                        $css[] = $variable . ':' . $rgb;
+                    }
+                }
+            }
+
+            if ($css) {
+                $blocks[] = '[data-bs-theme="' . $mode . '"]{' . implode(';', $css) . '}';
             }
         }
 
-        return '<ul class="' . ($isChildren ? $subUlClass : $ulClass) . '">' . $output . '</ul>';
+        return $blocks ? implode('', $blocks) : null;
+    }
+}
+
+if (! function_exists('theme_color')) {
+    /**
+     * Get theme primary color for browser status bar.
+     */
+    function theme_color(?array $theme = null, ?string $mode = null, ?string $themeName = null): string
+    {
+        $mode = $mode ?: theme_mode($theme);
+
+        if (is_array($theme) && ! empty($theme['overrides'][$mode]['primary']) && preg_match('/^#[0-9a-fA-F]{6}$/', $theme['overrides'][$mode]['primary'])) {
+            return strtolower($theme['overrides'][$mode]['primary']);
+        }
+
+        $baseTheme = is_array($theme) ? ($theme['baseTheme'] ?? 'default') : 'default';
+
+        if (! $themeName) {
+            $themeName = get_theme() ?: 'default';
+        }
+
+        $configPath = ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $themeName . DIRECTORY_SEPARATOR . 'theme.json';
+        $fallbackPath = ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'theme.json';
+
+        $themeConfig = is_file($configPath) ? json_decode((string) file_get_contents($configPath), true) : [];
+
+        if (empty($themeConfig['presets']) && is_file($fallbackPath)) {
+            $themeConfig = json_decode((string) file_get_contents($fallbackPath), true);
+        }
+
+        $presets = $themeConfig['presets'] ?? [];
+        $selectedPreset = null;
+
+        foreach ($presets as $preset) {
+            if (($preset['id'] ?? '') === $baseTheme) {
+                $selectedPreset = $preset;
+                break;
+            }
+        }
+
+        if (! $selectedPreset && ! empty($presets[0])) {
+            $selectedPreset = $presets[0];
+        }
+
+        return $selectedPreset['colors'][$mode]['primary'] ?? ('dark' === $mode ? '#5f7fa6' : '#1e3a5f');
     }
 }

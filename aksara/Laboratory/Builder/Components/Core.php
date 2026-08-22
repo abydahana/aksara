@@ -1296,7 +1296,7 @@ class Core
     public function page404(): array
     {
         $component = <<<EOF
-        <div class="section-padding">
+        <div class="py-5">
             <div class="container fade-in">
                 <div class="text-center">
                     <h1 class="display-1 lh-1 text-muted">

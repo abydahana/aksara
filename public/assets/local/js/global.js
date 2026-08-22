@@ -101,15 +101,6 @@ $(document).ready(function () {
   }
 
   /**
-   * Set the color scheme of browser status bar
-   */
-  let colorScheme = rgba2hex($(config.wrapper.header).css('backgroundColor') ?? '#213C69');
-
-  document.querySelector('meta[name=msapplication-navbutton-color]').setAttribute('content', colorScheme);
-  document.querySelector('meta[name=theme-color]').setAttribute('content', colorScheme);
-  document.querySelector('meta[name=apple-mobile-web-app-status-bar-style]').setAttribute('content', colorScheme);
-
-  /**
    * Store the request to browser history
    */
   history.replaceState(

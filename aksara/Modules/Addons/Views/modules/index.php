@@ -27,7 +27,7 @@
     </div>
     <div class="row border-bottom pb-1 mb-3">
         <div class="col-md-6 offset-md-6 text-end">
-            <a href="<?= current_page('import') ?>" class="btn btn-dark btn-sm --xhr">
+            <a href="<?= current_page('import') ?>" class="btn btn-primary btn-sm rounded-pill --xhr">
                 <i class="mdi mdi-import"></i> <?= phrase('Import Module') ?>
             </a>
         </div>
@@ -42,7 +42,7 @@
                 } ?>
 
                 <div class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="card rounded-4 mb-3">
+                    <div class="card border-hover rounded-4 mb-3">
                         <div class="card-body p-3">
                             <div class="position-relative mb-3">
                                 <img src="<?= $screenshot ?>" class="img-fluid rounded-4 border" alt="<?= $val->name ?>" />
@@ -74,7 +74,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <div class="col-sm-12">
-                <div class="alert alert-warning">
+                <div class="alert alert-warning callout">
                     <i class="mdi mdi-information-outline"></i> <?= phrase('No installed module.') ?>
                 </div>
             </div>

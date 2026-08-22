@@ -11,7 +11,7 @@
     <div data-role="map" class="bg-light" data-geojson="<?= htmlspecialchars(get_setting('office_map')) ?>" data-zoom="16" data-mousewheel="0" style="height:320px"></div>
 </div>
 
-<section class="section-padding fade-in">
+<section class="py-5 fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold">
             <?= $meta->title ?>
@@ -22,7 +22,7 @@
     </div>
 </section>
 
-<section class="section-padding pt-0 fade-in">
+<section class="py-5 pt-0 fade-in">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">

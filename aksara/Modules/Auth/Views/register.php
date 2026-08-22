@@ -6,13 +6,13 @@
  */
 ?>
 
-<div class="section-padding">
+<div class="py-5">
     <div class="container position-relative fade-in">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
                 <div class="card shadow-0 border-light-subtle rounded-5">
                     <div class="card-body p-5">
-                        <div class="text-center border-fade-bottom pb-4 mb-4">
+                        <div class="text-center pb-4 mb-4">
                             <i class="<?= $meta->icon ?> mdi-5x text-secondary mb-3"></i>
                             <h3 class="mb-2"><?= $meta->title ?></h3>
                             <p class="text-muted"><?= truncate($meta->description, 256) ?></p>

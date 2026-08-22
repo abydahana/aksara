@@ -9,7 +9,7 @@
  */
 ?>
 
-<section class="section-padding border-fade-bottom fade-in">
+<section class="py-5 fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2 text-center text-md-start">
@@ -35,7 +35,7 @@
     </div>
 </section>
 
-<section class="section-padding pt-3">
+<section class="py-5 pt-3">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">

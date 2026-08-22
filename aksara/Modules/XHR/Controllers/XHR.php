@@ -44,23 +44,6 @@ class XHR extends Core
         return make_json($output);
     }
 
-    public function themeToggle()
-    {
-        $theme = $this->request->getPost('theme') ?? $this->request->getGet('theme');
-
-        if (in_array($theme, ['dark', 'light'], true)) {
-            set_userdata('app_theme', $theme);
-
-            helper('cookie');
-            set_cookie('aksara_theme', $theme, SESSION_EXPIRATION);
-        }
-
-        return make_json([
-            'status' => 200,
-            'theme' => $theme
-        ]);
-    }
-
     public function setYear()
     {
         $year = $this->request->getGet('year');

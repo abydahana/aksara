@@ -166,7 +166,7 @@
 </section>
 
 <?php if ($categories): ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="text-center">
                 <h2 class="fw-bold m-0 display-6"><?= phrase('Post Categories') ?></h2>
@@ -209,7 +209,7 @@
 
 <!-- Latest News -->
 <?php if ($articles): ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="text-center">
                 <h2 class="fw-bold m-0 display-6"><?= phrase('Recent Articles') ?></h2>
@@ -269,7 +269,7 @@
 
 <!-- Latest Galleries -->
 <?php if ($galleries): ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="text-center">
                 <h2 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries') ?></h2>
@@ -311,7 +311,7 @@
     </section>
 <?php endif; ?>
 <?php if ($peoples): ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="text-center">
                 <h2 class="fw-bold m-0 display-6"><?= phrase('Meet Us') ?></h2>
@@ -351,7 +351,7 @@
 
 <!-- Testimonials Swiper -->
 <?php if ($testimonials): ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="text-center mb-4">
                 <h2 class="fw-bold m-0 display-6"><?= phrase('What have people said about us?') ?></h2>
@@ -399,7 +399,7 @@
     </section>
 <?php endif; ?>
 
-<section class="section-padding pt-0 fade-in">
+<section class="py-5 pt-0 fade-in">
     <div class="container py-lg-5">
         <div class="row align-items-center">
             <div class="col-md-6">

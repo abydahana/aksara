@@ -3,14 +3,14 @@
 /**
  * @var array $menus
  */
-$bottomSheetMenus = generate_menu($menus, 'navbar-nav flex-column gap-1', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
+$bottomSheetMenus = generate_menu($menus, 'navbar-nav flex-column gap-1', 'nav-item', 'nav-link d-flex gap-2 align-items-center --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu');
 ?>
 
 <!-- Bottom Sheet offcanvas for Mobile Navigation -->
-<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasNavbarDark" aria-labelledby="offcanvasNavbarDarkLabel">
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottomSheet" aria-labelledby="offcanvasBottomSheetLabel">
     <div class="offcanvas-header flex-column align-items-center pb-0 position-relative">
         <div class="drag-handle mb-1"></div>
-        <h5 class="offcanvas-title w-100 text-center" id="offcanvasNavbarDarkLabel">
+        <h5 class="offcanvas-title w-100 text-center" id="offcanvasBottomSheetLabel">
             <?= phrase('Main Navigation') ?>
         </h5>
     </div>

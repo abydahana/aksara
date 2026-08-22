@@ -109,9 +109,9 @@ if (isset($detail->attribution) && $detail->attribution) {
                 <div class="col-sm-4">
                     <div class="d-grid">
                         <?php if (('backend' == $detail->type && get_setting('backend_theme') == $detail->folder) || ('frontend' == $detail->type && get_setting('frontend_theme') == $detail->folder)): ?>
-                            <a href="<?= current_page('../customize', ['theme' => $detail->folder]) ?>" class="btn btn-dark btn-sm --modal">
-                                <i class="mdi mdi-cogs"></i> <?= phrase('Customize') ?>
-                            </a> <?php else: ?>
+                            <button type="button" class="btn btn-dark btn-sm" disabled>
+                                <i class="mdi mdi-check"></i> <?= phrase('Active') ?>
+                            </button> <?php else: ?>
                             <a href="<?= current_page('../activate') ?>" class="btn btn-success btn-sm --modal">
                                 <i class="mdi mdi-check"></i> <?= phrase('Activate') ?>
                             </a>

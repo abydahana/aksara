@@ -88,47 +88,47 @@
   :root,
   html[data-bs-theme='light'],
   html.light-mode {
-    --bs-sheet-bg: rgba(255, 255, 255, 0.94);
-    --bs-sheet-bg-solid: #ffffff;
-    --bs-sheet-text: #1a1a2e;
-    --bs-sheet-text-muted: #64748b;
-    --bs-sheet-border: rgba(0, 0, 0, 0.08);
+    --bs-sheet-bg: var(--bs-surface-bg, #ffffff);
+    --bs-sheet-bg-solid: var(--bs-surface-bg, #ffffff);
+    --bs-sheet-text: var(--bs-body-color, #1a1a2e);
+    --bs-sheet-text-muted: var(--bs-secondary-color, #64748b);
+    --bs-sheet-border: var(--bs-border-color, rgba(0, 0, 0, 0.08));
     --bs-sheet-border-shine: rgba(255, 255, 255, 0.8);
-    --bs-sheet-handle: rgba(0, 0, 0, 0.2);
-    --bs-sheet-hover: rgba(0, 0, 0, 0.05);
-    --bs-sheet-active: rgba(37, 99, 235, 0.08);
-    --bs-sheet-accent: #2563eb;
+    --bs-sheet-handle: var(--bs-border-color, rgba(0, 0, 0, 0.2));
+    --bs-sheet-hover: rgba(var(--bs-primary-rgb), 0.06);
+    --bs-sheet-active: rgba(var(--bs-primary-rgb), 0.12);
+    --bs-sheet-accent: var(--bs-primary, #2563eb);
     --bs-sheet-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
-    --bs-sheet-divider: rgba(0, 0, 0, 0.06);
-    --bs-sheet-card-bg: rgba(0, 0, 0, 0.03);
-    --bs-sheet-close-bg: rgba(0, 0, 0, 0.06);
-    --bs-sheet-close-color: #64748b;
-    --bs-sheet-chevron: #94a3b8;
-    --bs-sheet-badge-bg: rgba(37, 99, 235, 0.1);
-    --bs-sheet-badge-text: #2563eb;
+    --bs-sheet-divider: var(--bs-border-color, rgba(0, 0, 0, 0.06));
+    --bs-sheet-card-bg: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.03));
+    --bs-sheet-close-bg: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.06));
+    --bs-sheet-close-color: var(--bs-body-color, #64748b);
+    --bs-sheet-chevron: var(--bs-secondary-color, #94a3b8);
+    --bs-sheet-badge-bg: rgba(var(--bs-primary-rgb), 0.1);
+    --bs-sheet-badge-text: var(--bs-primary, #2563eb);
   }
 
   /* ── colour tokens (dark) ── */
   @media (prefers-color-scheme: dark) {
     :root {
-      --bs-sheet-bg: rgba(22, 22, 30, 0.94);
-      --bs-sheet-bg-solid: #16161e;
-      --bs-sheet-text: #e8e8ed;
-      --bs-sheet-text-muted: #8b8b9e;
-      --bs-sheet-border: rgba(255, 255, 255, 0.12);
-      --bs-sheet-border-shine: rgba(255, 255, 255, 0.22);
-      --bs-sheet-handle: rgba(255, 255, 255, 0.22);
-      --bs-sheet-hover: rgba(255, 255, 255, 0.06);
-      --bs-sheet-active: rgba(96, 165, 250, 0.12);
-      --bs-sheet-accent: #60a5fa;
+      --bs-sheet-bg: var(--bs-surface-bg, #16161e);
+      --bs-sheet-bg-solid: var(--bs-surface-bg, #16161e);
+      --bs-sheet-text: var(--bs-body-color, #e8e8ed);
+      --bs-sheet-text-muted: var(--bs-secondary-color, #8b8b9e);
+      --bs-sheet-border: var(--bs-border-color, rgba(255, 255, 255, 0.12));
+      --bs-sheet-border-shine: rgba(255, 255, 255, 0.15);
+      --bs-sheet-handle: var(--bs-border-color, rgba(255, 255, 255, 0.22));
+      --bs-sheet-hover: rgba(var(--bs-primary-rgb), 0.08);
+      --bs-sheet-active: rgba(var(--bs-primary-rgb), 0.16);
+      --bs-sheet-accent: var(--bs-primary, #60a5fa);
       --bs-sheet-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
-      --bs-sheet-divider: rgba(255, 255, 255, 0.08);
-      --bs-sheet-card-bg: rgba(255, 255, 255, 0.04);
-      --bs-sheet-close-bg: rgba(255, 255, 255, 0.08);
-      --bs-sheet-close-color: #8b8b9e;
-      --bs-sheet-chevron: #5a5a72;
-      --bs-sheet-badge-bg: rgba(96, 165, 250, 0.15);
-      --bs-sheet-badge-text: #60a5fa;
+      --bs-sheet-divider: var(--bs-border-color, rgba(255, 255, 255, 0.08));
+      --bs-sheet-card-bg: var(--bs-tertiary-bg, rgba(255, 255, 255, 0.04));
+      --bs-sheet-close-bg: var(--bs-tertiary-bg, rgba(255, 255, 255, 0.08));
+      --bs-sheet-close-color: var(--bs-body-color, #8b8b9e);
+      --bs-sheet-chevron: var(--bs-secondary-color, #5a5a72);
+      --bs-sheet-badge-bg: rgba(var(--bs-primary-rgb), 0.15);
+      --bs-sheet-badge-text: var(--bs-primary-text-emphasis, var(--bs-primary));
     }
   }
 
@@ -136,28 +136,28 @@
   html[data-bs-theme='dark'],
   html.dark-mode,
   [data-bs-theme='dark'] {
-    --bs-sheet-bg: rgba(22, 22, 30, 0.94);
-    --bs-sheet-bg-solid: #16161e;
-    --bs-sheet-text: #e8e8ed;
-    --bs-sheet-text-muted: #8b8b9e;
-    --bs-sheet-border: rgba(255, 255, 255, 0.12);
-    --bs-sheet-border-shine: rgba(255, 255, 255, 0.22);
-    --bs-sheet-handle: rgba(255, 255, 255, 0.22);
-    --bs-sheet-hover: rgba(255, 255, 255, 0.06);
-    --bs-sheet-active: rgba(96, 165, 250, 0.12);
-    --bs-sheet-accent: #60a5fa;
+    --bs-sheet-bg: var(--bs-surface-bg, #16161e);
+    --bs-sheet-bg-solid: var(--bs-surface-bg, #16161e);
+    --bs-sheet-text: var(--bs-body-color, #e8e8ed);
+    --bs-sheet-text-muted: var(--bs-secondary-color, #8b8b9e);
+    --bs-sheet-border: var(--bs-border-color, rgba(255, 255, 255, 0.12));
+    --bs-sheet-border-shine: rgba(255, 255, 255, 0.15);
+    --bs-sheet-handle: var(--bs-border-color, rgba(255, 255, 255, 0.22));
+    --bs-sheet-hover: rgba(var(--bs-primary-rgb), 0.08);
+    --bs-sheet-active: rgba(var(--bs-primary-rgb), 0.16);
+    --bs-sheet-accent: var(--bs-primary, #60a5fa);
     --bs-sheet-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
-    --bs-sheet-divider: rgba(255, 255, 255, 0.08);
-    --bs-sheet-card-bg: rgba(255, 255, 255, 0.04);
-    --bs-sheet-close-bg: rgba(255, 255, 255, 0.08);
-    --bs-sheet-close-color: #8b8b9e;
-    --bs-sheet-chevron: #5a5a72;
-    --bs-sheet-badge-bg: rgba(96, 165, 250, 0.15);
-    --bs-sheet-badge-text: #60a5fa;
+    --bs-sheet-divider: var(--bs-border-color, rgba(255, 255, 255, 0.08));
+    --bs-sheet-card-bg: var(--bs-tertiary-bg, rgba(255, 255, 255, 0.04));
+    --bs-sheet-close-bg: var(--bs-tertiary-bg, rgba(255, 255, 255, 0.08));
+    --bs-sheet-close-color: var(--bs-body-color, #8b8b9e);
+    --bs-sheet-chevron: var(--bs-secondary-color, #5a5a72);
+    --bs-sheet-badge-bg: rgba(var(--bs-primary-rgb), 0.15);
+    --bs-sheet-badge-text: var(--bs-primary-text-emphasis, var(--bs-primary));
   }
 
   /* ── Bottom Sheet Container (nav + payment sheet shared) ── */
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom,
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom,
   #paymentSheet.offcanvas.offcanvas-bottom,
   #inquirySheet.offcanvas.offcanvas-bottom,
   #qrisSheet.offcanvas.offcanvas-bottom,
@@ -181,7 +181,7 @@
   }
 
   /* Nav sheet — max 100vh */
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom {
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom {
     height: auto !important;
     max-height: 100vh !important;
     max-height: 100dvh !important;
@@ -202,7 +202,7 @@
   }
 
   /* Full height condition: remove top rounded corners when sheet reaches top of screen */
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.is-full-height,
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom.is-full-height,
   #paymentSheet.offcanvas.offcanvas-bottom.is-full-height,
   #inquirySheet.offcanvas.offcanvas-bottom.is-full-height,
   #qrisSheet.offcanvas.offcanvas-bottom.is-full-height,
@@ -214,22 +214,22 @@
   }
 
   /* Override Bootstrap text-bg-dark to use our sheet colours */
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.text-bg-dark {
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom.text-bg-dark {
     --bs-dark-rgb: none;
     background-color: var(--bs-sheet-bg) !important;
     color: var(--bs-sheet-text) !important;
   }
 
   /* Force correct transform states */
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom,
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom,
   #paymentSheet.offcanvas.offcanvas-bottom,
   #inquirySheet.offcanvas.offcanvas-bottom,
   #qrisSheet.offcanvas.offcanvas-bottom,
   #stepsSheet.offcanvas.offcanvas-bottom {
     transform: translateY(100%) !important;
   }
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.show:not(.hiding),
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.showing,
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom.show:not(.hiding),
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom.showing,
   #paymentSheet.offcanvas.offcanvas-bottom.show:not(.hiding),
   #paymentSheet.offcanvas.offcanvas-bottom.showing,
   #inquirySheet.offcanvas.offcanvas-bottom.show:not(.hiding),
@@ -240,7 +240,7 @@
   #stepsSheet.offcanvas.offcanvas-bottom.showing {
     transform: translateY(var(--sheet-drag-y, 0px)) !important;
   }
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom.hiding,
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom.hiding,
   #paymentSheet.offcanvas.offcanvas-bottom.hiding,
   #inquirySheet.offcanvas.offcanvas-bottom.hiding,
   #qrisSheet.offcanvas.offcanvas-bottom.hiding,
@@ -249,7 +249,7 @@
   }
 
   /* ── Disable transition during drag ── */
-  #offcanvasNavbarDark.is-dragging,
+  #offcanvasBottomSheet.is-dragging,
   #paymentSheet.is-dragging,
   #inquirySheet.is-dragging,
   #qrisSheet.is-dragging,
@@ -276,7 +276,7 @@
   #inquirySheet .offcanvas-header,
   #qrisSheet .offcanvas-header,
   #stepsSheet .offcanvas-header,
-  #offcanvasNavbarDark .offcanvas-header {
+  #offcanvasBottomSheet .offcanvas-header {
     touch-action: none;
     user-select: none;
     cursor: grab;
@@ -333,7 +333,7 @@
   }
 
   /* ── Drag Handle ── */
-  #offcanvasNavbarDark .drag-handle {
+  #offcanvasBottomSheet .drag-handle {
     width: 36px;
     height: 4px;
     border-radius: 2px;
@@ -343,12 +343,12 @@
   }
 
   /* ── Header ── */
-  #offcanvasNavbarDark .offcanvas-header {
+  #offcanvasBottomSheet .offcanvas-header {
     padding: 12px 20px 10px !important;
     border-bottom: 1px solid var(--bs-sheet-divider) !important;
     position: relative;
   }
-  #offcanvasNavbarDark .offcanvas-title {
+  #offcanvasBottomSheet .offcanvas-title {
     font-size: 0.8rem !important;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -356,8 +356,8 @@
     color: var(--bs-sheet-text-muted) !important;
     margin-top: 4px;
   }
-  #offcanvasNavbarDark .btn-close,
-  #offcanvasNavbarDark .btn-close-white {
+  #offcanvasBottomSheet .btn-close,
+  #offcanvasBottomSheet .btn-close-white {
     filter: none !important;
     background: var(--bs-sheet-close-bg) !important;
     border-radius: 50%;
@@ -373,7 +373,7 @@
     align-items: center;
     justify-content: center;
   }
-  #offcanvasNavbarDark .btn-close::before {
+  #offcanvasBottomSheet .btn-close::before {
     content: '\00d7';
     font-size: 1.2rem;
     line-height: 1;
@@ -382,7 +382,7 @@
   }
 
   /* ── Body ── */
-  #offcanvasNavbarDark .offcanvas-body {
+  #offcanvasBottomSheet .offcanvas-body {
     padding: 8px 0 !important;
     overflow-y: auto;
     overflow-x: hidden;
@@ -391,18 +391,18 @@
   }
 
   /* ── Navigation List Reset ── */
-  #offcanvasNavbarDark .navbar-nav {
+  #offcanvasBottomSheet .navbar-nav {
     flex-direction: column !important;
     margin: 0 !important;
     gap: 0 !important;
   }
-  #offcanvasNavbarDark .navbar-nav .nav-item {
+  #offcanvasBottomSheet .navbar-nav .nav-item {
     margin: 0;
     list-style: none;
   }
 
   /* ── Navigation Links ── */
-  #offcanvasNavbarDark .navbar-nav .nav-link {
+  #offcanvasBottomSheet .navbar-nav .nav-link {
     display: flex !important;
     align-items: center;
     gap: 0.5rem;
@@ -418,37 +418,40 @@
     margin: 1px 0;
     padding-inline: 1rem;
   }
-  #offcanvasNavbarDark .navbar-nav .nav-link:hover,
-  #offcanvasNavbarDark .navbar-nav .nav-link:focus {
+  #offcanvasBottomSheet .navbar-nav .nav-link:hover,
+  #offcanvasBottomSheet .navbar-nav .nav-link:focus {
     background: var(--bs-sheet-hover);
   }
-  #offcanvasNavbarDark .navbar-nav .nav-link:active {
+  #offcanvasBottomSheet .navbar-nav .nav-link:active {
     background: var(--bs-sheet-active);
     transform: scale(0.98);
   }
-  #offcanvasNavbarDark .navbar-nav .nav-link i.mdi {
+  #offcanvasBottomSheet .navbar-nav .nav-link i.mdi {
     font-size: 1.25rem;
     width: 1.5rem;
     text-align: center;
     color: var(--bs-sheet-text-muted);
     flex-shrink: 0;
   }
-  #offcanvasNavbarDark .navbar-nav .nav-link span {
+  #offcanvasBottomSheet .navbar-nav .nav-link i.mdi-blank {
+    font-size: inherit;
+  }
+  #offcanvasBottomSheet .navbar-nav .nav-link span {
     flex: 1;
   }
-  #offcanvasNavbarDark .navbar-nav .nav-item.active > .nav-link {
+  #offcanvasBottomSheet .navbar-nav .nav-item.active > .nav-link {
     background: var(--bs-sheet-active);
     color: var(--bs-sheet-accent) !important;
   }
-  #offcanvasNavbarDark .navbar-nav .nav-item.active > .nav-link i.mdi {
+  #offcanvasBottomSheet .navbar-nav .nav-item.active > .nav-link i.mdi {
     color: var(--bs-sheet-accent);
   }
 
   /* ── Dropdown toggle chevron (replace caret) ── */
-  #offcanvasNavbarDark .navbar-nav .nav-link.dropdown-toggle::after {
+  #offcanvasBottomSheet .navbar-nav .nav-link.dropdown-toggle::after {
     display: none !important;
   }
-  #offcanvasNavbarDark .navbar-nav .nav-link[data-bs-submenu]::after {
+  #offcanvasBottomSheet .navbar-nav .nav-link[data-bs-submenu]::after {
     content: '\203A';
     font-size: 1.5rem;
     line-height: 1;
@@ -458,39 +461,39 @@
   }
 
   /* ── Hide original dropdown-menus (replaced by JS sub-sheets) ── */
-  #offcanvasNavbarDark .dropdown-menu {
+  #offcanvasBottomSheet .dropdown-menu {
     display: none !important;
   }
 
   /* ── Divider ── */
-  #offcanvasNavbarDark .navbar-nav + .navbar-nav {
+  #offcanvasBottomSheet .navbar-nav + .navbar-nav {
     border-top: 1px solid var(--bs-sheet-divider);
     margin-top: 4px !important;
     padding-top: 4px !important;
   }
 
   /* ── User Account Card ── */
-  #offcanvasNavbarDark .nav-item.user-account > .nav-link {
+  #offcanvasBottomSheet .nav-item.user-account > .nav-link {
     background: var(--bs-sheet-card-bg);
   }
 
   /* ── Sign-in Button ── */
-  #offcanvasNavbarDark .user-login .btn {
+  #offcanvasBottomSheet .user-login .btn {
     width: 100%;
   }
 
-  #offcanvasNavbarDark .user-login.ms-2 {
+  #offcanvasBottomSheet .user-login.ms-2 {
     margin-left: 0 !important;
   }
 
   /* ── hr dividers in bottom sheet ── */
-  #offcanvasNavbarDark hr.dropdown-divider {
+  #offcanvasBottomSheet hr.dropdown-divider {
     border-color: var(--bs-sheet-divider);
     margin: 4px 16px;
   }
 
   /* ── Badge ── */
-  #offcanvasNavbarDark .badge.bg-danger {
+  #offcanvasBottomSheet .badge.bg-danger {
     font-size: 0.65rem;
     padding: 3px 6px;
     border-radius: 8px;
@@ -650,7 +653,7 @@
     touch-action: none;
   }
 
-  #offcanvasNavbarDark.offcanvas.offcanvas-bottom,
+  #offcanvasBottomSheet.offcanvas.offcanvas-bottom,
   #paymentSheet.offcanvas.offcanvas-bottom,
   #inquirySheet.offcanvas.offcanvas-bottom,
   #qrisSheet.offcanvas.offcanvas-bottom,

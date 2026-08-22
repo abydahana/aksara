@@ -22,12 +22,12 @@
         <div class="col-md-4">
             <div class="row mb-3">
                 <div class="col-6">
-                    <a href="<?= go_to(null, ['order' => 'popular']) ?>" class="btn btn-secondary d-block btn-sm --xhr">
+                    <a href="<?= go_to(null, ['order' => 'popular']) ?>" class="btn btn-primary btn-sm rounded-pill d-block --xhr">
                         <?= phrase('Popular') ?>
                     </a>
                 </div>
                 <div class="col-6">
-                    <a href="<?= go_to(null, ['order' => 'latest']) ?>" class="btn btn-secondary d-block btn-sm --xhr">
+                    <a href="<?= go_to(null, ['order' => 'latest']) ?>" class="btn btn-primary btn-sm rounded-pill d-block --xhr">
                         <?= phrase('Latest') ?>
                     </a>
                 </div>

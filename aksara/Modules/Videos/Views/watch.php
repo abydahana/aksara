@@ -66,7 +66,7 @@ if ($results && $videoType): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="section-padding">
+    <div class="py-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">

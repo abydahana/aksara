@@ -17,7 +17,7 @@ if ($activation): ?>
     </div>
 <?php endif; ?>
 
-<section class="section-padding">
+<section class="py-5">
     <div class="container">
         <div class="row">
             <div class="<?= get_setting('frontend_registration') ? 'col-md-10 offset-md-1' : 'col-md-4 offset-md-4' ?>">

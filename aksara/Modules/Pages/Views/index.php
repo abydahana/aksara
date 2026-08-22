@@ -24,7 +24,7 @@ if ($fieldData):
             <?= $builder->render($decoded) ?>
         </div>
     <?php else: ?>
-        <section class="section-padding fade-in">
+        <section class="py-5 fade-in">
             <div class="container">
                 <div class="text-justify mb-3">
                     <?= $content ?>
@@ -43,7 +43,7 @@ if ($fieldData):
         </section>
     <?php endif; ?>
 <?php else: ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="row mb-5">
                 <div class="col-md-6 offset-md-3">

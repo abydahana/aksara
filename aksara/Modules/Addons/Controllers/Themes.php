@@ -269,54 +269,6 @@ class Themes extends Core
     }
 
     /**
-     * Customize theme
-     */
-    public function customize()
-    {
-        if (! file_exists(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json')) {
-            return throw_exception(404, phrase('No theme package manifest were found.'), current_page('../', ['item' => null]));
-        }
-
-        $package = json_decode(file_get_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $this->_primary . DIRECTORY_SEPARATOR . 'theme.json'));
-
-        if (! $package) {
-            return throw_exception(403, phrase('Unable to customize the theme with invalid package manifest.'), current_page('../', ['item' => null]));
-        }
-
-        $package->folder = $this->_primary;
-        $package->integrity = hash_hmac('sha256', $package->folder . get_userdata('session_generated'), ENCRYPTION_KEY);
-
-        if ($this->validToken($this->request->getPost('_token'))) {
-            if (DEMO_MODE) {
-                return throw_exception(404, phrase('Changes will not saved in demo mode.'), current_page('../', ['item' => null]));
-            } elseif (! is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json')) {
-                return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
-            }
-
-            $package->colorscheme = $this->request->getPost('colorscheme');
-            $folder = $package->folder;
-
-            unset($package->folder, $package->integrity);
-
-            if (file_put_contents(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'theme.json', json_encode($package, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE))) {
-                return throw_exception(301, phrase('The theme was successfully customized.'), current_page('../', ['item' => null]));
-            }
-
-            return throw_exception(400, ['colorscheme' => ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . 'theme.json ' . phrase('is not writable.')]);
-        }
-
-        $this->setTitle(phrase('Theme Customization'))
-        ->setIcon('mdi mdi-palette')
-        ->setOutput([
-            'writable' => (is_writable(ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $package->folder . DIRECTORY_SEPARATOR . 'theme.json') ? true : false),
-            'detail' => $package
-        ])
-        ->modalSize('modal-xl')
-
-        ->render();
-    }
-
-    /**
      * Import theme
      */
     public function import()

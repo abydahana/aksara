@@ -5,7 +5,7 @@
  */
 ?>
 
-<aside data-role="sidebar" class="sidebar-menu bg-body-tertiary" id="sidebar-wrapper">
+<aside data-role="sidebar" class="sidebar-menu bg-body" id="sidebar-wrapper">
     <div class="p-3 user-bg-masking hide-on-collapse mb-4">
         <div class="d-flex align-items-center">
             <div class="flex-grow-0">
@@ -37,9 +37,9 @@
         </div>
     </div>
 
-    <?= generate_menu($menus, 'nav flex-column', 'nav-item', 'nav-link --xhr', 'dropdown-toggle', 'data-toggle="expand-collapse"', '', 'list-unstyled flex-column collapse') ?>
+    <?= generate_menu($menus, 'nav flex-column', 'nav-item', 'nav-link d-flex gap-2 align-items-center --xhr', 'dropdown-toggle', 'data-toggle="expand-collapse"', '', 'list-unstyled flex-column collapse') ?>
 </aside>
-<div class="sidebar-toggle-wrapper d-none d-lg-flex border-top bg-body-tertiary align-items-center justify-content-center py-2">
+<div class="sidebar-toggle-wrapper d-none d-lg-flex border-top bg-body align-items-center justify-content-center py-2">
     <button type="button" class="btn btn-sm btn-outline-secondary border-secondary rounded-circle d-flex align-items-center justify-content-center p-0 sidebar-toggle-btn" style="width: 32px; height: 32px;" data-toggle="sidebar" aria-label="<?= phrase(
       'Toggle sidebar',
     ) ?>">
