@@ -35,7 +35,7 @@
 </div>
 <div class="row">
     <div class="col-md-4">
-        <img src="assets/like-a-boss.png" class="img-fluid" alt="Like a boss..." />
+        <img src="assets/like-a-boss.png" class="img-fluid" alt="Like a boss..."<?= ('dark' === (session()->get('theme') ?? ($_COOKIE['aksara_theme'] ?? null)) ? ' style="filter: invert(1);"' : null) ?> />
     </div>
     <div class="col-md-8">
         <p>
