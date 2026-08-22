@@ -24,7 +24,7 @@
         "hybridauth/hybridauth": "^3.10",
         "mpdf/mpdf": "^8.0",
         "chillerlan/php-qrcode": "^3.3",
-        "picqer/php-barcode-generator": "^2.1",
+        "picqer/php-barcode-generator": "^3.2",
         "phpoffice/phpspreadsheet": "^2.2",
         "halaxa/json-machine": "^1.1",
         "phpoffice/phpword": "^1.4",
