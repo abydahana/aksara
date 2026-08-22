@@ -38,72 +38,81 @@ if ($results): ?>
 <section class="py-5">
     <div class="container">
         <?php if ($results): ?>
-            <div class="row">
+            <div class="row row-cols-1 row-cols-lg-2 g-4">
                 <?php foreach ($results as $key => $val): ?>
                     <?php
                     $cover = null;
-                    $thumbnail = null;
+                    $thumbs = [];
                     $images = json_decode($val->gallery_images, true);
 
-                    if (! empty($images)) {
-                        $num = 1;
+                    if (! empty($images) && is_array($images)) {
+                        $cover = array_key_first($images);
+                        $thumbs = array_slice($images, 1, 3, true);
+                    }
 
-                        ob_start();
+                    $totalImages = count($images ?? []);
+                    $extraCount = $totalImages - 4;
+                    $thumbCount = count($thumbs);
+                    $coverCol = 1 === $thumbCount ? '7' : ($thumbCount > 1 ? '8' : '12');
+                    $thumbCol = 1 === $thumbCount ? '5' : ($thumbCount > 1 ? '4' : '0');
+                    ?>
+                    <div class="col">
+                        <div class="card h-100 border-0 overflow-hidden">
+                            <div class="row g-2 h-100" style="min-height: 380px;">
+                                <!-- Cover Image & Info -->
+                                <div class="col-<?= $coverCol ?> d-flex">
+                                    <div class="w-100 h-100 position-relative d-flex align-items-end rounded-4 overflow-hidden" style="background: url('<?= get_image('galleries', $cover) ?>') center center / cover no-repeat; min-height: 380px;">
+                                        <!-- Gradient Overlay -->
+                                        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.1) 100%);"></div>
 
-                        foreach ($images as $src => $alt) {
-                            if ($num >= 4) {
-                                break;
-                            }
+                                        <!-- Badge Count -->
+                                        <div class="position-absolute top-0 start-0 p-3 z-1">
+                                            <span class="badge bg-primary bg-opacity-90 backdrop-blur rounded-pill px-3 py-2 shadow-sm">
+                                                <i class="mdi mdi-image-multiple me-1"></i> <?= $totalImages ?> <?= ($totalImages > 1 ? phrase('Photos') : phrase('Photo')) ?>
+                                            </span>
+                                        </div>
 
-                            if (1 == $num) {
-                                $cover = $src;
-                            } elseif ($num > 1) { ?>
-                                <a href="<?= go_to([$val->gallery_slug, $src]) ?>" class="d-block --xhr">
-                                    <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="w-100" alt="<?= htmlspecialchars((string) ($alt ?: $val->gallery_title)) ?>" loading="lazy" decoding="async" />
-                                </a>
-                                <?php
-                            }
-
-                            $num++;
-                        }
-
-                        $thumbnail = ob_get_clean();
-                    } ?>
-
-                    <div class="col-lg-6">
-                        <div class="rounded-5 border-hover overflow-hidden mb-4 fade-in">
-                            <div class="row g-0">
-                                <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) == 2 ? 6 : (count($images) == 1 ? 12 : 8)) ?> text-center d-flex align-items-end" style="background:url(<?= get_image(
-                                    'galleries',
-                                    $cover,
-                                ) ?>) center center no-repeat; background-size:cover; min-height:min(360px, 50vh)">
-                                    <div class="p-3 m-3 rounded-5 w-100" style="background:rgba(0, 0, 0, .5)">
-                                        <h2 class="h4 text-light">
-                                            <span class="badge bg-primary float-end">
-                                                <?= count($images) ?>
-                                            </span> <?= $val->gallery_title ?>
-                                        </h4>
-                                        <p class="text-light">
-                                            <?= truncate($val->gallery_description, 160) ?>
-                                        </p>
-                                        <p class="text-light">
-                                            <?php if (count($images) > 4): ?>
-                                                <a href="<?= go_to($val->gallery_slug) ?>" class="btn btn-outline-light rounded-pill --xhr">
-                                                    <i class="mdi mdi-folder-multiple-image"></i> <?= phrase('Show all') ?>
-                                                </a> <?php else: ?>
-                                                <a href="<?= go_to([$val->gallery_slug, $cover]) ?>" class="btn btn-outline-light rounded-pill px-4 --xhr">
-                                                    <i class="mdi mdi-magnify-plus"></i> <?= phrase('Show') ?>
+                                        <!-- Info Content -->
+                                        <div class="position-relative z-1 p-3 p-sm-4 w-100 text-light">
+                                            <h3 class="h4 fw-bold mb-2">
+                                                <a href="<?= go_to($val->gallery_slug) ?>" class="text-white text-decoration-none --xhr">
+                                                    <?= $val->gallery_title ?>
                                                 </a>
+                                            </h3>
+                                            <?php if ($val->gallery_description): ?>
+                                                <p class="text-white-50 small mb-3" style="display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                    <?= truncate($val->gallery_description, 120) ?>
+                                                </p>
                                             <?php endif; ?>
-                                        </p>
+
+                                            <div>
+                                                <a href="<?= go_to($val->gallery_slug) ?>" class="btn btn-sm btn-light rounded-pill px-3 shadow-sm --xhr fw-medium">
+                                                    <?= phrase('View Album') ?> <i class="mdi mdi-arrow-right ms-1"></i>
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <?php if (count($images) > 1): ?>
-                                    <div class="col-<?= (count($images) <= 2 ? 'md-' : null) . (count($images) > 2 ? 4 : 6) ?> bg-body-tertiary d-flex align-items-center">
-                                        <div class="w-100">
-                                        <?= $thumbnail ?>
-                                        </div>
+                                <!-- Bento Thumbnails Column -->
+                                <?php if (! empty($thumbs)): ?>
+                                    <div class="col-<?= $thumbCol ?> d-flex flex-column gap-2 h-100">
+                                        <?php
+                                        $thumbCount = count($thumbs);
+                                        $i = 0;
+                                        foreach ($thumbs as $src => $alt):
+                                            $i++;
+                                            $isLast = ($i === $thumbCount);
+                                        ?>
+                                            <a href="<?= go_to([$val->gallery_slug, $src]) ?>" class="d-block flex-fill position-relative rounded-4 overflow-hidden --xhr" style="height: 0;">
+                                                <img src="<?= get_image('galleries', $src, 'thumb') ?>" class="w-100 h-100 object-fit-cover" alt="<?= htmlspecialchars((string) ($alt ?: $val->gallery_title)) ?>" loading="lazy" decoding="async" />
+                                                <?php if ($isLast && $extraCount > 0): ?>
+                                                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-60 backdrop-blur d-flex align-items-center justify-content-center text-white fw-bold fs-5">
+                                                        +<?= $extraCount ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </a>
+                                        <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
