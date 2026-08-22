@@ -63,18 +63,18 @@ $isMobile = ! is_cli() && $userAgent->isMobile();
             </ul>
             <ul class="navbar-nav align-items-center ms-auto">
                 <li class="nav-item">
-                    <a href="<?= base_url('xhr/theme/editor') ?>" class="nav-link py-0 --modal" aria-label="<?= phrase('Theme Editor') ?>" title="<?= phrase('Theme Editor') ?>">
-                        <i class="mdi mdi-palette-outline fs-5"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="<?= current_page() ?>" class="nav-link py-0" data-toggle="fullscreen" aria-label="<?= phrase('Toggle fullscreen') ?>">
                         <i class="mdi mdi-fullscreen fs-5"></i>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?= base_url('xhr/theme/editor') ?>" class="nav-link py-0 --modal" aria-label="<?= phrase('Theme Editor') ?>" title="<?= phrase('Theme Editor') ?>">
+                        <i class="mdi mdi-palette-outline fs-5"></i>
+                    </a>
+                </li>
                 <?php if (get_userdata('is_logged')): ?>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle py-0" href="<?= base_url('notifications/partials') ?>" data-bs-toggle="dropdown" data-role="notifications" aria-label="<?= phrase('Notifications') ?>">
+                        <a class="nav-link py-0" href="<?= base_url('notifications/partials') ?>" data-bs-toggle="dropdown" data-role="notifications" aria-label="<?= phrase('Notifications') ?>">
                             <i class="mdi mdi-bell-ring fs-5"></i> <span class="d-md-none"><?= phrase('Notifications') ?></span> <span id="notification-count" class="badge bg-danger"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">

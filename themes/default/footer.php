@@ -1,5 +1,5 @@
 <footer id="footer-wrapper" class="bg-body position-relative overflow-hidden">
-    <section class="py-5">
+    <section class="py-5 border-fade">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-sm-12 col-lg-3 mb-3 mb-lg-0">
