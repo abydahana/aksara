@@ -5,7 +5,7 @@
  */
 ?>
 
-<section class="section-padding fade-in">
+<section class="py-5 fade-in">
     <div class="container text-center text-md-start">
         <h1 class="display-4 fw-bold">
             <?= $meta->title ?>
@@ -15,7 +15,7 @@
         </p>
     </div>
 </section>
-<section class="section-padding fade-in">
+<section class="py-5 fade-in">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">

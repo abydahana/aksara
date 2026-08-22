@@ -260,9 +260,14 @@ class Pages extends Core
         $decoded = json_decode($layout, true);
         $pb = new PageBuilder();
         $html = $pb->render($decoded);
-        $theme = (get_userdata('app_theme') === 'dark' ? 'dark' : 'light');
+        helper('theme');
+
+        $appTheme = theme_config();
+        $theme = theme_mode($appTheme);
+        $compiledThemeVars = compile_theme($appTheme);
 
         $frontendTheme = get_setting('frontend_theme') ?: 'default';
+        $stylesCssPath = ROOTPATH . 'themes' . DIRECTORY_SEPARATOR . $frontendTheme . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'local' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'styles.min.css';
 
         $output = '<!DOCTYPE html><html data-bs-theme="' . $theme . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . phrase('Page Preview') . '</title>';
         $output .= '<meta charset="UTF-8" />';
@@ -275,8 +280,13 @@ class Pages extends Core
         $output .= '<link rel="stylesheet" href="' . base_url('assets/bootstrap/css/bootstrap.min.css') . '">';
         $output .= '<link rel="stylesheet" href="' . base_url('assets/materialdesignicons/css/materialdesignicons.min.css') . '">';
         $output .= '<link rel="stylesheet" href="' . base_url('themes/' . $frontendTheme . '/assets/local/css/theme.min.css') . '">';
+        if (is_file($stylesCssPath)) {
+            $output .= '<link rel="stylesheet" href="' . base_url('themes/' . $frontendTheme . '/assets/local/css/styles.min.css') . '">';
+        }
+        if ($compiledThemeVars) {
+            $output .= '<style id="aksara-user-theme-vars">' . $compiledThemeVars . '</style>';
+        }
         $output .= '<link rel="icon" type="image/x-icon" href="' . get_image('settings', get_setting('app_icon'), 'icon') . '" />';
-        $output .= '<style>.section-padding{padding:80px 0}</style>';
         $output .= '<script type="text/javascript">(function(){var savedTheme = "' . $theme . '"; document.documentElement.setAttribute("data-bs-theme", savedTheme);})();</script>';
         $output .= '</head><body>' . $html;
         $output .= '<script src="' . base_url('assets/bootstrap/js/bootstrap.bundle.min.js') . '"></script>';

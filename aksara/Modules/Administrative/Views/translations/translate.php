@@ -81,8 +81,8 @@ $fieldData = $results[0];
                 <div class="col-md-4">
                     <div class="form-group mb-3">
                         <div class="input-group">
-                            <input type="hidden" name="phrase_scopes[<?= $key ?>]" value="<?= htmlspecialchars($scope) ?>" />
                             <input type="text" name="phrases[<?= $key ?>]" class="form-control" value="<?= $val ?>" placeholder="<?= $key ?>" data-bs-toggle="tooltip" title="<?= $key ?>" autocomplete="off" />
+                            <input type="hidden" name="phrase_scopes[<?= $key ?>]" value="<?= htmlspecialchars($scope) ?>" />
                             <a href="<?= current_page('delete_phrase', [
                               'phrase' => $key,
                               'scope' => $scope,

@@ -16,8 +16,15 @@ var prevScrollpos = window.pageYOffset;
  * Apply saved theme immediately (before DOM ready) to prevent flash
  */
 (function () {
-  var saved = localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  var saved = window.AksaraTheme ? window.AksaraTheme.initialTheme : localStorage.getItem('bs-theme') || system;
+
   document.documentElement.setAttribute('data-bs-theme', saved);
+  localStorage.setItem('bs-theme', saved);
+
+  if (window.AksaraTheme && !window.AksaraTheme.hasUserTheme) {
+    window.AksaraTheme.shouldSyncInitialTheme = true;
+  }
 })();
 
 /**
@@ -51,11 +58,35 @@ window.addEventListener(
 );
 
 $(document).ready(function () {
+  var themeToggleUrl = function () {
+    return (typeof config !== 'undefined' && config.baseUrl ? config.baseUrl : '/') + 'xhr/theme/toggle';
+  };
+  var syncTheme = function (theme) {
+    return $.ajax({
+      url: themeToggleUrl(),
+      method: 'POST',
+      data: {
+        theme: theme
+      }
+    });
+  };
+
   /**
    * Toggle theme dark/light
    */
-  if (localStorage.getItem('bs-theme') === 'dark') {
+  if ($('html').attr('data-bs-theme') === 'dark') {
     $('[data-toggle=theme] .mdi').removeClass('mdi-weather-night').addClass('mdi-white-balance-sunny');
+  }
+
+  if (typeof updateStatusBarColor === 'function') {
+    updateStatusBarColor();
+  }
+
+  if (window.AksaraTheme && window.AksaraTheme.shouldSyncInitialTheme) {
+    syncTheme($('html').attr('data-bs-theme')).done(function () {
+      window.AksaraTheme.hasUserTheme = true;
+      window.AksaraTheme.shouldSyncInitialTheme = false;
+    });
   }
 
   $('body').on('click', '[data-toggle=theme]', function (e) {
@@ -66,6 +97,12 @@ $(document).ready(function () {
 
     $('html').attr('data-bs-theme', next);
     localStorage.setItem('bs-theme', next);
+    if (window.AksaraTheme) {
+      window.AksaraTheme.initialTheme = next;
+      if (window.AksaraTheme.config) {
+        window.AksaraTheme.config.activeMode = next;
+      }
+    }
 
     if (next === 'dark') {
       $('[data-toggle=theme] .mdi').removeClass('mdi-weather-night').addClass('mdi-white-balance-sunny');
@@ -73,13 +110,13 @@ $(document).ready(function () {
       $('[data-toggle=theme] .mdi').removeClass('mdi-white-balance-sunny').addClass('mdi-weather-night');
     }
 
-    $.ajax({
-      url: (typeof config !== 'undefined' && config.baseUrl ? config.baseUrl : '/') + 'xhr/theme_toggle',
-      method: 'POST',
-      data: {
-        theme: next
-      }
-    });
+    if (typeof updateStatusBarColor === 'function') {
+      setTimeout(function () {
+        updateStatusBarColor();
+      }, 0);
+    }
+
+    syncTheme(next);
   });
 
   $('.carousel').on('slide.bs.carousel', function (e) {

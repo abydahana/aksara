@@ -158,6 +158,10 @@ function rgba2hex(rgba) {
     rgba = 'rgba(255,255,255,1)';
   }
 
+  if (typeof rgba === 'string' && rgba.startsWith('#')) {
+    return rgba;
+  }
+
   let rgb = rgba.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+),?([^,\s)]+)?/i);
   let hex = '000000';
 
@@ -166,6 +170,27 @@ function rgba2hex(rgba) {
   }
 
   return '#' + hex;
+}
+
+/**
+ * Set the color scheme of browser status bar
+ */
+function updateStatusBarColor(color) {
+  if (!color) {
+    color = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || getComputedStyle(document.documentElement).getPropertyValue('--wg-primary').trim();
+  }
+
+  if (color) {
+    color = rgba2hex(color);
+
+    let msNav = document.querySelector('meta[name=msapplication-navbutton-color]');
+    let themeColor = document.querySelector('meta[name=theme-color]');
+    let appleStatusBar = document.querySelector('meta[name=apple-mobile-web-app-status-bar-style]');
+
+    if (msNav) msNav.setAttribute('content', color);
+    if (themeColor) themeColor.setAttribute('content', color);
+    if (appleStatusBar) appleStatusBar.setAttribute('content', color);
+  }
 }
 
 /**

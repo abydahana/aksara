@@ -7,7 +7,7 @@
 $fieldData = $results->field_data ?? null;
 
 if ($fieldData): ?>
-    <div class="border-fade-bottom">
+    <div class="border-bottom">
         <div class="container">
             <br />
             <br />
@@ -100,7 +100,7 @@ if ($fieldData): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="section-padding">
+    <div class="py-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">

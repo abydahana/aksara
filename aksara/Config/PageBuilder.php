@@ -115,7 +115,7 @@ class PageBuilder extends BaseConfig
             'category' => 'layout',
             'children' => true,
             'defaults' => [
-                'class' => 'section-padding',
+                'class' => 'py-5',
                 'id' => '',
                 'background' => '',
             ],
@@ -579,7 +579,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'features',
-                    'props' => ['class' => 'section-padding', 'id' => 'features'],
+                    'props' => ['class' => 'py-5', 'id' => 'features'],
                     'children' => [
                         [
                             'type' => 'container',
@@ -664,7 +664,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'sec_serv_1',
-                    'props' => ['class' => 'section-padding'],
+                    'props' => ['class' => 'py-5'],
                     'children' => [
                         [
                             'type' => 'container',
@@ -706,7 +706,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'sec_price_1',
-                    'props' => ['class' => 'section-padding'],
+                    'props' => ['class' => 'py-5'],
                     'children' => [
                         [
                             'type' => 'container',
@@ -767,7 +767,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'about_hero',
-                    'props' => ['class' => 'section-padding'],
+                    'props' => ['class' => 'py-5'],
                     'children' => [
                         [
                             'type' => 'container',
@@ -813,7 +813,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'sec_team',
-                    'props' => ['class' => 'section-padding'],
+                    'props' => ['class' => 'py-5'],
                     'children' => [
                         [
                             'type' => 'container',
@@ -849,7 +849,7 @@ class PageBuilder extends BaseConfig
                 [
                     'type' => 'section',
                     'id' => 'contact_section',
-                    'props' => ['class' => 'section-padding'],
+                    'props' => ['class' => 'py-5'],
                     'children' => [
                         [
                             'type' => 'container',

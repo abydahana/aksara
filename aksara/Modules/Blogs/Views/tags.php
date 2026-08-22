@@ -7,7 +7,7 @@
  */
 ?>
 
-<section class="section-padding border-fade-bottom fade-in">
+<section class="py-5 fade-in">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-md-start">
@@ -36,7 +36,7 @@
 </section>
 
 <?php if ($results): ?>
-    <section class="section-padding">
+    <section class="py-5">
         <div class="container">
             <div class="row">
                 <?php foreach ($results as $key => $val): ?>
@@ -115,7 +115,7 @@
         </div>
     </section>
 <?php else: ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3 text-center">

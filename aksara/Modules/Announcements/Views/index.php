@@ -6,7 +6,7 @@
  * @var mixed $pagination
  */
 if ($results): ?>
-    <section class="section-padding border-fade-bottom fade-in">
+    <section class="py-5 fade-in">
         <div class="container position-relative text-center text-md-start">
             <h1 class="display-4 fw-bold">
                 <?= $meta->title ?>
@@ -18,7 +18,7 @@ if ($results): ?>
     </section>
 <?php endif; ?>
 
-<section class="section-padding">
+<section class="py-5">
     <div class="container">
         <?php if ($results): ?>
             <div class="row">

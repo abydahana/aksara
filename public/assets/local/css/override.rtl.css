@@ -42,11 +42,6 @@
 [dir='rtl'] .sidebar-menu .nav-link .mdi {
   float: right !important;
 }
-/* Text padding */
-[dir='rtl'] .sidebar-menu .nav-link span {
-  padding-left: 0 !important;
-  padding-right: 24px !important;
-}
 
 /* Untuk RTL - mengatur margin */
 [dir='rtl'] .dropdown-toggle::after {

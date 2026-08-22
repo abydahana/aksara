@@ -35,7 +35,7 @@ if ($results) {
 }
 
 if ($output): ?>
-    <section class="section-padding border-fade-bottom fade-in">
+    <section class="py-5 fade-in">
         <div class="container text-center text-md-start">
             <h1 class="display-4 fw-bold">
                 <?= $meta->title ?>
@@ -45,7 +45,7 @@ if ($output): ?>
             </p>
         </div>
     </section>
-    <section class="section-padding">
+    <section class="py-5">
         <div class="container">
             <div class="row">
                 <?= $output ?>
@@ -53,7 +53,7 @@ if ($output): ?>
         </div>
     </section>
 <?php else: ?>
-    <section class="section-padding fade-in">
+    <section class="py-5 fade-in">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">

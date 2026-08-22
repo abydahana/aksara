@@ -4,6 +4,9 @@
  * @var object $meta
  * @var string $content
  */
+$appTheme = theme_config();
+$activeTheme = theme_mode($appTheme);
+$primaryColor = theme_color($appTheme, $activeTheme, 'backend');
 ?>
 
 <!DOCTYPE html>
@@ -12,16 +15,26 @@
         <title><?= truncate($meta->title) . ' | ' . get_setting('app_name') ?></title>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="msapplication-navbutton-color" content="#212529" />
-        <meta name="theme-color" content="#212529" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="#212529" />
+        <meta name="msapplication-navbutton-color" content="<?= $primaryColor ?>" />
+        <meta name="theme-color" content="<?= $primaryColor ?>" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="<?= $primaryColor ?>" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="description" content="<?= truncate($meta->description ?: get_setting('app_description')) ?>" />
         <meta name="referrer" content="strict-origin-when-cross-origin">
         <script type="text/javascript">
             (function() {
-                var savedTheme = <?= json_encode(get_userdata('app_theme')) ?> || localStorage.getItem('bs-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                var userTheme = <?= json_encode($activeTheme) ?>;
+                var systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                var savedTheme = userTheme || systemTheme;
+
+                window.AksaraTheme = {
+                    hasUserTheme: !!userTheme,
+                    initialTheme: savedTheme,
+                    systemTheme: systemTheme,
+                    config: <?= json_encode(is_array($appTheme) ? $appTheme : null) ?>
+                };
+
                 document.documentElement.setAttribute('data-bs-theme', savedTheme);
             })();
         </script>
@@ -30,7 +43,10 @@
         echo aksara_header();
 
         echo asset_loader([is_rtl() ? 'bootstrap/css/bootstrap.rtl.min.css' : 'bootstrap/css/bootstrap.min.css', 'materialdesignicons/css/materialdesignicons.min.css', 'local/css/styles.min.css', 'local/css/theme.min.css', 'local/css/mobile.min.css']);
-        ?>
+        
+        if ($userThemeCss = compile_theme($appTheme)): ?>
+            <style type="text/css" id="aksara-user-theme-vars"><?= $userThemeCss ?></style>
+        <?php endif; ?>
 
         <link rel="icon" type="image/x-icon" href="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,12 +59,12 @@
         </style>
     </head>
     <body>
-
-        <?php include_once 'header.php'; ?>
-        <?php include_once 'breadcrumb.php'; ?>
         <?php
         $userAgent = service('request')->getUserAgent();
         $suffix = (! is_cli() && $userAgent->isMobile() ? '_mobile' : '');
+
+        include_once 'header.php';
+        include_once 'breadcrumb.php';
         include_once 'sidebar' . $suffix . '.php';
         ?>
 
@@ -102,9 +118,8 @@
             'local/js/scripts.min.js',
             'local/js/mobile.min.js'
         ]);
-        ?>
 
-        <?php if (get_setting('ai_enabled')): ?>
+        if (get_setting('ai_enabled')): ?>
             <script type="text/javascript">
                 window.AksaraAI = {
                     endpoint: '<?= base_url('xhr/ai') ?>',

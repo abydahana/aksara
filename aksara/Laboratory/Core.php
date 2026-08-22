@@ -183,11 +183,6 @@ abstract class Core extends Controller
         // Set user language.
         $this->_setLanguage(get_userdata('language_id'));
 
-        // Recover user theme (dark/light) from cookie if session is not set
-        if (! get_userdata('app_theme') && get_cookie('aksara_theme')) {
-            set_userdata('app_theme', get_cookie('aksara_theme'));
-        }
-
         // Unlink old captcha if any
         if (get_userdata('captcha_file') && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'captcha' . DIRECTORY_SEPARATOR . get_userdata('captcha_file'))) {
             try {

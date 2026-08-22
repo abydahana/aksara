@@ -69,6 +69,21 @@ if (! function_exists('create_captcha')) {
         // 2. Image Creation (With Distortion)
         // -----------------------------------
         try {
+            helper('cookie');
+            $rawThemeConfig = get_cookie('aksara_theme_config') ?? ($_COOKIE['aksara_theme_config'] ?? null);
+            $appTheme = null;
+
+            if ($rawThemeConfig) {
+                $sanitizedConfig = str_replace(' ', '+', urldecode((string) $rawThemeConfig));
+                $decodedConfig = base64_decode($sanitizedConfig);
+
+                if ($decodedConfig) {
+                    $appTheme = json_decode($decodedConfig, true);
+                }
+            }
+
+            $rawThemeMode = get_cookie('aksara_theme') ?? ($_COOKIE['aksara_theme'] ?? null);
+            $activeTheme = (is_array($appTheme) && ! empty($appTheme['activeMode'])) ? $appTheme['activeMode'] : ($rawThemeMode ?: 'light');
             $now = microtime(true);
             $width = (int) $config['img_width'];
             $height = (int) $config['img_height'];
@@ -104,7 +119,7 @@ if (! function_exists('create_captcha')) {
                 // Random color for each character
                 $charColor = imagecolorallocate($imTmp, mt_rand(0, 150), mt_rand(0, 150), mt_rand(0, 150));
 
-                if ('dark' == get_userdata('app_theme')) {
+                if ('dark' == $activeTheme) {
                     $charColor = $colorsTmp['text'];
                 }
 
@@ -146,13 +161,13 @@ if (! function_exists('create_captcha')) {
 
             // Lighter crossing lines (only 2)
             for ($i = 0; $i < 2; $i++) {
-                $lineColor = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
+                $lineColor = ('dark' == $activeTheme ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
                 imageline($im, 0, mt_rand(0, $height), $width, mt_rand(0, $height), $lineColor);
             }
 
             // Random arcs (only 2, lighter)
             for ($i = 0; $i < 2; $i++) {
-                $arcColor = ('dark' == get_userdata('app_theme') ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
+                $arcColor = ('dark' == $activeTheme ? imagecolorallocate($im, mt_rand(40, 70), mt_rand(40, 70), mt_rand(40, 70)) : imagecolorallocate($im, mt_rand(210, 235), mt_rand(210, 235), mt_rand(210, 235)));
                 imagearc($im, mt_rand(0, $width), mt_rand(0, $height), mt_rand(50, 150), mt_rand(30, 100), mt_rand(0, 360), mt_rand(0, 360), $arcColor);
             }
 
@@ -207,6 +222,21 @@ if (! function_exists('generate_captcha')) {
      */
     function generate_captcha(): array
     {
+        helper('cookie');
+        $rawThemeConfig = get_cookie('aksara_theme_config') ?? ($_COOKIE['aksara_theme_config'] ?? null);
+        $appTheme = null;
+
+        if ($rawThemeConfig) {
+            $sanitizedConfig = str_replace(' ', '+', urldecode((string) $rawThemeConfig));
+            $decodedConfig = base64_decode($sanitizedConfig);
+
+            if ($decodedConfig) {
+                $appTheme = json_decode($decodedConfig, true);
+            }
+        }
+
+        $rawThemeMode = get_cookie('aksara_theme') ?? ($_COOKIE['aksara_theme'] ?? null);
+        $activeTheme = (is_array($appTheme) && ! empty($appTheme['activeMode'])) ? $appTheme['activeMode'] : ($rawThemeMode ?: 'light');
         $string = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
         $length = 6;
         $captcha = [];
@@ -224,7 +254,7 @@ if (! function_exists('generate_captcha')) {
                 // Try to use a smoother TTF font from vendor if available
                 $fontPath = ROOTPATH . 'vendor' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'mpdf' . DIRECTORY_SEPARATOR . 'ttfonts' . DIRECTORY_SEPARATOR . 'DejaVuSans.ttf';
 
-                $colorScheme = ('dark' === get_userdata('app_theme') ? [
+                $colorScheme = ('dark' === $activeTheme ? [
                     'background' => [15, 15, 15],
                     'border' => [15, 15, 15],
                     'grid' => [50, 50, 50],

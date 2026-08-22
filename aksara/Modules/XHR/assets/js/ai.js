@@ -389,7 +389,7 @@
           type: 'section',
           id: 'sample_content',
           props: {
-            class: 'section-padding',
+            class: 'py-5',
             id: 'content'
           },
           children: [

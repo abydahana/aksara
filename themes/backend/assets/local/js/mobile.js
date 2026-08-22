@@ -467,7 +467,7 @@ $(document).ready(() => {
   function initMobileBottomSheet() {
     if (!isMobile()) return;
 
-    const $offcanvas = $('#offcanvasNavbarDark');
+    const $offcanvas = $('#offcanvasBottomSheet');
 
     $offcanvas.find('.nav-link.dropdown-toggle').each(function () {
       const $a = $(this);
@@ -512,9 +512,9 @@ $(document).ready(() => {
     });
   }
 
-  const offcanvasEl = document.getElementById('offcanvasNavbarDark');
+  const offcanvasEl = document.getElementById('offcanvasBottomSheet');
   if (offcanvasEl) {
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle[data-bs-target="#offcanvasNavbarDark"]');
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle[data-bs-target="#offcanvasBottomSheet"]');
 
     offcanvasEl.addEventListener('show.bs.offcanvas', () => {
       if (mobileMenuToggle) {

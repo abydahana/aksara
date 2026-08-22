@@ -8,7 +8,7 @@
 $fieldData = $results->field_data;
 ?>
 
-<section class="section-padding border-fade-bottom fade-in">
+<section class="py-5 fade-in">
     <div class="container position-relative text-center text-md-start">
         <h1 class="display-4 fw-bold">
             <?= $meta->title ?>
@@ -18,7 +18,7 @@ $fieldData = $results->field_data;
         </p>
     </div>
 </section>
-<section class="section-padding">
+<section class="py-5">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">

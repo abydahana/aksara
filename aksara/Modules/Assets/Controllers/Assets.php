@@ -91,43 +91,6 @@ class Assets extends Core
             }
         }
 
-        try {
-            $themeConfigPath = ROOTPATH . 'themes/' . $theme . '/theme.json';
-
-            if (is_file($themeConfigPath)) {
-                $themePackage = json_decode(file_get_contents($themeConfigPath));
-                $configs = $themePackage->configs ?? null;
-                $colors = $themePackage->colorscheme ?? null;
-
-                if (isset($configs->wrapper) && $colors) {
-                    // Map JSON keys to CSS selectors to eliminate redundant if-else blocks
-                    $mapping = [
-                        'page' => 'body',
-                        'header' => $configs->wrapper->header ?? null,
-                        'footer' => $configs->wrapper->footer ?? null,
-                        'breadcrumb' => $configs->wrapper->breadcrumb ?? null,
-                        'sidebar' => $configs->wrapper->sidebar ?? null,
-                        'content' => $configs->wrapper->content ?? null
-                    ];
-
-                    foreach ($mapping as $key => $selector) {
-                        // Generate CSS if selector is defined and colors exist for this key
-                        if ($selector && isset($colors->$key)) {
-                            $bg = $colors->$key->background ?? '#fff';
-                            $txt = $colors->$key->text ?? '#333';
-
-                            $output .= "{$selector} { background: {$bg} !important; color: {$txt} !important; }\n";
-                        }
-                    }
-                }
-            }
-        } catch (Throwable $e) {
-            // Output error as a CSS comment instead of crashing or exiting
-            log_message('error', '[Aksara] Styles Loader: ' . $e->getMessage());
-
-            $output .= "/* Theme Engine Error: " . addslashes($e->getMessage()) . " */";
-        }
-
         /**
          * Ideally, you don't need to change any code beyond this point.
          */
@@ -242,7 +205,13 @@ class Assets extends Core
             'openlayersSearchProvider' => get_setting('openlayers_search_provider'),
             'openlayersSearchKey' => get_setting('openlayers_search_key'),
             'defaultMapTile' => get_setting('default_map_tile'),
-            'actionSound' => (get_setting('action_sound') ? true : false)
+            'actionSound' => (get_setting('action_sound') ? true : false),
+            'wrapper' => [
+                'header' => '#header-wrapper',
+                'content' => '#content-wrapper',
+                'sidebar' => '#sidebar-wrapper',
+                'footer' => '#footer-wrapper'
+            ]
         ];
 
         if (file_exists(ROOTPATH . 'themes/' . $theme . '/theme.json')) {

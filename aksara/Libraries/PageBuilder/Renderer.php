@@ -455,7 +455,7 @@ class Renderer
         $alignClass = "text-{$alignment}";
         $textColorClass = $background ? 'text-white' : '';
 
-        $html = "<section class=\"section-padding position-relative {$alignClass}\"{$sectionStyle}>\n";
+        $html = "<section class=\"py-5 position-relative {$alignClass}\"{$sectionStyle}>\n";
 
         if ($background && $overlay) {
             $html .= "  <div style=\"position:absolute;inset:0;background:rgba(0,0,0,0.5);\"></div>\n";

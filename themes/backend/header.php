@@ -19,12 +19,12 @@ $isMobile = ! is_cli() && $userAgent->isMobile();
             <?= $meta->title ?>
         </a>
         <div class="d-flex align-items-center d-lg-none ms-auto">
-            <a href="<?= current_page() ?>" class="nav-link px-2" data-toggle="theme" aria-label="<?= phrase('Toggle theme') ?>">
-                <i class="mdi mdi-weather-night fs-2"></i>
+            <a href="<?= base_url('xhr/theme/editor') ?>" class="nav-link px-2 --modal" aria-label="<?= phrase('Theme Editor') ?>" title="<?= phrase('Theme Editor') ?>">
+                <i class="mdi mdi-palette-outline fs-2"></i>
             </a>
         </div>
         <?php if ($isMobile): ?>
-            <button class="navbar-toggler mobile-menu-toggle flex-shrink-0 border-0 d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarDark" aria-controls="offcanvasNavbarDark" aria-label="<?= phrase('Toggle navigation') ?>">
+            <button class="navbar-toggler mobile-menu-toggle flex-shrink-0 border-0 d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottomSheet" aria-controls="offcanvasBottomSheet" aria-label="<?= phrase('Toggle navigation') ?>">
                 <span class="mobile-menu-toggle-lines" aria-hidden="true">
                     <span class="mobile-menu-toggle-line"></span>
                     <span class="mobile-menu-toggle-line"></span>
@@ -63,8 +63,8 @@ $isMobile = ! is_cli() && $userAgent->isMobile();
             </ul>
             <ul class="navbar-nav align-items-center ms-auto">
                 <li class="nav-item">
-                    <a href="<?= current_page() ?>" class="nav-link py-0" data-toggle="theme" aria-label="<?= phrase('Toggle theme') ?>">
-                        <i class="mdi mdi-weather-night fs-5"></i>
+                    <a href="<?= base_url('xhr/theme/editor') ?>" class="nav-link py-0 --modal" aria-label="<?= phrase('Theme Editor') ?>" title="<?= phrase('Theme Editor') ?>">
+                        <i class="mdi mdi-palette-outline fs-5"></i>
                     </a>
                 </li>
                 <li class="nav-item">

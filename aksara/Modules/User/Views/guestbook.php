@@ -5,7 +5,7 @@
  * @var mixed $user
  */
 if ($user): ?>
-    <section class="section-padding">
+    <section class="py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-6 offset-3 col-sm-4 offset-sm-4 col-lg-2 offset-lg-0 text-center">
@@ -24,7 +24,7 @@ if ($user): ?>
             </div>
         </div>
     </section>
-    <div class="border-fade bg-body py-2">
+    <div class="bg-body py-2">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">

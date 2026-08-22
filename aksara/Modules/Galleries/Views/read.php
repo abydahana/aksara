@@ -113,7 +113,7 @@ if ($fieldData): ?>
         </div>
     </div>
 <?php else: ?>
-    <div class="section-padding fade-iin">
+    <div class="py-5 fade-iin">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
