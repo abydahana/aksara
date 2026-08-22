@@ -68,6 +68,9 @@ $isRtl = in_array(session()->get('language'), [
             [data-bs-theme="dark"] body {
                 background-color: #111827 !important;
             }
+            [data-bs-theme="dark"] img[src*="like-a-boss"] {
+                filter: invert(1);
+            }
         </style>
     </head>
     <body class="bg-light">
@@ -136,7 +139,7 @@ $isRtl = in_array(session()->get('language'), [
                                         <a href="//fb.me/abyprogrammer" class="btn btn-primary btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Be my friend') ?>" aria-label="<?= phrase('Be my friend') ?>">
                                             <i class="mdi mdi-facebook"></i>
                                         </a>
-                                        <a href="//github.com/abydahana" class="btn btn-dark btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Follow my GitHub') ?>" aria-label="<?= phrase('Follow my GitHub') ?>">
+                                        <a href="//github.com/abydahana" class="btn btn-dark border btn-sm rounded-pill" target="_blank" data-bs-toggle="tooltip" title="<?= phrase('Follow my GitHub') ?>" aria-label="<?= phrase('Follow my GitHub') ?>">
                                             <i class="mdi mdi-github-circle"></i>
                                         </a>
                                         <a href="//trakteer.id/aksaralaboratory" class="btn btn-outline-danger btn-sm rounded-pill float-end" target="_blank" data-bs-toggle="tooltip" title="Trakteer!" aria-label="Trakteer">
