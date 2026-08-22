@@ -220,11 +220,6 @@ class Reports extends Core
 
     private function _report()
     {
-        $period = [
-            'period' => $this->_period(true),
-            'author' => $this->_authorFilter()
-        ];
-
         return [
             [
                 'title' => phrase('Content Summary Report'),
@@ -233,7 +228,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'content',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('CMS Content Report'),
@@ -242,7 +240,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'cms',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('Page Report'),
@@ -251,7 +252,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'pages',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('Blog Report'),
@@ -288,7 +292,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'galleries',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('Video Report'),
@@ -297,7 +304,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'videos',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('Announcement Report'),
@@ -306,7 +316,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'announcements',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('Testimonial Report'),
@@ -315,7 +328,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'testimonials',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
             [
                 'title' => phrase('People Report'),
@@ -324,7 +340,10 @@ class Reports extends Core
                 'color' => 'bg-body-secondary',
                 'placement' => 'left',
                 'controller' => 'peoples',
-                'parameter' => $period
+                'parameter' => [
+                    'author' => $this->_authorFilter(),
+                    'period' => $this->_period(true)
+                ]
             ],
         ];
     }
@@ -396,15 +415,17 @@ class Reports extends Core
             return make_json($payload);
         }
 
+        $randomBytes = bin2hex(random_bytes(4));
+
         return '
             <div class="row">
                 <div class="col-12">
                     <div class="form-group mb-3">
-                        <label class="d-block text-muted">
+                        <label class="d-block text-muted" for="category_input_' . $randomBytes . '">
                             ' . phrase('Category') . '
                         </label>
                         <div class="form-group">
-                            <select name="category" class="form-control form-control-sm" data-role="select" data-href="' . current_page(null, ['category' => null, 'method' => null]) . '">
+                            <select name="category" class="form-control form-control-sm" id="category_input_' . $randomBytes . '" data-role="select" data-href="' . current_page(null, ['category' => null, 'method' => null]) . '">
                                 <option value="">' . phrase('All Categories') . '</option>
                             </select>
                         </div>
@@ -505,15 +526,17 @@ class Reports extends Core
             return make_json($payload);
         }
 
+        $randomBytes = bin2hex(random_bytes(4));
+
         return '
             <div class="row">
                 <div class="col-12">
                     <div class="form-group mb-3">
-                        <label class="d-block text-muted">
+                        <label class="d-block text-muted" for="author_input_' . $randomBytes . '">
                             ' . phrase('Author') . '
                         </label>
                         <div class="form-group">
-                            <select name="author" class="form-control form-control-sm" data-role="select" data-href="' . current_page(null, ['author' => null, 'method' => null]) . '">
+                            <select name="author" class="form-control form-control-sm" id="author_input_' . $randomBytes . '" data-role="select" data-href="' . current_page(null, ['author' => null, 'method' => null]) . '">
                                 <option value="">' . phrase('All Authors') . '</option>
                             </select>
                         </div>
@@ -569,15 +592,17 @@ class Reports extends Core
             $options .= '<option value="' . $key . '"' . ($selected == $key ? ' selected' : '') . '>' . $val . '</option>';
         }
 
+        $randomBytes = bin2hex(random_bytes(4));
+
         return '
             <div class="row">
                 <div class="col-12">
                     <div class="form-group mb-3">
-                        <label class="d-block text-muted">
+                        <label class="d-block text-muted" for="page_size_input_' . $randomBytes . '">
                             ' . phrase('Book Size / Paper Format') . '
                         </label>
                         <div class="form-group">
-                            <select name="page_size" class="form-control form-control-sm">
+                            <select name="page_size" class="form-control form-control-sm" id="page_size_input_' . $randomBytes . '">
                                 ' . $options . '
                             </select>
                         </div>
