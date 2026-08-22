@@ -298,6 +298,67 @@ body.sidebar-collapsed .sidebar-toggle-wrapper {
   width: 1.5rem;
   display: inline-block;
 }
+.dropdown-menu .dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dropdown-menu .dropdown-toggle::after {
+  margin-left: auto;
+  border-top: 0.3em solid transparent;
+  border-bottom: 0.3em solid transparent;
+  border-left: 0.3em solid currentColor;
+  border-right: 0;
+  transform: none;
+}
+[dir='rtl'] .dropdown-menu .dropdown-toggle::after {
+  margin-left: 0;
+  margin-right: auto;
+  border-top: 0.3em solid transparent;
+  border-bottom: 0.3em solid transparent;
+  border-right: 0.3em solid currentColor;
+  border-left: 0;
+  transform: none;
+}
+
+@media (min-width: 992px) {
+  .navbar .dropdown-menu .dropdown {
+    position: relative;
+  }
+  .navbar .dropdown-menu .dropdown-menu {
+    top: -8px;
+    left: 100%;
+    margin-top: 0;
+    margin-left: 4px;
+    display: none;
+  }
+  .navbar .dropdown-menu .dropdown-menu:before,
+  .navbar .dropdown-menu .dropdown-menu:after {
+    display: none !important;
+  }
+  .navbar .dropdown-menu .dropdown > .dropdown-menu.show {
+    display: block;
+  }
+  [dir='rtl'] .navbar .dropdown-menu .dropdown-menu {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 4px;
+  }
+  .navbar .dropdown-menu .dropdown-menu.dropdown-menu-end,
+  .navbar .dropdown-menu.dropdown-menu-end .dropdown-menu {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 4px;
+  }
+  #header-wrapper {
+    height: 80px;
+  }
+  #content-wrapper {
+    padding-top: 80px;
+  }
+}
 [data-bs-theme='dark'] .navbar .dropdown-menu {
   background: var(--bs-body-bg);
   border-color: var(--bs-border-color);
@@ -365,6 +426,31 @@ a {
 }
 .be-hidden {
   display: none;
+}
+.border-fade-top {
+  border-top: 0 !important;
+  background-image: linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%);
+  background-size: 100% 1px;
+  background-position: top;
+  background-repeat: no-repeat;
+}
+.border-fade-bottom {
+  border-bottom: 0 !important;
+  background-image: linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%);
+  background-size: 100% 1px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+}
+.border-fade-y,
+.border-fade {
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  background-image: linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%), linear-gradient(to right, transparent 0%, var(--wg-border) 20%, var(--wg-border) 80%, transparent 100%);
+  background-size:
+    100% 1px,
+    100% 1px;
+  background-position: top, bottom;
+  background-repeat: no-repeat, no-repeat;
 }
 .border-transparent {
   border-color: transparent;

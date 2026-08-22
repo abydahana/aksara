@@ -6,9 +6,9 @@
  */
 // Cache menu output once — generate_menu() mutates $menus by reference,
 // calling it twice would corrupt slugs (all links become target="_blank")
-$headerMenus = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link d-flex gap-1 --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu'); ?>
+$headerMenus = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link d-flex align-items-center gap-1 --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu'); ?>
 
-<header data-role="header" class="navbar navbar-expand-lg fixed-top bg-body" id="header-wrapper" data-hide-on-scroll="true">
+<header data-role="header" class="navbar navbar-expand-lg fixed-top bg-body border-fade-bottom" id="header-wrapper" data-hide-on-scroll="true">
     <div class="container flex-nowrap">
         <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url() ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name') ?> Icon" loading="lazy" decoding="async" />
@@ -32,7 +32,7 @@ $headerMenus = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'na
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="<?= base_url('xhr/partial/language') ?>" data-bs-toggle="dropdown" data-role="language">
+                    <a class="nav-link d-flex align-items-center gap-1 dropdown-toggle" href="<?= base_url('xhr/partial/language') ?>" data-bs-toggle="dropdown" data-role="language">
                         <i class="mdi mdi-translate"></i>
                         <span><?= phrase('Language') ?></span>
                     </a>
@@ -42,7 +42,7 @@ $headerMenus = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'na
                 </li>
                 <?php if (get_userdata('is_logged')): ?>
                     <li class="nav-item dropdown user-account">
-                        <a class="nav-link dropdown-toggle" href="<?= base_url('dashboard') ?>" data-bs-toggle="dropdown">
+                        <a class="nav-link d-flex align-items-center gap-1 dropdown-toggle" href="<?= base_url('dashboard') ?>" data-bs-toggle="dropdown">
                             <i class="mdi mdi-account-outline"></i>
                             <span><?= truncate(get_userdata('first_name'), 16) ?></span>
                         </a>
