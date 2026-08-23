@@ -195,7 +195,7 @@ $presets = $themeConfig['presets'] ?? [];
 
         function renderPresets() {
             presetWrap.innerHTML = presets.map(item => {
-                return '<div class="col-6"><button type="button" class="btn btn-outline-secondary w-100 p-2 text-start ' + (item.id === state.baseTheme ? 'active' : '') + '" data-preset="' + item.id + '">' + thumbnail(item.colors[mode]) + '<span class="d-block mt-2 fw-semibold text-truncate text-center">' + item.name + '</span></button></div>';
+                return '<div class="col-6"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (item.id === state.baseTheme ? 'active' : '') + '" data-preset="' + item.id + '">' + thumbnail(item.colors[mode]) + '<span class="d-block mt-2 fw-semibold text-truncate text-center">' + item.name + '</span></button></div>';
             }).join('');
         }
 
