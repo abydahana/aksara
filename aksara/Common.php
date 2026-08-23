@@ -30,7 +30,7 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter): string
     {
-        $version = '6.3.4';
+        $version = '6.3.5';
 
         if ('version' == $parameter) {
             return $version;
@@ -588,8 +588,8 @@ if (! function_exists('view')) {
         /** @var View $renderer */
         $renderer = Services::renderer();
 
-        $config = config('Views');
-        $saveData = $config->saveData ?? true;
+        $config = config('View');
+        $saveData = $config?->saveData ?? true;
 
         if (array_key_exists('saveData', $options)) {
             $saveData = (bool) $options['saveData'];
