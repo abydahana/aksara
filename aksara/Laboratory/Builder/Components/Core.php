@@ -1313,7 +1313,7 @@ class Core
                             {{ phrase('The page you requested does not exist or has already been archived.') }}
                         </p>
                         <div class="text-center">
-                            <a href="{{ base_url() }}" class="btn btn-outline-primary rounded-pill px-4">
+                            <a href="{{ base_url() }}" class="btn btn-outline-primary rounded-pill px-4 --xhr">
                                 <i class="mdi mdi-arrow-left"></i>
                                 {{ phrase('Back to Homepage') }}
                             </a>
