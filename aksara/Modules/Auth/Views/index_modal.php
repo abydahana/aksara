@@ -11,8 +11,8 @@
     }
 </style>
 
-<div class="card-group rounded-4 overflow-hidden">
-    <div class="card">
+<div class="card-group rounded-bottom-4 overflow-hidden">
+    <div class="card rounded-0 border-top-0">
         <div class="card-body">
             <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
                 <div class="mb-3">
@@ -92,7 +92,7 @@
     </div>
 
     <?php if (get_setting('frontend_registration')): ?>
-        <div class="card">
+        <div class="card rounded-0 border-top-0">
             <div class="card-body d-flex align-items-center justify-content-center">
                 <div>
                     <p class="fs-5 text-center text-secondary">
