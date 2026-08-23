@@ -18,7 +18,7 @@
                 <div class="card-body px-4">
                     <?php if (! empty($passkeys)): ?>
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
+                            <table class="table table-hover align-middle mb-0" style="--bs-table-bg:trabsparent">
                                 <thead>
                                     <tr>
                                         <th><?= phrase('Device / Label') ?></th>
@@ -42,7 +42,7 @@
                                                 <?= $passkey->last_used_at ? date('d M Y H:i', strtotime($passkey->last_used_at)) : phrase('Never') ?>
                                             </td>
                                             <td class="text-end">
-                                                <a href="<?= base_url('administrative/account/passkey/delete/' . $passkey->id) ?>" class="btn btn-link text-danger btn-sm p-0 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to remove this passkey?') ?>">
+                                                <a href="<?= base_url('administrative/account/passkey/delete/' . $passkey->id) ?>" class="btn btn-outline-danger text-danger btn-sm rounded-pill py-0 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to remove this passkey?') ?>">
                                                     <i class="mdi mdi-delete-outline me-1"></i><?= phrase('Delete') ?>
                                                 </a>
                                             </td>
