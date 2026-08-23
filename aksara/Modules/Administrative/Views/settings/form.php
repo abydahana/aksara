@@ -10,37 +10,37 @@
         <div class="sticky-lg-top bg-body overflow-x-auto py-1 px-3 mx--3 border-bottom">
             <ul class="nav nav-pills nav-pills-dark flex-nowrap">
                 <li class="nav-item">
-                    <a href="#pills-setting" data-bs-toggle="pill" class="nav-link rounded-pill active no-wrap --xhr">
+                    <a href="#pills-setting" data-bs-toggle="pill" class="nav-link rounded-pill active text-nowrap --xhr">
                         <i class="mdi mdi-cogs"></i> <?= phrase('Configuration') ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-membership" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                    <a href="#pills-membership" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-account-group-outline"></i> <?= phrase('Membership') ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-storage" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                    <a href="#pills-storage" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-cloud-outline"></i> <?= phrase('Storage') ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-apis" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                    <a href="#pills-apis" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-code-braces"></i> <?= phrase('API') ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-ai" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                    <a href="#pills-ai" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-creation"></i> <?= phrase('AI') ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-oauth" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                    <a href="#pills-oauth" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-shield-lock-outline"></i> <?= phrase('OAuth') ?>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#pills-notifier" data-bs-toggle="pill" class="nav-link rounded-pill no-wrap --xhr">
+                    <a href="#pills-notifier" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-bullhorn"></i> <?= phrase('Notifier') ?>
                     </a>
                 </li>

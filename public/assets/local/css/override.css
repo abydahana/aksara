@@ -198,9 +198,6 @@ textarea {
 .custom-file-label::after {
   height: auto;
 }
-.no-wrap {
-  white-space: nowrap;
-}
 .CodeMirror {
   border-radius: 0.375rem !important;
   padding: 0.375rem 0.75rem !important;

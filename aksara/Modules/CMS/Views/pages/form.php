@@ -51,18 +51,18 @@ $pageContent = $results->field_data->page_content->value ?? '{"components":[]}';
                 <div class="col-6 text-end">
                     <div class="d-flex gap-2 justify-content-end">
                         <?php if (get_setting('ai_enabled')): ?>
-                            <button type="button" class="btn btn-sm btn-info no-wrap rounded-pill px-3 --ai-assistant">
+                            <button type="button" class="btn btn-sm btn-info text-nowrap rounded-pill px-3 --ai-assistant">
                                 <i class="mdi mdi-creation me-1"></i> AI
                             </button>
                         <?php endif; ?>
 
-                        <button type="button" class="btn btn-sm btn-outline-secondary no-wrap rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
+                        <button type="button" class="btn btn-sm btn-outline-secondary text-nowrap rounded-pill px-3 click-on-invalid" onclick="window._pageBuilder.openSettings('#pb-settings-container')">
                             <i class="mdi mdi-cogs me-1"></i> <?= phrase('Settings') ?>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary no-wrap rounded-pill pb-preview-btn px-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary text-nowrap rounded-pill pb-preview-btn px-3">
                             <i class="mdi mdi-eye me-1"></i> <?= phrase('Preview') ?>
                         </button>
-                        <button type="button" class="btn btn-sm btn-success no-wrap rounded-pill pb-save-btn px-4">
+                        <button type="button" class="btn btn-sm btn-success text-nowrap rounded-pill pb-save-btn px-4">
                             <i class="mdi mdi-content-save me-1"></i> <?= phrase('Save') ?>
                         </button>
                     </div>
