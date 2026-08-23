@@ -92,6 +92,12 @@ if ($activation): ?>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="d-grid mt-5">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyLogin">
+                                        <i class="mdi mdi-fingerprint me-1"></i> <?= phrase('Sign in with Passkey') ?>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -134,3 +140,13 @@ if ($activation): ?>
         </div>
     </div>
 </section>
+
+<script src="<?= asset_url('local/js/passkey.min.js') ?>"></script>
+<script>
+    document.getElementById('btnPasskeyLogin')?.addEventListener('click', function() {
+        Passkey.login(
+            '<?= base_url('auth/passkey/options') ?>',
+            '<?= base_url('auth/passkey/verify') ?>'
+        );
+    });
+</script>

@@ -31,7 +31,7 @@
         <?php endif; ?>
 
         <div class="container-fluid">
-            <div class="card border-0">
+            <div class="card bg-transparent border-0">
                 <div class="card-body">
                     <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
                         <div class="mb-3">
@@ -46,19 +46,19 @@
                         </div>
                         <div class="form-group mb-3">
                             <div class="input-group">
-                                <span class="input-group-text rounded-pill rounded-end-0">
+                                <span class="input-group-text rounded-pill rounded-end-0 border-end-0 bg-body">
                                     <i class="mdi mdi-account" style="width:22px"></i>
                                 </span>
-                                <input type="text" name="username" class="form-control rounded-pill rounded-start-0" id="username_input" placeholder="<?= phrase('Enter your username or email') ?>" />
+                                <input type="text" name="username" class="form-control rounded-pill rounded-start-0 border-start-0 bg-body" id="username_input" placeholder="<?= phrase('Enter your username or email') ?>" />
                             </div>
                         </div>
                         <div class="form-group mb-3">
                             <div class="input-group">
-                                <span class="input-group-text rounded-pill rounded-end-0">
+                                <span class="input-group-text rounded-pill rounded-end-0 border-end-0 bg-body">
                                     <i class="mdi mdi-fingerprint" style="width:22px"></i>
                                 </span>
-                                <input type="password" name="password" class="form-control rounded-0" id="password_input" placeholder="<?= phrase('Enter password') ?>" autocomplete="new-password" style="border-right:0" />
-                                <span class="input-group-text bg-body rounded-pill rounded-start-0" style="border-left:0">
+                                <input type="password" name="password" class="form-control rounded-pill rounded-start-0 rounded-end-0 border-start-0 border-end-0 bg-body" id="password_input" placeholder="<?= phrase('Enter password') ?>" autocomplete="new-password" />
+                                <span class="input-group-text bg-body rounded-pill rounded-start-0 border-start-0 bg-body">
                                     <i class="mdi mdi-eye-outline password-peek" data-parent=".form-group" data-peek=".form-control" style="width:22px"></i>
                                 </span>
                             </div>
@@ -74,10 +74,10 @@
                             echo '
                                 <div class="form-group mb-3">
                                     <div class="input-group">
-                                        <span class="input-group-text rounded-pill rounded-end-0">
+                                        <span class="input-group-text rounded-pill rounded-end-0 bg-body">
                                             <i class="mdi mdi-calendar-check" style="width:22px"></i>
                                         </span>
-                                        <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' . phrase('Choose year') . '" id="year_input">
+                                        <select name="year" class="form-control rounded-pill rounded-start-0 bg-body" placeholder="' . phrase('Choose year') . '" id="year_input">
                                             ' . $option . '
                                         </select>
                                     </div>
@@ -85,7 +85,7 @@
                             ';
                         } ?>
 
-                        <div class="row g-0 mb-5">
+                        <div class="row g-0 mb-3">
                             <div class="col-7">
                                 <div class="d-grid">
                                     <a href="<?= current_page('forgot') ?>" class="btn btn-link px-0 text-start --xhr">
@@ -100,6 +100,12 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="d-grid my-5">
+                            <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyLogin">
+                                <i class="mdi mdi-fingerprint me-1"></i> <?= phrase('Sign in with Passkey') ?>
+                            </button>
                         </div>
                     </form>
 
@@ -145,3 +151,13 @@
         </div>
     </div>
 </div>
+
+<script src="<?= asset_url('local/js/passkey.min.js') ?>"></script>
+<script>
+    document.getElementById('btnPasskeyLogin')?.addEventListener('click', function() {
+        Passkey.login(
+            '<?= base_url('auth/passkey/options') ?>',
+            '<?= base_url('auth/passkey/verify') ?>'
+        );
+    });
+</script>

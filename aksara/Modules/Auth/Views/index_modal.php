@@ -11,8 +11,8 @@
     }
 </style>
 
-<div class="card-group">
-    <div class="card border-top-0 border-bottom-0 border-start-0 rounded-top-0">
+<div class="card-group rounded-4 overflow-hidden">
+    <div class="card">
         <div class="card-body">
             <form action="<?= current_page() ?>" method="POST" class="--validate-form" enctype="multipart/form-data">
                 <div class="mb-3">
@@ -82,12 +82,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="d-grid mt-5">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyModalLogin">
+                        <i class="mdi mdi-fingerprint me-1"></i> <?= phrase('Sign in with Passkey') ?>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
     <?php if (get_setting('frontend_registration')): ?>
-        <div class="card border-top-0 border-end-0 border-bottom-0 rounded-top-0">
+        <div class="card">
             <div class="card-body d-flex align-items-center justify-content-center">
                 <div>
                     <p class="fs-5 text-center text-secondary">
@@ -120,3 +125,13 @@
         </div>
     <?php endif; ?>
 </div>
+
+<script src="<?= asset_url('local/js/passkey.min.js') ?>"></script>
+<script>
+    document.getElementById('btnPasskeyModalLogin')?.addEventListener('click', function() {
+        Passkey.login(
+            '<?= base_url('auth/passkey/options') ?>',
+            '<?= base_url('auth/passkey/verify') ?>'
+        );
+    });
+</script>
