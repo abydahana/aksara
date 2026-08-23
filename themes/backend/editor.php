@@ -16,11 +16,11 @@ $presets = $themeConfig['presets'] ?? [];
     <div class="d-flex align-items-center justify-content-between gap-2 pb-3 mb-3 border-bottom">
         <h6 class="fw-bold mb-0 me-auto"><?= phrase('Theme Mode') ?></h6>
         <div class="btn-group btn-group-sm" role="group" aria-label="<?= phrase('Theme Mode'); ?>" data-theme-mode-toggle>
-            <button type="button" class="btn btn-outline-secondary" data-mode-val="light"><i class="mdi mdi-weather-sunny me-1"></i><?= phrase('Light') ?></button>
-            <button type="button" class="btn btn-outline-secondary" data-mode-val="dark"><i class="mdi mdi-weather-night me-1"></i><?= phrase('Dark') ?></button>
+            <button type="button" class="btn btn-outline-secondary rounded-pill rounded-end-0" data-mode-val="light"><i class="mdi mdi-weather-sunny me-1"></i><?= phrase('Light') ?></button>
+            <button type="button" class="btn btn-outline-secondary rounded-pill rounded-start-0" data-mode-val="dark"><i class="mdi mdi-weather-night me-1"></i><?= phrase('Dark') ?></button>
         </div>
     </div>
-    <div class="row g-3">
+    <div class="row g-5">
         <div class="col-lg-5">
             <h6 class="fw-bold mb-2"><?= phrase('Presets') ?></h6>
             <div class="row g-2 mb-3" data-theme-presets></div>
@@ -28,11 +28,12 @@ $presets = $themeConfig['presets'] ?? [];
         <div class="col-lg-7">
             <h6 class="fw-bold mb-2"><?= phrase('Custom Colors') ?></h6>
             <div data-theme-fields></div>
-            <div class="d-flex gap-2 justify-content-end mt-3">
-                <button type="button" class="btn btn-outline-secondary" data-theme-reset><i class="mdi mdi-restore"></i> <?= phrase('Reset') ?></button>
-                <button type="button" class="btn btn-primary" data-theme-save><i class="mdi mdi-content-save-outline"></i> <?= phrase('Save') ?></button>
-            </div>
         </div>
+    </div>
+    <hr class="border-secondary" style="margin-inline:-1rem" />
+    <div class="d-flex gap-2 justify-content-end mt-3">
+        <button type="button" class="btn btn-outline-secondary" data-theme-reset><i class="mdi mdi-restore"></i> <?= phrase('Reset') ?></button>
+        <button type="button" class="btn btn-primary" data-theme-save><i class="mdi mdi-content-save-outline"></i> <?= phrase('Save') ?></button>
     </div>
 </div>
 
