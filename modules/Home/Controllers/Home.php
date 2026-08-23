@@ -39,6 +39,7 @@ class Home extends Core
             'categories' => $model->getCategories(),
             'articles' => $model->getArticles(),
             'galleries' => $model->getGalleries(),
+            'videos' => $model->getVideos(),
             'peoples' => $model->getPeoples(),
             'testimonials' => $model->getTestimonials()
         ])

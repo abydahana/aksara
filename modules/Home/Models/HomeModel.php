@@ -81,7 +81,10 @@ class HomeModel extends Model
             'app_users',
             'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('updated_at', 'DESC')
+        ->orderBy([
+            'blogs.updated_at' => 'DESC',
+            'blogs.created_at' => 'DESC'
+        ])
         ->getWhere(
             'blogs',
             [
@@ -145,7 +148,10 @@ class HomeModel extends Model
             'app_users',
             'app_users.user_id = blogs.created_by'
         )
-        ->orderBy('blogs.created_at', 'DESC')
+        ->orderBy([
+            'blogs.updated_at' => 'DESC',
+            'blogs.created_at' => 'DESC'
+        ])
         ->getWhere(
             'blogs',
             [
@@ -158,7 +164,11 @@ class HomeModel extends Model
 
     public function getGalleries()
     {
-        return $this->getWhere(
+        return $this->orderBy([
+            'updated_at' => 'DESC',
+            'created_at' => 'DESC'
+        ])
+        ->getWhere(
             'galleries',
             [
                 'status' => 1
@@ -168,9 +178,29 @@ class HomeModel extends Model
         ->result();
     }
 
+    public function getVideos()
+    {
+        return $this->orderBy([
+            'updated_at' => 'DESC',
+            'created_at' => 'DESC'
+        ])
+        ->getWhere(
+            'videos',
+            [
+                'status' => 1
+            ],
+            6
+        )
+        ->result();
+    }
+
     public function getPeoples()
     {
-        return $this->getWhere(
+        return $this->orderBy([
+            'updated_at' => 'DESC',
+            'created_at' => 'DESC'
+        ])
+        ->getWhere(
             'peoples',
             [
                 'status' => 1
@@ -191,6 +221,10 @@ class HomeModel extends Model
             'app_users.user_id = testimonials.created_by',
             'LEFT'
         )
+        ->orderBy([
+            'updated_at' => 'DESC',
+            'created_at' => 'DESC'
+        ])
         ->getWhere(
             'testimonials',
             [
