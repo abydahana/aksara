@@ -58,6 +58,8 @@ class Passkey extends Core
      */
     public function register()
     {
+        $this->permission->mustAjax(go_to());
+
         if (! get_userdata('is_logged')) {
             return throw_exception(403, phrase('You are not authorized to perform this action.'));
         }
@@ -95,6 +97,8 @@ class Passkey extends Core
      */
     public function verify()
     {
+        $this->permission->mustAjax(go_to());
+
         if (! get_userdata('is_logged')) {
             return throw_exception(403, phrase('You are not authorized to perform this action.'));
         }
@@ -145,6 +149,8 @@ class Passkey extends Core
      */
     public function delete($id = 0)
     {
+        $this->permission->mustAjax(go_to());
+
         if (! get_userdata('is_logged')) {
             return throw_exception(403, phrase('You are not authorized to perform this action.'));
         }
