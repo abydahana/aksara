@@ -37,47 +37,11 @@ class Updater extends Core
         $this->setTheme('backend');
     }
 
-    /**
-     * Ping upstream
-     */
-    public static function pingUpstream($changelog = false)
-    {
-        try {
-            $curl = Services::curlrequest([
-                'timeout' => 5,
-                'http_errors' => false
-            ]);
-
-            $response = $curl->post(
-                'https://www.aksaracms.com/updater/ping',
-                [
-                    'allow_redirects' => [
-                        'max' => 2
-                    ],
-                    'headers' => [
-                        'Referer' => base_url()
-                    ],
-                    'form_params' => [
-                        'version' => aksara('version'),
-                        'build_version' => aksara('build_version'),
-                        'changelog' => $changelog
-                    ]
-                ]
-            );
-
-            return json_decode($response->getBody());
-        } catch (Throwable $e) {
-            // Safe abstraction
-        }
-
-        return false;
-    }
-
     public function index()
     {
         if ($this->validToken($this->request->getPost('_token'))) {
             if (DEMO_MODE) {
-                return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
+                return throw_exception(403, phrase('Changes will not saved in demo mode.'), go_to());
             }
 
             try {
@@ -131,7 +95,7 @@ class Updater extends Core
     public function migrate()
     {
         if (DEMO_MODE) {
-            return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
+            return throw_exception(403, phrase('Changes will not saved in demo mode.'), go_to());
         }
 
         try {
@@ -170,6 +134,42 @@ class Updater extends Core
         } catch (Throwable $e) {
             return throw_exception(500, $e->getMessage(), current_page());
         }
+    }
+
+    /**
+     * Ping upstream
+     */
+    public static function pingUpstream($changelog = false)
+    {
+        try {
+            $curl = Services::curlrequest([
+                'timeout' => 5,
+                'http_errors' => false
+            ]);
+
+            $response = $curl->post(
+                'https://www.aksaracms.com/updater/ping',
+                [
+                    'allow_redirects' => [
+                        'max' => 2
+                    ],
+                    'headers' => [
+                        'Referer' => base_url()
+                    ],
+                    'form_params' => [
+                        'version' => aksara('version'),
+                        'build_version' => aksara('build_version'),
+                        'changelog' => $changelog
+                    ]
+                ]
+            );
+
+            return json_decode($response->getBody());
+        } catch (Throwable $e) {
+            // Safe abstraction
+        }
+
+        return false;
     }
 
     /**
