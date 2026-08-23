@@ -1049,6 +1049,12 @@ class Template
                                 'label' => 'Session Cleaner',
                                 'slug' => 'administrative/cleaner',
                                 'icon' => 'mdi mdi-trash-can'
+                            ],
+                            [
+                                'id' => 0,
+                                'label' => 'Core System Updater',
+                                'slug' => 'administrative/updater',
+                                'icon' => 'mdi mdi-update'
                             ]
                         ]
                     ],

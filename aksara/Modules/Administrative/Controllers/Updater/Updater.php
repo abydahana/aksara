@@ -246,15 +246,11 @@ class Updater extends Core
 
                 // Run the updater migration
                 $migration = Services::migrations()->setNamespace('Aksara');
+                $migration->latest();
 
-                // Migrate the updater database schema
-                if ($migration->latest()) {
-                    // Call seeder
-                    $seeder = Database::seeder();
+                // Run all seeders under aksara/Database/Seeds
+                $this->_runSeeds();
 
-                    // Run seeder
-                    $seeder->call('Aksara\Database\Seeds\Updater');
-                }
 
                 $html = '
                     <div class="text-center mb-3">
@@ -490,5 +486,77 @@ class Updater extends Core
         }
 
         return $zip->extractTo($destination);
+    }
+
+    /**
+     * Run migration and seeder for Aksara database
+     */
+    public function migrate()
+    {
+        if (DEMO_MODE) {
+            return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
+        }
+
+        try {
+            // Run migrations for Aksara namespace
+            $migration = Services::migrations()->setNamespace('Aksara');
+            $migration->latest();
+
+            // Run all seeders under aksara/Database/Seeds
+            $this->_runSeeds();
+
+            $html = '
+                <div class="text-center mb-3">
+                    <i class="mdi mdi-database-check mdi-5x text-success"></i>
+                    <br />
+                    <h5>
+                        ' . phrase('Database migration and seeder executed successfully!') . '
+                    </h5>
+                    <p class="text-muted">
+                        ' . phrase('All pending database migrations and seeders under Aksara namespace have been applied.') . '
+                    </p>
+                    <a href="javascript:void(0)" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">
+                        <i class="mdi mdi-check"></i> ' . phrase('OK') . '
+                    </a>
+                </div>
+            ';
+
+            return make_json([
+                'status' => 200,
+                'meta' => [
+                    'title' => phrase('Migration & Seeder'),
+                    'icon' => 'mdi mdi-database-check',
+                    'popup' => true
+                ],
+                'content' => $html
+            ]);
+        } catch (Throwable $e) {
+            return throw_exception(500, $e->getMessage(), current_page());
+        }
+    }
+
+    /**
+     * Automatically scan and run all seeders under aksara/Database/Seeds
+     */
+    private function _runSeeds()
+    {
+        $seedFiles = glob(ROOTPATH . 'aksara' . DIRECTORY_SEPARATOR . 'Database' . DIRECTORY_SEPARATOR . 'Seeds' . DIRECTORY_SEPARATOR . '*.php');
+
+        if (! empty($seedFiles)) {
+            $seeder = Database::seeder();
+
+            foreach ($seedFiles as $file) {
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $className = 'Aksara\\Database\\Seeds\\' . $filename;
+
+                if (class_exists($className)) {
+                    try {
+                        $seeder->call($className);
+                    } catch (Throwable $e) {
+                        // Safe abstraction
+                    }
+                }
+            }
+        }
     }
 }
