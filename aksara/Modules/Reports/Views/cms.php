@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @var string $title
  * @var object $header
  * @var array $results
  */

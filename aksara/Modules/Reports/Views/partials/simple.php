@@ -110,6 +110,7 @@ $sheetSize = ('landscape' === $orientation ? '13in 8.5in' : '8.5in 13in');
         }
 
         .table {
+            border: 1px solid #888;
             border-collapse: collapse
         }
 
@@ -175,7 +176,7 @@ $sheetSize = ('landscape' === $orientation ? '13in 8.5in' : '8.5in 13in');
 
     <?php if ($summary): ?>
         <h3><?= phrase('Summary'); ?></h3>
-        <table class="table" border="1">
+        <table class="table">
             <tbody>
                 <?php foreach (array_chunk($summary, 3, true) as $chunk): ?>
                     <tr>
@@ -196,7 +197,7 @@ $sheetSize = ('landscape' === $orientation ? '13in 8.5in' : '8.5in 13in');
 
     <?php foreach ($sections as $section): ?>
         <h3><?= phrase($section['title']); ?></h3>
-        <table class="table" border="1">
+        <table class="table">
             <thead>
                 <tr class="bg-light">
                     <?php foreach ($section['headers'] as $headerLabel): ?>

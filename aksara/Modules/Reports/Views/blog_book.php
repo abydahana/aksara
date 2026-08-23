@@ -153,6 +153,8 @@ $getFeatured = static function ($post) {
 
         .cover-cell {
             vertical-align: middle;
+            padding-left: 30px;
+            padding-right: 30px;
         }
 
         .cover-title {
@@ -242,7 +244,7 @@ $getFeatured = static function ($post) {
         }
 
         .chapter-header .chapter-badge {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: "bookos", Georgia, serif;
             font-size: 9.5pt;
             font-weight: bold;
             letter-spacing: 2px;
@@ -252,7 +254,7 @@ $getFeatured = static function ($post) {
         }
 
         .chapter-header h1 {
-            font-family: Georgia, "bookos", serif;
+            font-family: "bookos", Georgia, serif;
             font-size: <?= $isLandscape ? '21pt' : '26pt'; ?>;
             margin: 4px 0 8px;
             line-height: 1.2;
