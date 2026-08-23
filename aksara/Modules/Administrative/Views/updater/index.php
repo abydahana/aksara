@@ -6,7 +6,7 @@
 $changelog = null;
 
 if (isset($updater->changelog)) {
-    $parsedown = new \Aksara\Libraries\Parsedown();
+    $parsedown = new \Parsedown();
 
     ob_start();
 
@@ -41,7 +41,7 @@ if (isset($updater->changelog)) {
             </div>
         </div>
         <hr />
-        <?= $parsedown->parse($val->message) ?>
+        <?= $parsedown->text($val->message) ?>
     <?php
     }
 
@@ -70,7 +70,10 @@ if (isset($updater->changelog)) {
                     <button type="submit" class="btn btn-success rounded-pill">
                         <i class="mdi mdi-reload"></i> <?= phrase('Update Now') ?>
                     </button>
-                    <a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ms-3">
+                    <a href="<?= base_url('administrative/updater/migrate') ?>" class="btn btn-outline-success rounded-pill ms-2 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
+                        <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
+                    </a>
+                    <a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ms-2">
                         <i class="mdi mdi-hammer"></i> <?= phrase('Manual Update') ?>
                     </a>
                 </div>
@@ -86,9 +89,14 @@ if (isset($updater->changelog)) {
                     <p>
                         <?= phrase('No update available at the moment. The update will be inform to you if available.') ?>
                     </p>
-                    <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-primary rounded-pill px-5 --xhr show-progress">
-                        <i class="mdi mdi-update"></i> <?= phrase('Check Again') ?>
-                    </a>
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-primary rounded-pill px-4 --xhr show-progress">
+                            <i class="mdi mdi-update"></i> <?= phrase('Check Again') ?>
+                        </a>
+                        <a href="<?= base_url('administrative/updater/migrate') ?>" class="btn btn-sm btn-outline-success rounded-pill px-4 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
+                            <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
