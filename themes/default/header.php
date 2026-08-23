@@ -9,23 +9,28 @@
 $headerMenus = generate_menu($menus, 'navbar-nav me-auto gap-1', 'nav-item', 'nav-link d-flex align-items-center gap-1 --xhr', 'dropdown-toggle', 'data-bs-toggle="dropdown"', 'dropdown', 'dropdown-menu'); ?>
 
 <header data-role="header" class="navbar navbar-expand-lg fixed-top bg-body border-fade-bottom" id="header-wrapper" data-hide-on-scroll="true">
-    <div class="container flex-nowrap">
+    <div class="container">
         <a class="navbar-brand pt-0 pb-0 --xhr" href="<?= base_url() ?>">
             <img src="<?= get_image('settings', get_setting('app_icon'), 'icon') ?>" class="img-fluid img-icon rounded" alt="<?= get_setting('app_name') ?> Icon" loading="lazy" decoding="async" />
             <img src="<?= get_image('settings', get_setting('app_logo')) ?>" class="img-fluid img-logo rounded" alt="<?= get_setting('app_name') ?> Logo" loading="lazy" decoding="async" />
             <?= get_userdata('year') ? '<span class="badge bg-warning">' . get_userdata('year') . '</span>' : '' ?>
         </a>
-        <button class="navbar-toggler mobile-menu-toggle d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottomSheet" aria-controls="offcanvasBottomSheet" aria-label="<?= phrase('Toggle navigation') ?>">
-            <span class="mobile-menu-toggle-lines" aria-hidden="true">
-                <span class="mobile-menu-toggle-line"></span>
-                <span class="mobile-menu-toggle-line"></span>
-                <span class="mobile-menu-toggle-line"></span>
-            </span>
-        </button>
+        <div class="d-flex align-items-center flex-nowrap gap-3 ms-auto d-lg-none">
+            <a href="<?= base_url('xhr/theme/editor') ?>" class="nav-link py-0 --modal" aria-label="<?= phrase('Theme Editor') ?>" data-bs-toggle="tooltip" title="<?= phrase('Theme Editor') ?>">
+                <i class="mdi mdi-palette-outline fs-3"></i>
+            </a>
+            <button class="navbar-toggler mobile-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottomSheet" aria-controls="offcanvasBottomSheet" aria-label="<?= phrase('Toggle navigation') ?>">
+                <span class="mobile-menu-toggle-lines" aria-hidden="true">
+                    <span class="mobile-menu-toggle-line"></span>
+                    <span class="mobile-menu-toggle-line"></span>
+                    <span class="mobile-menu-toggle-line"></span>
+                </span>
+            </button>
+        </div>
         <!-- Desktop inline menu (lg+) -->
         <div class="collapse navbar-collapse d-none d-lg-flex">
             <?= $headerMenus ?>
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-3">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
                 <li class="nav-item">
                     <a href="<?= base_url('xhr/theme/editor') ?>" class="nav-link py-0 --modal" aria-label="<?= phrase('Theme Editor') ?>" data-bs-toggle="tooltip" title="<?= phrase('Theme Editor') ?>">
                         <i class="mdi mdi-palette-outline fs-5"></i>
