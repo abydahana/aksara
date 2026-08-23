@@ -31,25 +31,25 @@ if ($activation): ?>
                                     </p>
                                 </div>
                                 <div class="mb-3">
-                                    <p class="text-center text-muted">
+                                    <p class="fs-5 text-center text-muted">
                                         <?= phrase('Please enter your account information to sign in.') ?>
                                     </p>
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="input-group">
-                                        <span class="input-group-text rounded-pill rounded-end-0">
+                                        <span class="input-group-text rounded-pill rounded-end-0 border-end-0 bg-body">
                                             <i class="mdi mdi-account" style="width:22px"></i>
                                         </span>
-                                        <input type="text" name="username" class="form-control rounded-pill rounded-start-0" id="username_input" placeholder="<?= phrase('Enter your username or email') ?>" />
+                                        <input type="text" name="username" class="form-control rounded-pill rounded-start-0 border-start-0 bg-body" id="username_input" placeholder="<?= phrase('Enter your username or email') ?>" />
                                     </div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="input-group">
-                                        <span class="input-group-text rounded-pill rounded-end-0">
+                                        <span class="input-group-text rounded-pill rounded-end-0 border-end-0 bg-body">
                                             <i class="mdi mdi-fingerprint" style="width:22px"></i>
                                         </span>
-                                        <input type="password" name="password" class="form-control rounded-0" id="password_input" placeholder="<?= phrase('Enter password') ?>" autocomplete="new-password" style="border-right:0" />
-                                         <span class="input-group-text bg-body rounded-pill rounded-start-0" style="border-left:0">
+                                        <input type="password" name="password" class="form-control rounded-pill rounded-start-0 rounded-end-0 border-start-0 border-end-0 bg-body" id="password_input" placeholder="<?= phrase('Enter password') ?>" autocomplete="new-password" />
+                                        <span class="input-group-text bg-body rounded-pill rounded-start-0 border-start-0 bg-body">
                                             <i class="mdi mdi-eye-outline password-peek" data-parent=".form-group" data-peek=".form-control" style="width:22px"></i>
                                         </span>
                                     </div>
@@ -65,10 +65,10 @@ if ($activation): ?>
                                     echo '
                                         <div class="form-group mb-3">
                                             <div class="input-group">
-                                                <span class="input-group-text rounded-pill rounded-end-0">
+                                                <span class="input-group-text rounded-pill rounded-end-0 bg-body">
                                                     <i class="mdi mdi-calendar-check" style="width:22px"></i>
                                                 </span>
-                                                <select name="year" class="form-control rounded-pill rounded-start-0" placeholder="' . phrase('Choose year') . '" id="year_input">
+                                                <select name="year" class="form-control rounded-pill rounded-start-0 bg-body" placeholder="' . phrase('Choose year') . '" id="year_input">
                                                     ' . $option . '
                                                 </select>
                                             </div>
