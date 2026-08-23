@@ -348,14 +348,14 @@
 
                         if (! $cover) {
                             continue;
-                        }
-                        ?>
+                        } ?>
+
                         <div class="swiper-slide h-auto">
                             <div class="card home-gallery-card border-0 rounded-5 overflow-hidden h-100 shadow-sm">
                                 <a href="<?= base_url(['galleries', $val->gallery_slug]) ?>" class="--xhr text-decoration-none d-block h-100">
                                     <div class="ratio ratio-4x3 rounded-5 overflow-hidden">
                                         <img src="<?= get_image('galleries', $cover, 'thumb') ?>" class="w-100 h-100 object-fit-cover home-card-img" alt="<?= htmlspecialchars($val->gallery_title) ?>" loading="lazy" decoding="async" />
-                                        
+
                                         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-3 p-sm-4 z-2 text-white">
                                             <!-- Photo Count Badge -->
                                             <div class="d-flex align-items-center justify-content-between">
@@ -407,7 +407,7 @@
                                 <a href="<?= base_url(['videos', $val->slug]) ?>" class="--xhr text-decoration-none d-block h-100" aria-label="<?= phrase('Watch video') . ': ' . htmlspecialchars($val->title) ?>">
                                     <div class="ratio ratio-4x3 rounded-5 overflow-hidden">
                                         <img src="<?= get_image('videos', $val->cover, 'thumb') ?>" class="w-100 h-100 object-fit-cover home-card-img" alt="<?= htmlspecialchars($val->title) ?>" loading="lazy" decoding="async" />
-                                        
+
                                         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-3 p-sm-4 z-2 text-white">
                                             <!-- Video Badge -->
                                             <div class="d-flex align-items-center justify-content-between">
