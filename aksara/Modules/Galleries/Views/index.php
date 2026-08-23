@@ -57,7 +57,7 @@ if ($results): ?>
                     $thumbCol = 1 === $thumbCount ? '5' : ($thumbCount > 1 ? '4' : '0');
                     ?>
                     <div class="col">
-                        <div class="card h-100 border-0 overflow-hidden">
+                        <div class="card bg-transparent h-100 border-0 overflow-hidden">
                             <div class="row g-2 h-100" style="min-height: 380px;">
                                 <!-- Cover Image & Info -->
                                 <div class="col-<?= $coverCol ?> d-flex">
