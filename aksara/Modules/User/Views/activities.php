@@ -36,7 +36,7 @@ if ($user): ?>
                                 <a href="<?= go_to($user->username, [
                                   'limit' => null,
                                   'page' => null,
-                                ]) ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                ]) ?>" class="nav-link rounded-pill text-nowrap --xhr">
                                     <i class="mdi mdi-information-outline"></i> <?= phrase('About') ?>
                                 </a>
                             </li>
@@ -44,7 +44,7 @@ if ($user): ?>
                                 <a href="<?= go_to($user->username . '/activities', [
                                   'limit' => null,
                                   'page' => null,
-                                ]) ?>" class="nav-link active rounded-pill no-wrap --xhr">
+                                ]) ?>" class="nav-link active rounded-pill text-nowrap --xhr">
                                     <i class="mdi mdi-account-clock-outline"></i> <?= phrase('Activities') ?>
                                 </a>
                             </li>
@@ -52,14 +52,14 @@ if ($user): ?>
                                 <a href="<?= go_to($user->username . '/likes', [
                                   'limit' => null,
                                   'page' => null,
-                                ]) ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                ]) ?>" class="nav-link rounded-pill text-nowrap --xhr">
                                     <i class="mdi mdi-heart"></i> <?= phrase('Likes') ?>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="<?= go_to($user->username . '/guestbook', [
                                   'comment_highlight' => null,
-                                ]) ?>" class="nav-link rounded-pill no-wrap --xhr">
+                                ]) ?>" class="nav-link rounded-pill text-nowrap --xhr">
                                     <i class="mdi mdi-book"></i> <?= phrase('Guestbook') ?>
                                 </a>
                             </li>

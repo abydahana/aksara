@@ -16,7 +16,7 @@ if (is_numeric(service('request')->getGet('page')) && service('request')->getGet
 
 <ul class="pagination pagination-sm mb-0">
     <li class="page-item<?= $currentPage <= 1 ? ' disabled' : null ?>">
-        <a href="<?= $currentPage > 1 ? current_page(null, ['page' => null]) : current_page() ?>" class="page-link no-wrap --xhr" id="first" aria-label="<?= phrase('First') ?>">
+        <a href="<?= $currentPage > 1 ? current_page(null, ['page' => null]) : current_page() ?>" class="page-link text-nowrap --xhr" id="first" aria-label="<?= phrase('First') ?>">
             <?= phrase('First') ?>
         </a>
     </li>
@@ -25,14 +25,14 @@ if (is_numeric(service('request')->getGet('page')) && service('request')->getGet
         <li class="page-item">
             <a href="<?= current_page(null, [
               'page' => $currentPage - 1,
-            ]) ?>" class="page-link no-wrap --xhr" id="prev" aria-label="<?= phrase('Previous') ?>">
+            ]) ?>" class="page-link text-nowrap --xhr" id="prev" aria-label="<?= phrase('Previous') ?>">
                 <?= service('request')->getHeaderLine('X-API-KEY') ? phrase('Prev') : '&lt;' ?>
             </a>
         </li>
     <?php endif; ?>
 
     <li class="page-item active">
-        <a href="<?= current_page() ?>" class="page-link no-wrap" id="current">
+        <a href="<?= current_page() ?>" class="page-link text-nowrap" id="current">
             <?= $currentPage ?>
         </a>
     </li>
@@ -41,14 +41,14 @@ if (is_numeric(service('request')->getGet('page')) && service('request')->getGet
         <li class="page-item">
             <a href="<?= current_page(null, [
               'page' => $currentPage + 1,
-            ]) ?>" class="page-link no-wrap --xhr" id="next" aria-label="<?= phrase('Next') ?>">
+            ]) ?>" class="page-link text-nowrap --xhr" id="next" aria-label="<?= phrase('Next') ?>">
                 <?= service('request')->getHeaderLine('X-API-KEY') ? phrase('Next') : '&gt;' ?>
             </a>
         </li>
     <?php endif; ?>
 
     <li class="page-item<?= $lastPage <= $currentPage ? ' disabled' : null ?>">
-        <a href="<?= $lastPage > $currentPage ? current_page(null, ['page' => $lastPage]) : current_page() ?>" class="page-link no-wrap --xhr" id="last" aria-label="<?= phrase('Last') ?>">
+        <a href="<?= $lastPage > $currentPage ? current_page(null, ['page' => $lastPage]) : current_page() ?>" class="page-link text-nowrap --xhr" id="last" aria-label="<?= phrase('Last') ?>">
             <?= phrase('Last') ?>
         </a>
     </li>

@@ -9,17 +9,17 @@
     <div class="sticky-lg-top bg-body overflow-x-auto py-1 px-3 mx--3 mb-1 border-bottom">
         <ul class="nav nav-pills nav-pills-dark flex-nowrap">
             <li class="nav-item">
-                <a href="<?= go_to('../') ?>" class="nav-link rounded-pill no-wrap --xhr">
+                <a href="<?= go_to('../') ?>" class="nav-link rounded-pill text-nowrap --xhr">
                     <i class="mdi mdi-cart"></i> <?= phrase('Market') ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= current_page() ?>" class="nav-link rounded-pill active no-wrap --xhr">
+                <a href="<?= current_page() ?>" class="nav-link rounded-pill active text-nowrap --xhr">
                     <i class="mdi mdi-palette"></i> <?= phrase('Installed Theme') ?>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="<?= go_to('../modules') ?>" class="nav-link rounded-pill no-wrap --xhr">
+                <a href="<?= go_to('../modules') ?>" class="nav-link rounded-pill text-nowrap --xhr">
                     <i class="mdi mdi-puzzle"></i> <?= phrase('Installed Module') ?>
                 </a>
             </li>

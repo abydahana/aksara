@@ -179,6 +179,9 @@ body.sidebar-collapsed .sidebar-toggle-wrapper {
   color: var(--sidebar-nav-color);
   word-wrap: break-word;
 }
+#sidebar-wrapper .nav-link + ul .nav-link {
+  padding-block: 0.15rem;
+}
 #sidebar-wrapper .nav-link:hover,
 #sidebar-wrapper .nav-link:focus {
   background: var(--sidebar-nav-hover-bg);

@@ -54,7 +54,7 @@ class Core
                         {% set colspan = 0 %}
                         {% for column in results.columns %}
                             {% set colspan = colspan + 1 %}
-                            <th align="{{ column.align }}" class="no-wrap" data-column="{{ column.field }}">
+                            <th align="{{ column.align }}" class="text-nowrap" data-column="{{ column.field }}">
                                 {% if column.url %}
                                     <a href="{{ column.url }}" class="fw-bold --xhr {{ column.class }}">
                                         {{ column.label }}
