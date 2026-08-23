@@ -4,6 +4,7 @@
  * @var array<int, object> $categories
  * @var array<int, object> $articles
  * @var array<int, object> $galleries
+ * @var array<int, object> $videos
  * @var array<int, object> $peoples
  * @var array<int, object> $testimonials
  * @var object $statistics
@@ -128,6 +129,59 @@
         color: var(--bs-body-color, #334155);
         font-weight: 600;
         backdrop-filter: blur(10px);
+    }
+
+    /* Home Gallery & Video Cards */
+    .home-gallery-card,
+    .home-video-card {
+        background: var(--bs-body-bg);
+    }
+
+    .home-card-img {
+        transition: transform .5s cubic-bezier(0.165, 0.84, 0.44, 1);
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+    .home-gallery-card a,
+    .home-video-card a,
+    .home-gallery-card img,
+    .home-video-card img {
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+    .home-gallery-card:hover .home-card-img,
+    .home-video-card:hover .home-card-img {
+        transform: scale(1.08);
+    }
+
+    .home-card-title {
+        transition: color .2s ease;
+    }
+
+    .home-text-shadow {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.9);
+    }
+
+    .home-play-btn {
+        width: 3.25rem;
+        height: 3.25rem;
+        border-radius: 50%;
+        background: rgba(13, 110, 253, .85);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.65rem;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, .3);
+        transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color .3s ease, box-shadow .3s ease;
+    }
+
+    .home-video-card:hover .home-play-btn {
+        transform: translate(-50%, -50%) scale(1.15);
+        background: rgba(13, 110, 253, 1);
+        box-shadow: 0 0.75rem 2rem rgba(13, 110, 253, .6);
     }
 
     @media (max-width: 575.98px) {
@@ -269,38 +323,63 @@
 
 <!-- Latest Galleries -->
 <?php if ($galleries): ?>
+    <?php $gallery_items = (count($galleries) > 1 && count($galleries) <= 3) ? array_merge($galleries, $galleries) : $galleries; ?>
     <section class="py-5 fade-in">
         <div class="container">
-            <div class="text-center">
+            <div class="text-center mb-4">
                 <h2 class="fw-bold m-0 display-6"><?= phrase('Featured Galleries') ?></h2>
                 <p class="text-muted fs-5"><?= phrase('See our latest gallery activities') ?></p>
             </div>
-            <div class="swiper mb-4" data-slide-count-sm="2" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3">
+            <div class="swiper mb-4" data-slide-count-sm="1" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3" data-autoplay="1">
                 <div class="swiper-wrapper py-3">
-                    <?php foreach ($galleries as $key => $val): ?>
+                    <?php foreach ($gallery_items as $key => $val): ?>
                         <?php
-                        $images = json_decode($val->gallery_images);
+                        $images = json_decode($val->gallery_images, true);
+                        $cover = null;
+                        $totalImages = 0;
 
-                        if (! $images) {
-                            continue;
+                        if (is_array($images) && ! empty($images)) {
+                            $cover = array_key_first($images);
+                            $totalImages = count($images);
+                        } elseif (! empty($val->featured_image)) {
+                            $cover = $val->featured_image;
+                            $totalImages = 1;
                         }
 
-                        foreach ($images as $src => $alt): ?>
-                            <div class="swiper-slide">
-                                <div class="card border-hover rounded-5 overflow-hidden">
-                                    <a href="<?= base_url(['galleries', $val->gallery_slug]) ?>" class="--xhr d-block">
-                                        <div class="card-body" style="background:url(<?= get_image('galleries', $src, 'thumb') ?>) center center no-repeat; background-size: cover; height: 256px">
-                                            <div class="clip gradient-top"></div>
-                                            <div class="position-absolute bottom-0 p-3">
-                                                <h3 class="h4 text-outline-body">
-                                                    <?= $val->gallery_title ?>
+                        if (! $cover) {
+                            continue;
+                        } ?>
+
+                        <div class="swiper-slide h-auto">
+                            <div class="card home-gallery-card border-0 rounded-5 overflow-hidden h-100 shadow-sm">
+                                <a href="<?= base_url(['galleries', $val->gallery_slug]) ?>" class="--xhr text-decoration-none d-block h-100">
+                                    <div class="ratio ratio-4x3 rounded-5 overflow-hidden">
+                                        <img src="<?= get_image('galleries', $cover, 'thumb') ?>" class="w-100 h-100 object-fit-cover home-card-img" alt="<?= htmlspecialchars($val->gallery_title) ?>" loading="lazy" decoding="async" />
+
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-3 p-sm-4 z-2 text-white">
+                                            <!-- Photo Count Badge -->
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <span class="badge bg-dark bg-opacity-75 backdrop-blur rounded-pill px-3 py-2 fw-medium text-white shadow-sm border border-light border-opacity-10">
+                                                    <i class="mdi mdi-image-multiple me-1 text-warning"></i> <?= $totalImages ?> <?= ($totalImages > 1 ? phrase('Photos') : phrase('Photo')) ?>
+                                                </span>
+                                            </div>
+
+                                            <!-- Bottom Title & Description -->
+                                            <div class="home-text-shadow">
+                                                <h3 class="h5 fw-bold text-white mb-1">
+                                                    <?= truncate($val->gallery_title, 60) ?>
                                                 </h3>
+                                                <?php if (! empty($val->gallery_description)): ?>
+                                                    <p class="text-white-50 small mb-0 d-none d-sm-block">
+                                                        <?= truncate($val->gallery_description, 80) ?>
+                                                    </p>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+                                </a>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -310,6 +389,59 @@
         </div>
     </section>
 <?php endif; ?>
+
+<!-- Highlighted Videos -->
+<?php if ($videos): ?>
+    <?php $video_items = (count($videos) > 1 && count($videos) <= 3) ? array_merge($videos, $videos) : $videos; ?>
+    <section class="py-5 fade-in">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold m-0 display-6"><?= phrase('Videos') ?></h2>
+                <p class="text-muted fs-5"><?= phrase('Watch our highlighted videos') ?></p>
+            </div>
+            <div class="swiper mb-4" data-slide-count-sm="1" data-slide-count-md="2" data-slide-count-lg="3" data-slide-count-xl="3" data-autoplay="1">
+                <div class="swiper-wrapper py-3">
+                    <?php foreach ($video_items as $key => $val): ?>
+                        <div class="swiper-slide h-auto">
+                            <div class="card home-video-card border-0 rounded-5 overflow-hidden h-100 shadow-sm">
+                                <a href="<?= base_url(['videos', $val->slug]) ?>" class="--xhr text-decoration-none d-block h-100" aria-label="<?= phrase('Watch video') . ': ' . htmlspecialchars($val->title) ?>">
+                                    <div class="ratio ratio-4x3 rounded-5 overflow-hidden">
+                                        <img src="<?= get_image('videos', $val->cover, 'thumb') ?>" class="w-100 h-100 object-fit-cover home-card-img" alt="<?= htmlspecialchars($val->title) ?>" loading="lazy" decoding="async" />
+
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-3 p-sm-4 z-2 text-white">
+                                            <!-- Video Badge -->
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <span class="badge bg-danger bg-opacity-85 backdrop-blur rounded-pill px-3 py-2 fw-medium text-white shadow-sm border border-light border-opacity-10">
+                                                    <i class="mdi mdi-play-circle-outline me-1"></i> <?= phrase('Video') ?>
+                                                </span>
+                                            </div>
+
+                                            <!-- Play Icon Overlay -->
+                                            <div class="position-absolute top-50 start-50 translate-middle z-2 home-play-btn">
+                                                <i class="mdi mdi-play text-white ms-1"></i>
+                                            </div>
+
+                                            <!-- Bottom Title -->
+                                            <div class="home-text-shadow">
+                                                <h3 class="h5 fw-bold text-white mb-0">
+                                                    <?= truncate($val->title, 64) ?>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="<?= base_url('videos') ?>" class="text-decoration-none fw-semibold --xhr"><?= phrase('See all videos') ?> <i class="mdi mdi-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+
 <?php if ($peoples): ?>
     <section class="py-5 fade-in">
         <div class="container">
@@ -399,6 +531,7 @@
     </section>
 <?php endif; ?>
 
+<!-- Site Statistics -->
 <section class="py-5 pt-0 fade-in">
     <div class="container py-lg-5">
         <div class="row align-items-center">
