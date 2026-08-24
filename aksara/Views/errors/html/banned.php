@@ -15,7 +15,7 @@ $remainingMinutes = $remainingSeconds > 0 ? (int) ceil($remainingSeconds / 60) :
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
-        <link rel="icon" type="image/x-icon" href="uploads/settings/icons/placeholder.png">
+        <link rel="icon" type="image/x-icon" href="<?= base_url(UPLOAD_PATH . '/settings/icons/' . (get_setting('app_icon') ?? 'placeholder.png')) ?>">
         <title>403 - <?= phrase('Access Banned') ?></title>
         <style>
             html, body {
@@ -120,7 +120,7 @@ $remainingMinutes = $remainingSeconds > 0 ? (int) ceil($remainingSeconds / 60) :
             <?php endif; ?>
 
             <div class="logo-container">
-                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . get_setting('app_logo')) ?>" alt="Logo" />
+                <img src="<?= base_url(UPLOAD_PATH . '/settings/' . (get_setting('app_logo') ?? 'placeholder.png')) ?>" alt="Logo" />
             </div>
         </div>
     </body>
