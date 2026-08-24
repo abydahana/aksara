@@ -640,7 +640,23 @@ class Comment extends Core
             'upvotes_table.comment_id = post_comments.comment_id',
             'LEFT'
         )
-        ->groupBy('post_comments.comment_id')
+        ->groupBy('
+            post_comments.comment_id,
+            post_comments.created_by,
+            post_comments.post_id,
+            post_comments.post_path,
+            post_comments.reply_id,
+            post_comments.mention_id,
+            post_comments.comments,
+            post_comments.attachment,
+            post_comments.edited,
+            post_comments.created_at,
+            post_comments.status,
+            app_users.photo,
+            app_users.username,
+            app_users.first_name,
+            app_users.last_name
+        ')
         ->orderBy('post_comments.comment_id', $order)
         ->getWhere(
             'post_comments',
