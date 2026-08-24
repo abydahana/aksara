@@ -149,8 +149,7 @@ class Theme extends Core
             'meta' => [
                 'popup' => true,
                 'title' => phrase('Theme Editor'),
-                'icon' => 'mdi mdi-palette-outline',
-                'modal_size' => 'modal-xl'
+                'icon' => 'mdi mdi-palette-outline'
             ],
             'content' => $content
         ]);
