@@ -13,27 +13,34 @@ $presets = $themeConfig['presets'] ?? [];
 ?>
 
 <div class="theme-editor" data-theme-editor>
-    <div class="d-flex align-items-center justify-content-between gap-2 pb-3 mb-3 border-bottom">
-        <h6 class="fw-bold mb-0 me-auto"><?= phrase('Theme Mode') ?></h6>
+    <div class="d-flex align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2 me-auto">
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill d-none" data-back-to-presets>
+                <i class="mdi mdi-arrow-left me-1"></i><?= phrase('Presets') ?>
+            </button>
+            <h6 class="fw-bold mb-0" data-editor-title><?= phrase('Theme Presets') ?></h6>
+        </div>
         <div class="btn-group btn-group-sm" role="group" aria-label="<?= phrase('Theme Mode'); ?>" data-theme-mode-toggle>
             <button type="button" class="btn btn-outline-secondary rounded-pill rounded-end-0" data-mode-val="light"><i class="mdi mdi-weather-sunny me-1"></i><?= phrase('Light') ?></button>
             <button type="button" class="btn btn-outline-secondary rounded-pill rounded-start-0" data-mode-val="dark"><i class="mdi mdi-weather-night me-1"></i><?= phrase('Dark') ?></button>
         </div>
     </div>
-    <div class="row g-5">
-        <div class="col-lg-5">
-            <h6 class="fw-bold mb-2"><?= phrase('Presets') ?></h6>
-            <div class="row g-2 mb-3" data-theme-presets></div>
-        </div>
-        <div class="col-lg-7">
-            <h6 class="fw-bold mb-2"><?= phrase('Custom Colors') ?></h6>
-            <div data-theme-fields></div>
-        </div>
+
+    <hr class="my-3 border-secondary" style="margin-inline:-1rem" />
+
+    <!-- Presets View -->
+    <div data-view-presets>
+        <div data-theme-presets></div>
     </div>
-    <hr class="border-secondary" style="margin-inline:-1rem" />
-    <div class="d-flex gap-2 justify-content-end mt-3">
-        <button type="button" class="btn btn-outline-secondary" data-theme-reset><i class="mdi mdi-restore"></i> <?= phrase('Reset') ?></button>
-        <button type="button" class="btn btn-primary" data-theme-save><i class="mdi mdi-content-save-outline"></i> <?= phrase('Save') ?></button>
+
+    <!-- Custom Colors View -->
+    <div data-view-custom class="d-none">
+        <div data-theme-fields></div>
+        <hr class="border-secondary" style="margin-inline:-1rem" />
+        <div class="d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-theme-reset><i class="mdi mdi-restore me-1"></i> <?= phrase('Reset') ?></button>
+            <button type="button" class="btn btn-primary rounded-pill px-4" data-theme-save><i class="mdi mdi-content-save-outline me-1"></i> <?= phrase('Save') ?></button>
+        </div>
     </div>
 </div>
 
@@ -67,6 +74,10 @@ $presets = $themeConfig['presets'] ?? [];
         const root = document.querySelector('[data-theme-editor]');
         const fields = root.querySelector('[data-theme-fields]');
         const presetWrap = root.querySelector('[data-theme-presets]');
+        const viewPresets = root.querySelector('[data-view-presets]');
+        const viewCustom = root.querySelector('[data-view-custom]');
+        const backBtn = root.querySelector('[data-back-to-presets]');
+        const editorTitle = root.querySelector('[data-editor-title]');
 
         function hexToRgb(hex) {
             const v = hex.replace('#', '');
@@ -194,17 +205,50 @@ $presets = $themeConfig['presets'] ?? [];
         }
 
         function renderPresets() {
-            presetWrap.innerHTML = presets.map(item => {
-                return '<div class="col-6"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (item.id === state.baseTheme ? 'active' : '') + '" data-preset="' + item.id + '">' + thumbnail(item.colors[mode]) + '<span class="d-block mt-2 fw-semibold text-truncate text-center">' + item.name + '</span></button></div>';
-            }).join('');
+            let html = '<div class="row g-3">' + presets.map(item => {
+                const isActive = (state.baseTheme === item.id);
+                return '<div class="col-4"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (isActive ? 'active border-primary' : '') + '" data-preset="' + item.id + '">' + thumbnail(item.colors[mode]) + '<span class="d-block mt-2 fw-semibold text-truncate text-center">' + item.name + '</span></button></div>';
+            }).join('') + '</div>';
+
+            const isCustom = (state.baseTheme === 'custom');
+            const customColors = {
+                background: color('background'),
+                surface: color('surface'),
+                border: color('border'),
+                primary: color('primary'),
+                foreground: color('foreground'),
+                secondary: color('secondary'),
+                accent: color('accent'),
+                muted: color('muted')
+            };
+
+            html += '<hr class="my-3 border-secondary" style="margin-inline:-1rem" />';
+
+            html += '<div class="row g-3"><div class="col-4"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (isCustom ? 'active border-primary' : '') + '" data-open-custom>' + thumbnail(customColors) + '<span class="d-block mt-2 fw-semibold text-truncate text-center"><i class="mdi mdi-palette me-1"></i><?= phrase('Custom') ?></span></button></div></div>';
+
+            presetWrap.innerHTML = html;
         }
 
         function renderFields() {
-            fields.innerHTML = groups.map(group => {
-                return '<div class="mb-3"><h6 class="fw-bold mb-2">' + group.label + '</h6><div class="row g-3">' + group.tokens.map(token => {
-                    return '<div class="col-md-6"><label class="form-label small fw-semibold">' + labels[token] + '</label><div class="input-group"><input type="color" class="form-control form-control-color" data-token="' + token + '" value="' + color(token) + '"><input type="text" class="form-control" data-token-text="' + token + '" value="' + color(token) + '"></div></div>';
-                }).join('') + '</div></div>';
+            fields.innerHTML = groups.map((group, key) => {
+                return '<div class="mb-3"><h5 class="fw-bold mb-2">' + group.label + '</h5><div class="row g-3">' + group.tokens.map(token => {
+                    return '<div class="col-md-6"><label class="form-label small fw-semibold text-muted mb-1">' + labels[token] + '</label><div class="input-group"><input type="color" class="form-control form-control-color" data-token="' + token + '" value="' + color(token) + '"><input type="text" class="form-control" data-token-text="' + token + '" value="' + color(token) + '"></div></div>';
+                }).join('') + '</div></div>' + (key < groups.length - 1 ? '<hr class="my-3 border-secondary" style="margin-inline:-1rem" />' : '');
             }).join('');
+        }
+
+        function switchView(view) {
+            if (view === 'custom') {
+                viewPresets.classList.add('d-none');
+                viewCustom.classList.remove('d-none');
+                backBtn.classList.remove('d-none');
+                editorTitle.textContent = '<?= phrase('Custom Colors') ?>';
+            } else {
+                viewCustom.classList.add('d-none');
+                viewPresets.classList.remove('d-none');
+                backBtn.classList.add('d-none');
+                editorTitle.textContent = '<?= phrase('Theme Presets') ?>';
+            }
         }
 
         function currentPresetColors(targetMode) {
@@ -282,6 +326,19 @@ $presets = $themeConfig['presets'] ?? [];
                     apply();
                     saveTheme(true);
                 }
+            }
+
+            const openCustomBtn = event.target.closest('[data-open-custom]');
+            if (openCustomBtn) {
+                state.baseTheme = 'custom';
+                renderPresets();
+                renderFields();
+                switchView('custom');
+            }
+
+            const backToPresetsBtn = event.target.closest('[data-back-to-presets]');
+            if (backToPresetsBtn) {
+                switchView('presets');
             }
 
             const presetButton = event.target.closest('[data-preset]');
