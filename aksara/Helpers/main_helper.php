@@ -179,17 +179,7 @@ if (! function_exists('aksara_header')) {
         if (get_setting('google_analytics_key')) {
             $analyticsKey = htmlspecialchars(get_setting('google_analytics_key'));
 
-            $output .= <<<EOF
-            <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id={$analyticsKey}"></script>
-            <script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', '{$analyticsKey}');
-            </script>
-            EOF;
+            $output .= '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $analyticsKey . '"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(\'js\', new Date());gtag(\'config\', \'' . $analyticsKey . '\');</script>';
         }
 
         return $output;
