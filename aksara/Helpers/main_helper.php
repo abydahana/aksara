@@ -168,13 +168,29 @@ if (! function_exists('aksara_header')) {
         $theme = get_theme();
 
         // Generate security token meta tag using the same CSRF token helper as Core
-        $output = '<meta name="_token" content="' . generate_csrf_token() . '" />' . "\n";
+        $output = '<meta name="_token" content="' . generate_csrf_token() . '" />';
 
         // Load theme-specific minified styles
-        $output .= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/css/' . $theme . '/styles.min.css') . '" />' . "\n";
+        $output .= '<link rel="stylesheet" type="text/css" href="' . base_url('assets/css/' . $theme . '/styles.min.css') . '" />';
 
         // Deferred jQuery execution snippet to handle scripts loaded before jQuery is ready
-        $output .= '<script type="text/javascript">(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if (x=="ready"){w.bindReadyQ.push(y)}else{w.readyQ.push(x)}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if (f===d||f===u){return a}else{p(f)}}})(window,document)</script>' . "\n";
+        $output .= '<script type="text/javascript">(function(w,d,u){w.readyQ=[];w.bindReadyQ=[];function p(x,y){if (x=="ready"){w.bindReadyQ.push(y)}else{w.readyQ.push(x)}};var a={ready:p,bind:p};w.$=w.jQuery=function(f){if (f===d||f===u){return a}else{p(f)}}})(window,document)</script>';
+
+        if (get_setting('google_analytics_key')) {
+            $analyticsKey = htmlspecialchars(get_setting('google_analytics_key'));
+
+            $output .= <<<EOF
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={$analyticsKey}"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '{$analyticsKey}');
+            </script>
+            EOF;
+        }
 
         return $output;
     }
@@ -193,13 +209,13 @@ if (! function_exists('aksara_footer')) {
         $theme = get_theme();
 
         // Include flash messages (toast notifications) if any
-        $output = (string) show_flashdata() . "\n";
+        $output = (string) show_flashdata();
 
         // Load theme-specific minified scripts
-        $output .= '<script type="text/javascript" src="' . base_url('assets/js/' . $theme . '/scripts.min.js') . '"></script>' . "\n";
+        $output .= '<script type="text/javascript" src="' . base_url('assets/js/' . $theme . '/scripts.min.js') . '"></script>';
 
         // Execute the deferred jQuery queue
-        $output .= '<script type="text/javascript">(function($,d){$.each(readyQ,function(i,f){$(f)});$.each(bindReadyQ,function(i,f){$(d).bind("ready",f)})})(jQuery,document)</script>' . "\n";
+        $output .= '<script type="text/javascript">(function($,d){$.each(readyQ,function(i,f){$(f)});$.each(bindReadyQ,function(i,f){$(d).bind("ready",f)})})(jQuery,document)</script>';
 
         return $output;
     }
