@@ -66,6 +66,8 @@
                     ';
                 } ?>
 
+                <div data-role="validation-callback"></div>
+
                 <div class="row align-items-center g-0 mt-3">
                     <div class="col-7">
                         <div class="d-grid">
@@ -82,8 +84,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-grid mt-5">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyModalLogin">
+                <div class="d-grid mt-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyModalLogin" style="border-style:dashed">
                         <i class="mdi mdi-fingerprint me-1"></i> <?= phrase('Sign in with Passkey') ?>
                     </button>
                 </div>

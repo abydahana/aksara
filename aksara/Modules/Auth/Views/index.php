@@ -76,6 +76,8 @@ if ($activation): ?>
                                     ';
                                 } ?>
 
+                                <div data-role="validation-callback"></div>
+
                                 <div class="row">
                                     <div class="col-7">
                                         <div class="d-grid">
@@ -93,8 +95,8 @@ if ($activation): ?>
                                     </div>
                                 </div>
 
-                                <div class="d-grid mt-5">
-                                    <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyLogin">
+                                <div class="d-grid mt-3">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnPasskeyLogin" style="border-style:dashed">
                                         <i class="mdi mdi-fingerprint me-1"></i> <?= phrase('Sign in with Passkey') ?>
                                     </button>
                                 </div>
