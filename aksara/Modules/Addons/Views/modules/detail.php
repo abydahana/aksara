@@ -120,6 +120,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                 </div>
             </div>
             <?php endif; ?>
+
             <?php if ($lastUpdate): ?>
             <div class="row mb-2">
                 <div class="col-4 text-muted">
@@ -149,8 +150,8 @@ if (isset($detail->attribution) && $detail->attribution) {
                         } else {
                             echo '<i class="mdi mdi-star-outline text-muted"></i>';
                         }
-                    }
-                    ?>
+                    } ?>
+
                     <b class="ms-1"><?= number_format($rating, 1) ?></b>
                     <span class="text-muted">(<?= number_format($ratingCount) ?>)</span>
                 </div>
