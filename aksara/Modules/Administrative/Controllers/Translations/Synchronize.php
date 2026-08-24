@@ -52,6 +52,8 @@ class Synchronize extends Core
             $uniquePhrases += $generatedPhrases;
         }
 
+        $errorDetails = [];
+
         if ($languages) {
             foreach ($languages as $language) {
                 $existingDocuments[$language] = $this->_translationDocuments($language);
@@ -72,8 +74,9 @@ class Synchronize extends Core
                 $existingScopes = $existingDocuments[$language] ?? [];
 
                 foreach ($generatedScopes as $scope => $generatedPhrases) {
+                    $file = $this->_translationFile($language, $scope);
+
                     try {
-                        $file = $this->_translationFile($language, $scope);
                         $existingPhrases = $existingScopes[$scope] ?? [];
                         $phrases = array_combine(array_keys($generatedPhrases), array_keys($generatedPhrases)) ?: [];
 
@@ -103,13 +106,16 @@ class Synchronize extends Core
                         clear_translations_cache($language);
                     } catch (Throwable $e) {
                         $error++;
+                        $relativePath = str_replace([ROOTPATH, '\\'], ['', '/'], $file);
+                        $errorDetails[] = $relativePath . ': ' . $e->getMessage();
+                        log_message('error', '[TRANSLATION SYNC] Failed to write ' . $file . ': ' . $e->getMessage());
                     }
                 }
             }
         }
 
         if ($error) {
-            return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']), current_page('../'));
+            return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']) . '<br /><a href="' . base_url('administrative/logs/errors') . '" class="btn btn-danger btn-sm rounded-pill px-3">' . phrase('Check error logs') . '</a>', current_page('../'));
         }
 
         return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases were successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($uniquePhrases)) . '</b>']), current_page('../'));
