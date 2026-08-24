@@ -88,6 +88,8 @@ class Addons extends Core
 
         $package = json_decode($response->getBody());
 
+        //dd($package);
+
         if ($response->getStatusCode() !== 200) {
             return throw_exception(403, $response->getReasonPhrase(), current_page('../'));
         }
@@ -97,7 +99,6 @@ class Addons extends Core
         ->setOutput([
             'detail' => $package
         ])
-        ->modalSize('modal-xl')
 
         ->render(null, 'detail');
     }
