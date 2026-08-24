@@ -411,7 +411,7 @@
                                         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-between p-3 p-sm-4 z-2 text-white">
                                             <!-- Video Badge -->
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <span class="badge bg-danger bg-opacity-85 backdrop-blur rounded-pill px-3 py-2 fw-medium text-white shadow-sm border border-light border-opacity-10">
+                                                <span class="badge bg-opacity-85 backdrop-blur rounded-pill px-3 py-2 fw-medium text-white shadow-sm border border-light border-opacity-10">
                                                     <i class="mdi mdi-play-circle-outline me-1"></i> <?= phrase('Video') ?>
                                                 </span>
                                             </div>
