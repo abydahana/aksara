@@ -570,6 +570,7 @@ class Addons extends Core
                         'version' => aksara('version'),
                         'order' => $this->request->getPost('order'),
                         'keyword' => $this->request->getPost('keyword'),
+                        'addon_type' => $this->request->getPost('addon_type'),
                         'installed' => json_encode([
                             'themes' => $installedThemes,
                             'modules' => $installedModules
