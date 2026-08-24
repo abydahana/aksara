@@ -90,7 +90,7 @@
         max-width: 920px;
         margin-inline: auto;
         color: var(--bs-body-color, #111827);
-        font-size: clamp(2.5rem, 7vw, 5rem);
+        font-size: clamp(2.5rem, 7vw, 4rem);
         line-height: .95;
         letter-spacing: 0;
     }
@@ -195,7 +195,7 @@
         }
     }
 </style>
-<section class="hero-section home-hero text-center">
+<section class="hero-section home-hero text-center d-flex align-items-center justify-content-center full-height py-5">
     <div class="container">
         <div class="fade-in">
             <div class="hero-kicker mb-4">
