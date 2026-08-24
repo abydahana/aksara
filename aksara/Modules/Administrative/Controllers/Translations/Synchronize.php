@@ -115,8 +115,7 @@ class Synchronize extends Core
         }
 
         if ($error) {
-            $details = ! empty($errorDetails) ? '<br><div class="small text-start text-danger mt-2"><b>' . phrase('Error details:') . '</b><br>' . implode('<br>', array_slice($errorDetails, 0, 10)) . (sizeof($errorDetails) > 10 ? '<br>...' : '') . '</div>' : '';
-            return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']) . $details, current_page('../'));
+            return throw_exception(403, phrase('Translation synchronized, however there are {{total_errors}} translations were unsuccessful.', ['total_errors' => '<b>' . number_format($error) . '</b>']) . '<br /><a href="' . base_url('administrative/logs/errors') . '" class="btn btn-danger btn-sm rounded-pill px-3">' . phrase('Check error logs') . '</a>', current_page('../'));
         }
 
         return throw_exception(301, phrase('{{total_languages}} languages and {{total_phrases}} phrases were successfully synchronized.', ['total_languages' => '<b>' . number_format(sizeof($languages)) . '</b>', 'total_phrases' => '<b>' . number_format(sizeof($uniquePhrases)) . '</b>']), current_page('../'));
