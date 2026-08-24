@@ -45,13 +45,19 @@
                     <div class="card border-hover rounded-4 mb-3">
                         <div class="card-body p-3">
                             <div class="position-relative mb-3">
-                                <?= 'backend' == $val->type ? '<span class="badge bg-dark position-absolute end-0">' . phrase('Back End') . '</span>' : '<span class="badge bg-success position-absolute end-0">' . phrase('Front End') . '</span>' ?>
-                                <img src="<?= $screenshot ?>" class="img-fluid rounded-4 border" alt="<?= $val->name ?>" />
+                                <?= 'backend' == $val->type ? '<span class="badge bg-dark position-absolute top-0 end-0 z-1 m-2">' . phrase('Back End') . '</span>' : '<span class="badge bg-success position-absolute top-0 end-0 z-1 m-2">' . phrase('Front End') . '</span>' ?>
+                                <div class="ratio ratio-4x3 bg-dark rounded-4 overflow-hidden">
+                                    <a href="<?= current_page('detail', ['item' => $val->folder]) ?>" class="--modal d-block h-100">
+                                        <img src="<?= $screenshot ?>" class="img-fluid w-100 h-100 object-fit-cover rounded-4 border" alt="<?= $val->name ?>" />
+                                    </a>
+                                </div>
                             </div>
                             <div class="mb-3">
-                                <b data-bs-toggle="tooltip" title="<?= $val->name ?>">
-                                <?= truncate($val->name, 80) ?>
-                                </b>
+                                <a href="<?= current_page('detail', ['item' => $val->folder]) ?>" class="text-decoration-none text-body --modal">
+                                    <b data-bs-toggle="tooltip" title="<?= $val->name ?>">
+                                        <?= truncate($val->name, 80) ?>
+                                    </b>
+                                </a>
                             </div>
                             <div class="row">
                                 <div class="col-6">

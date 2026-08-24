@@ -16,9 +16,9 @@ if (isset($detail->screenshot) && $detail->screenshot) {
             $screenshot = get_image(null, 'placeholder_thumb.png');
         } ?>
 
-        <div class="carousel-item rounded<?= ! $key ? ' active' : null ?>">
-            <a href="<?= $screenshot ?>" target="_blank">
-                <img src="<?= $screenshot ?>" class="d-block rounded w-100" alt="<?= $val->alt ?>">
+        <div class="carousel-item h-100 text-center rounded-4<?= ! $key ? ' active' : null ?>">
+            <a href="<?= $screenshot ?>" target="_blank" class="d-block h-100">
+                <img src="<?= $screenshot ?>" class="d-block w-100 h-100 object-fit-cover rounded-4" alt="<?= $val->alt ?>">
             </a>
         </div>
     <?php
@@ -45,12 +45,12 @@ if (isset($detail->attribution) && $detail->attribution) {
     $attribution = ob_get_clean();
 } ?>
 
-<div class="container-fluid">
+<div>
     <div class="row">
         <div class="col-md-6 col-lg-7">
-            <div class="position-relative rounded" style="overflow: hidden">
-                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
+            <div class="position-relative ratio ratio-4x3 rounded-4 bg-dark overflow-hidden">
+                <div id="carouselExampleControls" class="carousel slide h-100" data-bs-ride="carousel">
+                    <div class="carousel-inner h-100">
                         <?= $carousel ?>
                     </div>
 
@@ -68,9 +68,12 @@ if (isset($detail->attribution) && $detail->attribution) {
         <div class="col-md-6 col-lg-5">
             <h5>
                 <?= $detail->name ?>
+                <span class="badge bg-primary float-end"><?= phrase('Module') ?></span>
             </h5>
-            <hr class="mt-1 mb-1" />
-            <div class="row">
+            <div class="mb-3">
+                <?= nl2br($detail->description) ?>
+            </div>
+            <div class="row mb-2">
                 <div class="col-4 text-muted">
                     <?= phrase('Author') ?>
                 </div>
@@ -78,7 +81,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <?= isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>' ?>
                 </div>
             </div>
-            <div class="row">
+            <div class="row mb-2">
                 <div class="col-4 text-muted">
                     <?= phrase('Version') ?>
                 </div>
@@ -86,23 +89,86 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <?= $detail->version ?>
                 </div>
             </div>
+            <?php
+            $compatibilityList = [];
+            $rawCompatibility = $detail->compatibility ?? $detail->compatible_version ?? $detail->min_version ?? null;
+
+            if ($rawCompatibility) {
+                if (is_array($rawCompatibility)) {
+                    $compatibilityList = $rawCompatibility;
+                } elseif (is_string($rawCompatibility)) {
+                    $decoded = json_decode($rawCompatibility, true);
+                    if (is_array($decoded)) {
+                        $compatibilityList = $decoded;
+                    } else {
+                        $compatibilityList = [$rawCompatibility];
+                    }
+                }
+            }
+
+            $lastUpdate = $detail->last_update ?? $detail->updated_at ?? $detail->updated ?? $detail->created_at ?? null;
+            ?>
+            <?php if ($compatibilityList): ?>
+            <div class="row mb-2">
+                <div class="col-4 text-muted">
+                    <?= phrase('Compatibility') ?>
+                </div>
+                <div class="col-8">
+                    <?php foreach ($compatibilityList as $ver): ?>
+                        <span class="badge bg-secondary me-1"><?= htmlspecialchars($ver) ?></span>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+            <?php if ($lastUpdate): ?>
+            <div class="row mb-2">
+                <div class="col-4 text-muted">
+                    <?= phrase('Last Update') ?>
+                </div>
+                <div class="col-8">
+                    <?= date('d M Y', is_numeric($lastUpdate) ? (int) $lastUpdate : strtotime($lastUpdate)) ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if (isset($detail->rating) || isset($detail->rating_count)): ?>
+            <div class="row mb-2">
+                <div class="col-4 text-muted">
+                    <?= phrase('Rating') ?>
+                </div>
+                <div class="col-8">
+                    <?php
+                    $rating = isset($detail->rating) ? (float) $detail->rating : 0;
+                    $ratingCount = isset($detail->rating_count) ? (int) $detail->rating_count : 0;
+
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($rating >= $i) {
+                            echo '<i class="mdi mdi-star text-warning"></i>';
+                        } elseif ($rating >= ($i - 0.5)) {
+                            echo '<i class="mdi mdi-star-half-full text-warning"></i>';
+                        } else {
+                            echo '<i class="mdi mdi-star-outline text-muted"></i>';
+                        }
+                    }
+                    ?>
+                    <b class="ms-1"><?= number_format($rating, 1) ?></b>
+                    <span class="text-muted">(<?= number_format($ratingCount) ?>)</span>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <?= $attribution ?>
-            <hr class="mt-1" />
-            <div class="mb-0">
-                <?= nl2br($detail->description) ?>
-            </div>
         </div>
     </div>
-    <hr class="mx--3" />
+    <hr style="margin-inline: -1rem" />
     <div class="row">
         <div class="col-md-6 offset-md-6 col-lg-5 offset-lg-7">
-            <div class="row">
+            <div class="row g-2">
                 <div class="col-sm-6">
                     <div class="d-grid">
                         <a href="<?= current_page('../update', [
                           'item' => $detail->folder,
-                        ]) ?>" class="btn btn-outline-primary btn-sm --modal">
+                        ]) ?>" class="btn btn-outline-primary btn-sm rounded-pill px-4 --modal">
                             <i class="mdi mdi-auto-fix"></i> <?= phrase('Update') ?>
                         </a>
                     </div>
@@ -111,7 +177,7 @@ if (isset($detail->attribution) && $detail->attribution) {
                     <div class="d-grid">
                         <a href="<?= current_page('../delete', [
                           'item' => $detail->folder,
-                        ]) ?>" class="btn btn-outline-danger btn-sm --modal">
+                        ]) ?>" class="btn btn-outline-danger btn-sm rounded-pill --modal">
                             <i class="mdi mdi-delete"></i> <?= phrase('Uninstall') ?>
                         </a>
                     </div>
