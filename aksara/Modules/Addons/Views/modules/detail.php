@@ -45,7 +45,7 @@ if (isset($detail->attribution) && $detail->attribution) {
     $attribution = ob_get_clean();
 } ?>
 
-<div>
+<div class="<?= 'modal' !== service('request')->getPost('prefer') ? 'container-fluid py-3' : '' ?>">
     <div class="row">
         <div class="col-md-6 col-lg-7">
             <div class="position-relative ratio ratio-4x3 rounded-4 bg-dark overflow-hidden">
@@ -74,11 +74,25 @@ if (isset($detail->attribution) && $detail->attribution) {
                 <?= nl2br($detail->description) ?>
             </div>
             <div class="row mb-2">
-                <div class="col-4 text-muted">
+                <div class="col-4 text-muted d-flex align-items-center">
                     <?= phrase('Author') ?>
                 </div>
-                <div class="col-8">
-                    <?= isset($detail->website) ? '<a href="' . $detail->website . '" target="_blank"><b>' . $detail->author . '</b></a>' : '<b>' . $detail->author . '</b>' ?>
+                <div class="col-8 d-flex align-items-center">
+                    <?php if (isset($detail->publisher_photo) && $detail->publisher_photo): ?>
+                        <img src="<?= $detail->publisher_photo ?>" class="rounded-circle me-2" style="width:24px; height:24px; object-fit:cover" alt="<?= htmlspecialchars($detail->publisher ?? $detail->author) ?>" />
+                    <?php endif; ?>
+
+                    <?php if (isset($detail->publisher_url) && $detail->publisher_url): ?>
+                        <a href="<?= $detail->publisher_url ?>" target="_blank" class="fw-bold text-decoration-none">
+                            <?= htmlspecialchars($detail->publisher ?? $detail->author) ?>
+                        </a>
+                    <?php elseif (isset($detail->website) && $detail->website): ?>
+                        <a href="<?= $detail->website ?>" target="_blank" class="fw-bold text-decoration-none">
+                            <?= htmlspecialchars($detail->author) ?>
+                        </a>
+                    <?php else: ?>
+                        <b><?= htmlspecialchars($detail->author) ?></b>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="row mb-2">
