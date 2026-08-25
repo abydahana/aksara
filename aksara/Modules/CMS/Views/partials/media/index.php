@@ -130,7 +130,8 @@ $breadcrumbs = null;
                                                 <i class="mdi mdi-chevron-right"></i>
                                             </div>
                                         </div>
-                                    </a> <?php else: ?>
+                                    </a>
+                                <?php else: ?>
                                     <a href="<?= current_page(null, [
                                       'file' => ($results->directory ? $results->directory . '/' : null) . $val->source,
                                       'mode' => $viewMode,

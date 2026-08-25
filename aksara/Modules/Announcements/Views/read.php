@@ -39,7 +39,8 @@ $fieldData = $results->field_data;
                     </p>
                     <a href="<?= current_page('../') ?>" class="btn btn-outline-primary rounded-pill px-5 fade-in --xhr">
                         <i class="mdi mdi-arrow-left"></i> <?= phrase('Back') ?>
-                    </a> <?php else: ?>
+                    </a>
+                <?php else: ?>
                     <?= view('templates/404', [...(array) $meta, 'searchAction' => go_to('../', ['page' => null]), 'searchLabel' => phrase('Search announcements...')]) ?>
                 <?php endif; ?>
             </div>

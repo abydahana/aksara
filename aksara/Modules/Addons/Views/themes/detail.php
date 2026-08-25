@@ -189,7 +189,8 @@ if (isset($detail->attribution) && $detail->attribution) {
                         <?php if (('backend' == $detail->type && get_setting('backend_theme') == $detail->folder) || ('frontend' == $detail->type && get_setting('frontend_theme') == $detail->folder)): ?>
                             <button type="button" class="btn btn-dark btn-sm rounded-pill" disabled>
                                 <i class="mdi mdi-check"></i> <?= phrase('Active') ?>
-                            </button> <?php else: ?>
+                            </button>
+                        <?php else: ?>
                             <a href="<?= current_page('../activate') ?>" class="btn btn-success btn-sm rounded-pill --modal">
                                 <i class="mdi mdi-check"></i> <?= phrase('Activate') ?>
                             </a>
