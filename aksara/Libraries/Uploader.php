@@ -291,7 +291,7 @@ class Uploader
             return false;
         }
 
-        return ! preg_match('/<\?php\b|<\?=\s*[\$a-zA-Z_\'"\`()\\\\]|<script\b/i', $content);
+        return ! preg_match('/<\?php\b|<\?=\s*[\$a-zA-Z0-9_\'"\`\(\[\{\\\\]|<\?\s*(?:eval|exec|system|passthru|shell_exec|base64_decode|gzinflate|str_rot13|include|require|assert|call_user_func|\$[a-zA-Z_]|function\b|class\b|echo\b|print\b|die\b|exit\b|\/\*|\/\/|#)|<script\b/i', $content);
     }
 
     private function _ensureDirectory(string $path): bool
