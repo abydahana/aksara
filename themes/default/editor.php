@@ -65,7 +65,7 @@ $presets = $themeConfig['presets'] ?? [];
             danger: 'Danger'
         };
         const groups = [
-            { label: 'Base', tokens: ['background', 'surface', 'foreground', 'muted', 'secondaryBg', 'tertiaryBg', 'border'] },
+            { label: 'Base', tokens: ['background', 'secondaryBg', 'tertiaryBg', 'surface', 'foreground', 'muted', 'border'] },
             { label: 'Brand', tokens: ['primary', 'secondary', 'accent'] },
             { label: 'Status', tokens: ['success', 'info', 'warning', 'danger'] }
         ];
@@ -205,9 +205,9 @@ $presets = $themeConfig['presets'] ?? [];
         }
 
         function renderPresets() {
-            let html = '<div class="row g-3">' + presets.map(item => {
+            let html = '<div class="row g-2">' + presets.map(item => {
                 const isActive = (state.baseTheme === item.id);
-                return '<div class="col-4"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (isActive ? 'active border-primary' : '') + '" data-preset="' + item.id + '">' + thumbnail(item.colors[mode]) + '<span class="d-block mt-2 fw-semibold text-truncate text-center">' + item.name + '</span></button></div>';
+                return '<div class="col-6 col-md-4 col-lg-3"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (isActive ? 'active border-primary' : '') + '" data-preset="' + item.id + '">' + thumbnail(item.colors[mode]) + '<span class="d-block mt-2 fw-semibold text-truncate text-center">' + item.name + '</span></button></div>';
             }).join('') + '</div>';
 
             const isCustom = (state.baseTheme === 'custom');
@@ -224,16 +224,16 @@ $presets = $themeConfig['presets'] ?? [];
 
             html += '<hr class="my-3 border-secondary" style="margin-inline:-1rem" />';
 
-            html += '<div class="row g-3"><div class="col-4"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (isCustom ? 'active border-primary' : '') + '" data-open-custom>' + thumbnail(customColors) + '<span class="d-block mt-2 fw-semibold text-truncate text-center"><i class="mdi mdi-palette me-1"></i><?= phrase('Custom') ?></span></button></div></div>';
+            html += '<div class="row g-2"><div class="col-6 col-md-4 col-lg-3"><button type="button" class="btn btn-outline-secondary rounded-4 w-100 p-2 text-start ' + (isCustom ? 'active border-primary' : '') + '" data-open-custom>' + thumbnail(customColors) + '<span class="d-block mt-2 fw-semibold text-truncate text-center"><i class="mdi mdi-palette me-1"></i><?= phrase('Custom') ?></span></button></div></div>';
 
             presetWrap.innerHTML = html;
         }
 
         function renderFields() {
             fields.innerHTML = groups.map((group, key) => {
-                return '<div class="mb-3"><h5 class="fw-bold mb-2">' + group.label + '</h5><div class="row g-3">' + group.tokens.map(token => {
-                    return '<div class="col-md-6"><label class="form-label small fw-semibold text-muted mb-1">' + labels[token] + '</label><div class="input-group"><input type="color" class="form-control form-control-color" data-token="' + token + '" value="' + color(token) + '"><input type="text" class="form-control" data-token-text="' + token + '" value="' + color(token) + '"></div></div>';
-                }).join('') + '</div></div>' + (key < groups.length - 1 ? '<hr class="my-3 border-secondary" style="margin-inline:-1rem" />' : '');
+                return '<div class="mb-3"><h6 class="fw-bold mb-2">' + group.label + '</h6><div class="row g-2">' + group.tokens.map(token => {
+                    return '<div class="col-6 col-lg-4"><label class="form-label small fw-semibold text-muted mb-1">' + labels[token] + '</label><div class="input-group"><input type="color" class="form-control form-control-color" data-token="' + token + '" value="' + color(token) + '"><input type="text" class="form-control" data-token-text="' + token + '" value="' + color(token) + '"></div></div>';
+                }).join('') + '</div></div>' + (key < groups.length - 1 ? '<hr class="my-2 border-secondary" style="margin-inline:-1rem" />' : '');
             }).join('');
         }
 
