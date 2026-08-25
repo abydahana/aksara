@@ -64,7 +64,8 @@
                                     <?php if (('backend' == $val->type && get_setting('backend_theme') == $val->folder) || ('frontend' == $val->type && get_setting('frontend_theme') == $val->folder)): ?>
                                         <button type="button" class="btn btn-dark btn-xs d-block w-100" disabled>
                                             <i class="mdi mdi-check"></i> <?= phrase('Active') ?>
-                                        </button> <?php else: ?>
+                                        </button>
+                                    <?php else: ?>
                                         <a href="<?= current_page('activate', [
                                           'item' => $val->folder,
                                         ]) ?>" class="btn btn-success btn-xs d-block --modal">
