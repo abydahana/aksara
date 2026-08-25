@@ -43,9 +43,22 @@
             "node bin/js-build.js",
             "php-cs-fixer fix --ansi",
             "php-cs-fixer fix --config=.php-cs-fixer-views.php --ansi"
+        ],
+        "cs-fix:js": [
+            "node bin/js-build.js --js"
+        ],
+        "cs-fix:css": [
+            "node bin/js-build.js --css"
+        ],
+        "cs-fix:php": [
+            "php-cs-fixer fix --ansi",
+            "php-cs-fixer fix --config=.php-cs-fixer-views.php --ansi"
         ]
     },
     "scripts-descriptions": {
-        "cs-fix": "Fixing the coding style for PHP files, views, and assets"
+        "cs-fix": "Fixing the coding style for JS, CSS, PHP files, and views (Full)",
+        "cs-fix:js": "Fixing and minifying JavaScript files",
+        "cs-fix:css": "Fixing and minifying CSS files",
+        "cs-fix:php": "Fixing the coding style for PHP files and views"
     }
 }

@@ -30,6 +30,13 @@ function findFiles(dir, ext, excludeMin = true, fileList = []) {
     return fileList;
 }
 
+const args = process.argv.slice(2);
+const isJsOnly = args.includes('--js');
+const isCssOnly = args.includes('--css');
+
+const doJs = isJsOnly || (!isCssOnly);
+const doCss = isCssOnly || (!isJsOnly);
+
 // -------------------------------------------------------------
 // STEP 1 & 2: Gather JS and CSS source files
 // -------------------------------------------------------------
@@ -37,35 +44,39 @@ let jsFiles = [];
 let cssFiles = [];
 
 for (const dir of targetDirs) {
-    findFiles(dir, '.js', true, jsFiles);
-    findFiles(dir, '.css', true, cssFiles);
+    if (doJs) findFiles(dir, '.js', true, jsFiles);
+    if (doCss) findFiles(dir, '.css', true, cssFiles);
 }
 
 // -------------------------------------------------------------
 // STEP 1: Format JS & CSS source files with Prettier
 // -------------------------------------------------------------
-console.log('\n1. Formatting JavaScript source files with Prettier...');
-if (jsFiles.length > 0) {
-    try {
-        const fileArgs = jsFiles.map((f) => `"${f}"`).join(' ');
-        execSync(`npx -y prettier --write ${fileArgs}`, { stdio: 'inherit' });
-    } catch (e) {
-        console.error(' Prettier JS formatting failed:', e.message);
+if (doJs) {
+    console.log('\n1. Formatting JavaScript source files with Prettier...');
+    if (jsFiles.length > 0) {
+        try {
+            const fileArgs = jsFiles.map((f) => `"${f}"`).join(' ');
+            execSync(`npx -y prettier --write ${fileArgs}`, { stdio: 'inherit' });
+        } catch (e) {
+            console.error(' Prettier JS formatting failed:', e.message);
+        }
+    } else {
+        console.log(' No JavaScript source files found.');
     }
-} else {
-    console.log(' No JavaScript source files found.');
 }
 
-console.log('\n2. Formatting CSS source files with Prettier...');
-if (cssFiles.length > 0) {
-    try {
-        const fileArgs = cssFiles.map((f) => `"${f}"`).join(' ');
-        execSync(`npx -y prettier --write ${fileArgs}`, { stdio: 'inherit' });
-    } catch (e) {
-        console.error(' Prettier CSS formatting failed:', e.message);
+if (doCss) {
+    console.log('\n2. Formatting CSS source files with Prettier...');
+    if (cssFiles.length > 0) {
+        try {
+            const fileArgs = cssFiles.map((f) => `"${f}"`).join(' ');
+            execSync(`npx -y prettier --write ${fileArgs}`, { stdio: 'inherit' });
+        } catch (e) {
+            console.error(' Prettier CSS formatting failed:', e.message);
+        }
+    } else {
+        console.log(' No CSS source files found.');
     }
-} else {
-    console.log(' No CSS source files found.');
 }
 
 function cleanTemplateInner(inner) {
@@ -94,40 +105,42 @@ function minifyTemplateLiterals(code) {
 // -------------------------------------------------------------
 // STEP 2: Minify JS & CSS source files to .min.js and .min.css
 // -------------------------------------------------------------
-console.log('\n3. Minifying JavaScript source files to .min.js...');
 let jsMinifiedCount = 0;
+if (doJs) {
+    console.log('\n3. Minifying JavaScript source files to .min.js...');
+    for (const srcFile of jsFiles) {
+        const minFile = srcFile.replace(/\.js$/, '.min.js');
+        const tempFile = path.join(__dirname, `_temp_${path.basename(srcFile)}`);
+        try {
+            let code = fs.readFileSync(srcFile, 'utf8');
+            code = minifyTemplateLiterals(code);
 
-for (const srcFile of jsFiles) {
-    const minFile = srcFile.replace(/\.js$/, '.min.js');
-    const tempFile = path.join(__dirname, `_temp_${path.basename(srcFile)}`);
-    try {
-        let code = fs.readFileSync(srcFile, 'utf8');
-        code = minifyTemplateLiterals(code);
-
-        fs.writeFileSync(tempFile, code, 'utf8');
-        execSync(`npx -y terser "${tempFile}" -o "${minFile}" --compress --mangle`, { stdio: 'pipe' });
-        console.log(` Minified: ${path.relative(rootDir, srcFile)} -> ${path.relative(rootDir, minFile)}`);
-        jsMinifiedCount++;
-    } catch (e) {
-        console.error(` Failed to minify ${srcFile}:`, e.message);
-    } finally {
-        if (fs.existsSync(tempFile)) {
-            fs.unlinkSync(tempFile);
+            fs.writeFileSync(tempFile, code, 'utf8');
+            execSync(`npx -y terser "${tempFile}" -o "${minFile}" --compress --mangle`, { stdio: 'pipe' });
+            console.log(` Minified: ${path.relative(rootDir, srcFile)} -> ${path.relative(rootDir, minFile)}`);
+            jsMinifiedCount++;
+        } catch (e) {
+            console.error(` Failed to minify ${srcFile}:`, e.message);
+        } finally {
+            if (fs.existsSync(tempFile)) {
+                fs.unlinkSync(tempFile);
+            }
         }
     }
 }
 
-console.log('\n4. Minifying CSS source files to .min.css...');
 let cssMinifiedCount = 0;
-
-for (const srcFile of cssFiles) {
-    const minFile = srcFile.replace(/\.css$/, '.min.css');
-    try {
-        execSync(`npx -y csso-cli "${srcFile}" -o "${minFile}"`, { stdio: 'pipe' });
-        console.log(` Minified: ${path.relative(rootDir, srcFile)} -> ${path.relative(rootDir, minFile)}`);
-        cssMinifiedCount++;
-    } catch (e) {
-        console.error(` Failed to minify ${srcFile}:`, e.message);
+if (doCss) {
+    console.log('\n4. Minifying CSS source files to .min.css...');
+    for (const srcFile of cssFiles) {
+        const minFile = srcFile.replace(/\.css$/, '.min.css');
+        try {
+            execSync(`npx -y csso-cli "${srcFile}" -o "${minFile}"`, { stdio: 'pipe' });
+            console.log(` Minified: ${path.relative(rootDir, srcFile)} -> ${path.relative(rootDir, minFile)}`);
+            cssMinifiedCount++;
+        } catch (e) {
+            console.error(` Failed to minify ${srcFile}:`, e.message);
+        }
     }
 }
 
