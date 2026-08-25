@@ -291,7 +291,7 @@ class Uploader
             return false;
         }
 
-        return ! preg_match('/<\?(?:php|=|\s)|<script\b/i', $content);
+        return ! preg_match('/<\?php\b|<\?=\s*[\$a-zA-Z_\'"\`()\\\\]|<script\b/i', $content);
     }
 
     private function _ensureDirectory(string $path): bool
