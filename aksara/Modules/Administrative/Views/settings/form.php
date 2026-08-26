@@ -40,6 +40,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="#pills-updater" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
+                        <i class="mdi mdi-update"></i> <?= phrase('Updater') ?>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#pills-notifier" data-bs-toggle="pill" class="nav-link rounded-pill text-nowrap --xhr">
                         <i class="mdi mdi-bullhorn"></i> <?= phrase('Notifier') ?>
                     </a>
@@ -276,6 +281,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="pills-updater">
+                            <h5>
+                                <?= phrase('Core System Updater') ?>
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= form_input($results->field_data->update_check) ?>
+                                </div>
+                            </div>
+                            <hr class="border-secondary" />
+                            <h5>
+                                <?= phrase('Public Key') ?>
+                            </h5>
+                            <?= form_input($results->field_data->aksara_public_key) ?>
+                            <div class="alert alert-info callout">
+                                <?= phrase('Public key used to verify digital signatures of core updates, modules, and themes.') ?>
+                            </div>
+                        </div>
                         <div class="tab-pane fade" id="pills-notifier">
                             <h5>
                                 <?= phrase('Application Notifier') ?>
@@ -283,9 +306,6 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <?= form_input($results->field_data->action_sound) ?>
-                                </div>
-                                <div class="col-sm-6">
-                                    <?= form_input($results->field_data->update_check) ?>
                                 </div>
                             </div>
                             <hr class="border-secondary" />

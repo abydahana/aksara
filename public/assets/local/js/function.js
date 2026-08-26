@@ -468,17 +468,54 @@ function reactivate(individual, ignoreSelf) {
     /**
      * Make textarea autogrow
      */
+    const triggerTextareaAutogrow = function (element) {
+      if ($(element).hasClass('no-resize')) {
+        return;
+      }
+
+      element.style.height = 'auto';
+
+      const scrollHeight = element.scrollHeight;
+      const outerHeight = $(element).actual('outerHeight');
+
+      element.style.height = (scrollHeight > outerHeight ? scrollHeight + 2 : outerHeight) + 'px';
+      element.style.overflowY = 'hidden';
+    };
+
     $('textarea')
       .each(function () {
-        $(this).css({
-          height: this.scrollHeight > $(this).actual('outerHeight') ? this.scrollHeight + 2 : $(this).actual('outerHeight'),
-          overflowY: 'hidden'
-        });
+        triggerTextareaAutogrow(this);
       })
-      .on('input', function () {
-        if (!$(this).hasClass('no-resize')) {
-          this.style.height = 'auto';
-          this.style.height = this.scrollHeight + 2 + 'px';
+      .off('input.autogrow')
+      .on('input.autogrow', function () {
+        triggerTextareaAutogrow(this);
+      });
+
+    $(document)
+      .off('shown.bs.tab.autogrow')
+      .on('shown.bs.tab.autogrow', 'a[data-bs-toggle="pill"], a[data-bs-toggle="tab"], button[data-bs-toggle="pill"], button[data-bs-toggle="tab"]', function (e) {
+        let target = $(e.target).attr('href') || $(e.target).attr('data-bs-target');
+
+        if (target && typeof target === 'string') {
+          let targetEl = null;
+
+          if (target.startsWith('#')) {
+            targetEl = document.getElementById(target.substring(1));
+          } else {
+            try {
+              targetEl = document.querySelector(target);
+            } catch (err) {
+              targetEl = null;
+            }
+          }
+
+          if (targetEl) {
+            $(targetEl)
+              .find('textarea')
+              .each(function () {
+                triggerTextareaAutogrow(this);
+              });
+          }
         }
       });
 
