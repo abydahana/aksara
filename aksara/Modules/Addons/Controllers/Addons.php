@@ -161,6 +161,17 @@ class Addons extends Core
             }
 
             if ($package) {
+                // Early Pre-check: Validate addon metadata and Public Key BEFORE downloading
+                if (empty($package->repository) || (empty($package->sha256) && empty($package->signature))) {
+                    return throw_exception(400, ['file' => phrase('Add-on installation canceled! Package signature or integrity check failed.')]);
+                }
+
+                $publicKey = trim((string) get_setting('aksara_public_key'));
+
+                if (! empty($package->signature) && (empty($publicKey) || ! str_contains($publicKey, 'PUBLIC KEY'))) {
+                    return throw_exception(400, ['file' => phrase('Add-on installation canceled! Package signature or integrity check failed.')]);
+                }
+
                 // Get update package from remote server
                 $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $this->request->getGet('item');
 
