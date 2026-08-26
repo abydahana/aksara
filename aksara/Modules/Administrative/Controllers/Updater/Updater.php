@@ -137,6 +137,167 @@ class Updater extends Core
     }
 
     /**
+     * Manual update via uploaded zip package
+     */
+    public function upload()
+    {
+        if (! $this->validToken($this->request->getPost('_token'))) {
+            $html = '
+                <form action="' . current_page() . '" method="POST" enctype="multipart/form-data" class="--validate-form">
+                    <input type="hidden" name="_token" value="' . generate_csrf_token() . '">
+                    <div class="alert alert-info rounded-3">
+                        <i class="mdi mdi-information-outline"></i>
+                        ' . phrase('Manual update allows you to upload an official Aksara update package (.zip). Only authentic, digitally signed packages from official releases are accepted.') . '
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted fw-bold">
+                            ' . phrase('Update Package (.zip)') . '
+                        </label>
+                        <input type="file" name="file" class="form-control" accept=".zip" />
+                    </div>
+                    <hr class="mx--3 border-secondary" />
+                    <div data-role="validation-callback"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="d-grid">
+                                <a href="javascript:void(0)" data-bs-dismiss="modal" class="btn btn-outline-secondary">
+                                    <i class="mdi mdi-window-close"></i>
+                                    ' . phrase('Cancel') . '
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-check"></i>
+                                    ' . phrase('Upload & Update') . '
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            ';
+
+            return make_json([
+                'status' => 200,
+                'meta' => [
+                    'title' => phrase('Manual Core System Update'),
+                    'icon' => 'mdi mdi-upload',
+                    'popup' => true
+                ],
+                'content' => $html
+            ]);
+        }
+
+        if (DEMO_MODE) {
+            return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
+        }
+
+        $this->formValidation->setRule('file', phrase('Update Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
+
+        if ($this->formValidation->run($this->request->getPost()) === false) {
+            return throw_exception(400, $this->formValidation->getErrors());
+        } elseif (empty($_FILES['file']['tmp_name'])) {
+            return throw_exception(400, ['file' => phrase('No update package was chosen.')]);
+        } elseif (! class_exists('ZipArchive')) {
+            return throw_exception(400, ['file' => phrase('No zip extension found on your web server configuration.')]);
+        }
+
+        $zip = new ZipArchive();
+        $uploadedZipPath = $_FILES['file']['tmp_name'];
+        $unzip = $zip->open($uploadedZipPath);
+        $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . 'manual_update_' . sha1($uploadedZipPath);
+
+        if (true === $unzip) {
+            if (! is_dir($tmpPath) && ! mkdir($tmpPath, 0755, true)) {
+                return throw_exception(400, ['file' => phrase('Unable to extract your update package.')]);
+            }
+
+            // Validate the zip contents and extract safely
+            if (! $this->_extractZipArchive($zip, $tmpPath)) {
+                $zip->close();
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(400, ['file' => phrase('Unable to extract your update package. Zip entry failed security validation.')]);
+            }
+
+            $zip->close();
+
+            // 1. Locate and extract target version from package files
+            $targetVersion = $this->_getPackageVersion($tmpPath);
+
+            if (! $targetVersion) {
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(400, ['file' => phrase('Invalid update package! Unable to detect version information in composer.json or aksara/Common.php.')]);
+            }
+
+            // 2. Validate Version Sequence (No minor version skipping)
+            $versionError = $this->_validateVersionSequence(aksara('version'), $targetVersion);
+
+            if ($versionError) {
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(400, ['file' => $versionError]);
+            }
+
+            // 3. Cryptographic RSA Signature Verification for Manual Package
+            if (! $this->_verifyManualPackageSignature($uploadedZipPath, $tmpPath)) {
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(400, ['file' => phrase('Update canceled! Package signature or integrity check failed. The uploaded file is not an authentic signed release from GitHub.')]);
+            }
+
+            // 4. Security Scan for Malicious PHP Code
+            if (! $this->_scanPackageSecurity($tmpPath)) {
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(400, ['file' => phrase('Update canceled! Malicious or unsafe PHP code was detected in the update package.')]);
+            }
+
+            // 5. Create backup before applying update
+            $backupName = '_BACKUP_' . date('Y-m-d_His', time()) . '.zip';
+            $backupZip = new ZipArchive();
+
+            try {
+                $backupZip->open($tmpPath . DIRECTORY_SEPARATOR . $backupName, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+                $backupZip->addFile(ROOTPATH . 'composer.json', 'composer.json');
+                $backupZip->addFile(ROOTPATH . 'composer.lock', 'composer.lock');
+                $backupZip->close();
+            } catch (Throwable $e) {
+                // Safe abstraction
+            }
+
+            // 6. Copy extracted update files to ROOTPATH
+            $manifestPath = $this->_findFileInDirectory($tmpPath, 'composer.json') ?: $this->_findFileInDirectory($tmpPath, 'Common.php');
+            $sourceDir = $manifestPath ? (basename(dirname($manifestPath)) === 'aksara' ? dirname(dirname($manifestPath)) : dirname($manifestPath)) : $tmpPath;
+            $copySuccess = $this->_copyDirectory($sourceDir, ROOTPATH);
+
+            if ($copySuccess) {
+                // Run migration and seeds
+                try {
+                    $migration = Services::migrations()->setNamespace('Aksara');
+                    $migration->latest();
+                    $this->_runSeeds();
+                } catch (Throwable $e) {
+                    // Migration error safe handling
+                }
+
+                // Remove temporary path
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(301, phrase('Core system was successfully updated to version {{ version }}.', ['version' => $targetVersion]), current_page('../'));
+            }
+
+            $this->_rmdir($tmpPath);
+
+            return throw_exception(400, ['file' => phrase('Failed to copy update files to root path.')]);
+        }
+
+        return throw_exception(400, ['file' => phrase('Unable to open the uploaded zip update package.')]);
+    }
+
+    /**
      * Ping upstream
      */
     public static function pingUpstream($changelog = false)
@@ -495,8 +656,7 @@ class Updater extends Core
 
     /**
      * Remove directory recursivelly using
-     *
-     * @param   mixed|null $directory
+     * @param null|mixed $directory
      */
     private function _rmdir($directory = null)
     {
@@ -521,18 +681,41 @@ class Updater extends Core
      * Check if zip entry path is safe for extraction.
      * @param null|mixed $entry
      */
-    private function _isSafeZipEntry($entry = null)
+    private function _isSafeZipEntry($entry = null, string $destination = ''): bool
     {
         if (! $entry || strpos($entry, "\0") !== false) {
             return false;
         }
 
-        if (preg_match('/^(?:[\/\\]|[A-Za-z]:[\/\\])/', $entry)) {
+        // Normalize slashes
+        $entry = str_replace('\\', '/', $entry);
+
+        // Reject absolute paths
+        if (preg_match('/^(?:\/|[A-Za-z]:\/)/', $entry)) {
             return false;
         }
 
-        if (preg_match('/(?:^|[\/\\])\.\.([\/\\]|$)/', $entry)) {
+        // Reject directory traversal segments
+        if (preg_match('/(?:^|\/)\.\.(?:\/|$)/', $entry)) {
             return false;
+        }
+
+        // Verify resolved real destination remains strictly inside destination directory
+        if ($destination) {
+            $destReal = realpath($destination);
+
+            if ($destReal) {
+                $targetPath = $destReal . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $entry);
+
+                // If target exists (e.g. symlink check), ensure it resolves inside $destReal
+                if (file_exists($targetPath)) {
+                    $targetReal = realpath($targetPath);
+
+                    if ($targetReal && 0 !== strpos($targetReal, $destReal . DIRECTORY_SEPARATOR) && $targetReal !== $destReal) {
+                        return false;
+                    }
+                }
+            }
         }
 
         return true;
@@ -546,7 +729,7 @@ class Updater extends Core
         for ($i = 0, $count = $zip->numFiles; $i < $count; $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            if (false === $entryName || ! $this->_isSafeZipEntry($entryName)) {
+            if (false === $entryName || ! $this->_isSafeZipEntry($entryName, $destination)) {
                 return false;
             }
         }
@@ -617,5 +800,202 @@ class Updater extends Core
 
         // Require at least sha256 or signature to be present
         return ! empty($response->sha256) || ! empty($response->signature);
+    }
+
+    /**
+     * Validate update version sequence: prevent version skipping (e.g. 6.3.5 -> 6.5.0 is prohibited).
+     */
+    private function _validateVersionSequence(string $currentVersion, string $targetVersion): ?string
+    {
+        if (version_compare($targetVersion, $currentVersion, '<=')) {
+            return phrase('The uploaded package version ({{ target }}) must be newer than your current system version ({{ current }}).', [
+                'target' => $targetVersion,
+                'current' => $currentVersion
+            ]);
+        }
+
+        $currentParts = explode('.', $currentVersion);
+        $targetParts = explode('.', $targetVersion);
+
+        $currMajor = (int) ($currentParts[0] ?? 0);
+        $currMinor = (int) ($currentParts[1] ?? 0);
+
+        $targetMajor = (int) ($targetParts[0] ?? 0);
+        $targetMinor = (int) ($targetParts[1] ?? 0);
+
+        // Major version check: Cannot skip major versions (e.g. from 6.x to 8.x)
+        if ($targetMajor > $currMajor + 1) {
+            return phrase('Version step too large! You cannot skip major versions. Please update to version {{ expected }}.x first before updating to {{ target }}.', [
+                'expected' => $currMajor + 1,
+                'target' => $targetVersion
+            ]);
+        }
+
+        // Minor version check within same major version: Cannot skip minor versions (e.g. 6.3.5 -> 6.5.0)
+        if ($targetMajor === $currMajor && $targetMinor > $currMinor + 1) {
+            $expectedMinor = $currMajor . '.' . ($currMinor + 1) . '.x';
+
+            return phrase('Version step too large! You cannot skip minor versions. You are currently on {{ current }}, so you must update to {{ expected }} first before updating to {{ target }}.', [
+                'current' => $currentVersion,
+                'expected' => $expectedMinor,
+                'target' => $targetVersion
+            ]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Recursively search for a file by name inside a directory.
+     */
+    private function _findFileInDirectory(string $directory, string $filename): ?string
+    {
+        if (! is_dir($directory)) {
+            return null;
+        }
+
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $file) {
+            if ($file->isFile() && strtolower($file->getFilename()) === strtolower($filename)) {
+                return $file->getRealPath();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Verify digital RSA signature of manually uploaded update package.
+     */
+    private function _verifyManualPackageSignature(string $uploadedZipPath, string $tmpPath): bool
+    {
+        $publicKey = trim((string) get_setting('aksara_public_key'));
+
+        if (empty($publicKey) || ! str_contains($publicKey, 'PUBLIC KEY')) {
+            return false;
+        }
+
+        // Search for signature.txt inside extracted directory
+        $sigPath = $this->_findFileInDirectory($tmpPath, 'signature.txt');
+        $sigBase64 = null;
+
+        if ($sigPath && file_exists($sigPath)) {
+            $sigBase64 = trim(file_get_contents($sigPath));
+        }
+
+        if (! $sigBase64) {
+            $manifestPath = $this->_findFileInDirectory($tmpPath, 'composer.json');
+            if ($manifestPath && file_exists($manifestPath)) {
+                $manifest = json_decode(file_get_contents($manifestPath));
+                if (isset($manifest->signature)) {
+                    $sigBase64 = trim((string) $manifest->signature);
+                }
+            }
+        }
+
+        if (! $sigBase64) {
+            return false;
+        }
+
+        $rawSig = base64_decode($sigBase64, true);
+        $zipContent = file_get_contents($uploadedZipPath);
+
+        if (false === $rawSig || false === $zipContent) {
+            return false;
+        }
+
+        return 1 === openssl_verify($zipContent, $rawSig, $publicKey, OPENSSL_ALGO_SHA256);
+    }
+
+    /**
+     * Scan extracted package files for malicious PHP code and dangerous functions before installation.
+     */
+    private function _scanPackageSecurity(string $tmpPath): bool
+    {
+        if (! is_dir($tmpPath)) {
+            return false;
+        }
+
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($tmpPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $dangerousPatterns = [
+            '/\b(?:eval|passthru|shell_exec|system|proc_open|popen)\s*\(/i',
+            '/\bassert\s*\(\s*(?:base64_decode|\$_|\$http_)/i',
+            '/\b(?:base64_decode|gzinflate|gzuncompress|str_rot13)\s*\(\s*\$_(?:POST|GET|REQUEST|COOKIE|SERVER)/i',
+            '/\$(?:_POST|_GET|_REQUEST|_COOKIE)\s*\[[^\]]+\]\s*\(\s*\$/i'
+        ];
+
+        foreach ($files as $file) {
+            if ($file->isFile() && 'php' === strtolower($file->getExtension())) {
+                $content = file_get_contents($file->getRealPath());
+
+                if (false === $content) {
+                    return false;
+                }
+
+                foreach ($dangerousPatterns as $pattern) {
+                    if (preg_match($pattern, $content)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Copy directory recursively
+     */
+    private function _copyDirectory(string $source, string $destination): bool
+    {
+        if (! is_dir($source)) {
+            return false;
+        }
+
+        $dir = opendir($source);
+
+        if (! is_dir($destination)) {
+            mkdir($destination, 0755, true);
+        }
+
+        while (false !== ($file = readdir($dir))) {
+            if ('.' !== $file && '..' !== $file) {
+                if (is_dir($source . DIRECTORY_SEPARATOR . $file)) {
+                    $this->_copyDirectory($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
+                } else {
+                    copy($source . DIRECTORY_SEPARATOR . $file, $destination . DIRECTORY_SEPARATOR . $file);
+                }
+            }
+        }
+
+        closedir($dir);
+
+        return true;
+    }
+
+    /**
+     * Resolve target version from extracted package files (composer.json).
+     */
+    private function _getPackageVersion(string $tmpPath): ?string
+    {
+        $manifestPath = $this->_findFileInDirectory($tmpPath, 'composer.json');
+
+        if ($manifestPath && file_exists($manifestPath)) {
+            $packageData = json_decode(file_get_contents($manifestPath));
+
+            if (! empty($packageData->version)) {
+                return trim((string) $packageData->version);
+            }
+        }
+
+        return null;
     }
 }

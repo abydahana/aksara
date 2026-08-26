@@ -623,8 +623,7 @@ class Addons extends Core
 
     /**
      * Remove directory recursivelly using
-     *
-     * @param mixed|null $directory
+     * @param null|mixed $directory
      */
     private function _rmdir($directory = null)
     {
@@ -649,18 +648,41 @@ class Addons extends Core
      * Check if zip entry path is safe for extraction.
      * @param null|mixed $entry
      */
-    private function _isSafeZipEntry($entry = null)
+    private function _isSafeZipEntry($entry = null, string $destination = ''): bool
     {
         if (! $entry || strpos($entry, "\0") !== false) {
             return false;
         }
 
-        if (preg_match('/^(?:[\/\\]|[A-Za-z]:[\/\\])/', $entry)) {
+        // Normalize slashes
+        $entry = str_replace('\\', '/', $entry);
+
+        // Reject absolute paths
+        if (preg_match('/^(?:\/|[A-Za-z]:\/)/', $entry)) {
             return false;
         }
 
-        if (preg_match('/(?:^|[\/\\])\.\.([\/\\]|$)/', $entry)) {
+        // Reject directory traversal segments
+        if (preg_match('/(?:^|\/)\.\.(?:\/|$)/', $entry)) {
             return false;
+        }
+
+        // Verify resolved real destination remains strictly inside destination directory
+        if ($destination) {
+            $destReal = realpath($destination);
+
+            if ($destReal) {
+                $targetPath = $destReal . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $entry);
+
+                // If target exists (e.g. symlink check), ensure it resolves inside $destReal
+                if (file_exists($targetPath)) {
+                    $targetReal = realpath($targetPath);
+
+                    if ($targetReal && 0 !== strpos($targetReal, $destReal . DIRECTORY_SEPARATOR) && $targetReal !== $destReal) {
+                        return false;
+                    }
+                }
+            }
         }
 
         return true;
@@ -674,7 +696,7 @@ class Addons extends Core
         for ($i = 0, $count = $zip->numFiles; $i < $count; $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            if (false === $entryName || ! $this->_isSafeZipEntry($entryName)) {
+            if (false === $entryName || ! $this->_isSafeZipEntry($entryName, $destination)) {
                 return false;
             }
         }
@@ -684,9 +706,8 @@ class Addons extends Core
 
     /**
      * Make array unique by value
-     *
-     * @param mixed|null $key
-     * @param mixed|null $value
+     * @param null|mixed $key
+     * @param null|mixed $value
      */
     private function _arrayUnique($array = [], $key = null, $value = null)
     {
