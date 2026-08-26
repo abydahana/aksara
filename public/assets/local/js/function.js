@@ -496,12 +496,26 @@ function reactivate(individual, ignoreSelf) {
       .on('shown.bs.tab.autogrow', 'a[data-bs-toggle="pill"], a[data-bs-toggle="tab"], button[data-bs-toggle="pill"], button[data-bs-toggle="tab"]', function (e) {
         let target = $(e.target).attr('href') || $(e.target).attr('data-bs-target');
 
-        if (target && $(target).length) {
-          $(target)
-            .find('textarea')
-            .each(function () {
-              triggerTextareaAutogrow(this);
-            });
+        if (target && typeof target === 'string') {
+          let targetEl = null;
+
+          if (target.startsWith('#')) {
+            targetEl = document.getElementById(target.substring(1));
+          } else {
+            try {
+              targetEl = document.querySelector(target);
+            } catch (err) {
+              targetEl = null;
+            }
+          }
+
+          if (targetEl) {
+            $(targetEl)
+              .find('textarea')
+              .each(function () {
+                triggerTextareaAutogrow(this);
+              });
+          }
         }
       });
 
