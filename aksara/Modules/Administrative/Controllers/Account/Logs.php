@@ -34,10 +34,6 @@ class Logs extends Core
         $this->setPermission();
         $this->setTheme('backend');
         $this->setMethod('index');
-
-        if ($this->request->getPost('fetch') == 'ip-info') {
-            return $this->_getIpInfo($this->request->getPost('ip_address'), $this->request->getPost('key'));
-        }
     }
 
     public function index()
@@ -108,16 +104,5 @@ class Logs extends Core
         }
 
         return $output;
-    }
-
-    private function _getIpInfo($ipAddress = null, $key = null)
-    {
-        if (! $ipAddress || '::1' === $ipAddress) {
-            return false;
-        }
-
-        $information = file_get_contents('https://www.aksaracms.com/ip/' . $ipAddress);
-
-        return make_json(json_decode($information));
     }
 }
