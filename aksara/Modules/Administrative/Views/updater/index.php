@@ -73,8 +73,8 @@ if (isset($updater->changelog)) {
                     <a href="<?= base_url('administrative/updater/migrate') ?>" class="btn btn-outline-success rounded-pill ms-2 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
                         <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
                     </a>
-                    <a href="//www.aksaracms.com/updater/file.zip" class="btn btn-dark rounded-pill ms-2">
-                        <i class="mdi mdi-hammer"></i> <?= phrase('Manual Update') ?>
+                    <a href="<?= base_url('administrative/updater/upload') ?>" class="btn btn-dark rounded-pill ms-2 --modal">
+                        <i class="mdi mdi-upload"></i> <?= phrase('Manual Update') ?>
                     </a>
                 </div>
             </div>
@@ -92,6 +92,9 @@ if (isset($updater->changelog)) {
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-primary rounded-pill px-4 --xhr show-progress">
                             <i class="mdi mdi-update"></i> <?= phrase('Check Again') ?>
+                        </a>
+                        <a href="<?= base_url('administrative/updater/upload') ?>" class="btn btn-sm btn-outline-dark rounded-pill px-4 --modal">
+                            <i class="mdi mdi-upload"></i> <?= phrase('Manual Update') ?>
                         </a>
                         <a href="<?= base_url('administrative/updater/migrate') ?>" class="btn btn-sm btn-outline-success rounded-pill px-4 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
                             <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>

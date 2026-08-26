@@ -1,5 +1,6 @@
 {
     "name": "abydahana/aksara",
+    "version": "6.3.5",
     "type": "project",
     "description": "Aksara is a modern, developer-friendly framework and CMS built on CodeIgniter 4, featuring rapid CRUD development, modular architecture, smart routing, flexible access control, API integration, and an AI assistant to make content management faster and smarter.",
     "homepage": "https://www.aksaracms.com",

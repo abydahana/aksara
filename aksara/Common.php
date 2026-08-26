@@ -30,7 +30,19 @@ if (! function_exists('aksara')) {
      */
     function aksara(string $parameter): string
     {
-        $version = '6.3.5';
+        static $version = null;
+
+        if (null === $version) {
+            $version = '6.3.5';
+
+            if (file_exists(ROOTPATH . 'composer.json')) {
+                $composer = json_decode(file_get_contents(ROOTPATH . 'composer.json'));
+
+                if (! empty($composer->version)) {
+                    $version = (string) $composer->version;
+                }
+            }
+        }
 
         if ('version' == $parameter) {
             return $version;

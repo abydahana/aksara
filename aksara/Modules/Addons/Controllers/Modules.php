@@ -17,6 +17,8 @@
 
 namespace Aksara\Modules\Addons\Controllers;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Throwable;
 use ZipArchive;
 use stdClass;
@@ -306,6 +308,14 @@ class Modules extends Core
                     $this->_rmdir($tmpPath);
 
                     return throw_exception(400, ['module' => phrase('This module package with same structure is already installed.')]);
+                }
+
+                // Security scan: Check extracted files for malicious PHP code before copying to ROOTPATH . 'modules'
+                if (! $this->_scanPackageSecurity($tmpPath)) {
+                    $zip->close();
+                    $this->_rmdir($tmpPath);
+
+                    return throw_exception(400, ['file' => phrase('Module import canceled! Malicious or unsafe PHP code was detected in the package.')]);
                 }
 
                 if (is_writable(ROOTPATH . 'modules')) {
@@ -739,8 +749,7 @@ class Modules extends Core
 
     /**
      * Remove directory recursivelly using
-     *
-     * @param mixed|null $directory
+     * @param null|mixed $directory
      */
     private function _rmdir($directory = null)
     {
@@ -765,18 +774,41 @@ class Modules extends Core
      * Check if zip entry path is safe for extraction.
      * @param null|mixed $entry
      */
-    private function _isSafeZipEntry($entry = null)
+    private function _isSafeZipEntry($entry = null, string $destination = ''): bool
     {
         if (! $entry || strpos($entry, "\0") !== false) {
             return false;
         }
 
-        if (preg_match('/^(?:[\/\\]|[A-Za-z]:[\/\\])/', $entry)) {
+        // Normalize slashes
+        $entry = str_replace('\\', '/', $entry);
+
+        // Reject absolute paths
+        if (preg_match('/^(?:\/|[A-Za-z]:\/)/', $entry)) {
             return false;
         }
 
-        if (preg_match('/(?:^|[\/\\])\.\.([\/\\]|$)/', $entry)) {
+        // Reject directory traversal segments
+        if (preg_match('/(?:^|\/)\.\.(?:\/|$)/', $entry)) {
             return false;
+        }
+
+        // Verify resolved real destination remains strictly inside destination directory
+        if ($destination) {
+            $destReal = realpath($destination);
+
+            if ($destReal) {
+                $targetPath = $destReal . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $entry);
+
+                // If target exists (e.g. symlink check), ensure it resolves inside $destReal
+                if (file_exists($targetPath)) {
+                    $targetReal = realpath($targetPath);
+
+                    if ($targetReal && 0 !== strpos($targetReal, $destReal . DIRECTORY_SEPARATOR) && $targetReal !== $destReal) {
+                        return false;
+                    }
+                }
+            }
         }
 
         return true;
@@ -787,10 +819,16 @@ class Modules extends Core
      */
     private function _extractZipArchive(ZipArchive $zip, string $destination): bool
     {
+        $destReal = realpath($destination);
+
+        if (! $destReal && is_dir($destination)) {
+            $destReal = $destination;
+        }
+
         for ($i = 0, $count = $zip->numFiles; $i < $count; $i++) {
             $entryName = $zip->getNameIndex($i);
 
-            if (false === $entryName || ! $this->_isSafeZipEntry($entryName)) {
+            if (false === $entryName || ! $this->_isSafeZipEntry($entryName, $destination)) {
                 return false;
             }
         }
@@ -800,9 +838,8 @@ class Modules extends Core
 
     /**
      * Make array unique by value
-     *
-     * @param mixed|null $key
-     * @param mixed|null $value
+     * @param null|mixed $key
+     * @param null|mixed $value
      */
     private function _arrayUnique($array = [], $key = null, $value = null)
     {
@@ -815,5 +852,45 @@ class Modules extends Core
         }
 
         return $array;
+    }
+
+    /**
+     * Scan extracted package files for malicious PHP code and dangerous functions before installation.
+     */
+    private function _scanPackageSecurity(string $tmpPath): bool
+    {
+        if (! is_dir($tmpPath)) {
+            return false;
+        }
+
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($tmpPath, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $dangerousPatterns = [
+            '/\b(?:eval|passthru|shell_exec|system|proc_open|popen)\s*\(/i',
+            '/\bassert\s*\(\s*(?:base64_decode|\$_|\$http_)/i',
+            '/\b(?:base64_decode|gzinflate|gzuncompress|str_rot13)\s*\(\s*\$_(?:POST|GET|REQUEST|COOKIE|SERVER)/i',
+            '/\$(?:_POST|_GET|_REQUEST|_COOKIE)\s*\[[^\]]+\]\s*\(\s*\$/i'
+        ];
+
+        foreach ($files as $file) {
+            if ($file->isFile() && 'php' === strtolower($file->getExtension())) {
+                $content = file_get_contents($file->getRealPath());
+
+                if (false === $content) {
+                    return false;
+                }
+
+                foreach ($dangerousPatterns as $pattern) {
+                    if (preg_match($pattern, $content)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 }
