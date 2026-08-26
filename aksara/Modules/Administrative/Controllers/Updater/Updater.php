@@ -177,6 +177,17 @@ class Updater extends Core
      */
     private function _runUpdater(object $response)
     {
+        // Early Pre-check: Validate update metadata and Public Key BEFORE backup & download
+        if (empty($response->updater) || (empty($response->sha256) && empty($response->signature))) {
+            return throw_exception(400, ['package' => phrase('Update canceled! Package signature or integrity check failed.')]);
+        }
+
+        $publicKey = trim((string) get_setting('aksara_public_key'));
+
+        if (! empty($response->signature) && (empty($publicKey) || ! str_contains($publicKey, 'PUBLIC KEY'))) {
+            return throw_exception(400, ['package' => phrase('Update canceled! Package signature or integrity check failed.')]);
+        }
+
         $updaterPath = sha1($response->version);
         $updated = false;
         $tmpPath = WRITEPATH . 'cache' . DIRECTORY_SEPARATOR . $updaterPath;
