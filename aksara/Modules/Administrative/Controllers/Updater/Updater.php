@@ -224,7 +224,15 @@ class Updater extends Core
 
         try {
             // Get update package from the remote server
-            copy($response->updater, $tmpPath . DIRECTORY_SEPARATOR . $response->version . '.zip');
+            $downloadedZip = $tmpPath . DIRECTORY_SEPARATOR . $response->version . '.zip';
+            copy($response->updater, $downloadedZip);
+
+            // Verify digital signature and SHA-256 integrity of the update package before extraction
+            if (! $this->_verifyPackageSignature($downloadedZip, $response)) {
+                $this->_rmdir($tmpPath);
+
+                return throw_exception(400, ['package' => phrase('Update canceled! Package signature or integrity check failed.')]);
+            }
 
             /**
              * STEP 1
@@ -558,5 +566,45 @@ class Updater extends Core
                 }
             }
         }
+    }
+
+    /**
+     * Verify SHA-256 hash and RSA public key cryptographic signature of update package.
+     */
+    private function _verifyPackageSignature(string $zipPath, object $response): bool
+    {
+        if (! is_file($zipPath)) {
+            return false;
+        }
+
+        // 1. Verify SHA-256 hash if provided
+        if (! empty($response->sha256)) {
+            $fileHash = hash_file('sha256', $zipPath);
+
+            if (! hash_equals(strtolower($response->sha256), strtolower($fileHash))) {
+                return false;
+            }
+        }
+
+        // 2. Verify Cryptographic OpenSSL Signature if signature is provided
+        if (! empty($response->signature)) {
+            $signature = base64_decode($response->signature, true);
+            $content = file_get_contents($zipPath);
+
+            if (false === $signature || false === $content) {
+                return false;
+            }
+
+            $publicKey = trim((string) get_setting('aksara_public_key'));
+
+            if (! empty($publicKey) && str_contains($publicKey, 'PUBLIC KEY')) {
+                return 1 === openssl_verify($content, $signature, $publicKey, OPENSSL_ALGO_SHA256);
+            }
+
+            return false;
+        }
+
+        // Require at least sha256 or signature to be present
+        return ! empty($response->sha256) || ! empty($response->signature);
     }
 }

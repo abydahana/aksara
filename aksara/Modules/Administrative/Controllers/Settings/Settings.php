@@ -139,6 +139,7 @@ class Settings extends Core
             'google_client_secret' => 'encryption',
             'action_sound' => 'boolean',
             'update_check' => 'boolean',
+            'aksara_public_key' => 'textarea',
             'smtp_port' => 'integer',
             'smtp_password' => 'encryption',
             'ai_enabled' => 'boolean',
@@ -292,6 +293,7 @@ class Settings extends Core
             // NOTIFIER
             'action_sound' => 'boolean',
             'update_check' => 'boolean',
+            'aksara_public_key' => 'permit_empty|string',
             'smtp_port' => 'integer|max_length[5]'
         ])
         ->setAlias([
@@ -350,6 +352,7 @@ class Settings extends Core
             // NOTIFIER
             'action_sound' => phrase('Action Sound'),
             'update_check' => phrase('Update Check'),
+            'aksara_public_key' => phrase('Aksara Public Key'),
             'smtp_hostname' => phrase('SMTP Hostname'),
             'smtp_port' => phrase('SMTP Port'),
             'smtp_username' => phrase('SMTP Username'),

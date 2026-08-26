@@ -172,6 +172,13 @@ class Addons extends Core
 
                         // Copy the repository to temporary path
                         copy($package->repository, $tmpPath . DIRECTORY_SEPARATOR . 'file.zip');
+
+                        // Verify digital signature and SHA-256 integrity of the addon package before extraction
+                        if (! $this->_verifyPackageSignature($tmpPath . DIRECTORY_SEPARATOR . 'file.zip', $package)) {
+                            $this->_rmdir($tmpPath);
+
+                            return throw_exception(400, ['file' => phrase('Add-on installation canceled! Package signature or integrity check failed.')]);
+                        }
                     } catch (Throwable $e) {
                         // Action error, throw exception
                         return throw_exception(403, $response->getReasonPhrase(), go_to());
@@ -681,5 +688,45 @@ class Addons extends Core
         }
 
         return $array;
+    }
+
+    /**
+     * Verify SHA-256 hash and RSA public key cryptographic signature of addon package.
+     */
+    private function _verifyPackageSignature(string $zipPath, object $package): bool
+    {
+        if (! is_file($zipPath)) {
+            return false;
+        }
+
+        // 1. Verify SHA-256 hash if provided
+        if (! empty($package->sha256)) {
+            $fileHash = hash_file('sha256', $zipPath);
+
+            if (! hash_equals(strtolower($package->sha256), strtolower($fileHash))) {
+                return false;
+            }
+        }
+
+        // 2. Verify Cryptographic OpenSSL Signature if signature is provided
+        if (! empty($package->signature)) {
+            $signature = base64_decode($package->signature, true);
+            $content = file_get_contents($zipPath);
+
+            if (false === $signature || false === $content) {
+                return false;
+            }
+
+            $publicKey = trim((string) get_setting('aksara_public_key'));
+
+            if (! empty($publicKey) && str_contains($publicKey, 'PUBLIC KEY')) {
+                return 1 === openssl_verify($content, $signature, $publicKey, OPENSSL_ALGO_SHA256);
+            }
+
+            return false;
+        }
+
+        // Require at least sha256 or signature to be present
+        return ! empty($package->sha256) || ! empty($package->signature);
     }
 }

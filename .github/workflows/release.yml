@@ -1,0 +1,39 @@
+name: Build & Sign Aksara Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-sign:
+    name: Build Assets & Sign Release Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Zip Package
+        run: |
+          git archive --format=zip -o release.zip HEAD
+
+      - name: Generate SHA-256 & Cryptographic Signature
+        env:
+          PRIVATE_KEY: ${{ secrets.AKSARA_PRIVATE_KEY }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key.pem
+          sha256sum release.zip | cut -d' ' -f1 > sha256.txt
+          openssl dgst -sha256 -sign private_key.pem -out signature.bin release.zip
+          base64 -w 0 signature.bin > signature.txt
+          rm -f private_key.pem
+
+      - name: Upload Signed Assets to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release.zip
+            sha256.txt
+            signature.txt
