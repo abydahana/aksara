@@ -193,7 +193,7 @@ class Updater extends Core
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
-        $this->formValidation->setRule('file', phrase('Update Package'), 'uploaded[file]|max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
+        $this->formValidation->setRule('file', phrase('Update Package'), 'max_size[file,' . (MAX_UPLOAD_SIZE * 1024) . ']|mime_in[file,application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip]|ext_in[file,zip]');
 
         if ($this->formValidation->run($this->request->getPost()) === false) {
             return throw_exception(400, $this->formValidation->getErrors());
