@@ -19,6 +19,7 @@ namespace Aksara\Modules\XHR\Controllers;
 
 use Aksara\Laboratory\Core;
 use Aksara\Libraries\AI\AI as AksaraAI;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class AI extends Core
 {
@@ -354,7 +355,7 @@ class AI extends Core
         ]);
     }
 
-    private function _error(int $status, string $message): string
+    private function _error(int $status, string $message): ResponseInterface
     {
         return make_json([
             'status' => $status,
