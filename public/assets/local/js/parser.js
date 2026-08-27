@@ -152,7 +152,7 @@ const parser = (function () {
         $('[data-role=icon]').removeAttr('class').addClass(oldStuff.icon);
         $('[data-role=title]').text(oldStuff.title);
 
-        if (context.data('identifier') && '.modal#dynamic-modal-' + context.data('identifier').length) {
+        if (context.data('identifier') && $('.modal#dynamic-modal-' + context.data('identifier')).length) {
           // Apply content to existing modal
           $('.modal#dynamic-modal-' + context.data('identifier'))
             .find('.modal-header')
@@ -213,15 +213,23 @@ const parser = (function () {
           // Add data-level to parent modal
           $('#' + oldStuff?.parent_modal).attr('data-level', $('.modal.show').length);
 
-          // Response is identically within twig template
-          response.identifier = $.now();
+          const existingModal = oldStuff?.identifier ? $('.modal#dynamic-modal-' + oldStuff.identifier) : null;
 
-          let content = parser.parse('core/' + (typeof response.view !== 'undefined' ? response.view : 'modal') + '.twig', response);
+          if (existingModal && existingModal.length) {
+            response.identifier = oldStuff.identifier;
+            let newModalNode = $(parser.parse('core/' + (typeof response.view !== 'undefined' ? response.view : 'modal') + '.twig', response));
 
-          $(content).appendTo('body').modal('show', {
-            backdrop: 'static',
-            keyboard: false
-          });
+            existingModal.find('.modal-dialog').replaceWith(newModalNode.find('.modal-dialog'));
+          } else {
+            response.identifier = $.now();
+
+            let content = parser.parse('core/' + (typeof response.view !== 'undefined' ? response.view : 'modal') + '.twig', response);
+
+            $(content).appendTo('body').modal('show', {
+              backdrop: 'static',
+              keyboard: false
+            });
+          }
 
           // Reactivate the plugin
           reactivate();

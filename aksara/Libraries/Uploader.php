@@ -38,6 +38,22 @@ class Uploader
             return false;
         }
 
+        if (! $source->isValid()) {
+            $errorCode = $source->getError();
+
+            if (in_array($errorCode, [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
+                $this->_error = phrase('The selected file size exceeds the maximum allocation');
+            } elseif (UPLOAD_ERR_NO_FILE === $errorCode) {
+                $this->_error = phrase('No file uploaded.');
+            } elseif (UPLOAD_ERR_PARTIAL === $errorCode) {
+                $this->_error = phrase('The uploaded file was only partially uploaded.');
+            } else {
+                $this->_error = $source->getErrorString() ?: phrase('Failed to upload file.');
+            }
+
+            return false;
+        }
+
         if ($source->hasMoved()) {
             $this->_error = phrase('The uploaded file has already been moved.');
 

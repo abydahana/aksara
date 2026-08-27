@@ -100,7 +100,18 @@ $pageContent = $results->field_data->page_content->value ?? '{"components":[]}';
             var builder = new AksaraPageBuilder({
                 el: '#page-builder',
                 input: '#page_content',
-                preview_url: '<?= go_to('builder-preview') ?>',
+                uploaderUrl: '<?= base_url('xhr/uploader', ['path' => 'pages']) ?>',
+                framework: 'bootstrap5',
+                classes: {
+                    input: 'form-control form-control-sm',
+                    select: 'form-control form-control-sm',
+                    textarea: 'form-control form-control-sm',
+                    color: 'form-control form-control-color',
+                    number: 'form-control form-control-sm',
+                    wysiwyg: 'pb-wysiwyg',
+                    wysiwygEditor: 'pb-wysiwyg-editor',
+                    selectRole: 'select'
+                },
                 components: <?= json_encode($builderComponents ?? []) ?>,
                 categories: <?= json_encode($builderCategories ?? []) ?>
             });

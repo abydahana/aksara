@@ -724,10 +724,49 @@ function reactivate(individual, ignoreSelf) {
       $('[data-role=wysiwyg]').each(function () {
         if ($(this).attr('disabled') || $(this).attr('readonly')) return;
 
-        let context = $(this);
+        let element = $(this);
 
-        context.summernote({
-          placeholder: context.attr('placeholder') ? context.attr('placeholder') : phrase('Your content goes here...'),
+        const mediaLibraryButton = function (snContext) {
+          const ui = $.summernote.ui;
+          const button = ui.button({
+            contents: '<i class="note-icon-picture"/>',
+            tooltip: phrase('Browse Media'),
+            click: function () {
+              window._activeUploaderCallback = function (item) {
+                if (item && item.url) {
+                  const ext = item.url.split('.').pop().toLowerCase();
+                  const imageExtensions = config.imageExtensionAllowed || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
+
+                  if (imageExtensions.includes(ext)) {
+                    snContext.invoke('editor.insertImage', item.url);
+                  } else {
+                    snContext.invoke('editor.createLink', {
+                      text: item.name || item.url,
+                      url: item.url,
+                      isNewWindow: true
+                    });
+                  }
+                }
+              };
+
+              const uploaderUrl = config.baseUrl + 'xhr/uploader';
+              const uploadPath = element.attr('data-upload-path') || element.attr('data-path') || element.closest('form').attr('data-upload-path') || element.closest('form').attr('data-path');
+
+              $('<a/>', {
+                href: uploaderUrl,
+                class: '--modal --keep-modal',
+                'data-path': uploadPath
+              })
+                .appendTo('body')
+                .trigger('click')
+                .remove();
+            }
+          });
+          return button.render();
+        };
+
+        element.summernote({
+          placeholder: element.attr('placeholder') ? element.attr('placeholder') : phrase('Your content goes here...'),
           dialogsInBody: true,
           dialogsFade: false,
           spellCheck: false,
@@ -748,48 +787,14 @@ function reactivate(individual, ignoreSelf) {
               title: 'Normal'
             }
           ],
-          toolbar: [['style', ['style', 'bold', 'italic', 'underline']], ['para', ['ul', 'ol']], UA !== 'mobile' ? ['insert', ['link', 'table', 'picture', 'video']] : null, UA !== 'mobile' ? ['misc', ['clear', 'help']] : null],
+          buttons: {
+            uploader: mediaLibraryButton
+          },
+          toolbar: [['style', ['style', 'bold', 'italic', 'underline']], ['para', ['ul', 'ol']], UA !== 'mobile' ? ['insert', ['link', 'table', 'uploader', 'video']] : null, UA !== 'mobile' ? ['misc', ['clear', 'help']] : null],
           callbacks: {
             onDialogShown: function (e) {
               $('.modal-dialog').addClass('modal-dialog-centered');
               $('.form-control-file').addClass('form-control');
-            },
-            onImageUpload: function (image) {
-              let data = new FormData();
-
-              data.append('image', image[0]);
-
-              // Upload file
-              $.ajax({
-                url: config.baseUrl + 'xhr/summernote/upload',
-                contentType: false,
-                processData: false,
-                data: data,
-                method: 'POST',
-                beforeSend: function () {},
-                success: function (response) {
-                  if (!response || 'success' !== response.status || !response.source) {
-                    return throw_exception(403, response && response.messages ? response.messages : phrase('Upload Error!'));
-                  }
-
-                  context.summernote('insertImage', response.source);
-                },
-                error: function (response) {
-                  response = response && response.responseJSON ? response.responseJSON : response;
-
-                  return throw_exception(403, response && response.messages ? response.messages : phrase('Upload Error!'));
-                }
-              });
-            },
-            onMediaDelete: function (image) {
-              // Delete file
-              $.ajax({
-                url: config.baseUrl + 'xhr/summernote/delete',
-                method: 'POST',
-                data: {
-                  source: image[0].src
-                }
-              });
             }
           }
         });

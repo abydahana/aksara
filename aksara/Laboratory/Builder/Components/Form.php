@@ -69,7 +69,7 @@ class Form
         // Template for WYSIWYG (Rich Text) Editor
         $component = <<<EOF
         <div class="w-100">
-            <textarea name="{{ name }}" data-role="wysiwyg" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ readonly }}>{{ value | raw }}</textarea>
+            <textarea name="{{ name }}" data-role="wysiwyg" class="form-control {{ class }}" id="{{ name }}_input" placeholder="{{ placeholder }}" maxlength="{{ maxlength }}" spellcheck="false" rows="1" {{ attribution | raw }} {{ readonly }}>{{ value | raw }}</textarea>
         </div>
         EOF;
 

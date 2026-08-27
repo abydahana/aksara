@@ -229,7 +229,7 @@ class Updater extends Core
             if (! $targetVersion) {
                 $this->_rmdir($tmpPath);
 
-                return throw_exception(400, ['file' => phrase('Invalid update package! Unable to detect version information in composer.json or aksara/Common.php.')]);
+                return throw_exception(400, ['file' => phrase('Invalid update package! Version information was missing in composer.json.')]);
             }
 
             // 2. Validate Version Sequence (No minor version skipping)
