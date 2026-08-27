@@ -215,7 +215,21 @@ class Form
                 'merged' => in_array($field, $mergedFields)
             ];
 
-            // Specific handling for File/Image inputs
+            // Specific handling for File/Image/WYSIWYG inputs
+            if ('wysiwyg' === $finalType && $this->_setUploadPath) {
+                $attribution = $this->_setAttribute[$field] ?? '';
+                if (is_array($attribution)) {
+                    if (! isset($attribution['data-upload-path'])) {
+                        $attribution['data-upload-path'] = $this->_setUploadPath;
+                    }
+                } elseif (is_string($attribution) && ! str_contains($attribution, 'data-upload-path=')) {
+                    $attribution .= ' data-upload-path="' . htmlspecialchars($this->_setUploadPath) . '"';
+                } elseif (empty($attribution)) {
+                    $attribution = 'data-upload-path="' . htmlspecialchars($this->_setUploadPath) . '"';
+                }
+                $fieldData[$field]['attribution'] = $attribution;
+            }
+
             if (in_array($finalType, ['image', 'images'])) {
                 $fieldData[$field]['accept'] = implode(',', preg_filter('/^/', '.', array_map('trim', explode(',', IMAGE_FORMAT_ALLOWED))));
                 $fieldData[$field]['placeholder'] = get_image($this->_setUploadPath, 'placeholder.png', 'thumb');

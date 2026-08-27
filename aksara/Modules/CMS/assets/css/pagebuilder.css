@@ -617,9 +617,9 @@ body {
   display: block;
   margin-bottom: 4px;
 }
-.pb-props-group input,
-.pb-props-group select,
-.pb-props-group textarea {
+.pb-props-group input:not(.form-control):not(.form-select),
+.pb-props-group select:not(.form-control):not(.form-select),
+.pb-props-group textarea:not(.form-control):not(.form-select) {
   width: 100%;
   font-size: 14px;
   padding: 8px 12px;
@@ -840,7 +840,6 @@ body {
 }
 .pb-prop-img-input {
   display: flex;
-  gap: 4px;
 }
 .pb-prop-img-input input {
   flex: 1;

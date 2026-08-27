@@ -1132,9 +1132,12 @@ $(document).ready(function () {
 
     $('.dcalendarpicker, #sortableListsBase, .note-popover').remove();
 
-    if ($('.modal:visible').length) {
+    if ($('.modal.show, .modal:visible').length) {
       $('html').addClass('fix-scrollbar');
       $('body').addClass('modal-open');
+    } else {
+      $('.modal-backdrop').remove();
+      $('body').removeClass('modal-open fix-scrollbar');
     }
 
     if (!$(this).hasClass('--prevent-remove')) {
