@@ -108,40 +108,46 @@ if (! function_exists('get_userdata')) {
      */
     function get_userdata(string $field = ''): mixed
     {
-        // Check if data is missing in session but user is logged in
-        if (! service('session')->get($field) && service('session')->get('user_id')) {
-            try {
-                $model = new Model();
-                $userId = service('session')->get('user_id');
+        try {
+            // Check if data is missing in session but user is logged in
+            if (! service('session')->get($field) && service('session')->get('user_id')) {
+                try {
+                    $model = new Model();
+                    $userId = service('session')->get('user_id');
 
-                // Attempt to fetch from privileges table first
-                if ($model->fieldExists($field, 'app_users_privileges')) {
-                    return $model->select($field)->getWhere(
-                        'app_users_privileges',
-                        [
-                            'user_id' => $userId
-                        ],
-                        1
-                    )
-                    ->row($field);
+                    // Attempt to fetch from privileges table first
+                    if ($model->fieldExists($field, 'app_users_privileges')) {
+                        return $model->select($field)->getWhere(
+                            'app_users_privileges',
+                            [
+                                'user_id' => $userId
+                            ],
+                            1
+                        )
+                        ->row($field);
+                    }
+                    // Attempt to fetch from main users table
+                    elseif ($model->fieldExists($field, 'app_users')) {
+                        return $model->select($field)->getWhere(
+                            'app_users',
+                            [
+                                'user_id' => $userId
+                            ],
+                            1
+                        )
+                        ->row($field);
+                    }
+                } catch (\Throwable $e) {
+                    log_message('error', 'Unable to retrieve user data: ' . $e->getMessage());
                 }
-                // Attempt to fetch from main users table
-                elseif ($model->fieldExists($field, 'app_users')) {
-                    return $model->select($field)->getWhere(
-                        'app_users',
-                        [
-                            'user_id' => $userId
-                        ],
-                        1
-                    )
-                    ->row($field);
-                }
-            } catch (\Throwable $e) {
-                log_message('error', 'Unable to retrieve user data: ' . $e->getMessage());
             }
-        }
 
-        return service('session')->get($field);
+            return service('session')->get($field);
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to access session: ' . $e->getMessage());
+
+            return null;
+        }
     }
 }
 
@@ -161,7 +167,11 @@ if (! function_exists('set_userdata')) {
             ];
         }
 
-        service('session')->set($key);
+        try {
+            service('session')->set($key);
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to set session data: ' . $e->getMessage());
+        }
     }
 }
 
@@ -173,7 +183,11 @@ if (! function_exists('unset_userdata')) {
      */
     function unset_userdata(array|string $key): void
     {
-        service('session')->remove($key);
+        try {
+            service('session')->remove($key);
+        } catch (\Throwable $e) {
+            log_message('error', 'Unable to remove session data: ' . $e->getMessage());
+        }
     }
 }
 
