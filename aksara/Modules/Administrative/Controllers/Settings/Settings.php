@@ -49,12 +49,11 @@ class Settings extends Core
 
         $this->restrictOnDemo();
 
+        $this->setMethod('update');
         $this->setPermission();
         $this->setTheme('backend');
 
         $this->searchable(false);
-
-        $this->setMethod('update');
         $this->setUploadPath('settings');
 
         // Use vertical schema (EAV table structure)

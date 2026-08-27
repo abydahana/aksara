@@ -30,13 +30,12 @@ class Edit extends Core
         $this->restrictOnDemo();
 
         $this->parentModule('administrative/account');
+        $this->setMethod('update');
 
         $this->setPermission();
         $this->setTheme('backend');
 
         $this->searchable(false);
-
-        $this->setMethod('update');
     }
 
     public function index()

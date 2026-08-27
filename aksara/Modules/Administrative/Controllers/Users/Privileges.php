@@ -29,10 +29,9 @@ class Privileges extends Core
     {
         parent::__construct();
 
+        $this->setMethod('update');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->setMethod('update');
         $this->permitUpsert();
 
         $this->_primary = $this->request->getGet('user_id');

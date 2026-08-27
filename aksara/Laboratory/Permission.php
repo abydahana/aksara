@@ -228,7 +228,7 @@ class Permission
      * Check if the user is allowed to access the requested path and method.
      * Also handles automatic privilege registration for unknown paths.
      */
-    public function allow(?string $path, ?string $method, ?int $userId = 0, ?string $redirect = null): bool
+    public function allow(?string $path, ?string $method, ?int $userId = 0): bool
     {
         $router = Services::router();
 
@@ -283,7 +283,7 @@ class Permission
         // Check access rights
         if (! isset($path, $privileges[$path]) || ! $this->_matchMethod($method, $privileges[$path])) {
             // Access Denied
-            // Auto-Discovery: If method exists but privilege not registered, register it
+            // Auto-Discovery: If method is explicitly defined in controller or is index, register it
             if (method_exists($router->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'])) {
                 $this->_pushPrivileges($path, $method);
             }
@@ -300,8 +300,6 @@ class Permission
 
             return true;
         }
-
-        return false;
     }
 
     /**

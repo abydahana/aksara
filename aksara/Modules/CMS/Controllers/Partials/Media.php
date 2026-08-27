@@ -34,10 +34,9 @@ class Media extends Core
 
         $this->restrictOnDemo();
 
+        $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->setMethod('index');
 
         if (! function_exists('get_active_storage')) {
             helper('file');

@@ -288,8 +288,8 @@ abstract class Core extends Controller
     /**
      * Assigns the parent module name.
      *
-     * Call this before setPermission() when the controller should be authorized
-     * using a parent module path instead of its routed controller path.
+     * Must be called before setPermission(). Permission checks are executed
+     * immediately and use the module path that is active at call time.
      */
     protected function parentModule(string $module): static
     {
@@ -432,8 +432,9 @@ abstract class Core extends Controller
     /**
      * Sets module access permission and authorization rules.
      *
-     * If parentModule() or setMethod() is needed, call them before this method
-     * because the permission check is executed immediately.
+     * Order matters: call parentModule() and setMethod() before this method
+     * when either one is needed. This method checks permission immediately
+     * using the module and method that are active at call time.
      *
      * @param array<int>|string $permissiveGroup Allowed group IDs (array or comma-separated string), 0 allows all.
      *
@@ -457,7 +458,7 @@ abstract class Core extends Controller
             return throw_exception(403, phrase('The method you requested is not acceptable.'));
         } elseif ($this->_setPermission && ! get_userdata('is_logged') && ! $this->_apiToken) {
             return throw_exception(403, phrase('Your session has expired.'));
-        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), $redirect) && ! $this->_apiToken) {
+        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id')) && ! $this->_apiToken) {
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         } elseif ($permissiveGroup && ! in_array(get_userdata('group_id'), $permissiveGroup) && ! $this->_apiToken) {
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
@@ -681,6 +682,9 @@ abstract class Core extends Controller
 
     /**
      * Manually sets the module's active method.
+     *
+     * Must be called before setPermission(). Permission checks are executed
+     * immediately and use the method that is active at call time.
      */
     protected function setMethod(string $method = 'index'): static
     {
@@ -6870,7 +6874,9 @@ abstract class Core extends Controller
         }
 
         // Persist the active language to cookie to survive login/logout session wipes
-        set_cookie('aksara_language', $languageId, SESSION_EXPIRATION);
+        if (! headers_sent()) {
+            set_cookie('aksara_language', $languageId, SESSION_EXPIRATION);
+        }
 
         // Get the language code (e.g., 'en', 'id') from the determined ID.
         $languageCode = $this->model->select('code')
