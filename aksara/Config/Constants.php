@@ -94,7 +94,7 @@ defined('ENVIRONMENT') || define('ENVIRONMENT', 'production');
 defined('BASE_URL') || define('BASE_URL', '');
 defined('DEMO_MODE') || define('DEMO_MODE', false);
 defined('MAINTENANCE_MODE') || define('MAINTENANCE_MODE', false);
-defined('ENCRYPTION_KEY') || define('ENCRYPTION_KEY', '');
+defined('ENCRYPTION_KEY') || define('ENCRYPTION_KEY', 'your_encryption_key');
 defined('COOKIE_NAME') || define('COOKIE_NAME', 'aksara');
 defined('SESSION_EXPIRATION') || define('SESSION_EXPIRATION', 0);
 defined('DB_DSN') || define('DB_DSN', '');
