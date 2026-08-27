@@ -28,10 +28,9 @@ class Dashboard extends Core
     {
         parent::__construct();
 
+        $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->setMethod('index');
 
         if ('fetch_information' == $this->request->getPost('request')) {
             return $this->_fetchInformation();

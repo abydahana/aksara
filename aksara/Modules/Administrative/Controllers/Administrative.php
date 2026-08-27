@@ -25,10 +25,9 @@ class Administrative extends Core
     {
         parent::__construct();
 
+        $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->setMethod('index');
     }
 
     public function index()

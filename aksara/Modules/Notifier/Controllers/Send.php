@@ -29,8 +29,9 @@ class Send extends Core
     {
         parent::__construct();
 
-        $this->setTheme('backend');
         $this->parentModule('notifier');
+
+        $this->setTheme('backend');
     }
 
     public function index()
