@@ -53,11 +53,6 @@ class Uploader extends Core
      */
     public function upload()
     {
-        // Handle POST Content-Length overflow (exceeding php.ini post_max_size)
-        if (empty($_POST) && empty($_FILES) && isset($_SERVER['CONTENT_LENGTH']) && (int) $_SERVER['CONTENT_LENGTH'] > 0) {
-            return throw_exception(400, ['file' => phrase('The selected file size exceeds the maximum allocation')]);
-        }
-
         if ($this->validToken($this->request->getPost('_token'), ['xhr/uploader'])) {
             if (DEMO_MODE) {
                 return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page());
@@ -81,16 +76,16 @@ class Uploader extends Core
                 return throw_exception(400, ['file' => $errorMsg]);
             }
 
-            // Resolve subfolder path safely
             $uploadPath = $this->_resolveUploadPath($this->request->getPost('path'));
+            $ownerUploadPath = $this->_appendOwnerPath($uploadPath);
 
-            $targetDirectory = UPLOAD_PATH . ('/' !== substr($uploadPath, 0, 1) ? '/' : '') . $uploadPath;
+            $targetDirectory = UPLOAD_PATH . ('/' !== substr($ownerUploadPath, 0, 1) ? '/' : '') . $ownerUploadPath;
 
             $uploader = new UploaderLibrary();
             $filename = $uploader->upload($file, $targetDirectory, 'image');
 
             if ($filename) {
-                $imageUrl = get_image($uploadPath, $filename);
+                $imageUrl = get_image($ownerUploadPath, $filename);
 
                 return make_json([
                     'status' => 'success',
@@ -125,16 +120,16 @@ class Uploader extends Core
                 return throw_exception(404, phrase('File was not found.'));
             }
 
-            $filename = basename($source);
+            $filename = $this->_resolveSourceFilename($source);
 
             if (empty($filename) || '.' === $filename || '..' === $filename || str_contains($filename, "\0")) {
                 return throw_exception(404, phrase('File was not found.'));
             }
 
-            // Resolve upload path safely
             $uploadPath = $this->_resolveUploadPath($this->request->getPost('path'));
+            $ownerUploadPath = ($this->_canAccessAllUploads() ? $uploadPath : $this->_appendOwnerPath($uploadPath));
 
-            $baseDir = UPLOAD_PATH . ('/' !== substr($uploadPath, 0, 1) ? '/' : '') . $uploadPath;
+            $baseDir = UPLOAD_PATH . ('/' !== substr($ownerUploadPath, 0, 1) ? '/' : '') . $ownerUploadPath;
             $targetDir = realpath($baseDir);
             $targetFile = $targetDir ? realpath($targetDir . DIRECTORY_SEPARATOR . $filename) : null;
 
@@ -143,8 +138,8 @@ class Uploader extends Core
                 $deleted = @unlink($targetFile);
 
                 // Clean up thumbnails/icons if they exist
-                $thumbPath = $targetDir . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR . $filename;
-                $iconPath = $targetDir . DIRECTORY_SEPARATOR . 'icons' . DIRECTORY_SEPARATOR . $filename;
+                $thumbPath = dirname($targetFile) . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR . basename($filename);
+                $iconPath = dirname($targetFile) . DIRECTORY_SEPARATOR . 'icons' . DIRECTORY_SEPARATOR . basename($filename);
 
                 if (is_file($thumbPath)) {
                     @unlink($thumbPath);
@@ -166,6 +161,8 @@ class Uploader extends Core
 
     private function _fetch(string $uploadPath)
     {
+        $canAccessAllUploads = $this->_canAccessAllUploads();
+        $uploadPath = ($canAccessAllUploads ? $uploadPath : $this->_appendOwnerPath($uploadPath));
         $targetDir = FCPATH . UPLOAD_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $uploadPath);
 
         if (! is_dir($targetDir)) {
@@ -184,14 +181,13 @@ class Uploader extends Core
         $page = max(1, (int) ($this->request->getPost('page') ?? 1));
         $limit = max(1, min(100, (int) ($this->request->getPost('limit') ?? 12)));
 
-        $scannedFiles = array_diff(scandir($targetDir) ?: [], ['.', '..', 'index.html', '.htaccess', 'thumbs', 'icons', 'placeholder.png']);
+        $scannedFiles = $this->_scanFiles($targetDir, $canAccessAllUploads);
         $uploader = new UploaderLibrary();
         $allowedExtensions = array_merge($uploader->imageExtensions(), ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'zip']);
 
         $items = [];
 
-        foreach ($scannedFiles as $file) {
-            $filePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+        foreach ($scannedFiles as $file => $filePath) {
             $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
             if (! is_file($filePath) || ! in_array($ext, $allowedExtensions, true)) {
@@ -218,12 +214,15 @@ class Uploader extends Core
 
             $fileSize = filesize($filePath);
             $fileTime = filemtime($filePath);
+            $directory = dirname($file);
+            $mediaPath = '.' === $directory ? $uploadPath : trim($uploadPath . '/' . $directory, '/');
+            $mediaName = basename($file);
 
             $items[] = [
                 'name' => $file,
                 'url' => get_image($uploadPath, $file),
-                'thumb' => $isImage ? get_image($uploadPath, $file, 'thumb') : null,
-                'icon' => get_image($uploadPath, $file, 'icon'),
+                'thumb' => $isImage ? get_image($mediaPath, $mediaName, 'thumb') : null,
+                'icon' => get_image($mediaPath, $mediaName, 'icon'),
                 'is_image' => $isImage,
                 'size' => $fileSize,
                 'time' => $fileTime,
@@ -277,5 +276,79 @@ class Uploader extends Core
         });
 
         return implode('/', $segments) ?: 'media';
+    }
+
+    private function _appendOwnerPath(string $uploadPath): string
+    {
+        $userId = (int) get_userdata('user_id');
+
+        if ($userId <= 0) {
+            return $uploadPath;
+        }
+
+        $uploadPath = trim($uploadPath, '/');
+
+        if (basename($uploadPath) === (string) $userId) {
+            return $uploadPath;
+        }
+
+        return $uploadPath . '/' . $userId;
+    }
+
+    private function _canAccessAllUploads(): bool
+    {
+        return in_array((int) get_userdata('group_id'), [1, 2], true);
+    }
+
+    private function _scanFiles(string $targetDir, bool $recursive = false): array
+    {
+        $files = [];
+        $excluded = ['.', '..', 'index.html', '.htaccess', 'thumbs', 'icons', 'placeholder.png'];
+
+        if (! $recursive) {
+            foreach (array_diff(scandir($targetDir) ?: [], $excluded) as $file) {
+                $files[$file] = $targetDir . DIRECTORY_SEPARATOR . $file;
+            }
+
+            return $files;
+        }
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveCallbackFilterIterator(
+                new \RecursiveDirectoryIterator($targetDir, \FilesystemIterator::SKIP_DOTS),
+                function ($current) use ($excluded) {
+                    return ! in_array($current->getFilename(), $excluded, true);
+                }
+            )
+        );
+
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
+                continue;
+            }
+
+            $relative = substr($file->getPathname(), strlen($targetDir) + 1);
+            $relative = str_replace(DIRECTORY_SEPARATOR, '/', $relative);
+            $files[$relative] = $file->getPathname();
+        }
+
+        return $files;
+    }
+
+    private function _resolveSourceFilename(string $source): string
+    {
+        $source = parse_url($source, PHP_URL_PATH) ?: $source;
+        $source = trim(str_replace('\\', '/', $source), '/');
+
+        if (! $this->_canAccessAllUploads()) {
+            return basename($source);
+        }
+
+        $source = preg_replace('/[^A-Za-z0-9\-\_\/\.]/', '', $source);
+        $segments = array_filter(explode('/', $source), function ($segment) {
+            return ! empty($segment) && '.' !== $segment && '..' !== $segment;
+        });
+
+        return implode('/', $segments);
     }
 }
