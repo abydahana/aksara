@@ -13,15 +13,15 @@
 
 <div>
     <!-- Dropzone Upload Area -->
-    <div class="uploader-upload-zone p-4 mb-3 border border-2 border-dashed rounded-3 text-center">
+    <label for="uploader-file-input" class="uploader-upload-zone d-block p-4 mb-3 border border-2 border-dashed rounded-3 text-center" role="button">
         <i class="mdi mdi-cloud-upload text-primary mdi-3x mb-2"></i>
         <h6 class="fw-bold mb-1"><?= phrase('Drag & Drop files here or click to upload') ?></h6>
         <p class="text-muted small mb-3"><?= phrase('Supports images, documents, and media files') ?></p>
         <input type="file" id="uploader-file-input" class="d-none" multiple />
-        <button type="button" class="btn btn-primary btn-sm rounded-pill px-4" onclick="document.getElementById('uploader-file-input').click()">
+        <span class="btn btn-primary btn-sm rounded-pill px-4">
             <i class="mdi mdi-plus me-1"></i><?= phrase('Choose File') ?>
-        </button>
-    </div>
+        </span>
+    </label>
 
     <!-- Filters & Controls Bar -->
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
@@ -72,4 +72,3 @@
         });
     })
 </script>
-

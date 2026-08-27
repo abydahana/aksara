@@ -233,7 +233,7 @@
      */
     showError(message) {
       this.clearError();
-      const dropZone = document.getElementById('uploader-dropzone');
+      const dropZone = document.getElementById('uploader-dropzone') || document.querySelector('.uploader-upload-zone');
       if (!dropZone) return;
 
       let errorMsg = typeof phrase === 'function' ? phrase('Failed to upload file.') : 'Failed to upload file.';
@@ -356,16 +356,9 @@
         };
       }
 
-      // Drop zone drag and drop & click handler
+      // Drop zone drag and drop handler
       const dropZone = document.querySelector('.uploader-upload-zone');
       if (dropZone) {
-        dropZone.onclick = function (e) {
-          if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL' && !e.target.closest('label')) {
-            const input = document.getElementById('uploader-file-input');
-            if (input) input.click();
-          }
-        };
-
         ['dragenter', 'dragover'].forEach((eventName) => {
           dropZone.addEventListener(
             eventName,
