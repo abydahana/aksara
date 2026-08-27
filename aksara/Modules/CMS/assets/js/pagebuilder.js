@@ -1068,7 +1068,7 @@
       clean(doc.body);
       return doc.body.innerHTML;
     } catch (e) {
-      return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+      return '';
     }
   };
 
@@ -1091,7 +1091,12 @@
     md = md.replace(/<br\s*\/?>/gi, '\n');
     md = md.replace(/<p>(.*?)<\/p>/gi, '$1\n\n');
     md = md.replace(/&nbsp;/g, ' ');
-    md = md.replace(/<.*?>/g, '');
+    try {
+      const doc = new DOMParser().parseFromString(md, 'text/html');
+      md = doc.body.textContent || doc.body.innerText || '';
+    } catch (e) {
+      md = md.replace(/<[^>]*>/g, '');
+    }
     return md.trim();
   };
 

@@ -229,34 +229,49 @@
     }
 
     /**
-     * Display an alert-danger alert box right below the dropzone
-     * @param {string|Object} message Error message or error object
+     * Display error message banner below dropzone
      */
     showError(message) {
       this.clearError();
-
-      const dropZone = document.querySelector('.uploader-upload-zone');
+      const dropZone = document.getElementById('uploader-dropzone');
       if (!dropZone) return;
 
-      let errorMsg = message;
-      if (typeof message === 'object' && message !== null) {
+      let errorMsg = typeof phrase === 'function' ? phrase('Failed to upload file.') : 'Failed to upload file.';
+      if (typeof message === 'string') {
+        errorMsg = message;
+      } else if (message && typeof message === 'object') {
         if (message.file) {
           errorMsg = message.file;
+        } else if (message.message) {
+          errorMsg = message.message;
         } else if (message.messages) {
-          errorMsg = typeof message.messages === 'object' ? Object.values(message.messages).join('<br>') : message.messages;
+          errorMsg = typeof message.messages === 'object' ? Object.values(message.messages).join(', ') : String(message.messages);
         } else {
           errorMsg = JSON.stringify(message);
         }
       }
 
-      const alertHtml = `
-        <div id="uploader-error-alert" class="alert alert-danger alert-dismissible my-3 px-3 py-1 small rounded-3" role="alert">
-          <i class="mdi mdi-alert-circle-outline me-2"></i> ${errorMsg}
-          <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      `;
+      const alertEl = document.createElement('div');
+      alertEl.id = 'uploader-error-alert';
+      alertEl.className = 'alert alert-danger alert-dismissible my-3 px-3 py-1 small rounded-3';
+      alertEl.setAttribute('role', 'alert');
 
-      dropZone.insertAdjacentHTML('afterend', alertHtml);
+      const iconEl = document.createElement('i');
+      iconEl.className = 'mdi mdi-alert-circle-outline me-2';
+
+      const textNode = document.createTextNode(' ' + errorMsg);
+
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'btn-close p-2';
+      closeBtn.setAttribute('data-bs-dismiss', 'alert');
+      closeBtn.setAttribute('aria-label', 'Close');
+
+      alertEl.appendChild(iconEl);
+      alertEl.appendChild(textNode);
+      alertEl.appendChild(closeBtn);
+
+      dropZone.insertAdjacentElement('afterend', alertEl);
     }
 
     /**
