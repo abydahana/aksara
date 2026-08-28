@@ -35,15 +35,6 @@ class Comment extends Core
 
     public function index()
     {
-        if ($this->request->getGet()) {
-            foreach ($this->request->getGet() as $key => $val) {
-                if (str_starts_with($key, 'amp;')) {
-                    $_GET[substr($key, 4)] = $val;
-                    $this->request->setGlobal('get', array_merge($this->request->getGet(), [substr($key, 4) => $val]));
-                }
-            }
-        }
-
         if (in_array($this->request->getPost('fetch'), ['comments', 'replies'])) {
             return $this->_fetchComments();
         } elseif ('token' === $this->request->getPost('fetch')) {
