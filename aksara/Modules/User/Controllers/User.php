@@ -27,6 +27,8 @@ class User extends Core
     {
         parent::__construct();
 
+        $this->searchable(false);
+
         if ($this->request->getGet('user_id')) {
             $query = $this->model->select('
                 username
