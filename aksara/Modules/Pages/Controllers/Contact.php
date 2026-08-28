@@ -17,8 +17,6 @@
 
 namespace Aksara\Modules\Pages\Controllers;
 
-use Throwable;
-use Config\Services;
 use Aksara\Laboratory\Core;
 use Aksara\Libraries\Messaging;
 

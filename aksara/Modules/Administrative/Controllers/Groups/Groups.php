@@ -28,12 +28,10 @@ class Groups extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
 
         $this->unsetMethod('clone');
-
         $this->unsetDelete('group_id', [1, 2, 3]);
     }
 

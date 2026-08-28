@@ -27,10 +27,7 @@ class Cleaner extends Core
         parent::__construct();
 
         $this->setPermission();
-
         $this->setTheme('backend');
-
-        $this->searchable(false);
     }
 
     public function index()

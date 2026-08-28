@@ -26,8 +26,6 @@ class Peoples extends Core
     public function __construct()
     {
         parent::__construct();
-
-        $this->limit(12);
     }
 
     public function index()
@@ -36,7 +34,7 @@ class Peoples extends Core
         ->setDescription(phrase('Meet the peoples behind us.'), (service('request')->getGet('q') ? phrase('The people you are looking for was not found.') : phrase('No people is available at the moment.')))
         ->setIcon('mdi mdi-account-group-outline')
         ->where('status', 1)
-
+        ->limit(12)
         ->render($this->_table);
     }
 }

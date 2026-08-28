@@ -28,14 +28,11 @@ class Categories extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
 
-        $this->unsetMethod('clone');
-
-        $this->setUploadPath('blogs');
         $this->unsetDelete('category_id', [1]);
+        $this->setUploadPath('blogs');
 
         // Ignore query string signature
         $this->ignoreQueryString('category, language');

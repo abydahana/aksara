@@ -20,7 +20,6 @@ namespace Aksara\Modules\CMS\Controllers\Pages;
 use Throwable;
 use Aksara\Laboratory\Core;
 use Aksara\Libraries\AI\AI;
-use Aksara\Libraries\Uploader;
 use Aksara\Libraries\PageBuilder\PageBuilder;
 
 class Pages extends Core
@@ -32,7 +31,6 @@ class Pages extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
 

@@ -33,7 +33,6 @@ class Media extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');

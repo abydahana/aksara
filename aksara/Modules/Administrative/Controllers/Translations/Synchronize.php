@@ -33,6 +33,7 @@ class Synchronize extends Core
             return throw_exception(403, phrase('Changes will not saved in demo mode.'), current_page('../'));
         }
 
+        $this->parentModule('administrative/translations');
         $this->setPermission();
         $this->setTheme('backend');
     }

@@ -24,6 +24,8 @@ class Language extends Core
     public function __construct()
     {
         parent::__construct();
+
+        $this->permission->mustAjax();
     }
 
     public function index()

@@ -27,9 +27,6 @@ class Category extends Core
     {
         parent::__construct();
 
-        $this->searchable(false);
-        $this->limit(24);
-
         $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
     }
 
@@ -87,6 +84,8 @@ class Category extends Core
             'blogs_categories.category_slug' => $slug,
             'blogs.status' => 1
         ])
+
+        ->limit(24)
 
         // Order by current language first
         ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')

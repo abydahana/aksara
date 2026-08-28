@@ -233,6 +233,9 @@ body.sidebar-collapsed .sidebar-toggle-wrapper {
   padding: 1px 5px;
   font-size: 12px;
 }
+.modal-dialog:not(.modal-fullscreen) .modal-content {
+  margin-inline: 1rem;
+}
 .modal-header {
   padding: 0.25rem 1rem;
 }

@@ -31,10 +31,6 @@ class Privileges extends Core
 
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
-
-        $this->setPrimary('path');
     }
 
     public function index()

@@ -165,6 +165,11 @@ trait Traits
     private $_defaultValue = [];
 
     /**
+     * Pending permission check for reserved CRUD routes.
+     */
+    private bool $_deferPermissionCheck = false;
+
+    /**
      * Distinct query status.
      * @var bool
      */
@@ -500,10 +505,10 @@ trait Traits
     private $_setMessages = [];
 
     /**
-     * Method overriding configuration.
-     * @var array
+     * Method overriding flag.
+     * @var bool
      */
-    private $_setMethod = [];
+    private $_setMethod = false;
 
     /**
      * Option label configuration.

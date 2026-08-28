@@ -29,11 +29,8 @@ class Countries extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
 
         $this->_primary = $this->request->getGet('id');
     }

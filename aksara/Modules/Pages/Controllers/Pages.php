@@ -27,13 +27,12 @@ class Pages extends Core
     {
         parent::__construct();
 
-        $this->searchable(false);
         $this->setMethod('read');
     }
 
     public function index($slug = null)
     {
-        return $this->setTitle('{{ page_title }}', phrase('Page not found!'))
+        $this->setTitle('{{ page_title }}', phrase('Page not found!'))
             ->setDescription('{{ page_description }}', phrase('The page you requested does not exist or has already been archived.'))
             ->setIcon('mdi mdi-file-document-outline')
             ->setOutput([
@@ -64,7 +63,7 @@ class Pages extends Core
 
     public function notFound()
     {
-        return $this->setTitle(phrase('Page not found!'))
+        $this->setTitle(phrase('Page not found!'))
             ->setDescription(phrase('The page you requested does not exist or has already been archived.'))
             ->setOutput([
                 'suggestions' => $this->model->select('

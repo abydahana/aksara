@@ -28,11 +28,8 @@ class Announcements extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
 
         // Ignore query string signature
         $this->ignoreQueryString('language');

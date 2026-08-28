@@ -1085,7 +1085,7 @@ class Template
                             [
                                 'id' => 0,
                                 'label' => 'Debug Tool',
-                                'slug' => 'apis/debug_tool',
+                                'slug' => 'apis/debug',
                                 'icon' => 'mdi mdi-android-debug-bridge'
                             ],
                             [
