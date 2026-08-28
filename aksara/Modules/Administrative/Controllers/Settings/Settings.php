@@ -56,6 +56,8 @@ class Settings extends Core
 
         // Use vertical schema (EAV table structure)
         $this->verticalSchema('key', 'value', 'type');
+
+        $this->searchable(false);
     }
 
     public function index()
@@ -175,6 +177,7 @@ class Settings extends Core
                 'osm' => 'OpenStreetMap'
             ]
         )
+        ->addClass('aksara_public_key', 'font-monospace')
         ->fieldAppend([
             'login_attempt' => phrase('times'),
             'blocking_time' => phrase('minutes'),

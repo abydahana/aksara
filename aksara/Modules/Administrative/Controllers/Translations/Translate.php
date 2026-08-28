@@ -40,6 +40,7 @@ class Translate extends Core
         $this->restrictOnDemo();
         $this->setPermission();
         $this->setTheme('backend');
+        $this->searchable(false);
 
         $this->_primary = $this->request->getGet('id');
 

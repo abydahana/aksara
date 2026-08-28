@@ -24,7 +24,7 @@ if ($user): ?>
             </div>
         </div>
     </section>
-    <div class="bg-body py-2">
+    <div class="bg-body py-2 border-fade">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">

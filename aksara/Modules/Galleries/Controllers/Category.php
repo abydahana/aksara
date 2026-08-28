@@ -26,6 +26,8 @@ class Category extends Core
     public function __construct()
     {
         parent::__construct();
+
+        $this->searchable(false);
     }
 
     public function index($slug = null)
