@@ -228,15 +228,24 @@ class Permission
      * Check if the user is allowed to access the requested path and method.
      * Also handles automatic privilege registration for unknown paths.
      */
-    public function allow(?string $path, ?string $method, ?int $userId = 0): bool
+    public function allow(?string $path, ?string $method, ?int $userId = 0, bool $strictMethod = false, array $unsetMethods = []): bool
     {
         $router = Services::router();
+        $reservedMethods = ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf'];
 
         // Normalize method name
-        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists($router->controllerName(), $method))) {
+        if ($strictMethod) {
+            $method = $method ?: 'index';
+        } elseif (! $method || (! in_array($method, $reservedMethods, true) && ! method_exists($router->controllerName(), $method))) {
             $method = 'index';
-        } elseif ('clone' == $method) {
+        }
+
+        if ('clone' == $method) {
             $method = 'update';
+        }
+
+        if (in_array($method, $unsetMethods, true)) {
+            return false;
         }
 
         $path = $this->_normalizePath($path, $method, $router);
@@ -284,8 +293,8 @@ class Permission
         if (! isset($path, $privileges[$path]) || ! $this->_matchMethod($method, $privileges[$path])) {
             // Access Denied
             // Auto-Discovery: If method is explicitly defined in controller or is index, register it
-            if (method_exists($router->controllerName(), $method) || in_array($method, ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf'])) {
-                $this->_pushPrivileges($path, $method);
+            if (($strictMethod && $method) || 'index' == $method || method_exists($router->controllerName(), $method)) {
+                $this->pushPrivileges($path, $method);
             }
 
             return false;
@@ -314,9 +323,10 @@ class Permission
     public function restrict($path = null, $method = null, $redirect = null)
     {
         $router = Services::router();
+        $reservedMethods = ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf'];
 
         // Normalize method
-        if (! $method || (! in_array($method, ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf']) && ! method_exists($router->controllerName(), $method))) {
+        if (! $method || (! in_array($method, $reservedMethods) && ! method_exists($router->controllerName(), $method))) {
             $method = 'index';
         } elseif ('clone' == $method) {
             $method = 'update';
@@ -364,10 +374,6 @@ class Permission
         }
     }
 
-    // ──────────────────────────────────────────────────────────────
-    // Private: Privilege & Audit Logging
-    // ──────────────────────────────────────────────────────────────
-
     /**
      * Register a new path or method to the privileges table.
      * Used for auto-discovery of new features/controllers.
@@ -375,7 +381,7 @@ class Permission
      * @param   string|null $path
      * @param   string      $method
      */
-    private function _pushPrivileges($path = null, $method = '')
+    public function pushPrivileges($path = null, $method = '')
     {
         // Get existing privileges for the path
         $privileges = $this->_model->select('
@@ -443,6 +449,10 @@ class Permission
             }
         }
     }
+
+    // ──────────────────────────────────────────────────────────────
+    // Private: Privilege & Audit Logging
+    // ──────────────────────────────────────────────────────────────
 
     /**
      * Record user activity logs including IP, browser, and platform.

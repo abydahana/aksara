@@ -19,13 +19,12 @@ namespace Aksara\Modules\APIs\Controllers;
 
 use Aksara\Laboratory\Core;
 
-class Debug_tool extends Core
+class Debug extends Core
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');
     }

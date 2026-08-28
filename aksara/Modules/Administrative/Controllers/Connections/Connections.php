@@ -29,11 +29,8 @@ class Connections extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
     }
 
     public function index()

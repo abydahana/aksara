@@ -29,10 +29,8 @@ class Setting extends Core
 
         $this->parentModule('notifier');
         $this->setMethod('update');
-
         $this->setPermission();
         $this->setTheme('backend');
-
         $this->permitUpsert();
     }
 

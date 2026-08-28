@@ -28,8 +28,6 @@ class Tags extends Core
     {
         parent::__construct();
 
-        $this->limit(24);
-
         $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
         $this->_keywords = ($this->request->getGet('q') || $this->request->getPost('q') ? htmlspecialchars(($this->request->getPost('q') ? $this->request->getPost('q') : $this->request->getGet('q'))) : null);
     }
@@ -81,6 +79,8 @@ class Tags extends Core
         ->where([
             'blogs.status' => 1
         ])
+
+        ->limit(24)
 
         // Order by current language first
         ->orderBy('(CASE WHEN blogs.language_id = ' . $this->_languageId . ' THEN 1 ELSE 2 END)', 'ASC')

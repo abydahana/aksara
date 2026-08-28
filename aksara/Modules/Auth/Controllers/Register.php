@@ -27,8 +27,6 @@ class Register extends Core
     {
         parent::__construct();
 
-        $this->restrictOnDemo();
-
         // Check if user is already signed in
         if (get_userdata('is_logged')) {
             return throw_exception(301, phrase('You have been signed in.'), base_url('dashboard'), true);

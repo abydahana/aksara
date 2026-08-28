@@ -27,12 +27,10 @@ class Inquiries extends Core
     {
         parent::__construct();
 
+        $this->unsetMethod('create');
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('create, clone');
     }
 
     public function index()

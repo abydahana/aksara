@@ -25,7 +25,6 @@ class Partials extends Core
     {
         parent::__construct();
 
-        $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');
     }

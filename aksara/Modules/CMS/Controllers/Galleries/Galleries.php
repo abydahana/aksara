@@ -28,11 +28,8 @@ class Galleries extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
 
         $this->gridView('gallery_images', 'galleries', ['gallery_slug' => 'gallery_slug'], true);
     }

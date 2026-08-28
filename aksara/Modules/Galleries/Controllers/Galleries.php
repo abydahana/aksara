@@ -30,9 +30,6 @@ class Galleries extends Core
         if ($this->request->getGet('gallery_slug')) {
             return throw_exception(301, null, go_to($this->request->getGet('gallery_slug')));
         }
-
-        $this->searchable(false);
-        $this->limit(10);
     }
 
     public function index()
@@ -52,7 +49,7 @@ class Galleries extends Core
         ->setPrimary('gallery_slug')
         ->orderBy('gallery_id', 'DESC')
         ->where('status', 1)
-
+        ->limit(10)
         ->render($this->_table);
     }
 }

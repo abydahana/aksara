@@ -497,10 +497,10 @@ if ($permission->groups) {
 
                             $('<tr />')
                             .append($('<td />').append($('<code />').text(_key)))
-                            .append($('<td />').text(_val.type))
-                            .append($('<td />').text(_val.maxlength))
-                            .append($('<td />').text(_val.label))
-                            .append($('<td />').addClass('text-center').append(_val.required ? $('<span />').addClass('badge bg-danger').text('<?= phrase('Required') ?>') : ''))
+                            .append($('<td />').text(_val?.type))
+                            .append($('<td />').text(_val?.maxlength))
+                            .append($('<td />').text(_val?.label))
+                            .append($('<td />').addClass('text-center').append(_val?.required ? $('<span />').addClass('badge bg-danger').text('<?= phrase('Required') ?>') : ''))
                             .appendTo('.--parameter-' + key + ' tbody')
                         })
                     }

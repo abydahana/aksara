@@ -30,11 +30,9 @@ class Activities extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
+        $this->unsetMethod('create, update, clone');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('create, update, clone');
     }
 
     public function index()

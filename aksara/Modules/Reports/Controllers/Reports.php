@@ -39,7 +39,6 @@ class Reports extends Core
 
         $this->setPermission();
         $this->setTheme('backend');
-        $this->unsetMethod('create, read, update, delete, export, print, pdf');
 
         $this->_dateStart = service('request')->getGet('date_start');
         $this->_dateEnd = service('request')->getGet('date_end');

@@ -27,7 +27,6 @@ class Read extends Core
     {
         parent::__construct();
 
-        $this->searchable(false);
         $this->setMethod('read');
     }
 

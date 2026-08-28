@@ -32,7 +32,6 @@ class Testimonials extends Core
     {
         parent::__construct();
 
-        $this->limit(10);
         $this->allowPublicFormSubmission();
         $this->setUploadPath('testimonials');
     }
@@ -62,6 +61,8 @@ class Testimonials extends Core
         ->where([
             'status' => 1
         ])
+
+        ->limit(10)
 
         ->orderBy('testimonials.created_at', 'DESC')
 

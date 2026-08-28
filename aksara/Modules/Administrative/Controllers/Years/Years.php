@@ -28,13 +28,8 @@ class Years extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
-
-        $this->setPrimary('year');
     }
 
     public function index()

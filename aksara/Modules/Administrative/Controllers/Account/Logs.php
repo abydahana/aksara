@@ -27,11 +27,6 @@ class Logs extends Core
     {
         parent::__construct();
 
-        $this->restrictOnDemo();
-
-        $this->parentModule('administrative/account');
-        $this->setMethod('index');
-
         $this->setPermission();
         $this->setTheme('backend');
     }

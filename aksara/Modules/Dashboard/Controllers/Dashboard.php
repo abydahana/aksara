@@ -28,7 +28,6 @@ class Dashboard extends Core
     {
         parent::__construct();
 
-        $this->setMethod('index');
         $this->setPermission();
         $this->setTheme('backend');
 
@@ -205,11 +204,9 @@ class Dashboard extends Core
             $updater = Updater::pingUpstream();
         }
 
-        return make_json(
-            [
-                'update_available' => $updater
-            ]
-        );
+        return make_json([
+            'update_available' => $updater
+        ]);
     }
 
     private function _systemLanguage()

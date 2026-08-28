@@ -30,7 +30,6 @@ class Send extends Core
         parent::__construct();
 
         $this->parentModule('notifier');
-
         $this->setTheme('backend');
     }
 

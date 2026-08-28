@@ -28,7 +28,6 @@ class Menus extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
 

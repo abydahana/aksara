@@ -25,7 +25,7 @@ class Language extends Core
     {
         parent::__construct();
 
-        $this->permission->mustAjax(base_url());
+        $this->permission->mustAjax();
     }
 
     public function index($params = null)

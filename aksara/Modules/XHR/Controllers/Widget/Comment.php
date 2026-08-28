@@ -31,8 +31,6 @@ class Comment extends Core
         parent::__construct();
 
         $this->permission->mustAjax();
-
-        $this->limit(null);
     }
 
     public function index()

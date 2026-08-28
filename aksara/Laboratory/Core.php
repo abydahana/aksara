@@ -453,14 +453,26 @@ abstract class Core extends Controller
             $permissiveGroup = array_map('trim', explode(',', $permissiveGroup));
         }
 
-        // Authorization checks (removed complex conditional logic for brevity, maintaining original flow):
+        // Authorization checks
         if (in_array($this->_method, $this->_unsetMethod)) {
+            // Method is not allowed
             return throw_exception(403, phrase('The method you requested is not acceptable.'));
         } elseif ($this->_setPermission && ! get_userdata('is_logged') && ! $this->_apiToken) {
+            // Session has expired
             return throw_exception(403, phrase('Your session has expired.'));
-        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id')) && ! $this->_apiToken) {
-            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
+        } elseif (! $this->permission->allow($this->_module, $this->_method, get_userdata('user_id'), (bool) $this->_setMethod, $this->_unsetMethod) && ! $this->_apiToken) {
+            // Permission denied
+            $reservedMethods = ['create', 'read', 'update', 'delete', 'export', 'print', 'pdf'];
+
+            if (! $this->_setMethod && in_array($this->_method, $reservedMethods) && ! method_exists($this, $this->_method)) {
+                // Defer permission check for reserved methods
+                $this->_deferPermissionCheck = true;
+            } else {
+                // Permission denied
+                return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
+            }
         } elseif ($permissiveGroup && ! in_array(get_userdata('group_id'), $permissiveGroup) && ! $this->_apiToken) {
+            // Permission denied
             return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         }
 
@@ -2072,6 +2084,20 @@ abstract class Core extends Controller
 
             // Push to compiled table
             $this->_compiledTable[] = $table;
+        }
+
+        if ($this->_deferPermissionCheck) {
+            if (! $this->_table) {
+                return throw_exception(404, phrase('The requested page does not exist.'));
+            }
+
+            if (! $this->model->tableExists($this->_table)) {
+                return throw_exception(404, phrase('The defined primary table does not exist.'), current_page('../'));
+            }
+
+            $this->permission->pushPrivileges($this->_module, $this->_method);
+
+            return throw_exception(403, phrase('You do not have sufficient privileges to access the requested page.'));
         }
 
         // Load template class

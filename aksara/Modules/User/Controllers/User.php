@@ -27,9 +27,6 @@ class User extends Core
     {
         parent::__construct();
 
-        $this->searchable(false);
-        $this->limit(10);
-
         if ($this->request->getGet('user_id')) {
             $query = $this->model->select('
                 username
@@ -126,6 +123,7 @@ class User extends Core
             'app_users.username' => $username,
             'post_comments.status' => 1
         ])
+        ->limit(10)
         ->orderBy([
             'post_comments.created_at' => 'DESC'
         ])
@@ -169,6 +167,7 @@ class User extends Core
         ->where([
             'app_users.username' => $username
         ])
+        ->limit(10)
         ->orderBy([
             'post_likes.created_at' => 'DESC'
         ])

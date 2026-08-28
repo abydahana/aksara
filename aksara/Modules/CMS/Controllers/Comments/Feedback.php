@@ -28,10 +28,9 @@ class Feedback extends Core
     {
         parent::__construct();
 
+        $this->unsetMethod('create, update, clone, delete');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('create, update, clone, delete');
 
         $this->_primary = ($this->request->getGet('id') ? $this->request->getGet('id') : 0);
     }

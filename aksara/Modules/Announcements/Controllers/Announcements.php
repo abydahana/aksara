@@ -26,9 +26,6 @@ class Announcements extends Core
     public function __construct()
     {
         parent::__construct();
-
-        $this->searchable(false);
-        $this->limit(10);
     }
 
     public function index()
@@ -42,6 +39,8 @@ class Announcements extends Core
             'status' => 1,
             'end_date > ' => date('Y-m-d')
         ])
+
+        ->limit(10)
 
         ->orderBy('end_date', 'DESC')
         ->orderBy('(CASE WHEN language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')

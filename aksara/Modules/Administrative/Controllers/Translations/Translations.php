@@ -29,11 +29,8 @@ class Translations extends Core
         parent::__construct();
 
         $this->restrictOnDemo();
-
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('clone');
 
         $this->unsetUpdate('id', [1]);
         $this->unsetDelete('id', [1]);

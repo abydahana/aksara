@@ -27,8 +27,6 @@ class Blogs extends Core
     {
         parent::__construct();
 
-        $this->searchable(false);
-
         $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
     }
 

@@ -27,10 +27,9 @@ class Comments extends Core
     {
         parent::__construct();
 
+        $this->unsetMethod('create, update, clone,  delete');
         $this->setPermission();
         $this->setTheme('backend');
-
-        $this->unsetMethod('create, update, clone,  delete');
     }
 
     public function index()

@@ -33,7 +33,6 @@ class Documentation extends Core
 
         $this->setPermission();
         $this->setTheme('backend');
-        $this->setMethod('index');
 
         $this->_primary = $this->request->getGet('slug');
     }
@@ -113,7 +112,7 @@ class Documentation extends Core
 
     private function _fetchProperties($slug = null, $groupId = 0)
     {
-        if (in_array($slug, $this->_restrictedResource())) {
+        if ($this->_isRestrictedResource($slug)) {
             return false;
         }
 
@@ -292,7 +291,11 @@ class Documentation extends Core
                     }
                 }
 
-                if (in_array($val, ['create', 'update'])) {
+                if ('index' === $val) {
+                    $response = $this->_fetchEndpointResponse($curl, $slug, $val, $sampleParams);
+
+                    $output[$val]['response']['success'] = $response;
+                } elseif (in_array($val, ['create', 'update'])) {
                     $output[$val]['field_data'] = $fieldDefinitions;
 
                     $output[$val]['response']['success'] = [
@@ -310,16 +313,11 @@ class Documentation extends Core
                     } else {
                         $output[$val]['response']['success'] = $effectiveSamplePayload;
                     }
-                } elseif (! in_array($val, ['delete'])) {
-                    // Get field data for index/other
-                    $request = $curl->get(base_url($slug, $sampleParams));
-                    $response = json_decode($request->getBody());
-
-                    if ('complete' === $responseType) {
-                        $output[$val]['response']['success'] = (is_array($response) || is_object($response)) && ! isset($response->code) ? $response : $rawMetadataResponse;
-                    } else {
-                        $output[$val]['response']['success'] = (is_array($response) && $response) ? $response : [$effectiveSamplePayload];
-                    }
+                } elseif (! in_array($val, ['delete', 'export', 'print', 'pdf'])) {
+                    $output[$val]['response']['success'] = [
+                        'code' => 200,
+                        'message' => phrase('The request was processed successfully.')
+                    ];
                 }
             }
         } catch (Throwable $e) {
@@ -381,8 +379,10 @@ class Documentation extends Core
     {
         helper('filesystem');
 
-        $modules = [];
-        $scandir = array_merge(directory_map('..' . DIRECTORY_SEPARATOR . 'aksara' . DIRECTORY_SEPARATOR . 'Modules'), directory_map('..' . DIRECTORY_SEPARATOR . 'modules'));
+        $scandir = array_merge(
+            directory_map('..' . DIRECTORY_SEPARATOR . 'aksara' . DIRECTORY_SEPARATOR . 'Modules') ?: [],
+            directory_map('..' . DIRECTORY_SEPARATOR . 'modules') ?: []
+        );
 
         if ($scandir) {
             foreach ($scandir as $key => $val) {
@@ -397,6 +397,28 @@ class Documentation extends Core
         }
 
         return $this->_collection;
+    }
+
+    private function _fetchEndpointResponse($curl, string $slug, string $method = 'index', array $params = [])
+    {
+        $path = trim($slug, '/');
+
+        if ('index' !== $method) {
+            $path .= '/' . trim($method, '/');
+        }
+
+        $url = base_url($path);
+        $params = array_filter($params, fn ($value) => null !== $value && '' !== $value);
+
+        if ($params) {
+            $url .= '?' . http_build_query($params);
+        }
+
+        $request = $curl->get($url);
+        $body = $request->getBody();
+        $response = json_decode($body);
+
+        return JSON_ERROR_NONE === json_last_error() ? $response : $body;
     }
 
     private function _scandir($parentDir = null, $scandir = [], $namespace = null)
@@ -418,7 +440,7 @@ class Documentation extends Core
                     $slug = ltrim(rtrim('/' . str_replace(['\\', '.php'], ['/', ''], strtolower($parentDir . (! is_numeric($key) ? $key : null))), '/'), '/');
                 }
 
-                if (! in_array($slug, $this->_restrictedResource())) {
+                if (! $this->_isRestrictedResource($slug)) {
                     $this->_collection[] = $slug;
                     $this->_namespace[$slug] = $namespace;
                 }
@@ -428,6 +450,21 @@ class Documentation extends Core
 
     private function _restrictedResource()
     {
-        return ['administrative/updater', 'assets', 'assets/svg', 'pages/blank', 'shortlink', 'xhr', 'xhr/boot', 'xhr/language', 'xhr/partial', 'xhr/partial/account', 'xhr/partial/announcement', 'xhr/partial/language', 'xhr/summernote', 'xhr/widget/comment'];
+        return ['addons', 'administrative/updater', 'assets', 'modules', 'pages/blank', 'shortlink', 'xhr'];
+    }
+
+    private function _isRestrictedResource(?string $slug = null): bool
+    {
+        $slug = trim((string) $slug, '/');
+
+        foreach ($this->_restrictedResource() as $resource) {
+            $resource = trim($resource, '/');
+
+            if ($slug === $resource || str_starts_with($slug, $resource . '/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
