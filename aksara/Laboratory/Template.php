@@ -1046,7 +1046,7 @@ class Template
                             ],
                             [
                                 'id' => 0,
-                                'label' => 'Session Cleaner',
+                                'label' => 'System Cleaner',
                                 'slug' => 'administrative/cleaner',
                                 'icon' => 'mdi mdi-trash-can'
                             ],
