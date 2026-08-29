@@ -18,22 +18,85 @@ jobs:
 
       - name: Create Zip Package
         run: |
-          git archive --format=zip -o release.zip HEAD
+          git archive --format=zip -o release.zip HEAD \
+            composer.json index.php LICENSE.txt nginx.conf \
+            aksara public/.htaccess public/favicon.ico public/index.php public/robots.txt public/assets \
+            themes install
 
-      - name: Generate SHA-256 & Cryptographic Signature
+      - name: Generate Manifest & Cryptographic Signature
         env:
           PRIVATE_KEY: ${{ secrets.AKSARA_PRIVATE_KEY }}
         run: |
+          export VERSION="$(php -r 'echo json_decode(file_get_contents("composer.json"))->version;')"
+          export PHP_REQUIREMENT="$(php -r 'echo json_decode(file_get_contents("composer.json"))->require->php ?? "";')"
+          export CI_REQUIREMENT="$(php -r 'echo json_decode(file_get_contents("composer.json"))->require->{"codeigniter4/framework"} ?? "";')"
+          export PACKAGE_SHA256="$(sha256sum release.zip | cut -d' ' -f1)"
+          export PACKAGE_SIZE="$(stat -c%s release.zip)"
+
+          php -r '
+          $manifest = [
+              "schema" => 1,
+              "product" => "aksara",
+              "channel" => "stable",
+              "version" => getenv("VERSION"),
+              "min_version" => null,
+              "tag" => getenv("GITHUB_REF_NAME"),
+              "commit" => getenv("GITHUB_SHA"),
+              "created_at" => gmdate("c"),
+              "package" => [
+                  "name" => "release.zip",
+                  "sha256" => getenv("PACKAGE_SHA256"),
+                  "size" => (int) getenv("PACKAGE_SIZE")
+              ],
+              "compatibility" => [
+                  "php" => getenv("PHP_REQUIREMENT"),
+                  "codeigniter" => getenv("CI_REQUIREMENT")
+              ],
+              "apply" => [
+                  "allowed_paths" => [
+                      "aksara/",
+                      "public/assets/",
+                      "public/.htaccess",
+                      "public/favicon.ico",
+                      "public/index.php",
+                      "public/robots.txt",
+                      "themes/backend/",
+                      "themes/default/",
+                      "install/",
+                      "composer.json",
+                      "composer.lock",
+                      "index.php",
+                      "LICENSE.txt",
+                      "nginx.conf"
+                  ],
+                  "blocked_paths" => [
+                      ".env",
+                      ".git/",
+                      "config.php",
+                      "modules/",
+                      "node_modules/",
+                      "package-lock.json",
+                      "public/uploads/",
+                      "vendor/",
+                      "writable/"
+                  ],
+                  "run_migrations" => true,
+                  "run_seeders" => true
+              ]
+          ];
+
+          file_put_contents("manifest.json", json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
+          '
+
           echo "$PRIVATE_KEY" > private_key.pem
-          sha256sum release.zip | cut -d' ' -f1 > sha256.txt
-          openssl dgst -sha256 -sign private_key.pem -out signature.bin release.zip
-          base64 -w 0 signature.bin > signature.txt
-          rm -f private_key.pem
+          openssl dgst -sha256 -sign private_key.pem -out manifest.sig.bin manifest.json
+          base64 -w 0 manifest.sig.bin > manifest.sig
+          rm -f private_key.pem manifest.sig.bin
 
       - name: Upload Signed Assets to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             release.zip
-            sha256.txt
-            signature.txt
+            manifest.json
+            manifest.sig

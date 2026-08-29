@@ -58,27 +58,27 @@ if (isset($updater->changelog)) {
                 <?= phrase('A newer version of Aksara is available.') ?> <?= phrase('Click the button below to update your core system directly.') ?> <?= phrase('Your created module and theme will not be overwritten.') ?>
             </p>
         </div>
-        <form action="<?= current_page() ?>" method="POST">
-            <div class="row">
-                <div class="col-lg-8">
-                <?= $changelog ?>
-                </div>
+        <div class="row">
+            <div class="col-lg-8">
+            <?= $changelog ?>
             </div>
-            <hr class="mx--3" />
-            <div class="row">
-                <div class="col-lg-8">
+        </div>
+        <hr class="mx--3" />
+        <div class="row">
+            <div class="col-lg-8">
+                <form action="<?= go_to('update') ?>" method="POST" class="--validate-form">
                     <button type="submit" class="btn btn-success rounded-pill">
                         <i class="mdi mdi-reload"></i> <?= phrase('Update Now') ?>
                     </button>
-                    <a href="<?= base_url('administrative/updater/migrate') ?>" class="btn btn-outline-success rounded-pill ms-2 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
-                        <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
-                    </a>
-                    <a href="<?= base_url('administrative/updater/upload') ?>" class="btn btn-dark rounded-pill ms-2 --modal">
-                        <i class="mdi mdi-upload"></i> <?= phrase('Manual Update') ?>
-                    </a>
-                </div>
+                </form>
+                <a href="<?= go_to('migrate') ?>" class="btn btn-outline-success rounded-pill ms-2 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
+                    <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
+                </a>
+                <a href="<?= go_to('upload') ?>" class="btn btn-dark rounded-pill ms-2 --modal">
+                    <i class="mdi mdi-upload"></i> <?= phrase('Manual Update') ?>
+                </a>
             </div>
-        </form>
+        </div>
     <?php else: ?>
         <div class="row">
             <div class="col-lg-7">

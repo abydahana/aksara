@@ -33,7 +33,7 @@ if (! function_exists('aksara')) {
         static $version = null;
 
         if (null === $version) {
-            $version = '6.3.5';
+            $version = '6.3.6';
 
             if (file_exists(ROOTPATH . 'composer.json')) {
                 $composer = json_decode(file_get_contents(ROOTPATH . 'composer.json'));
