@@ -784,7 +784,7 @@ class Updater extends Core
         $parts = parse_url((string) $url);
         $host = strtolower($parts['host'] ?? '');
 
-        if (($parts['scheme'] ?? '') !== 'https' || ! $host) {
+        if ('https' !== ($parts['scheme'] ?? '') || ! $host) {
             return false;
         }
 
@@ -821,11 +821,11 @@ class Updater extends Core
     {
         if (
             ! is_object($manifest) ||
-            ($manifest->schema ?? null) !== 1 ||
-            ($manifest->product ?? null) !== 'aksara' ||
+            1 !== ($manifest->schema ?? null) ||
+            'aksara' !== ($manifest->product ?? null) ||
             empty($manifest->version) ||
             ! preg_match('/^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$/', $manifest->version) ||
-            ($manifest->package->name ?? null) !== 'release.zip' ||
+            'release.zip' !== ($manifest->package->name ?? null) ||
             empty($manifest->package->sha256) ||
             ! preg_match('/^[a-f0-9]{64}$/i', $manifest->package->sha256) ||
             empty($manifest->apply->allowed_paths) ||
@@ -906,7 +906,7 @@ class Updater extends Core
             return false;
         }
 
-        if (isset($manifest->package->size) && (! is_numeric($manifest->package->size) || $fileSize !== (int) $manifest->package->size)) {
+        if (isset($manifest->package->size) && (! is_numeric($manifest->package->size) || (int) $manifest->package->size !== $fileSize)) {
             return false;
         }
 
