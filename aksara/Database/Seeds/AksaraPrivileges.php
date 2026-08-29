@@ -32,7 +32,7 @@ class AksaraPrivileges extends Seeder
         $this->_upsertPrivilegeCatalog('administrative/account', ['index', 'update']);
         $this->_upsertPrivilegeCatalog('administrative/account/passkey', ['index', 'register', 'verify', 'delete']);
         $this->_upsertPrivilegeCatalog('administrative/cleaner', ['index', 'session', 'cache']);
-        $this->_upsertPrivilegeCatalog('administrative/updater', ['index', 'update', 'migrate']);
+        $this->_upsertPrivilegeCatalog('administrative/updater', ['index', 'update', 'upload', 'migrate']);
         $this->_upsertPrivilegeCatalog('apis/debug', ['index'], 'apis/debug_tool');
         $this->_upsertPrivilegeCatalog('cms/pages', ['index', 'create', 'read', 'update', 'delete', 'export', 'print', 'pdf', 'translate', 'preview']);
         $this->_upsertPrivilegeCatalog('xhr/uploader', ['index', 'upload', 'delete'], 'xhr/summernote');
@@ -116,7 +116,7 @@ class AksaraPrivileges extends Seeder
             }
 
             if (isset($privileges['administrative/updater']) && in_array('update', $privileges['administrative/updater'], true)) {
-                $this->_addPrivileges($privileges['administrative/updater'], ['migrate']);
+                $this->_addPrivileges($privileges['administrative/updater'], ['upload', 'migrate']);
             }
 
             if (isset($privileges['administrative/logs/activities'])) {
