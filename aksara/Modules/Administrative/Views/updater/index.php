@@ -22,22 +22,22 @@ if (isset($updater->changelog)) {
             </h2>
         </a>
         <hr />
-        <div class="row no-gutters">
-            <div class="col-4 col-md-2 col-lg-1 pt-1">
-                <a href="<?= $val->profile_url ?>" target="_blank">
-                    <img src="<?= $val->profile_avatar ?>" class="img-fluid rounded-more" alt="<?= htmlspecialchars((string) $val->committer) ?>" />
-                </a>
-            </div>
-            <div class="col-8 col-md-10 col-lg-11 ps-3 text-break-word">
-                <a href="<?= $val->profile_url ?>" target="_blank">
-                    <h5>
-                        <?= $val->committer ?>
-                        <i class="mdi mdi-launch"></i>
-                    </h5>
-                </a>
-                <span>
-                    <?= $val->date ?>
-                </span>
+        <div class="d-flex align-items-center gap-3">
+            <a href="<?= $val->profile_url ?>" target="_blank">
+                <img src="<?= $val->profile_avatar ?>" class="img-fluid d-block user-avatar rounded-3" alt="<?= htmlspecialchars((string) $val->committer) ?>" />
+            </a>
+            <div>
+                <p class="m-0">
+                    <a href="<?= $val->profile_url ?>" target="_blank">
+                        <strong class="fs-5">
+                            <?= $val->committer ?>
+                            <i class="mdi mdi-launch"></i>
+                        </strong>
+                    </a>
+                </p>
+                <p class="m-0">
+                    <span class="text-muted"><?= $val->date ?></span>
+                </p>
             </div>
         </div>
         <hr />
@@ -64,20 +64,20 @@ if (isset($updater->changelog)) {
             </div>
         </div>
         <hr class="mx--3" />
-        <div class="row">
-            <div class="col-lg-8">
-                <form action="<?= go_to('update') ?>" method="POST" class="--validate-form">
-                    <button type="submit" class="btn btn-success rounded-pill">
-                        <i class="mdi mdi-reload"></i> <?= phrase('Update Now') ?>
-                    </button>
-                </form>
-                <a href="<?= go_to('migrate') ?>" class="btn btn-outline-success rounded-pill ms-2 --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
-                    <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
-                </a>
-                <a href="<?= go_to('upload') ?>" class="btn btn-dark rounded-pill ms-2 --modal">
+        <div class="d-flex align-items-center gap-2">
+            <form action="<?= go_to('update') ?>" method="POST" class="--validate-form">
+                <button type="submit" class="btn btn-primary">
+                    <i class="mdi mdi-reload"></i> <?= phrase('Update Now') ?>
+                </button>
+            </form>
+            <a href="<?= go_to('migrate') ?>" class="btn btn-secondary --xhr --confirm" data-confirm="<?= phrase('Are you sure you want to run database migration and seeder?') ?>">
+                <i class="mdi mdi-database-refresh"></i> <?= phrase('Run Migration & Seeder') ?>
+            </a>
+            <?php if (! $changelog): ?>
+                <a href="<?= go_to('upload') ?>" class="btn btn-dark --modal">
                     <i class="mdi mdi-upload"></i> <?= phrase('Manual Update') ?>
                 </a>
-            </div>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <div class="row">
