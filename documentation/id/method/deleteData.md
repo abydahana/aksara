@@ -1,4 +1,4 @@
-`deleteData()` adalah Core method yang tersedia di dalam controller Aksara.
+`deleteData()` menghapus satu row melalui pipeline CRUD Core.
 
 ### Tujuan
 `deleteData()` menghapus satu row melalui pipeline CRUD Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -16,7 +16,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 | `$where` | `array` | Tidak | `[]` | Kondisi WHERE tambahan. |
 | `$limit` | `int` | Tidak | `1` | Jumlah maksimum row yang dihapus; default satu untuk keamanan. |
 
-### Nilai Kembali
+### Return
 `object|null`
 
 Mengembalikan response Aksara saat sukses atau gagal, atau `null` bila alur tidak memiliki response eksplisit.
@@ -40,9 +40,9 @@ return $result;
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

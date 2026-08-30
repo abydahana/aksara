@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$name` | `string|array` | Yes | `` | Mock field name or an associative array of `field => type` pairs. |
+| `$name` | `string\|array` | Yes | - | Mock field name or an associative array of `field => type` pairs. |
 | `$type` | `string` | No | `'varchar'` | Field renderer type or mock field type. |
 
 ### Return Value
@@ -47,9 +47,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

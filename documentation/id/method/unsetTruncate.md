@@ -1,4 +1,4 @@
-`unsetTruncate()` adalah Core method yang tersedia di dalam controller Aksara.
+`unsetTruncate()` mencegah konten kolom tertentu dipotong di tabel.
 
 ### Tujuan
 `unsetTruncate()` mencegah konten kolom tertentu dipotong di tabel. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,9 +12,9 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string|array` | Ya | - | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | `string\|array` | Ya | - | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -43,9 +43,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

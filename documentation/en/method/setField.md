@@ -12,9 +12,9 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string|array` | No | `[]` | Field name, field list, or associative field configuration. |
-| `$type` | `string|array|null` | No | `null` | Field renderer type or mock field type. |
-| `$parameter` | `array|string|null` | No | `null` | Route or query parameters passed to the action. |
+| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$type` | `string\|array\|null` | No | `null` | Field renderer type or mock field type. |
+| `$parameter` | `array\|string\|null` | No | `null` | Route or query parameters passed to the action. |
 | `$alpha` | `mixed` | No | `null` | Extra field parameter consumed by specific field renderers. |
 | `$beta` | `mixed` | No | `null` | Extra field parameter consumed by specific field renderers. |
 | `$charlie` | `mixed` | No | `null` | Extra field parameter consumed by specific field renderers. |
@@ -46,9 +46,9 @@ $this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Upda
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

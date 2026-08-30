@@ -12,8 +12,8 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$table` | `string` | Yes | `` | Database table name. |
-| `$condition` | `string` | Yes | `` | Join condition. |
+| `$table` | `string` | Yes | - | Database table name. |
+| `$condition` | `string` | Yes | - | Join condition. |
 | `$type` | `string` | No | `''` | Field renderer type or mock field type. |
 | `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |
 
@@ -47,9 +47,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

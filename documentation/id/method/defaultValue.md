@@ -1,4 +1,4 @@
-`defaultValue()` adalah Core method yang tersedia di dalam controller Aksara.
+`defaultValue()` mengatur nilai awal yang ditampilkan di form.
 
 ### Tujuan
 `defaultValue()` mengatur nilai awal yang ditampilkan di form. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,10 +12,10 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 | `$value` | `mixed` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -44,9 +44,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

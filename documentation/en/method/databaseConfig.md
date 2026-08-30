@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$driver` | `array|string` | No | `[]` | Database driver name or a complete connection configuration array. |
+| `$driver` | `array\|string` | No | `[]` | Database driver name or a complete connection configuration array. |
 | `$hostname` | `?string` | No | `null` | Database host name or IP address. |
 | `$port` | `?int` | No | `null` | Database server port. |
 | `$username` | `?string` | No | `null` | Database user name. |
@@ -45,9 +45,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

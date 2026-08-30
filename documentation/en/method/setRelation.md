@@ -12,9 +12,9 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string` | Yes | `` | Field name, field list, or associative field configuration. |
-| `$primaryKey` | `string` | Yes | `` | Related table key or local primary key field. |
-| `$output` | `string` | Yes | `` | Magic-string output template or autocomplete output map. |
+| `$field` | `string` | Yes | - | Field name, field list, or associative field configuration. |
+| `$primaryKey` | `string` | Yes | - | Related table key or local primary key field. |
+| `$output` | `string` | Yes | - | Magic-string output template or autocomplete output map. |
 | `$where` | `array` | No | `[]` | Additional conditions. |
 | `$join` | `array` | No | `[]` | Additional joins. |
 | `$orderBy` | `array` | No | `[]` | Ordering rules. |
@@ -48,9 +48,9 @@ $this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Upda
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

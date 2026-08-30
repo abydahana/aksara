@@ -1,4 +1,4 @@
-`setAutocomplete()` adalah Core method yang tersedia di dalam controller Aksara.
+`setAutocomplete()` mengatur perilaku autocomplete untuk field atau relasi.
 
 ### Tujuan
 `setAutocomplete()` mengatur perilaku autocomplete untuk field atau relasi. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -21,7 +21,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 | `$groupBy` | `?string` | Tidak | `null` | Aturan pengelompokan. |
 | `$limit` | `int` | Tidak | `0` | Jumlah maksimum row. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -50,9 +50,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

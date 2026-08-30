@@ -1,4 +1,4 @@
-`insertId()` adalah Core method yang tersedia di dalam controller Aksara.
+`insertId()` mengambil ID insert terakhir yang disimpan pipeline Core.
 
 ### Tujuan
 `insertId()` mengambil ID insert terakhir yang disimpan pipeline Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 |---|---|---:|---|---|
 | Tidak ada | - | - | - | Metode ini tidak menerima parameter. |
 
-### Nilai Kembali
+### Return
 `int`
 
 Mengembalikan nilai integer dari state Core.
@@ -39,9 +39,9 @@ return $this->setOutput('order_id', $orderId)->render();
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

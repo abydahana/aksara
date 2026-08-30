@@ -1,4 +1,4 @@
-`table()` adalah Core method yang tersedia di dalam controller Aksara.
+`table()` mengatur tabel utama dan menjadi alias dari `from()`.
 
 ### Tujuan
 `table()` mengatur tabel utama dan menjadi alias dari `from()`. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 |---|---|---:|---|---|
 | `$table` | `string` | Ya | - | Nama tabel, dapat memakai alias jika metode mendukungnya. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -44,9 +44,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

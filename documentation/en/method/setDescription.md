@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `array|string` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | `array\|string` | No | `[]` | String value or associative array of values, depending on the method. |
 | `$fallback` | `?string` | No | `null` | Fallback text used when a method-specific value is not available. |
 
 ### Return Value
@@ -41,9 +41,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

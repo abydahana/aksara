@@ -1,4 +1,4 @@
-`setUploadPath()` adalah Core method yang tersedia di dalam controller Aksara.
+`setUploadPath()` mengubah direktori upload untuk field file dan image.
 
 ### Tujuan
 `setUploadPath()` mengubah direktori upload untuk field file dan image. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 |---|---|---:|---|---|
 | `$path` | `?string` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -43,9 +43,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

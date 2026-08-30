@@ -1,4 +1,4 @@
-`validToken()` adalah Core method yang tersedia di dalam controller Aksara.
+`validToken()` memvalidasi token CSRF yang dikirim atau konteks token API yang dipercaya.
 
 ### Tujuan
 `validToken()` memvalidasi token CSRF yang dikirim atau konteks token API yang dipercaya. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -13,9 +13,9 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
 | `$token` | `?string` | Ya | - | Token CSRF atau token API yang dikirim. |
-| `$allowedUris` | `string|array` | Tidak | `[]` | URI atau daftar URI yang tokennya boleh diterima. |
+| `$allowedUris` | `string\|array` | Tidak | `[]` | URI atau daftar URI yang tokennya boleh diterima. |
 
-### Nilai Kembali
+### Return
 `bool`
 
 Mengembalikan `true` ketika pemeriksaan berhasil dan `false` ketika gagal.
@@ -41,9 +41,9 @@ if (! $this->validToken($token, ['pesanan/create'])) {
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

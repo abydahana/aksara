@@ -1,4 +1,4 @@
-`orHavingLike()` adalah Core method yang tersedia di dalam controller Aksara.
+`orHavingLike()` menambahkan kondisi OR HAVING LIKE.
 
 ### Tujuan
 `orHavingLike()` menambahkan kondisi OR HAVING LIKE. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,13 +12,13 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 | `$match` | `mixed` | Tidak | `''` | Teks atau nilai untuk kondisi LIKE/HAVING LIKE. |
 | `$side` | `string` | Tidak | `'both'` | Sisi wildcard LIKE: `before`, `after`, `both`, atau nilai yang didukung database layer. |
 | `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |
 | `$caseInsensitive` | `bool` | Tidak | `false` | Menentukan apakah pencarian mengabaikan kapitalisasi jika didukung. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -48,9 +48,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

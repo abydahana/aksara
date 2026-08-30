@@ -1,4 +1,4 @@
-`renderForm()` adalah Core method yang tersedia di dalam controller Aksara.
+`renderForm()` memformat satu row menjadi payload form create/update.
 
 ### Tujuan
 `renderForm()` memformat satu row menjadi payload form create/update. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,9 +12,9 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$data` | `array|object` | Ya | - | Satu row object atau array untuk output form. |
+| `$data` | `array\|object` | Ya | - | Satu row object atau array untuk output form. |
 
-### Nilai Kembali
+### Return
 `array`
 
 Mengembalikan payload Core terstruktur untuk renderer atau response API.
@@ -40,9 +40,9 @@ return $this->setOutput('preview', $form)->render();
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

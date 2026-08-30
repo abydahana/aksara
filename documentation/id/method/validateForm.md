@@ -1,4 +1,4 @@
-`validateForm()` adalah Core method yang tersedia di dalam controller Aksara.
+`validateForm()` memvalidasi data form dan menyiapkannya untuk alur create/update.
 
 ### Tujuan
 `validateForm()` memvalidasi data form dan menyiapkannya untuk alur create/update. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,9 +12,9 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$data` | `array|object` | Ya | - | Row sumber yang digunakan untuk validasi dan persiapan data submit. |
+| `$data` | `array\|object` | Ya | - | Row sumber yang digunakan untuk validasi dan persiapan data submit. |
 
-### Nilai Kembali
+### Return
 `mixed`
 
 Mengembalikan response Aksara ketika validasi gagal atau alur create/update selesai. Dapat tidak mengembalikan nilai eksplisit ketika Core melanjutkan proses internal.
@@ -40,9 +40,9 @@ return $this->validateForm($order);
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

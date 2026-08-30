@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$button` | `string` | Yes | `` | Built-in button key to override. |
+| `$button` | `string` | Yes | - | Built-in button key to override. |
 | `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 | `$label` | `?string` | No | `null` | Human-readable label. |
 | `$class` | `?string` | No | `null` | CSS class list. |
@@ -45,9 +45,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

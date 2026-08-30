@@ -1,4 +1,4 @@
-`renderTable()` adalah Core method yang tersedia di dalam controller Aksara.
+`renderTable()` memformat kumpulan row menjadi payload tabel.
 
 ### Tujuan
 `renderTable()` memformat kumpulan row menjadi payload tabel. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 |---|---|---:|---|---|
 | `$data` | `array` | Ya | - | Kumpulan row yang diformat untuk output tabel. |
 
-### Nilai Kembali
+### Return
 `array`
 
 Mengembalikan payload Core terstruktur untuk renderer atau response API.
@@ -40,9 +40,9 @@ return $this->setOutput('preview', $table)->render();
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

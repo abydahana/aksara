@@ -39,9 +39,9 @@ return $this->setOutput('order_id', $orderId)->render();
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function process()
     {

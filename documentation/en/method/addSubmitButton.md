@@ -12,9 +12,9 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$name` | `?string` | Yes | `` | Submitted button name. |
-| `$value` | `?string` | Yes | `` | Value assigned to the given key or field. |
-| `$label` | `string` | Yes | `` | Human-readable label. |
+| `$name` | `?string` | Yes | - | Submitted button name. |
+| `$value` | `?string` | Yes | - | Value assigned to the given key or field. |
+| `$label` | `string` | Yes | - | Human-readable label. |
 | `$class` | `?string` | No | `null` | CSS class list. |
 | `$icon` | `?string` | No | `null` | Icon class. |
 | `$attribution` | `?string` | No | `null` | Additional raw attributes for the generated element. |
@@ -44,9 +44,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

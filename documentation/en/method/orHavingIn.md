@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
 | `$value` | `mixed` | No | `''` | Value assigned to the given key or field. |
 | `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |
 
@@ -46,9 +46,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

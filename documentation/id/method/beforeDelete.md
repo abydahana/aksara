@@ -1,4 +1,4 @@
-`beforeDelete()` adalah Core method yang tersedia di dalam controller Aksara.
+`beforeDelete()` menjalankan logika khusus sebelum delete.
 
 ### Tujuan
 `beforeDelete()` menjalankan logika khusus sebelum delete. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Override ketika modul perlu pemeriksaan, persiapan data, logging, invalidasi cac
 |---|---|---:|---|---|
 | Tidak ada | - | - | - | Metode ini tidak menerima parameter. |
 
-### Nilai Kembali
+### Return
 `mixed|void`
 
 Hook tidak wajib mengembalikan nilai. Kembalikan response atau exception Aksara hanya ketika operasi CRUD perlu dihentikan.
@@ -44,9 +44,9 @@ protected function beforeDelete()
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     protected function beforeDelete()
     {

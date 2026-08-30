@@ -1,10 +1,10 @@
-`getMethod()` adalah Core method yang tersedia di dalam controller Aksara.
+`getMethod()` mengambil nama method Core aktif dari request saat ini.
 
 ### Tujuan
 `getMethod()` mengambil nama method Core aktif dari request saat ini. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
 
 ### Kapan Digunakan
-Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
+Gunakan ketika antarmuka bawaan perlu metadata halaman, aksi, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
 
 ### Referensi
 `getMethod(): string`
@@ -14,13 +14,13 @@ Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, 
 |---|---|---:|---|---|
 | Tidak ada | - | - | - | Metode ini tidak menerima parameter. |
 
-### Nilai Kembali
+### Return
 `string`
 
 Mengembalikan nilai string dari konteks request Core aktif.
 
 ### Perilaku
-`getMethod()` menyimpan konfigurasi interface pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
+`getMethod()` menyimpan konfigurasi antarmuka pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
 ### Contoh Dasar
 ```php
@@ -42,9 +42,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {
@@ -56,7 +56,7 @@ class Pesanan extends BaseController
 ```
 
 ### Hasil
-Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
+Antarmuka atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
 
 ### Catatan
 * Gunakan `phrase()` untuk label yang terlihat agar UI tetap dapat diterjemahkan.
@@ -64,7 +64,7 @@ Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khus
 
 ### Kesalahan Umum
 * Menulis label hard-code yang seharusnya memakai `phrase()`.
-* Menambahkan action baris tanpa parameter primary key yang dibutuhkan URL tujuan.
+* Menambahkan aksi baris tanpa parameter primary key yang dibutuhkan URL tujuan.
 * Memanggil metode terlalu lambat setelah output dibuat.
 
 ### Metode Terkait

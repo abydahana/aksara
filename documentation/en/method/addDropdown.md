@@ -12,8 +12,8 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$url` | `string` | Yes | `` | Target URL or route for the action. |
-| `$label` | `string` | Yes | `` | Human-readable label. |
+| `$url` | `string` | Yes | - | Target URL or route for the action. |
+| `$label` | `string` | Yes | - | Human-readable label. |
 | `$class` | `?string` | No | `null` | CSS class list. |
 | `$icon` | `?string` | No | `null` | Icon class. |
 | `$parameter` | `?array` | No | `[]` | Route or query parameters passed to the action. |
@@ -45,9 +45,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

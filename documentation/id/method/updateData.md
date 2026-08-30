@@ -1,4 +1,4 @@
-`updateData()` adalah Core method yang tersedia di dalam controller Aksara.
+`updateData()` memperbarui satu row melalui pipeline CRUD Core.
 
 ### Tujuan
 `updateData()` memperbarui satu row melalui pipeline CRUD Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -16,7 +16,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 | `$data` | `array` | Tidak | `[]` | Data row, kumpulan row, atau payload renderer yang diproses. |
 | `$where` | `array` | Tidak | `[]` | Kondisi WHERE tambahan. |
 
-### Nilai Kembali
+### Return
 `object|bool`
 
 Mengembalikan response Aksara saat sukses atau gagal, atau `false` bila alur update tidak menghasilkan response.
@@ -40,9 +40,9 @@ return $result;
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

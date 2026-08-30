@@ -1,7 +1,7 @@
-`setPrimary()` adalah Core method yang tersedia di dalam controller Aksara.
+`setPrimary()` mengatur primary key yang digunakan aksi Core.
 
 ### Tujuan
-`setPrimary()` mengatur primary key yang digunakan action Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+`setPrimary()` mengatur primary key yang digunakan aksi Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
 
 ### Kapan Digunakan
 Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tetapi field tertentu perlu label, layout, validasi, relasi, visibility, atau renderer khusus.
@@ -12,9 +12,9 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `array|string` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | `array\|string` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -43,9 +43,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

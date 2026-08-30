@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$permissiveGroup` | `array|string` | No | `[]` | Allowed group IDs as an array or comma-separated string. Use `0` to allow every group. |
+| `$permissiveGroup` | `array\|string` | No | `[]` | Allowed group IDs as an array or comma-separated string. Use `0` to allow every group. |
 | `$redirect` | `?string` | No | `null` | Optional redirect URL when access is denied. |
 
 ### Return Value
@@ -41,9 +41,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

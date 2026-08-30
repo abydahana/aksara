@@ -1,4 +1,4 @@
-`insertData()` adalah Core method yang tersedia di dalam controller Aksara.
+`insertData()` menyimpan satu row melalui pipeline CRUD Core.
 
 ### Tujuan
 `insertData()` menyimpan satu row melalui pipeline CRUD Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -15,7 +15,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 | `$table` | `?string` | Tidak | `null` | Nama tabel, dapat memakai alias jika metode mendukungnya. |
 | `$data` | `array` | Tidak | `[]` | Data row, kumpulan row, atau payload renderer yang diproses. |
 
-### Nilai Kembali
+### Return
 `object|null`
 
 Mengembalikan response Aksara saat sukses atau gagal, atau `null` bila alur tidak memiliki response eksplisit.
@@ -39,9 +39,9 @@ return $result;
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

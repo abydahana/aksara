@@ -12,8 +12,8 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$token` | `?string` | Yes | `` | Submitted token value. |
-| `$allowedUris` | `string|array` | No | `[]` | Additional URI or URI list whose token may be accepted. |
+| `$token` | `?string` | Yes | - | Submitted token value. |
+| `$allowedUris` | `string\|array` | No | `[]` | Additional URI or URI list whose token may be accepted. |
 
 ### Return Value
 `bool`
@@ -41,9 +41,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

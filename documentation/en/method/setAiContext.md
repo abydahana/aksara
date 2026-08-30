@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$context` | `array` | Yes | `` | AI context array containing scope, instructions, max tokens, data, tone, or audience. |
+| `$context` | `array` | Yes | - | AI context array containing scope, instructions, max tokens, data, tone, or audience. |
 
 ### Return Value
 `static`
@@ -40,9 +40,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {
