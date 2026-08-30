@@ -1,4 +1,4 @@
-`insertId()` returns the last inserted primary key value. It is used inside an Aksara controller as part of the Core method API.
+`insertId()` returns the last inserted primary key value.
 
 ### Purpose
 `insertId()` returns the last inserted primary key value. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

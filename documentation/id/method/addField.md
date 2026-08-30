@@ -12,7 +12,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$name` | `string\|array` | Ya | - | Nama field virtual atau array asosiatif `field => type`. |
+| `$name` | <code>string&#124;array</code> | Ya | - | Nama field virtual atau array asosiatif `field => type`. |
 | `$type` | `string` | Tidak | `'varchar'` | Tipe field, tipe join, tipe renderer, atau tipe aksi sesuai metode. |
 
 ### Return
@@ -22,6 +22,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 
 ### Perilaku
 `addField()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
+
+> [!NOTE]
+> Field virtual berguna untuk tampilan atau data schema vertikal, tetapi bukan kolom fisik kecuali model atau schema menyediakan penyimpanannya.
 
 ### Contoh Dasar
 ```php

@@ -1,4 +1,4 @@
-`join()` adds a JOIN clause. It is used inside an Aksara controller as part of the Core method API.
+`join()` adds a JOIN clause.
 
 ### Purpose
 `join()` adds a JOIN clause. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

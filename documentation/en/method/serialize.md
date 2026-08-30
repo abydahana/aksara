@@ -1,4 +1,4 @@
-`serialize()` normalizes multiple rows before rendering. It is used inside an Aksara controller as part of the Core method API.
+`serialize()` normalizes multiple rows before rendering.
 
 ### Purpose
 `serialize()` normalizes multiple rows before rendering. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

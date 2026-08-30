@@ -1,4 +1,4 @@
-`renderRead()` formats one row for the read/detail renderer. It is used inside an Aksara controller as part of the Core method API.
+`renderRead()` formats one row for the read/detail renderer.
 
 ### Purpose
 `renderRead()` formats one row for the read/detail renderer. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when you need to extend the Core CRUD flow while keeping Aksara validatio
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$data` | `array\|object` | Yes | - | Data row, rows, or submitted values. |
+| `$data` | <code>array&#124;object</code> | Yes | - | Data row, rows, or submitted values. |
 
 ### Return Value
 `array`

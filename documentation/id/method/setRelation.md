@@ -30,6 +30,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 ### Perilaku
 `setRelation()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
+> [!NOTE]
+> Output relasi memakai placeholder `{{ table.column }}`. Pastikan semua kolom yang dipakai template tersedia di query relasi.
+
 ### Contoh Dasar
 ```php
 $this->setRelation('category_id', 'app_categories.category_id', '{{ app_categories.category_name }}');

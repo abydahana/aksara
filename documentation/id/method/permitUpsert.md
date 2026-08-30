@@ -20,7 +20,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`permitUpsert()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`permitUpsert()` mengizinkan alur update membuat record baru ketika record target tidak ditemukan.
 
 ### Contoh Dasar
 ```php

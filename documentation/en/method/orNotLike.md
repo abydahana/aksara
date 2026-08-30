@@ -1,4 +1,4 @@
-`orNotLike()` adds OR NOT LIKE conditions. It is used inside an Aksara controller as part of the Core method API.
+`orNotLike()` adds OR NOT LIKE conditions.
 
 ### Purpose
 `orNotLike()` adds OR NOT LIKE conditions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$field` | <code>string&#124;array</code> | No | `[]` | Field name, field list, or associative field configuration. |
 | `$match` | `mixed` | No | `''` | Value matched by LIKE/HAVING LIKE. |
 | `$side` | `string` | No | `'both'` | Wildcard side: `before`, `after`, `both`, or `none`. |
 | `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |

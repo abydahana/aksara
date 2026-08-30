@@ -1,4 +1,4 @@
-`setRelation()` turns a foreign key into a relation-aware field. It is used inside an Aksara controller as part of the Core method API.
+`setRelation()` turns a foreign key into a relation-aware field.
 
 ### Purpose
 `setRelation()` turns a foreign key into a relation-aware field. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -29,6 +29,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `setRelation()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!NOTE]
+> Relation output uses `{{ table.column }}` placeholders. Include every column needed by the display template.
 
 ### Basic Usage
 ```php

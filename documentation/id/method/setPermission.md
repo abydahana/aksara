@@ -12,7 +12,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$permissiveGroup` | `array\|string` | Tidak | `[]` | ID grup yang diizinkan. Gunakan `0` untuk mengizinkan semua grup. |
+| `$permissiveGroup` | <code>array&#124;string</code> | Tidak | `[]` | ID grup yang diizinkan. Gunakan `0` untuk mengizinkan semua grup. |
 | `$redirect` | `?string` | Tidak | `null` | Tujuan redirect saat akses ditolak atau aksi selesai. |
 
 ### Return
@@ -21,7 +21,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan controller ketika akses diizinkan, atau response Aksara/CodeIgniter ketika akses ditolak atau dialihkan.
 
 ### Perilaku
-`setPermission()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`setPermission()` menandai request agar melewati pemeriksaan permission Core. Pemeriksaan memakai module, method, dan group yang aktif saat method ini dipanggil.
+
+> [!IMPORTANT]
+> Panggil `setPermission()` setelah `parentModule()` atau `setMethod()` bila keduanya dibutuhkan, karena permission dicek memakai modul dan method yang aktif saat itu.
 
 ### Contoh Dasar
 ```php
@@ -32,10 +35,9 @@ return $this->render('orders');
 
 ### Contoh Lanjutan
 ```php
-$this->setPermission([1, 2]);
-$this->setPermission([1, 2])
-    ->setTitle(phrase('Pesanan'))
-    ->setUploadPath('pesanan');
+$this->setTitle(phrase('Pesanan'))
+    ->setIcon('mdi mdi-cart-outline')
+    ->setPermission([1, 2]);
 
 return $this->render('orders');
 ```

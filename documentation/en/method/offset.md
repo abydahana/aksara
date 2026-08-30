@@ -1,4 +1,4 @@
-`offset()` sets row offset. It is used inside an Aksara controller as part of the Core method API.
+`offset()` sets row offset.
 
 ### Purpose
 `offset()` sets row offset. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

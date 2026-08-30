@@ -1,4 +1,4 @@
-`addField()` adds a mock field that is not physically present in the table. It is used inside an Aksara controller as part of the Core method API.
+`addField()` adds a mock field that is not physically present in the table.
 
 ### Purpose
 `addField()` adds a mock field that is not physically present in the table. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$name` | `string\|array` | Yes | - | Mock field name or an associative array of `field => type` pairs. |
+| `$name` | <code>string&#124;array</code> | Yes | - | Mock field name or an associative array of `field => type` pairs. |
 | `$type` | `string` | No | `'varchar'` | Field renderer type or mock field type. |
 
 ### Return Value
@@ -22,6 +22,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `addField()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!NOTE]
+> Mock fields are useful for display or vertical schema data, but they are not physical columns unless the model or schema provides storage for them.
 
 ### Basic Usage
 ```php

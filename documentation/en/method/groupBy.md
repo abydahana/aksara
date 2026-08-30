@@ -1,4 +1,4 @@
-`groupBy()` groups query results. It is used inside an Aksara controller as part of the Core method API.
+`groupBy()` groups query results.
 
 ### Purpose
 `groupBy()` groups query results. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

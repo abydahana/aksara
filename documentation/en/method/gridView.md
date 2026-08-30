@@ -1,4 +1,4 @@
-`gridView()` switches the index table into a grid layout. It is used inside an Aksara controller as part of the Core method API.
+`gridView()` switches the index table into a grid layout.
 
 ### Purpose
 `gridView()` switches the index table into a grid layout. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

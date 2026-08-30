@@ -1,4 +1,4 @@
-`distinct()` toggles DISTINCT on the prepared query. It is used inside an Aksara controller as part of the Core method API.
+`distinct()` toggles DISTINCT on the prepared query.
 
 ### Purpose
 `distinct()` toggles DISTINCT on the prepared query. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

@@ -20,7 +20,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`setAiContext()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`setAiContext()` menyimpan konteks AI per route agar handler AI dapat membaca scope, instruksi, dan data referensi modul.
+
+> [!NOTE]
+> Konteks AI di-cache per route untuk alur modul saat ini. Jaga data tetap ringkas dan jangan menyertakan secret.
 
 ### Contoh Dasar
 ```php

@@ -1,4 +1,4 @@
-`havingGroupStart()` opens a grouped HAVING expression. It is used inside an Aksara controller as part of the Core method API.
+`havingGroupStart()` opens a grouped HAVING expression.
 
 ### Purpose
 `havingGroupStart()` opens a grouped HAVING expression. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `havingGroupStart()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
+
+> [!NOTE]
+> Every HAVING group must be closed with `havingGroupEnd()` before the query is rendered.
 
 ### Basic Usage
 ```php

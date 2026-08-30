@@ -1,4 +1,4 @@
-`unsetToolbar()` removes toolbar actions from the generated interface. It is used inside an Aksara controller as part of the Core method API.
+`unsetToolbar()` removes toolbar actions from the generated interface.
 
 ### Purpose
 `unsetToolbar()` removes toolbar actions from the generated interface. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$methods` | `string\|array` | Yes | - | Toolbar method key or list of keys to remove. |
+| `$methods` | <code>string&#124;array</code> | Yes | - | Toolbar method key or list of keys to remove. |
 
 ### Return Value
 `static`

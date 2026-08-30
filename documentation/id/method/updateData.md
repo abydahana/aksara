@@ -24,6 +24,9 @@ Mengembalikan response Aksara saat sukses atau gagal, atau `false` bila alur upd
 ### Perilaku
 `updateData()` merupakan bagian dari pipeline internal Core dan bekerja dengan metadata field, state request, renderer, validasi, hook, serta response CRUD.
 
+> [!WARNING]
+> Selalu gunakan kondisi `$where` yang sempit saat memanggil `updateData()` langsung. Kondisi kosong atau terlalu luas bisa memperbarui record yang salah.
+
 ### Contoh Dasar
 ```php
 $result = $this->updateData('orders', ['status' => 'lunas'], ['order_id' => 10]);

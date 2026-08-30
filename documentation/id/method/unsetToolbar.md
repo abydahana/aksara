@@ -12,7 +12,7 @@ Gunakan ketika antarmuka bawaan perlu metadata halaman, aksi, tombol, filter, la
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$methods` | `string\|array` | Ya | - | Nama method, daftar method dipisah koma, atau array method. |
+| `$methods` | <code>string&#124;array</code> | Ya | - | Nama method, daftar method dipisah koma, atau array method. |
 
 ### Return
 `static`

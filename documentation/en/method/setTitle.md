@@ -1,4 +1,4 @@
-`setTitle()` sets the page or method title. It is used inside an Aksara controller as part of the Core method API.
+`setTitle()` sets the page or method title.
 
 ### Purpose
 `setTitle()` sets the page or method title. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `array\|string` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>array&#124;string</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$fallback` | `?string` | No | `null` | Fallback text used when a method-specific value is not available. |
 
 ### Return Value

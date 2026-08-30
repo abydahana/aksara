@@ -1,4 +1,4 @@
-`limit()` sets row limit and optional offset. It is used inside an Aksara controller as part of the Core method API.
+`limit()` sets row limit and optional offset.
 
 ### Purpose
 `limit()` sets row limit and optional offset. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

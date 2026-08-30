@@ -20,7 +20,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`allowPublicFormSubmission()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`allowPublicFormSubmission()` mengizinkan submit form publik tetap melewati validasi dan persiapan data Core tanpa permission penuh.
+
+> [!WARNING]
+> Gunakan hanya untuk form publik yang memang harus submit lewat Core. Validasi, token, dan target penulisan tetap harus dibatasi.
 
 ### Contoh Dasar
 ```php

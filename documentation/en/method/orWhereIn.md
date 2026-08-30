@@ -1,4 +1,4 @@
-`orWhereIn()` adds OR WHERE IN conditions. It is used inside an Aksara controller as part of the Core method API.
+`orWhereIn()` adds OR WHERE IN conditions.
 
 ### Purpose
 `orWhereIn()` adds OR WHERE IN conditions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$field` | <code>string&#124;array</code> | No | `[]` | Field name, field list, or associative field configuration. |
 | `$value` | `mixed` | No | `''` | Value assigned to the given key or field. |
 | `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |
 

@@ -1,4 +1,4 @@
-`validateForm()` validates submitted create/update data. It is used inside an Aksara controller as part of the Core method API.
+`validateForm()` validates submitted create/update data.
 
 ### Purpose
 `validateForm()` validates submitted create/update data. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when you need to extend the Core CRUD flow while keeping Aksara validatio
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$data` | `array\|object` | Yes | - | Data row, rows, or submitted values. |
+| `$data` | <code>array&#124;object</code> | Yes | - | Data row, rows, or submitted values. |
 
 ### Return Value
 `mixed`

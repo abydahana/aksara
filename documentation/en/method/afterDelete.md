@@ -1,4 +1,4 @@
-`afterDelete()` runs custom logic after a delete operation. It is used inside an Aksara controller as part of the Core method API.
+`afterDelete()` runs custom logic after a delete operation.
 
 ### Purpose
 `afterDelete()` runs custom logic after a delete operation. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

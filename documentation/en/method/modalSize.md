@@ -1,4 +1,4 @@
-`modalSize()` sets the Bootstrap modal size used by CRUD dialogs. It is used inside an Aksara controller as part of the Core method API.
+`modalSize()` sets the Bootstrap modal size used by CRUD dialogs.
 
 ### Purpose
 `modalSize()` sets the Bootstrap modal size used by CRUD dialogs. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

@@ -1,4 +1,4 @@
-`fromSubquery()` uses a subquery as the source table. It is used inside an Aksara controller as part of the Core method API.
+`fromSubquery()` uses a subquery as the source table.
 
 ### Purpose
 `fromSubquery()` uses a subquery as the source table. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$subquery` | `object\|string` | Yes | - | Prepared subquery object or SQL string. |
+| `$subquery` | <code>object&#124;string</code> | Yes | - | Prepared subquery object or SQL string. |
 | `$alias` | `string` | Yes | - | Displayed label or SQL alias. |
 
 ### Return Value

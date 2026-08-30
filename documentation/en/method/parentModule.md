@@ -1,4 +1,4 @@
-`parentModule()` sets the module name used by permission checks. It is used inside an Aksara controller as part of the Core method API.
+`parentModule()` sets the module name used by permission checks.
 
 ### Purpose
 `parentModule()` sets the module name used by permission checks. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

@@ -1,4 +1,4 @@
-`select()` adds columns to the SELECT list. It is used inside an Aksara controller as part of the Core method API.
+`select()` adds columns to the SELECT list.
 
 ### Purpose
 `select()` adds columns to the SELECT list. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$column` | `string\|array` | Yes | - | Column name or column list. |
+| `$column` | <code>string&#124;array</code> | Yes | - | Column name or column list. |
 | `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |
 
 ### Return Value
@@ -22,6 +22,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `select()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
+
+> [!WARNING]
+> Keep `$escape` enabled unless the selected expression is trusted raw SQL.
 
 ### Basic Usage
 ```php

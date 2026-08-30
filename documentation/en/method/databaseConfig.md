@@ -1,4 +1,4 @@
-`databaseConfig()` points the controller to a custom database connection. It is used inside an Aksara controller as part of the Core method API.
+`databaseConfig()` points the controller to a custom database connection.
 
 ### Purpose
 `databaseConfig()` points the controller to a custom database connection. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$driver` | `array\|string` | No | `[]` | Database driver name or a complete connection configuration array. |
+| `$driver` | <code>array&#124;string</code> | No | `[]` | Database driver name or a complete connection configuration array. |
 | `$hostname` | `?string` | No | `null` | Database host name or IP address. |
 | `$port` | `?int` | No | `null` | Database server port. |
 | `$username` | `?string` | No | `null` | Database user name. |
@@ -26,6 +26,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `databaseConfig()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!NOTE]
+> This changes the database connection used by the Core model for the current controller flow; it does not rewrite global database configuration.
 
 ### Basic Usage
 ```php

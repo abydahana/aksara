@@ -1,4 +1,4 @@
-`groupStart()` opens a grouped WHERE expression. It is used inside an Aksara controller as part of the Core method API.
+`groupStart()` opens a grouped WHERE expression.
 
 ### Purpose
 `groupStart()` opens a grouped WHERE expression. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `groupStart()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
+
+> [!NOTE]
+> Every condition group must be closed with `groupEnd()` before the query is rendered.
 
 ### Basic Usage
 ```php

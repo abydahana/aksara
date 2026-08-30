@@ -1,4 +1,4 @@
-`defaultValue()` sets an editable default value for create forms. It is used inside an Aksara controller as part of the Core method API.
+`defaultValue()` sets an editable default value for create forms.
 
 ### Purpose
 `defaultValue()` sets an editable default value for create forms. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$field` | <code>string&#124;array</code> | No | `[]` | Field name, field list, or associative field configuration. |
 | `$value` | `mixed` | No | `null` | Value assigned to the given key or field. |
 
 ### Return Value
@@ -22,6 +22,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `defaultValue()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!NOTE]
+> `defaultValue()` affects the displayed form value. Use `setDefault()` when Core must write the value during create or update.
 
 ### Basic Usage
 ```php

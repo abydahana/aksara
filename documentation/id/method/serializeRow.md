@@ -12,7 +12,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$data` | `array\|object` | Ya | - | Satu row object atau array yang akan dinormalisasi. |
+| `$data` | <code>array&#124;object</code> | Ya | - | Satu row object atau array yang akan dinormalisasi. |
 | `$fieldData` | `?array` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 | `$mockFields` | `?array` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 | `$fieldNames` | `?array` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |

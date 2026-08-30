@@ -1,4 +1,4 @@
-`table()` sets the primary CRUD table. It is used inside an Aksara controller as part of the Core method API.
+`table()` sets the primary CRUD table.
 
 ### Purpose
 `table()` sets the primary CRUD table. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

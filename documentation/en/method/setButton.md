@@ -1,4 +1,4 @@
-`setButton()` overrides a built-in CRUD button. It is used inside an Aksara controller as part of the Core method API.
+`setButton()` overrides a built-in CRUD button.
 
 ### Purpose
 `setButton()` overrides a built-in CRUD button. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

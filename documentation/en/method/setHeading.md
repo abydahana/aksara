@@ -1,4 +1,4 @@
-`setHeading()` adds section headings before fields. It is used inside an Aksara controller as part of the Core method API.
+`setHeading()` adds section headings before fields.
 
 ### Purpose
 `setHeading()` adds section headings before fields. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `string\|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>string&#124;array</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
 ### Return Value

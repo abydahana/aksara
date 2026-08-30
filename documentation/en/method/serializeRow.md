@@ -1,4 +1,4 @@
-`serializeRow()` normalizes a single row before rendering. It is used inside an Aksara controller as part of the Core method API.
+`serializeRow()` normalizes a single row before rendering.
 
 ### Purpose
 `serializeRow()` normalizes a single row before rendering. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when you need to extend the Core CRUD flow while keeping Aksara validatio
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$data` | `array\|object` | Yes | - | Data row, rows, or submitted values. |
+| `$data` | <code>array&#124;object</code> | Yes | - | Data row, rows, or submitted values. |
 | `$fieldData` | `?array` | No | `null` | Compiled field metadata. |
 | `$mockFields` | `?array` | No | `null` | Mock field metadata. |
 | `$fieldNames` | `?array` | No | `null` | Compiled field-name list. |

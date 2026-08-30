@@ -1,4 +1,4 @@
-`updateData()` updates rows through the Core CRUD pipeline. It is used inside an Aksara controller as part of the Core method API.
+`updateData()` updates rows through the Core CRUD pipeline.
 
 ### Purpose
 `updateData()` updates rows through the Core CRUD pipeline. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -23,6 +23,9 @@ Returns an Aksara response object on success or failure, or `false` when the upd
 
 ### Behavior
 `updateData()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
+
+> [!WARNING]
+> Always pass a narrow `$where` condition when calling `updateData()` directly. Empty or broad conditions can update the wrong record set.
 
 ### Basic Usage
 ```php

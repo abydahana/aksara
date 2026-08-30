@@ -1,4 +1,4 @@
-`setTheme()` selects the frontend or backend theme. It is used inside an Aksara controller as part of the Core method API.
+`setTheme()` selects the frontend or backend theme.
 
 ### Purpose
 `setTheme()` selects the frontend or backend theme. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

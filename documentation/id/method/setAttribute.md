@@ -12,7 +12,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$params` | `string\|array` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$params` | <code>string&#124;array</code> | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
 | `$value` | `?string` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
 ### Return
@@ -22,6 +22,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 
 ### Perilaku
 `setAttribute()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
+
+> [!WARNING]
+> Attribute akan dirender ke kontrol yang dibuat. Jangan mengirim data request mentah yang tidak dipercaya ke method ini.
 
 ### Contoh Dasar
 ```php

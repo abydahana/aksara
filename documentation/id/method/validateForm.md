@@ -12,7 +12,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$data` | `array\|object` | Ya | - | Row sumber yang digunakan untuk validasi dan persiapan data submit. |
+| `$data` | <code>array&#124;object</code> | Ya | - | Row sumber yang digunakan untuk validasi dan persiapan data submit. |
 
 ### Return
 `mixed`

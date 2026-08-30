@@ -1,4 +1,4 @@
-`permitUpsert()` allows update requests to insert when the target row does not exist. It is used inside an Aksara controller as part of the Core method API.
+`permitUpsert()` allows update requests to insert when the target row does not exist.
 
 ### Purpose
 `permitUpsert()` allows update requests to insert when the target row does not exist. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

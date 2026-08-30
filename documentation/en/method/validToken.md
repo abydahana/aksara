@@ -1,4 +1,4 @@
-`validToken()` validates a submitted security token. It is used inside an Aksara controller as part of the Core method API.
+`validToken()` validates a submitted security token.
 
 ### Purpose
 `validToken()` validates a submitted security token. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -13,7 +13,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
 | `$token` | `?string` | Yes | - | Submitted token value. |
-| `$allowedUris` | `string\|array` | No | `[]` | Additional URI or URI list whose token may be accepted. |
+| `$allowedUris` | <code>string&#124;array</code> | No | `[]` | Additional URI or URI list whose token may be accepted. |
 
 ### Return Value
 `bool`
@@ -22,6 +22,9 @@ Returns `true` when the submitted token is accepted for the current route or all
 
 ### Behavior
 `validToken()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!CAUTION]
+> Do not bypass token validation for browser form submissions. API clients have their own token path, but normal POST requests should keep CSRF protection enabled.
 
 ### Basic Usage
 ```php

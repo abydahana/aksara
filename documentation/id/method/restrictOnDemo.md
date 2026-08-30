@@ -20,7 +20,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`restrictOnDemo()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`restrictOnDemo()` menandai request agar operasi tulis tertentu diblokir ketika mode demo aktif.
 
 ### Contoh Dasar
 ```php

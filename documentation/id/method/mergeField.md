@@ -12,7 +12,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$params` | `string\|array` | Ya | - | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$params` | <code>string&#124;array</code> | Ya | - | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
 
 ### Return
 `static`

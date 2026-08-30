@@ -1,4 +1,4 @@
-`notGroupStart()` opens a NOT grouped WHERE expression. It is used inside an Aksara controller as part of the Core method API.
+`notGroupStart()` opens a NOT grouped WHERE expression.
 
 ### Purpose
 `notGroupStart()` opens a NOT grouped WHERE expression. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

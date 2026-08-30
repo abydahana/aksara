@@ -1,4 +1,4 @@
-`unsetMethod()` disables one or more CRUD methods. It is used inside an Aksara controller as part of the Core method API.
+`unsetMethod()` disables one or more CRUD methods.
 
 ### Purpose
 `unsetMethod()` disables one or more CRUD methods. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `array\|string` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>array&#124;string</code> | No | `[]` | String value or associative array of values, depending on the method. |
 
 ### Return Value
 `static`
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `unsetMethod()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!WARNING]
+> Disabling a method removes it from the generated Core flow, but custom public controller methods can still exist if you define them separately.
 
 ### Basic Usage
 ```php

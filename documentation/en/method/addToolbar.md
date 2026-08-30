@@ -1,4 +1,4 @@
-`addToolbar()` adds custom buttons to the page toolbar. It is used inside an Aksara controller as part of the Core method API.
+`addToolbar()` adds custom buttons to the page toolbar.
 
 ### Purpose
 `addToolbar()` adds custom buttons to the page toolbar. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

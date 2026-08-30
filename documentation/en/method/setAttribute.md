@@ -1,4 +1,4 @@
-`setAttribute()` adds raw HTML attributes to generated fields. It is used inside an Aksara controller as part of the Core method API.
+`setAttribute()` adds raw HTML attributes to generated fields.
 
 ### Purpose
 `setAttribute()` adds raw HTML attributes to generated fields. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `string\|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>string&#124;array</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
 ### Return Value
@@ -22,6 +22,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `setAttribute()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!WARNING]
+> Attributes are rendered into generated controls. Do not pass untrusted raw request data directly into this method.
 
 ### Basic Usage
 ```php

@@ -12,7 +12,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$uris` | `string\|array` | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
+| `$uris` | <code>string&#124;array</code> | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
 
 ### Return
 `static`
@@ -20,7 +20,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`allowTokenFrom()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`allowTokenFrom()` menambahkan URI sumber token yang boleh diterima oleh validasi token pada request ini.
+
+> [!WARNING]
+> Izinkan token dari route lain hanya bila route tersebut memang berbagi alur form yang sama. Daftar URI yang terlalu luas melemahkan isolasi CSRF.
 
 ### Contoh Dasar
 ```php

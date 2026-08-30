@@ -1,4 +1,4 @@
-`setDescription()` sets the page description. It is used inside an Aksara controller as part of the Core method API.
+`setDescription()` sets the page description.
 
 ### Purpose
 `setDescription()` sets the page description. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `array\|string` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>array&#124;string</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$fallback` | `?string` | No | `null` | Fallback text used when a method-specific value is not available. |
 
 ### Return Value
