@@ -20,8 +20,8 @@ jobs:
         run: |
           git archive --format=zip -o release.zip HEAD \
             composer.json index.php LICENSE.txt nginx.conf \
-            aksara public/.htaccess public/favicon.ico public/index.php public/robots.txt public/assets \
-            themes install
+            aksara public \
+            modules/Home themes/index.html themes/backend themes/default writable install
 
       - name: Generate Manifest & Cryptographic Signature
         env:
@@ -55,30 +55,31 @@ jobs:
               "apply" => [
                   "allowed_paths" => [
                       "aksara/",
-                      "public/assets/",
-                      "public/.htaccess",
-                      "public/favicon.ico",
-                      "public/index.php",
-                      "public/robots.txt",
+                      "install/",
+                      "modules/Home/",
+                      "public/",
                       "themes/backend/",
                       "themes/default/",
-                      "install/",
+                      "themes/index.html",
+                      "writable/.htaccess",
+                      "writable/cache/index.html",
+                      "writable/debugbar/index.html",
+                      "writable/logs/index.html",
+                      "writable/session/index.html",
+                      "writable/translations/",
                       "composer.json",
-                      "composer.lock",
                       "index.php",
                       "LICENSE.txt",
                       "nginx.conf"
                   ],
                   "blocked_paths" => [
                       ".env",
-                      ".git/",
+                      "composer.lock",
                       "config.php",
-                      "modules/",
-                      "node_modules/",
                       "package-lock.json",
-                      "public/uploads/",
-                      "vendor/",
-                      "writable/"
+                      ".git/",
+                      "node_modules/",
+                      "vendor/"
                   ],
                   "run_migrations" => true,
                   "run_seeders" => true
