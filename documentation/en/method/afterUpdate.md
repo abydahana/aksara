@@ -1,4 +1,4 @@
-`afterUpdate()` runs custom logic after an update operation. It is used inside an Aksara controller as part of the Core method API.
+`afterUpdate()` runs custom logic after an update operation.
 
 ### Purpose
 `afterUpdate()` runs custom logic after an update operation. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

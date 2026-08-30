@@ -22,6 +22,9 @@ Mengembalikan response Aksara yang menjelaskan hasil delete batch, atau `null` b
 ### Perilaku
 `deleteBatch()` merupakan bagian dari pipeline internal Core dan bekerja dengan metadata field, state request, renderer, validasi, hook, serta response CRUD.
 
+> [!CAUTION]
+> Batch delete membaca item dari POST. Validasi route dan permission sebelum membuka alur ini.
+
 ### Contoh Dasar
 ```php
 $result = $this->deleteBatch('orders');

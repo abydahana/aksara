@@ -1,4 +1,4 @@
-`verticalSchema()` enables vertical key-value schema handling. It is used inside an Aksara controller as part of the Core method API.
+`verticalSchema()` enables vertical key-value schema handling.
 
 ### Purpose
 `verticalSchema()` enables vertical key-value schema handling. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -23,6 +23,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `verticalSchema()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!IMPORTANT]
+> Use this only for key-value tables. Normal relational tables should keep the regular column-based flow.
 
 ### Basic Usage
 ```php

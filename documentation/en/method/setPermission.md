@@ -1,4 +1,4 @@
-`setPermission()` enforces module and method permissions. It is used inside an Aksara controller as part of the Core method API.
+`setPermission()` enforces module and method permissions.
 
 ### Purpose
 `setPermission()` enforces module and method permissions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$permissiveGroup` | `array\|string` | No | `[]` | Allowed group IDs as an array or comma-separated string. Use `0` to allow every group. |
+| `$permissiveGroup` | <code>array&#124;string</code> | No | `[]` | Allowed group IDs as an array or comma-separated string. Use `0` to allow every group. |
 | `$redirect` | `?string` | No | `null` | Optional redirect URL when access is denied. |
 
 ### Return Value
@@ -21,7 +21,10 @@ Use it near the beginning of a controller method to configure how Core handles t
 Returns the current controller instance when access is allowed, or an Aksara/CodeIgniter response when access is denied or redirected.
 
 ### Behavior
-`setPermission()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+`setPermission()` marks the request for Core permission checking. The check uses the active module, method, and group at the time this method is called.
+
+> [!IMPORTANT]
+> Call `setPermission()` after `parentModule()` or `setMethod()` when those methods are needed, because permission is checked using the module and method that are active at call time.
 
 ### Basic Usage
 ```php

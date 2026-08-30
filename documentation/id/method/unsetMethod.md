@@ -12,7 +12,7 @@ Gunakan ketika antarmuka bawaan perlu metadata halaman, aksi, tombol, filter, la
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$params` | `array\|string` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$params` | <code>array&#124;string</code> | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
 
 ### Return
 `static`
@@ -21,6 +21,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 
 ### Perilaku
 `unsetMethod()` menyimpan konfigurasi antarmuka pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
+
+> [!WARNING]
+> Menonaktifkan method akan menghapusnya dari alur Core bawaan, tetapi public method custom tetap bisa ada bila didefinisikan terpisah.
 
 ### Contoh Dasar
 ```php

@@ -12,7 +12,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$subquery` | `object\|string` | Ya | - | Object query builder atau string SQL subquery. |
+| `$subquery` | <code>object&#124;string</code> | Ya | - | Object query builder atau string SQL subquery. |
 | `$alias` | `string` | Ya | - | Alias untuk ekspresi select atau subquery. |
 
 ### Return

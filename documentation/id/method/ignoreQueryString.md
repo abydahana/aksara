@@ -12,7 +12,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$keys` | `array\|string` | Ya | - | Nilai yang digunakan oleh metode ini. |
+| `$keys` | <code>array&#124;string</code> | Ya | - | Nilai yang digunakan oleh metode ini. |
 
 ### Return
 `static`
@@ -20,7 +20,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`ignoreQueryString()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`ignoreQueryString()` memberi tahu Core agar key query string tertentu tidak ikut memengaruhi filter, pagination, atau query state.
 
 ### Contoh Dasar
 ```php

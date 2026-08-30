@@ -23,6 +23,9 @@ Mengembalikan response Aksara saat sukses atau gagal, atau `null` bila alur tida
 ### Perilaku
 `insertData()` merupakan bagian dari pipeline internal Core dan bekerja dengan metadata field, state request, renderer, validasi, hook, serta response CRUD.
 
+> [!WARNING]
+> Helper CRUD langsung tetap menjalankan hook dan response handling Core. Gunakan hanya ketika alur `render()` biasa belum cukup.
+
 ### Contoh Dasar
 ```php
 $result = $this->insertData('orders', ['status' => 'lunas']);

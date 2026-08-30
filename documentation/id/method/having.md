@@ -12,7 +12,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | <code>string&#124;array</code> | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 | `$value` | `mixed` | Tidak | `''` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 | `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |
 
@@ -23,6 +23,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 
 ### Perilaku
 `having()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
+
+> [!WARNING]
+> HAVING biasanya bekerja dengan alias agregasi. Pastikan alias konsisten dengan kolom agregasi yang dipilih.
 
 ### Contoh Dasar
 ```php

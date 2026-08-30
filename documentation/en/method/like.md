@@ -1,4 +1,4 @@
-`like()` adds AND LIKE conditions. It is used inside an Aksara controller as part of the Core method API.
+`like()` adds AND LIKE conditions.
 
 ### Purpose
 `like()` adds AND LIKE conditions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$field` | <code>string&#124;array</code> | No | `[]` | Field name, field list, or associative field configuration. |
 | `$match` | `mixed` | No | `''` | Value matched by LIKE/HAVING LIKE. |
 | `$side` | `string` | No | `'both'` | Wildcard side: `before`, `after`, `both`, or `none`. |
 | `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |
@@ -25,6 +25,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `like()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
+
+> [!WARNING]
+> Avoid feeding unsanitized search text into raw LIKE expressions. Let Core/database escaping handle request input.
 
 ### Basic Usage
 ```php

@@ -12,7 +12,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$driver` | `array\|string` | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
+| `$driver` | <code>array&#124;string</code> | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
 | `$hostname` | `?string` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 | `$port` | `?int` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 | `$username` | `?string` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
@@ -25,7 +25,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`databaseConfig()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`databaseConfig()` mengganti konfigurasi koneksi database yang dipakai model Core pada request controller ini.
+
+> [!NOTE]
+> Ini mengubah koneksi database yang dipakai model Core pada alur controller saat ini; bukan mengubah konfigurasi database global.
 
 ### Contoh Dasar
 ```php

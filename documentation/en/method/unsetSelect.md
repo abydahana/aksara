@@ -1,4 +1,4 @@
-`unsetSelect()` removes columns from the prepared SELECT list. It is used inside an Aksara controller as part of the Core method API.
+`unsetSelect()` removes columns from the prepared SELECT list.
 
 ### Purpose
 `unsetSelect()` removes columns from the prepared SELECT list. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$column` | `string\|array` | Yes | - | Column name or column list. |
+| `$column` | <code>string&#124;array</code> | Yes | - | Column name or column list. |
 
 ### Return Value
 `static`

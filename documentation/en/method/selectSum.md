@@ -1,4 +1,4 @@
-`selectSum()` adds a SUM aggregate column. It is used inside an Aksara controller as part of the Core method API.
+`selectSum()` adds a SUM aggregate column.
 
 ### Purpose
 `selectSum()` adds a SUM aggregate column. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

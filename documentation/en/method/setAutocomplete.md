@@ -1,4 +1,4 @@
-`setAutocomplete()` turns a field into an autocomplete relation input. It is used inside an Aksara controller as part of the Core method API.
+`setAutocomplete()` turns a field into an autocomplete relation input.
 
 ### Purpose
 `setAutocomplete()` turns a field into an autocomplete relation input. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -28,6 +28,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `setAutocomplete()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!NOTE]
+> Autocomplete depends on relation/search metadata. Make sure the target field can be selected and filtered by the generated query.
 
 ### Basic Usage
 ```php

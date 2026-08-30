@@ -23,6 +23,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 ### Perilaku
 `sortable()` menyimpan konfigurasi antarmuka pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
+> [!WARNING]
+> Kolom urutan harus writable dan stabil. Hindari sorting pada data yang urutannya ditentukan aturan bisnis atau sistem eksternal.
+
 ### Contoh Dasar
 ```php
 $this->sortable('order_id', 'sort_order');

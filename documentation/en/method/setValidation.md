@@ -1,4 +1,4 @@
-`setValidation()` adds validation rules to generated forms. It is used inside an Aksara controller as part of the Core method API.
+`setValidation()` adds validation rules to generated forms.
 
 ### Purpose
 `setValidation()` adds validation rules to generated forms. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `string\|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>string&#124;array</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
 ### Return Value
@@ -22,6 +22,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `setValidation()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+> [!IMPORTANT]
+> Validation rules are applied during Core form processing. Keep rules aligned with field types, especially for upload, relation, password, and date fields.
 
 ### Basic Usage
 ```php

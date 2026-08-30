@@ -1,4 +1,4 @@
-`addButton()` adds custom row action buttons to a CRUD table. It is used inside an Aksara controller as part of the Core method API.
+`addButton()` adds custom row action buttons to a CRUD table.
 
 ### Purpose
 `addButton()` adds custom row action buttons to a CRUD table. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

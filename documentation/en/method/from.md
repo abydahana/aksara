@@ -1,4 +1,4 @@
-`from()` sets the source table for the prepared query. It is used inside an Aksara controller as part of the Core method API.
+`from()` sets the source table for the prepared query.
 
 ### Purpose
 `from()` sets the source table for the prepared query. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

@@ -1,4 +1,4 @@
-`setUploadPath()` changes the upload directory namespace for generated upload fields. It is used inside an Aksara controller as part of the Core method API.
+`setUploadPath()` changes the upload directory namespace for generated upload fields.
 
 ### Purpose
 `setUploadPath()` changes the upload directory namespace for generated upload fields. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `setUploadPath()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!WARNING]
+> Keep upload paths module-specific and avoid paths controlled by user input.
 
 ### Basic Usage
 ```php

@@ -12,7 +12,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | <code>string&#124;array</code> | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 | `$direction` | `string` | Tidak | `''` | Arah urutan, umumnya `ASC` atau `DESC`. |
 | `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |
 

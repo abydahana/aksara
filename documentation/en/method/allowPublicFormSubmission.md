@@ -1,4 +1,4 @@
-`allowPublicFormSubmission()` allows a public form to use the Core submission pipeline. It is used inside an Aksara controller as part of the Core method API.
+`allowPublicFormSubmission()` allows a public form to use the Core submission pipeline.
 
 ### Purpose
 `allowPublicFormSubmission()` allows a public form to use the Core submission pipeline. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `allowPublicFormSubmission()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!WARNING]
+> Use this only for public forms that must submit through Core. Keep validation, token checks, and write targets narrow.
 
 ### Basic Usage
 ```php

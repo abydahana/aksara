@@ -1,4 +1,4 @@
-`sortable()` enables drag-and-drop row sorting. It is used inside an Aksara controller as part of the Core method API.
+`sortable()` enables drag-and-drop row sorting.
 
 ### Purpose
 `sortable()` enables drag-and-drop row sorting. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -22,6 +22,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `sortable()` stores UI configuration for the generated interface. The renderer reads that configuration later and places the control in the correct table, toolbar, filter, grid, or form location.
+
+> [!WARNING]
+> The order column must be writable and stable. Avoid enabling sorting on data that is ordered by business rules or external systems.
 
 ### Basic Usage
 ```php

@@ -1,4 +1,4 @@
-`ignoreQueryString()` removes selected query-string keys from generated URLs. It is used inside an Aksara controller as part of the Core method API.
+`ignoreQueryString()` removes selected query-string keys from generated URLs.
 
 ### Purpose
 `ignoreQueryString()` removes selected query-string keys from generated URLs. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$keys` | `array\|string` | Yes | - | Query-string key or list of keys to ignore. |
+| `$keys` | <code>array&#124;string</code> | Yes | - | Query-string key or list of keys to ignore. |
 
 ### Return Value
 `static`

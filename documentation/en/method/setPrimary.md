@@ -1,4 +1,4 @@
-`setPrimary()` declares primary key fields for CRUD actions. It is used inside an Aksara controller as part of the Core method API.
+`setPrimary()` declares primary key fields for CRUD actions.
 
 ### Purpose
 `setPrimary()` declares primary key fields for CRUD actions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `array\|string` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$field` | <code>array&#124;string</code> | No | `[]` | Field name, field list, or associative field configuration. |
 
 ### Return Value
 `static`

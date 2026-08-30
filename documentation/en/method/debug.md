@@ -1,4 +1,4 @@
-`debug()` prints internal Core state before rendering. It is used inside an Aksara controller as part of the Core method API.
+`debug()` prints internal Core state before rendering.
 
 ### Purpose
 `debug()` prints internal Core state before rendering. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `debug()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!WARNING]
+> Avoid enabling debug output in production because it can expose query, request, or controller state.
 
 ### Basic Usage
 ```php

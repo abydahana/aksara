@@ -1,4 +1,4 @@
-`setTemplate()` passes custom options to the template renderer. It is used inside an Aksara controller as part of the Core method API.
+`setTemplate()` passes custom options to the template renderer.
 
 ### Purpose
 `setTemplate()` passes custom options to the template renderer. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `array\|string` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>array&#124;string</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
 ### Return Value

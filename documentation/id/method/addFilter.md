@@ -12,7 +12,7 @@ Gunakan ketika antarmuka bawaan perlu metadata halaman, aksi, tombol, filter, la
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$filter` | `array\|string` | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
+| `$filter` | <code>array&#124;string</code> | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
 | `$options` | `array` | Tidak | `[]` | Nilai yang digunakan oleh metode ini. |
 
 ### Return

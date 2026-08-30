@@ -12,7 +12,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | <code>string&#124;array</code> | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 | `$value` | `mixed` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
 ### Return
@@ -22,6 +22,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 
 ### Perilaku
 `defaultValue()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
+
+> [!NOTE]
+> `defaultValue()` memengaruhi nilai yang tampil di form. Gunakan `setDefault()` bila Core harus menulis nilai saat create atau update.
 
 ### Contoh Dasar
 ```php

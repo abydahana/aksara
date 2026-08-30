@@ -12,7 +12,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `array\|string` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | <code>array&#124;string</code> | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 
 ### Return
 `static`

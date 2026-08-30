@@ -1,4 +1,4 @@
-`unsetTruncate()` prevents selected table columns from being shortened. It is used inside an Aksara controller as part of the Core method API.
+`unsetTruncate()` prevents selected table columns from being shortened.
 
 ### Purpose
 `unsetTruncate()` prevents selected table columns from being shortened. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | Yes | - | Field name, field list, or associative field configuration. |
+| `$field` | <code>string&#124;array</code> | Yes | - | Field name, field list, or associative field configuration. |
 
 ### Return Value
 `static`

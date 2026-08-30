@@ -1,4 +1,4 @@
-`addFilter()` adds extra controls to the index table filter area. It is used inside an Aksara controller as part of the Core method API.
+`addFilter()` adds extra controls to the index table filter area.
 
 ### Purpose
 `addFilter()` adds extra controls to the index table filter area. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$filter` | `array\|string` | No | `[]` | Filter name or associative filter configuration array. |
+| `$filter` | <code>array&#124;string</code> | No | `[]` | Filter name or associative filter configuration array. |
 | `$options` | `array` | No | `[]` | Filter option list used by the shorthand form. |
 
 ### Return Value

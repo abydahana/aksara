@@ -1,4 +1,4 @@
-`mergeContent()` combines multiple values into one rendered column. It is used inside an Aksara controller as part of the Core method API.
+`mergeContent()` combines multiple values into one rendered column.
 
 ### Purpose
 `mergeContent()` combines multiple values into one rendered column. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

@@ -1,4 +1,4 @@
-`setField()` changes how fields are rendered. It is used inside an Aksara controller as part of the Core method API.
+`setField()` changes how fields are rendered.
 
 ### Purpose
 `setField()` changes how fields are rendered. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,9 +12,9 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | No | `[]` | Field name, field list, or associative field configuration. |
-| `$type` | `string\|array\|null` | No | `null` | Field renderer type or mock field type. |
-| `$parameter` | `array\|string\|null` | No | `null` | Route or query parameters passed to the action. |
+| `$field` | <code>string&#124;array</code> | No | `[]` | Field name, field list, or associative field configuration. |
+| `$type` | <code>string&#124;array&#124;null</code> | No | `null` | Field renderer type or mock field type. |
+| `$parameter` | <code>array&#124;string&#124;null</code> | No | `null` | Route or query parameters passed to the action. |
 | `$alpha` | `mixed` | No | `null` | Extra field parameter consumed by specific field renderers. |
 | `$beta` | `mixed` | No | `null` | Extra field parameter consumed by specific field renderers. |
 | `$charlie` | `mixed` | No | `null` | Extra field parameter consumed by specific field renderers. |

@@ -1,4 +1,4 @@
-`deleteData()` deletes one row through the Core CRUD pipeline. It is used inside an Aksara controller as part of the Core method API.
+`deleteData()` deletes one row through the Core CRUD pipeline.
 
 ### Purpose
 `deleteData()` deletes one row through the Core CRUD pipeline. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -23,6 +23,9 @@ Returns an Aksara response object on success or failure, or `null` when the flow
 
 ### Behavior
 `deleteData()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
+
+> [!CAUTION]
+> Always pass a narrow `$where` condition and keep the default limit unless the delete flow intentionally targets more than one row.
 
 ### Basic Usage
 ```php

@@ -12,7 +12,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$column` | `string\|array` | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
+| `$column` | <code>string&#124;array</code> | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
 
 ### Return
 `static`

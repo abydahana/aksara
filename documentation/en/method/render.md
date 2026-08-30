@@ -1,4 +1,4 @@
-`render()` dispatches the configured controller into the proper output. It is used inside an Aksara controller as part of the Core method API.
+`render()` dispatches the configured controller into the proper output.
 
 ### Purpose
 `render()` dispatches the configured controller into the proper output. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -22,6 +22,9 @@ Returns the final response for the active request. The concrete value can be a r
 
 ### Behavior
 `render()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
+
+> [!IMPORTANT]
+> `render()` is the point where Core compiles configuration, query, validation, CRUD actions, and output. Put configuration calls before it.
 
 ### Basic Usage
 ```php

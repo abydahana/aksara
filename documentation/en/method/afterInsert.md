@@ -1,4 +1,4 @@
-`afterInsert()` runs custom logic after a create operation. It is used inside an Aksara controller as part of the Core method API.
+`afterInsert()` runs custom logic after a create operation.
 
 ### Purpose
 `afterInsert()` runs custom logic after a create operation. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

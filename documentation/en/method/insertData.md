@@ -1,4 +1,4 @@
-`insertData()` inserts a row through the Core CRUD pipeline. It is used inside an Aksara controller as part of the Core method API.
+`insertData()` inserts a row through the Core CRUD pipeline.
 
 ### Purpose
 `insertData()` inserts a row through the Core CRUD pipeline. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -22,6 +22,9 @@ Returns an Aksara response object on success or failure, or `null` when the flow
 
 ### Behavior
 `insertData()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
+
+> [!WARNING]
+> Direct CRUD helpers still execute Core hooks and response handling. Use them only when the normal `render()` flow is not enough.
 
 ### Basic Usage
 ```php

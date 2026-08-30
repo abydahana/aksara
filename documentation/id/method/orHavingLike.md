@@ -12,7 +12,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$field` | <code>string&#124;array</code> | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
 | `$match` | `mixed` | Tidak | `''` | Teks atau nilai untuk kondisi LIKE/HAVING LIKE. |
 | `$side` | `string` | Tidak | `'both'` | Sisi wildcard LIKE: `before`, `after`, `both`, atau nilai yang didukung database layer. |
 | `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |

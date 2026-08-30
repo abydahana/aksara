@@ -20,7 +20,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`setUploadPath()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`setUploadPath()` mengganti target penyimpanan upload untuk field file dan image pada request controller ini.
+
+> [!WARNING]
+> Gunakan path upload yang spesifik per modul dan jangan memakai path dari input pengguna secara langsung.
 
 ### Contoh Dasar
 ```php

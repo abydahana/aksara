@@ -13,7 +13,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
 | `$token` | `?string` | Ya | - | Token CSRF atau token API yang dikirim. |
-| `$allowedUris` | `string\|array` | Tidak | `[]` | URI atau daftar URI yang tokennya boleh diterima. |
+| `$allowedUris` | <code>string&#124;array</code> | Tidak | `[]` | URI atau daftar URI yang tokennya boleh diterima. |
 
 ### Return
 `bool`
@@ -21,7 +21,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan `true` ketika pemeriksaan berhasil dan `false` ketika gagal.
 
 ### Perilaku
-`validToken()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`validToken()` membandingkan token yang dikirim dengan token route saat ini atau URI lain yang diizinkan.
+
+> [!CAUTION]
+> Jangan melewati validasi token untuk submit form dari browser. API client punya jalur token sendiri, tetapi request POST normal sebaiknya tetap memakai proteksi CSRF.
 
 ### Contoh Dasar
 ```php

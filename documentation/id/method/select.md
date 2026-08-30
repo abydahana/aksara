@@ -12,7 +12,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$column` | `string\|array` | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
+| `$column` | <code>string&#124;array</code> | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
 | `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |
 
 ### Return
@@ -22,6 +22,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 
 ### Perilaku
 `select()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
+
+> [!WARNING]
+> Biarkan `$escape` aktif kecuali ekspresi SELECT adalah SQL mentah yang sudah dipercaya.
 
 ### Contoh Dasar
 ```php

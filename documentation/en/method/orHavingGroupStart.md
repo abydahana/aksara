@@ -1,4 +1,4 @@
-`orHavingGroupStart()` opens an OR grouped HAVING expression. It is used inside an Aksara controller as part of the Core method API.
+`orHavingGroupStart()` opens an OR grouped HAVING expression.
 
 ### Purpose
 `orHavingGroupStart()` opens an OR grouped HAVING expression. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

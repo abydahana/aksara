@@ -1,4 +1,4 @@
-`havingGroupEnd()` closes the current grouped HAVING expression. It is used inside an Aksara controller as part of the Core method API.
+`havingGroupEnd()` closes the current grouped HAVING expression.
 
 ### Purpose
 `havingGroupEnd()` closes the current grouped HAVING expression. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.

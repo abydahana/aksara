@@ -1,4 +1,4 @@
-`setMessages()` overrides Core response messages. It is used inside an Aksara controller as part of the Core method API.
+`setMessages()` overrides Core response messages.
 
 ### Purpose
 `setMessages()` overrides Core response messages. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `array\|string` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | <code>array&#124;string</code> | No | `[]` | String value or associative array of values, depending on the method. |
 | `$code` | `int` | No | `0` | HTTP or application status code associated with the message. |
 | `$messages` | `?string` | No | `null` | Custom message text. |
 

@@ -12,9 +12,9 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
-| `$type` | `string\|array\|null` | Tidak | `null` | Tipe renderer seperti `text`, `textarea`, `wysiwyg`, `image`, `select`, `boolean`, atau `custom`. |
-| `$parameter` | `array\|string\|null` | Tidak | `null` | Parameter tambahan untuk renderer, URL, atau query. |
+| `$field` | <code>string&#124;array</code> | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$type` | <code>string&#124;array&#124;null</code> | Tidak | `null` | Tipe renderer seperti `text`, `textarea`, `wysiwyg`, `image`, `select`, `boolean`, atau `custom`. |
+| `$parameter` | <code>array&#124;string&#124;null</code> | Tidak | `null` | Parameter tambahan untuk renderer, URL, atau query. |
 | `$alpha` | `mixed` | Tidak | `null` | Parameter renderer tambahan. |
 | `$beta` | `mixed` | Tidak | `null` | Parameter renderer tambahan. |
 | `$charlie` | `mixed` | Tidak | `null` | Parameter renderer tambahan. |

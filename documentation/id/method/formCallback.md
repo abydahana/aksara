@@ -20,7 +20,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`formCallback()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`formCallback()` menyimpan nama callback form yang dipakai Core saat validasi dan persiapan submit berjalan.
 
 ### Contoh Dasar
 ```php

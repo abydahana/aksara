@@ -22,6 +22,9 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 ### Perilaku
 `groupStart()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query. Panggilan pembuka dan penutup grup harus seimbang.
 
+> [!NOTE]
+> Setiap grup kondisi harus ditutup dengan `groupEnd()` sebelum query dirender.
+
 ### Contoh Dasar
 ```php
 $this->groupStart()->where('orders.status', 'lunas')->orWhere('orders.status', 'pending')->groupEnd();

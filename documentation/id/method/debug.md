@@ -20,7 +20,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`debug()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+`debug()` mengubah mode keluaran debug untuk request saat ini. Mode ini dibaca saat Core menyiapkan parameter, query, property, atau benchmark output.
+
+> [!WARNING]
+> Hindari debug output di production karena dapat membuka query, request, atau state controller.
 
 ### Contoh Dasar
 ```php

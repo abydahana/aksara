@@ -1,4 +1,4 @@
-`setAiContext()` stores module-specific context for the AI assistant. It is used inside an Aksara controller as part of the Core method API.
+`setAiContext()` stores module-specific context for the AI assistant.
 
 ### Purpose
 `setAiContext()` stores module-specific context for the AI assistant. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
@@ -21,6 +21,9 @@ Returns the current controller instance so it can be chained with other Core met
 
 ### Behavior
 `setAiContext()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+> [!NOTE]
+> AI context is cached per route for the current module flow. Keep the provided data small and avoid secrets.
 
 ### Basic Usage
 ```php
