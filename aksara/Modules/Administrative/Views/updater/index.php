@@ -48,9 +48,9 @@ if (isset($updater->changelog)) {
     $changelog = ob_get_clean();
 } ?>
 
-<div class="container-fluid py-3">
+<div class="container-fluid <?= ($changelog ? 'pb-3' : 'py-3') ?>">
     <?php if ($changelog): ?>
-        <div class="alert alert-info rounded-0 border-0" style="margin-left:-1rem; margin-right:-1rem">
+        <div class="alert alert-info rounded-0 border-0" style="margin-inline:-1rem">
             <h5>
                 <?= phrase('Update Available') ?>
             </h5>
