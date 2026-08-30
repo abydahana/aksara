@@ -1,31 +1,73 @@
-Your contribution's needed!
+`validToken()` validates a submitted security token. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`validToken()` validates a submitted security token. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it near the beginning of a controller method to configure how Core handles the current request.
 
 ### Reference
-`validToken($foo, $bar)`
+`validToken(?string $token, string|array $allowedUris = [])`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$token` | `?string` | Yes | `` | Submitted token value. |
+| `$allowedUris` | `string|array` | No | `[]` | Additional URI or URI list whose token may be accepted. |
 
-&nbsp;
+### Return Value
+`bool`
 
-### Usage Sample
-`$this->validToken('foo', 'bar');`
+Returns `true` when the submitted token is accepted for the current route or allowed URI; otherwise returns `false`.
 
-`$this->validToken('baz', 'qux');`
+### Behavior
+`validToken()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->validToken([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+if (! $this->validToken($this->request->getPost('_token'), ['orders/create'])) {
+    return throw_exception(403, phrase('The security token is invalid or expired.'));
+}
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->setTitle(phrase('Orders'))
+    ->setIcon('mdi mdi-cart-outline')
+    ->setPermission();
+```
 
-### Read Also
-* [formCallback](./formCallback)
-* [validateForm](./validateForm)
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->validToken();
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The controller stores the configuration and applies it later in the current request lifecycle.
+
+### Notes
+* Call configuration methods before `setPermission()` or `render()` when those steps depend on the configured value.
+
+### Common Mistakes
+* Calling the method after the permission or render step that already needed it.
+* Spreading related configuration across distant parts of the controller.
+
+### Related Methods
+* [setPermission](./setPermission)
+* [allowTokenFrom](./allowTokenFrom)
+* [permitUpsert](./permitUpsert)
+* [allowPublicFormSubmission](./allowPublicFormSubmission)
+* [restrictOnDemo](./restrictOnDemo)

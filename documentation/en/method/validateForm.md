@@ -1,31 +1,74 @@
-Your contribution's needed!
+`validateForm()` validates submitted create/update data. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`validateForm()` validates submitted create/update data. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when you need to extend the Core CRUD flow while keeping Aksara validation, hooks, formatting, and response handling.
 
 ### Reference
-`validateForm($foo, $bar)`
+`validateForm(array|object $data)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$data` | `array|object` | Yes | `` | Data row, rows, or submitted values. |
 
-&nbsp;
+### Return Value
+`mixed`
 
-### Usage Sample
-`$this->validateForm('foo', 'bar');`
+Returns an Aksara response object when validation fails or when the prepared create/update flow completes. It may return no explicit value when Core continues internally.
 
-`$this->validateForm('baz', 'qux');`
+### Behavior
+`validateForm()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->validateForm([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$order = $this->model->getWhere('orders', ['order_id' => 10], 1)->row();
+$validation = $this->validateForm($order);
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$order = $this->model->getWhere('orders', ['order_id' => 10], 1)->row();
+$this->setValidation('status', 'required|in_list[draft,paid,cancelled]');
 
-### Read Also
-* [formCallback](./formCallback)
-* [validToken](./validToken)
+return $this->validateForm($order);
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function process()
+    {
+        $order = $this->model->getWhere('orders', ['order_id' => 10], 1)->row();
+        $this->setValidation('status', 'required|in_list[draft,paid,cancelled]');
+
+        return $this->validateForm($order);
+    }
+}
+```
+
+### Result
+The Core pipeline returns the documented value while preserving Aksara validation, hook, permission, audit, and response behavior where applicable.
+
+### Notes
+* These methods are usually called by `render()` internally, but can be useful for advanced modules.
+* Keep direct calls close to the surrounding CRUD logic so the response flow is easy to audit.
+
+### Common Mistakes
+* Bypassing Core validation or hooks unintentionally by writing directly to the database.
+* Returning raw arrays when the caller expects an Aksara response object.
+
+### Related Methods
+* [render](./render)
+* [renderTable](./renderTable)
+* [renderRead](./renderRead)
+* [renderForm](./renderForm)
+* [serialize](./serialize)
+* [serializeRow](./serializeRow)

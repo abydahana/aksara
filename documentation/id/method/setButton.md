@@ -1,30 +1,87 @@
-Kontribusi kalian dibutuhkan!
+`setButton()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`setButton()` mengganti tombol CRUD bawaan atau perilaku tombol kustom. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
 
 ### Referensi
-`setButton($foo, $bar)`
+`setButton(string $button, ?string $value = null, ?string $label = null, ?string $class = null, ?string $icon = null, array $parameter = [], ?bool $newTab = false): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$button` | `string` | Ya | - | Key tombol bawaan atau kustom yang dikonfigurasi. |
+| `$value` | `?string` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
+| `$label` | `?string` | Tidak | `null` | Label yang dibaca pengguna. Gunakan `phrase()` untuk teks UI. |
+| `$class` | `?string` | Tidak | `null` | Daftar class CSS untuk kontrol yang dibuat. |
+| `$icon` | `?string` | Tidak | `null` | Class ikon untuk kontrol yang dibuat. |
+| `$parameter` | `array` | Tidak | `[]` | Parameter tambahan untuk renderer, URL, atau query. |
+| `$newTab` | `?bool` | Tidak | `false` | Menentukan apakah action dibuka di tab baru. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->setButton('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->setButton('baz', 'qux');`
+### Perilaku
+`setButton()` menyimpan konfigurasi interface pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->setButton([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->setButton('create', 'pesanan/create', phrase('Pesanan Baru'), 'btn btn-primary', 'mdi mdi-plus');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->setButton('create', 'pesanan/create', phrase('Pesanan Baru'), 'btn btn-primary', 'mdi mdi-plus');
+$this->addToolbar('pesanan/laporan', phrase('Laporan'), 'btn btn-outline-primary', 'mdi mdi-chart-bar')
+    ->setIcon('mdi mdi-cart')
+    ->setTitle(phrase('Pesanan'));
 
-### Baca Juga
-* [fieldPrepend](./fieldPrepend)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->setButton('create', 'pesanan/create', phrase('Pesanan Baru'), 'btn btn-primary', 'mdi mdi-plus');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Gunakan `phrase()` untuk label yang terlihat agar UI tetap dapat diterjemahkan.
+* Panggil konfigurasi UI sebelum `render()` agar renderer dapat membacanya.
+
+### Kesalahan Umum
+* Menulis label hard-code yang seharusnya memakai `phrase()`.
+* Menambahkan action baris tanpa parameter primary key yang dibutuhkan URL tujuan.
+* Memanggil metode terlalu lambat setelah output dibuat.
+
+### Metode Terkait
+* [setTitle](./setTitle)
+* [setIcon](./setIcon)
+* [addToolbar](./addToolbar)
+* [addButton](./addButton)
+* [addDropdown](./addDropdown)
+* [addSubmitButton](./addSubmitButton)
+* [unsetToolbar](./unsetToolbar)
+* [render](./render)

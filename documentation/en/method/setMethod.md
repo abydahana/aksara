@@ -1,30 +1,70 @@
-Your contribution's needed!
+`setMethod()` overrides the active Core method. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`setMethod()` overrides the active Core method. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it near the beginning of a controller method to configure how Core handles the current request.
 
 ### Reference
-`setMethod($foo, $bar)`
+`setMethod(string $method = 'index')`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$method` | `string` | No | `'index'` | Core method name such as `index`, `create`, `read`, `update`, or `delete`. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->setMethod('foo', 'bar');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-`$this->setMethod('baz', 'qux');`
+### Behavior
+`setMethod()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->setMethod([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->setMethod('read');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->setTitle(phrase('Orders'))
+    ->setIcon('mdi mdi-cart-outline')
+    ->setPermission();
+```
 
-### Read Also
-* [getMethod](./getMethod)
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->setMethod('read');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The controller stores the configuration and applies it later in the current request lifecycle.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Call configuration methods before `setPermission()` or `render()` when those steps depend on the configured value.
+* Order matters: call `parentModule()` and `setMethod()` before `setPermission()` when needed.
+
+### Common Mistakes
+* Calling the method after the permission or render step that already needed it.
+* Spreading related configuration across distant parts of the controller.
+
+### Related Methods
+* [render](./render)

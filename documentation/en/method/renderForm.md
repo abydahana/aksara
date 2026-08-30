@@ -1,30 +1,74 @@
-Your contribution's needed!
+`renderForm()` formats data for the create/update form renderer. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`renderForm()` formats data for the create/update form renderer. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when you need to extend the Core CRUD flow while keeping Aksara validation, hooks, formatting, and response handling.
 
 ### Reference
-`renderForm($foo, $bar)`
+`renderForm(array|object $data)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$data` | `array|object` | Yes | `` | Data row, rows, or submitted values. |
 
-&nbsp;
+### Return Value
+`array`
 
-### Usage Sample
-`$this->renderForm('foo', 'bar');`
+Returns an array prepared for the create/update form renderer, or an Aksara error response when the requested source row is not available.
 
-`$this->renderForm('baz', 'qux');`
+### Behavior
+`renderForm()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->renderForm([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$order = $this->model->getWhere('orders', ['order_id' => 10], 1)->row();
+$form = $this->renderForm($order);
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$order = $this->model->getWhere('orders', ['order_id' => 10], 1)->row();
+$form = $this->renderForm($order);
 
-### Read Also
-* [fieldPrepend](./fieldPrepend)
+return $this->setOutput('preview', $form)->render();
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function preview()
+    {
+        $order = $this->model->getWhere('orders', ['order_id' => 10], 1)->row();
+        $form = $this->renderForm($order);
+
+        return $this->setOutput('preview', $form)->render();
+    }
+}
+```
+
+### Result
+The Core pipeline returns the documented value while preserving Aksara validation, hook, permission, audit, and response behavior where applicable.
+
+### Notes
+* These methods are usually called by `render()` internally, but can be useful for advanced modules.
+* Keep direct calls close to the surrounding CRUD logic so the response flow is easy to audit.
+
+### Common Mistakes
+* Bypassing Core validation or hooks unintentionally by writing directly to the database.
+* Returning raw arrays when the caller expects an Aksara response object.
+
+### Related Methods
+* [render](./render)
+* [renderTable](./renderTable)
+* [renderRead](./renderRead)
+* [serialize](./serialize)
+* [serializeRow](./serializeRow)
+* [validateForm](./validateForm)

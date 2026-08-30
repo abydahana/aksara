@@ -1,14 +1,78 @@
-Sesuai dengan namanya, metode digunakan untuk mewakili `query builder` yang mana berfungsi untuk mengelompokkan suatu hasil dari query database berdasarkan parameter yang diberikan.
+`groupBy()` adalah Core method yang tersedia di dalam controller Aksara.
+
+### Tujuan
+`groupBy()` menambahkan klausa GROUP BY. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilasi query akhir, tanpa keluar dari pipeline CRUD dan response Core.
 
 ### Referensi
-`groupBy($groupBy)`
+`groupBy(string $column): static`
 
-**Parameter**
-* **$groupBy** [`mixed`] *nama field yang akan dilakukan pengelompokan.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$column` | `string` | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh penggunaan
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
+
+### Perilaku
+`groupBy()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
+
+### Contoh Dasar
 ```php
-$this->groupBy('user_id, product_id');
+$this->groupBy('orders.customer_id');
+
+return $this->render('orders');
 ```
+
+### Contoh Lanjutan
+```php
+$this->select('orders.customer_id')
+    ->selectSum('orders.amount', 'total_amount')
+    ->groupBy('orders.customer_id')
+    ->having('total_amount >', 100000)
+    ->orderBy('total_amount', 'DESC', false);
+
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->groupBy('orders.customer_id');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Query akhir menyertakan klausa atau state yang dikonfigurasi sebelum row diserialisasi untuk tabel, dokumen, atau response API.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Metode ini mengonfigurasi query controller; ini berbeda dari memanggil API model secara langsung.
+
+### Kesalahan Umum
+* Memanggil method setelah `render()`, karena query sudah dikompilasi.
+* Menonaktifkan escaping untuk input dari request.
+* Lupa menutup grup WHERE atau HAVING yang sudah dibuka.
+
+### Metode Terkait
+* [selectCount](./selectCount)
+* [selectSum](./selectSum)
+* [having](./having)
+* [havingGroupStart](./havingGroupStart)
+* [orderBy](./orderBy)

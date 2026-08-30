@@ -1,30 +1,81 @@
-Kontribusi kalian dibutuhkan!
+`searchable()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`searchable()` menyalakan atau mematikan pencarian otomatis tabel. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
 
 ### Referensi
-`searchable($foo, $bar)`
+`searchable(bool $active = true): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$active` | `bool` | Tidak | `true` | Flag boolean untuk mengaktifkan atau mematikan fitur. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->searchable('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->searchable('baz', 'qux');`
+### Perilaku
+`searchable()` menyimpan konfigurasi interface pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->searchable([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->searchable(false);
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->searchable(false);
+$this->addToolbar('pesanan/laporan', phrase('Laporan'), 'btn btn-outline-primary', 'mdi mdi-chart-bar')
+    ->setIcon('mdi mdi-cart')
+    ->setTitle(phrase('Pesanan'));
 
-### Baca Juga
-* [render](./render)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->searchable(false);
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Gunakan `phrase()` untuk label yang terlihat agar UI tetap dapat diterjemahkan.
+* Panggil konfigurasi UI sebelum `render()` agar renderer dapat membacanya.
+
+### Kesalahan Umum
+* Menulis label hard-code yang seharusnya memakai `phrase()`.
+* Menambahkan action baris tanpa parameter primary key yang dibutuhkan URL tujuan.
+* Memanggil metode terlalu lambat setelah output dibuat.
+
+### Metode Terkait
+* [setTitle](./setTitle)
+* [setIcon](./setIcon)
+* [addToolbar](./addToolbar)
+* [addButton](./addButton)
+* [addDropdown](./addDropdown)
+* [addSubmitButton](./addSubmitButton)
+* [setButton](./setButton)
+* [unsetToolbar](./unsetToolbar)

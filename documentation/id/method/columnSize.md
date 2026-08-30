@@ -1,38 +1,82 @@
-Metode ini digunakan ketika akan mengatur sebuah ukuran kolom pada formulir CRUD. Misal untuk jenis formulir yang menggunakan lebih dari satu kolom seperti berikut:
+`columnSize()` adalah Core method yang tersedia di dalam controller Aksara.
 
-![image](https://user-images.githubusercontent.com/10624446/102869707-9f061780-446e-11eb-8baa-25f91a767f90.png)
+### Tujuan
+`columnSize()` mengatur ukuran kolom layout untuk read/form. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
 
-Pada contoh gambar di atas, formulir `modal` menggunakan 2 kolom, kolom 1 lebih lebar dari kolom 2. Ukuran kolom menggunakan class dari boorstrap (CSS framework).
+### Kapan Digunakan
+Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tetapi field tertentu perlu label, layout, validasi, relasi, visibility, atau renderer khusus.
 
 ### Referensi
-`columnSize($column, $size)`
+`columnSize(string|array $params = [], ?string $value = null): static`
 
-**Parameter**
-* **$column** [`mixed`] *inisial (nomor) kolom, dimulai dari: 1;*
-* **$size** [`string`] *class (CSS) untuk mengatur ukuran.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$params` | `string|array` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$value` | `?string` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->columnSize(1, 'col-md-8');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-**Anda juga dapat menjalankan metode ini secara berkelompok seperti berikut:**
+### Perilaku
+`columnSize()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
+
+### Contoh Dasar
 ```php
-$this->columnSize([
-    1 => 'col-md-8',
-    2 => 'col-md-4'
-]);
+$this->columnSize('customer_name', 6);
+
+return $this->render('orders');
 ```
 
-**Pengertian dari parameter di atas adalah:**
-Kolom 1 menggunakan class `col-md-8` dan kolom 2 menggunakan class `col-md-4`.
+### Contoh Lanjutan
+```php
+$this->columnSize('customer_name', 6);
+$this->setAlias('order_number', phrase('Nomor Pesanan'))
+    ->setValidation('status', 'required|in_list[draft,lunas,batal]')
+    ->fieldOrder('order_number, customer_id, status, notes');
 
-Referensi lain terkait inisial class yang tersedia, silakan merujuk pada penggunaan grid pada **Bootstrap** pada tautan berikut:
+return $this->render('orders');
+```
 
-[https://getbootstrap.com/docs/5.3/layout/grid/](https://getbootstrap.com/docs/5.3/layout/grid/).
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
 
-&nbsp;
+use Aksara\Controllers\BaseController;
 
-### Baca Juga
-* [fieldSize](./fieldSize)
-* [modalSize](./modalSize)
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->columnSize('customer_name', 6);
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Tabel, read view, form, dan payload API terformat memakai metadata field yang sudah diperbarui.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Nama field harus cocok dengan kolom terpilih, alias, alias relasi, atau field virtual dari `addField()`.
+* Gunakan `phrase()` untuk label, heading, placeholder, dan teks lain yang terlihat pengguna.
+
+### Kesalahan Umum
+* Memakai nama field yang tidak ada di data terpilih.
+* Menulis label atau option tanpa `phrase()` padahal teks terlihat pengguna.
+* Mengira metode ini langsung mencetak HTML, padahal hanya mengatur renderer.
+
+### Metode Terkait
+* [setField](./setField)
+* [addField](./addField)
+* [setRelation](./setRelation)
+* [setValidation](./setValidation)
+* [setAlias](./setAlias)
+* [setPlaceholder](./setPlaceholder)
+* [setPrimary](./setPrimary)
+* [unsetField](./unsetField)

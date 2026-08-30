@@ -1,30 +1,75 @@
-Your contribution's needed!
+`insertId()` returns the last inserted primary key value. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`insertId()` returns the last inserted primary key value. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when you need to extend the Core CRUD flow while keeping Aksara validation, hooks, formatting, and response handling.
 
 ### Reference
-`insertId($foo, $bar)`
+`insertId()`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| None | - | - | - | This method does not accept parameters. |
 
-&nbsp;
+### Return Value
+`int`
 
-### Usage Sample
-`$this->insertId('foo', 'bar');`
+Returns the integer insert ID captured by the latest successful Core insert operation.
 
-`$this->insertId('baz', 'qux');`
+### Behavior
+`insertId()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->insertId([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$orderId = $this->insertId();
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->insertData('orders', ['status' => 'paid']);
 
-### Read Also
-* [render](./render)
+$orderId = $this->insertId();
+return $this->setOutput('order_id', $orderId)->render();
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function process()
+    {
+        $this->insertData('orders', ['status' => 'paid']);
+        $orderId = $this->insertId();
+
+        return $this->setOutput('order_id', $orderId)->render();
+    }
+}
+```
+
+### Result
+The Core pipeline returns the documented value while preserving Aksara validation, hook, permission, audit, and response behavior where applicable.
+
+### Notes
+* These methods are usually called by `render()` internally, but can be useful for advanced modules.
+* Keep direct calls close to the surrounding CRUD logic so the response flow is easy to audit.
+
+### Common Mistakes
+* Bypassing Core validation or hooks unintentionally by writing directly to the database.
+* Returning raw arrays when the caller expects an Aksara response object.
+
+### Related Methods
+* [insertData](./insertData)
+* [updateData](./updateData)
+* [deleteData](./deleteData)
+* [deleteBatch](./deleteBatch)
+* [beforeInsert](./beforeInsert)
+* [afterInsert](./afterInsert)
+* [beforeUpdate](./beforeUpdate)
+* [afterUpdate](./afterUpdate)

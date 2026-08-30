@@ -1,31 +1,71 @@
-Metode ini digunakan untuk men-sortir urutan yang ditampilkan pada kolom tabel.
+`columnOrder()` controls table column order. It is used inside an Aksara controller as part of the Core method API.
+
+### Purpose
+`columnOrder()` controls table column order. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when the generated table, form, or read view is mostly correct but one or more fields need custom behavior.
 
 ### Reference
-`columnOrder($columns)`
+`columnOrder(string|array $params = [])`
 
-**Parameter**
-* **$columns** [`mixed`] *daftar kolom yang diprioritaskan pada urutan pertama.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-**Tabel awal:**
-kolom_1 | kolom_2 | kolom_3
------------- | ------------- | -------------
-Konten kolom_1 | Konten kolom_2 | Konten kolom_3
-Konten lain kolom_1 | Konten lain kolom_2 | Konten lain kolom_3
+Returns the current controller instance so it can be chained with other Core methods.
 
-**Tambahkan metode:**
-`$this->columnOrder('kolom_3, kolom_1, kolom_2');`
+### Behavior
+`columnOrder()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
-**Hasil tabel:**
-kolom_3 | kolom_1 | kolom_2
------------- | ------------- | -------------
-Konten kolom_3 | Konten kolom_1 | Konten kolom_2
-Konten lain kolom_3 | Konten lain kolom_1 | Konten lain kolom_2
+### Basic Usage
+```php
+$this->columnOrder('order_number, customer_name, status, total');
 
-&nbsp;
+return $this->render('orders');
+```
 
-### Read Also
+### Advanced Usage
+```php
+$this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Updated')])
+    ->setValidation(['title' => 'required|max_length[160]', 'status' => 'required'])
+    ->fieldOrder('title, slug, status, created_at');
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->columnOrder('order_number, customer_name, status, total');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The generated table, form, or read view uses the configured field behavior when the response is prepared.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Field names must match table columns, selected aliases, relation aliases, or mock fields.
+* Most field configuration methods accept a single field/value pair or an associative array for bulk configuration.
+
+### Common Mistakes
+* Using a field name that is not present in the selected data.
+* Expecting the method to output HTML immediately instead of configuring the renderer.
+
+### Related Methods
 * [fieldOrder](./fieldOrder)
 * [viewOrder](./viewOrder)

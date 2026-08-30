@@ -1,26 +1,73 @@
-Metode ini digunakan untuk mengelompokkan suatu input pada formulir menjadi satu bagian. Misalnya pada penyusunan formulir yang mengharuskan untuk mengelompokkan beberapa input dalam satu element dasar untuk contoh kasus penggunaan `fieldset` pada formulir.
+`groupField()` groups form fields under a shared group. It is used inside an Aksara controller as part of the Core method API.
 
-> [!NOTE]
-> Metode ini masih dalam riset dan belum dapat digunakan!
+### Purpose
+`groupField()` groups form fields under a shared group. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when the generated table, form, or read view is mostly correct but one or more fields need custom behavior.
 
 ### Reference
-`groupField($params, $group)`
+`groupField(string|array $params = [], ?string $group = null)`
 
-**Parameter**
-* **$params** [mixed] *nama field yang akan dilakukan pengelompokan;*
-* **$group** [string] *inisial pengelompokan.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$group` | `?string` | No | `null` | Method parameter. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->groupField('foo', 'bar');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-`$this->groupField('baz', 'qux');`
+### Behavior
+`groupField()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
-**Anda juga dapat menjalankan metode ini secara berkelompok seperti contoh berikut:**
+### Basic Usage
 ```php
-$this->groupField([
-    'nama_depan' => 'nama',
-    'nama_belakang' => 'nama'
-]);
+$this->groupField('first_name, last_name', phrase('Identity'));
+
+return $this->render('orders');
 ```
+
+### Advanced Usage
+```php
+$this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Updated')])
+    ->setValidation(['title' => 'required|max_length[160]', 'status' => 'required'])
+    ->fieldOrder('title, slug, status, created_at');
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->groupField('first_name, last_name', phrase('Identity'));
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The generated table, form, or read view uses the configured field behavior when the response is prepared.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Field names must match table columns, selected aliases, relation aliases, or mock fields.
+* Most field configuration methods accept a single field/value pair or an associative array for bulk configuration.
+
+### Common Mistakes
+* Using a field name that is not present in the selected data.
+* Expecting the method to output HTML immediately instead of configuring the renderer.
+
+### Related Methods
+* [fieldAppend](./fieldAppend)
+* [fieldPrepend](./fieldPrepend)
+* [mergeField](./mergeField)

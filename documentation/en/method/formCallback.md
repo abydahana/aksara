@@ -1,26 +1,69 @@
-Metode ini digunakan ketika akan melakukan validasi formulir menggunakan validasi pribadi. Artinya tidak menggunakan validasi yang secara default diberikan oleh framework. Pada kasus tertentu, apabila ingin mendapatkan suatu pengembalian yang rumit dari permintaan formulir, maka metode ini akan diperlukan.
+`formCallback()` registers a custom validation callback. It is used inside an Aksara controller as part of the Core method API.
+
+### Purpose
+`formCallback()` registers a custom validation callback. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it near the beginning of a controller method to configure how Core handles the current request.
 
 ### Reference
-`formCallback($callback)`
+`formCallback(string $callback)`
 
-**Parameter**
-* **$callback** [`string`] *metode yang akan dipanggil dan dijalankan.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$callback` | `string` | Yes | `` | Controller method name used for custom validation. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->formCallback('foo');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-Pada contoh di atas, Anda harus membuat public method bernama `validasi` misal seperti berikut:
+### Behavior
+`formCallback()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
+
+### Basic Usage
 ```php
-public function foo()
+$this->formCallback('validateOrder');
+
+return $this->render('orders');
+```
+
+### Advanced Usage
+```php
+$this->setTitle(phrase('Orders'))
+    ->setIcon('mdi mdi-cart-outline')
+    ->setPermission();
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
 {
-    // Statement untuk menjalankan dan mengembalikan validasi
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->formCallback('validateOrder');
+
+        return $this->render('orders');
+    }
 }
 ```
 
-&nbsp;
+### Result
+The controller stores the configuration and applies it later in the current request lifecycle.
 
-### Read Also
-* [validateForm](./validateForm)
-* [validToken](./validToken)
+### Notes
+* This method is chainable and returns the current controller instance.
+* Call configuration methods before `setPermission()` or `render()` when those steps depend on the configured value.
+
+### Common Mistakes
+* Calling the method after the permission or render step that already needed it.
+* Spreading related configuration across distant parts of the controller.
+
+### Related Methods
+* [render](./render)

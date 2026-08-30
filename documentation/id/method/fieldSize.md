@@ -1,32 +1,82 @@
-Metode ini digunakan untuk mengatur ukuran masing-masing inputan apabila dilakukan pengelompokan menggunakan [mergeField](./mergeField). Secara default, ukuran bidang input yang terkelompok akan dibagi rata antar masing-masing ukurannya. Namun pada kasus tertentu, Anda mungkin membutuhkan pengelompokan dengan ukuran yang berbeda.
+`fieldSize()` adalah Core method yang tersedia di dalam controller Aksara.
+
+### Tujuan
+`fieldSize()` mengatur ukuran field form. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tetapi field tertentu perlu label, layout, validasi, relasi, visibility, atau renderer khusus.
 
 ### Referensi
-`fieldSize($field, $size)`
+`fieldSize(string|array $params = [], ?string $value = null): static`
 
-**Parameter**
-* **$field** [`mixed`] *nama daripada field;*
-* **$size** [`string`] *class Bootstrap untuk menentukan ukuran.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$params` | `string|array` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$value` | `?string` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->fieldSize('foo', 'col-md-8');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->fieldSize('bar', 'col-md-8');`
+### Perilaku
+`fieldSize()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
-**Anda juga dapat menjalankan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->fieldSize([
-    'foo' => 'col-md-8',
-    'bar' => 'col-md-4'
-]);
+$this->fieldSize('notes', 12);
+
+return $this->render('orders');
 ```
 
-Anda mungkin membaca ulasan terkait penggunaan **Bootstrap** Grid pada artikel berikut:
-[https://getbootstrap.com/docs/5.3/layout/grid/](https://getbootstrap.com/docs/5.3/layout/grid/).
+### Contoh Lanjutan
+```php
+$this->fieldSize('notes', 12);
+$this->setAlias('order_number', phrase('Nomor Pesanan'))
+    ->setValidation('status', 'required|in_list[draft,lunas,batal]')
+    ->fieldOrder('order_number, customer_id, status, notes');
 
-&nbsp;
+return $this->render('orders');
+```
 
-### Baca Juga
-* [columnSize](./columnSize)
-* [modalSize](./modalSize)
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->fieldSize('notes', 12);
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Tabel, read view, form, dan payload API terformat memakai metadata field yang sudah diperbarui.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Nama field harus cocok dengan kolom terpilih, alias, alias relasi, atau field virtual dari `addField()`.
+* Gunakan `phrase()` untuk label, heading, placeholder, dan teks lain yang terlihat pengguna.
+
+### Kesalahan Umum
+* Memakai nama field yang tidak ada di data terpilih.
+* Menulis label atau option tanpa `phrase()` padahal teks terlihat pengguna.
+* Mengira metode ini langsung mencetak HTML, padahal hanya mengatur renderer.
+
+### Metode Terkait
+* [setField](./setField)
+* [addField](./addField)
+* [setRelation](./setRelation)
+* [setValidation](./setValidation)
+* [setAlias](./setAlias)
+* [setPlaceholder](./setPlaceholder)
+* [setPrimary](./setPrimary)
+* [unsetField](./unsetField)

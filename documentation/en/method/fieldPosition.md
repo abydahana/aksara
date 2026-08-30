@@ -1,33 +1,71 @@
-Metode ini berfungsi untuk mengontrol tata letak penempatan sebuah input pada formulir (field input). Apabila Anda mengatur kolom formulir menjadi beberapa kolom, metode ini dapat digunakan untuk mengatur posisi tata letak inputnya.
+`fieldPosition()` places a field in a configured form position. It is used inside an Aksara controller as part of the Core method API.
+
+### Purpose
+`fieldPosition()` places a field in a configured form position. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when the generated table, form, or read view is mostly correct but one or more fields need custom behavior.
 
 ### Reference
-`fieldPosition($field, $position)`
+`fieldPosition(string|array $params = [], ?string $value = null)`
 
-**Parameter**
-* **$field** [`mixed`] *nama daripada field;*
-* **$position** [`integer`] *posisi target kolom.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->fieldPosition('foo', 2);`
+Returns the current controller instance so it can be chained with other Core methods.
 
-`$this->fieldPosition('bar', 2);`
+### Behavior
+`fieldPosition()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
-Pada contoh penggunaan di atas, input untuk field `foo` dan `bar` akan diposisikan pada kolom ke-dua.
-
-**Anda juga dapat menjalankan metode secara berkelompok seperti berikut:**
+### Basic Usage
 ```php
-$this->fieldPosition([
-    'foo' => 2,
-    'bar' => 2,
-    'baz' => 3,
-    'qux' => 4
-]);
+$this->fieldPosition('summary', 'sidebar');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Updated')])
+    ->setValidation(['title' => 'required|max_length[160]', 'status' => 'required'])
+    ->fieldOrder('title, slug, status, created_at');
+```
 
-### Read Also
-* [fieldSize](./fieldSize)
-* [columnSize](./columnSize)
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->fieldPosition('summary', 'sidebar');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The generated table, form, or read view uses the configured field behavior when the response is prepared.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Field names must match table columns, selected aliases, relation aliases, or mock fields.
+* Most field configuration methods accept a single field/value pair or an associative array for bulk configuration.
+
+### Common Mistakes
+* Using a field name that is not present in the selected data.
+* Expecting the method to output HTML immediately instead of configuring the renderer.
+
+### Related Methods
+* [render](./render)

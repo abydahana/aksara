@@ -1,30 +1,79 @@
-Kontribusi kalian dibutuhkan!
+`parentModule()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`parentModule()` menggunakan path modul lain sebagai induk permission dan navigasi. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan di awal method controller ketika modul perlu perilaku permission, token, upload, database, debug, form publik, atau integrasi khusus.
 
 ### Referensi
-`parentModule($foo, $bar)`
+`parentModule(string $module): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$module` | `string` | Ya | - | Nilai yang digunakan oleh metode ini. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->parentModule('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->parentModule('baz', 'qux');`
+### Perilaku
+`parentModule()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->parentModule([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->parentModule('administrative/users');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->parentModule('administrative/users');
+$this->setPermission([1, 2])
+    ->setTitle(phrase('Pesanan'))
+    ->setUploadPath('pesanan');
 
-### Baca Juga
-* [fieldPrepend](./fieldPrepend)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->parentModule('administrative/users');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Request saat ini memakai state Core tersebut saat permission, validasi, rendering, atau integrasi diproses.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Urutan konfigurasi bisa berpengaruh; panggil sebelum method yang bergantung pada state tersebut.
+* Batasi pengecualian public form dan token hanya pada route yang membutuhkannya.
+
+### Kesalahan Umum
+* Menaruh konfigurasi setelah `setPermission()`, validasi, atau `render()` ketika step tersebut sudah membutuhkannya.
+* Membuat pengecualian public/token terlalu luas.
+
+### Metode Terkait
+* [setPermission](./setPermission)
+* [allowPublicFormSubmission](./allowPublicFormSubmission)
+* [allowTokenFrom](./allowTokenFrom)
+* [validToken](./validToken)
+* [permitUpsert](./permitUpsert)
+* [setUploadPath](./setUploadPath)
+* [render](./render)
