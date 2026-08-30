@@ -24,6 +24,7 @@ Returns the current controller instance so it can be chained with other Core met
 `addField()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!NOTE]
+>
 > Mock fields are useful for display or vertical schema data, but they are not physical columns unless the model or schema provides storage for them.
 
 ### Basic Usage

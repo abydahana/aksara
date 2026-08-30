@@ -23,6 +23,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `debug()` mengubah mode keluaran debug untuk request saat ini. Mode ini dibaca saat Core menyiapkan parameter, query, property, atau benchmark output.
 
 > [!WARNING]
+>
 > Hindari debug output di production karena dapat membuka query, request, atau state controller.
 
 ### Contoh Dasar

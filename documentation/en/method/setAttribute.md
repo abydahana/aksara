@@ -24,6 +24,7 @@ Returns the current controller instance so it can be chained with other Core met
 `setAttribute()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!WARNING]
+>
 > Attributes are rendered into generated controls. Do not pass untrusted raw request data directly into this method.
 
 ### Basic Usage

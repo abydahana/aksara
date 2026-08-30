@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `debug()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!WARNING]
+>
 > Avoid enabling debug output in production because it can expose query, request, or controller state.
 
 ### Basic Usage

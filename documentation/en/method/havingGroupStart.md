@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `havingGroupStart()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
 
 > [!NOTE]
+>
 > Every HAVING group must be closed with `havingGroupEnd()` before the query is rendered.
 
 ### Basic Usage

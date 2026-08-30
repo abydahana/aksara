@@ -27,6 +27,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `like()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
 
 > [!WARNING]
+>
 > Hindari memasukkan teks pencarian yang belum disanitasi ke ekspresi LIKE mentah. Biarkan Core/database escaping menangani input request.
 
 ### Contoh Dasar

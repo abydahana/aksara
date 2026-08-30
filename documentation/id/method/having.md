@@ -25,6 +25,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `having()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
 
 > [!WARNING]
+>
 > HAVING biasanya bekerja dengan alias agregasi. Pastikan alias konsisten dengan kolom agregasi yang dipilih.
 
 ### Contoh Dasar

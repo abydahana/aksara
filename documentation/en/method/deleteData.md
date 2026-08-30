@@ -25,6 +25,7 @@ Returns an Aksara response object on success or failure, or `null` when the flow
 `deleteData()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
 > [!CAUTION]
+>
 > Always pass a narrow `$where` condition and keep the default limit unless the delete flow intentionally targets more than one row.
 
 ### Basic Usage

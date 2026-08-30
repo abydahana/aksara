@@ -24,6 +24,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `setValidation()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
 > [!IMPORTANT]
+>
 > Rule validasi dijalankan saat Core memproses form. Sesuaikan rule dengan tipe field, terutama upload, relation, password, dan date.
 
 ### Contoh Dasar

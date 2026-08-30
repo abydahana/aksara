@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `setAiContext()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!NOTE]
+>
 > AI context is cached per route for the current module flow. Keep the provided data small and avoid secrets.
 
 ### Basic Usage

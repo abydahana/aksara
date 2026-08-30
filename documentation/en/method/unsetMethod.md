@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `unsetMethod()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!WARNING]
+>
 > Disabling a method removes it from the generated Core flow, but custom public controller methods can still exist if you define them separately.
 
 ### Basic Usage

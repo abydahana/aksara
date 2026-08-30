@@ -25,6 +25,7 @@ Returns the current controller instance so it can be chained with other Core met
 `having()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
 
 > [!WARNING]
+>
 > HAVING usually works with aggregate aliases. Keep aliases consistent with the selected aggregate columns.
 
 ### Basic Usage

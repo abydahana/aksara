@@ -25,6 +25,7 @@ Mengembalikan response Aksara saat sukses atau gagal, atau `null` bila alur tida
 `deleteData()` merupakan bagian dari pipeline internal Core dan bekerja dengan metadata field, state request, renderer, validasi, hook, serta response CRUD.
 
 > [!CAUTION]
+>
 > Selalu gunakan kondisi `$where` yang sempit dan pertahankan limit default kecuali alur delete memang menargetkan lebih dari satu row.
 
 ### Contoh Dasar

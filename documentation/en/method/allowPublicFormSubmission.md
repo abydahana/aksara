@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `allowPublicFormSubmission()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!WARNING]
+>
 > Use this only for public forms that must submit through Core. Keep validation, token checks, and write targets narrow.
 
 ### Basic Usage

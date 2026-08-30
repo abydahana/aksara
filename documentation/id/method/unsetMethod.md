@@ -23,6 +23,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `unsetMethod()` menyimpan konfigurasi antarmuka pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
 > [!WARNING]
+>
 > Menonaktifkan method akan menghapusnya dari alur Core bawaan, tetapi public method custom tetap bisa ada bila didefinisikan terpisah.
 
 ### Contoh Dasar

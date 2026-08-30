@@ -25,6 +25,7 @@ Returns the current controller instance so it can be chained with other Core met
 `verticalSchema()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!IMPORTANT]
+>
 > Use this only for key-value tables. Normal relational tables should keep the regular column-based flow.
 
 ### Basic Usage

@@ -25,6 +25,7 @@ Returns an Aksara response object on success or failure, or `false` when the upd
 `updateData()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
 > [!WARNING]
+>
 > Always pass a narrow `$where` condition when calling `updateData()` directly. Empty or broad conditions can update the wrong record set.
 
 ### Basic Usage

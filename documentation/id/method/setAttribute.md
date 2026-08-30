@@ -24,6 +24,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `setAttribute()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
 > [!WARNING]
+>
 > Attribute akan dirender ke kontrol yang dibuat. Jangan mengirim data request mentah yang tidak dipercaya ke method ini.
 
 ### Contoh Dasar

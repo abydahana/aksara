@@ -30,6 +30,7 @@ Returns the current controller instance so it can be chained with other Core met
 `setAutocomplete()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!NOTE]
+>
 > Autocomplete depends on relation/search metadata. Make sure the target field can be selected and filtered by the generated query.
 
 ### Basic Usage
