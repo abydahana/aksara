@@ -572,7 +572,7 @@ if (in_array(get_userdata('group_id'), [1]) && (! $permission->uploads || ! $per
                             <?= phrase('A newer version of Aksara is available.') . ' ' . phrase('Click the button below to update your core system directly.') . ' ' . phrase('Your created module and theme will not be overwritten.') ?>
                         </p>
                         <hr />
-                        <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-success rounded-pill --xhr">
+                        <a href="<?= base_url('administrative/updater') ?>" class="btn btn-sm btn-success rounded-pill px-3 --xhr">
                             <i class="mdi mdi-update"></i> <?= phrase('Update Now') ?>
                         </a>
                     </div>

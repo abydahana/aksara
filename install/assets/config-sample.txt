@@ -14,7 +14,7 @@
  * with this source code in the LICENSE.txt file.
  *
  * -------------------------------------------------------------------
- * Sometimes you needed a fool to complete a complicated job :)
+ * Sometimes you need a fool to get your difficult job done :)
  * -------------------------------------------------------------------
  */
 
