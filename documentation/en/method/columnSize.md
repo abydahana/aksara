@@ -1,38 +1,72 @@
-Metode ini digunakan ketika akan mengatur sebuah ukuran kolom pada formulir CRUD. Misal untuk jenis formulir yang menggunakan lebih dari satu kolom seperti berikut:
+`columnSize()` sets table column width classes. It is used inside an Aksara controller as part of the Core method API.
 
-![image](https://user-images.githubusercontent.com/10624446/102869707-9f061780-446e-11eb-8baa-25f91a767f90.png)
+### Purpose
+`columnSize()` sets table column width classes. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
 
-Pada contoh gambar di atas, formulir `modal` menggunakan 2 kolom, kolom 1 lebih lebar dari kolom 2. Ukuran kolom menggunakan class dari boorstrap (CSS framework).
+### When to Use
+Use it when the generated table, form, or read view is mostly correct but one or more fields need custom behavior.
 
 ### Reference
-`columnSize($column, $size)`
+`columnSize(string|array $params = [], ?string $value = null)`
 
-**Parameter**
-* **$column** [`mixed`] *inisial (nomor) kolom, dimulai dari: 1;*
-* **$size** [`string`] *class (CSS) untuk mengatur ukuran.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->columnSize(1, 'col-md-8');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-**Anda juga dapat menjalankan metode ini secara berkelompok seperti berikut:**
+### Behavior
+`columnSize()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
+
+### Basic Usage
 ```php
-$this->columnSize([
-    1 => 'col-md-8',
-    2 => 'col-md-4'
-]);
+$this->columnSize('title', 'col-md-4');
+
+return $this->render('orders');
 ```
 
-**Pengertian dari parameter di atas adalah:**
-Kolom 1 menggunakan class `col-md-8` dan kolom 2 menggunakan class `col-md-4`.
+### Advanced Usage
+```php
+$this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Updated')])
+    ->setValidation(['title' => 'required|max_length[160]', 'status' => 'required'])
+    ->fieldOrder('title, slug, status, created_at');
+```
 
-Referensi lain terkait inisial class yang tersedia, silakan merujuk pada penggunaan grid pada **Bootstrap** pada tautan berikut:
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
 
-[https://getbootstrap.com/docs/5.3/layout/grid/](https://getbootstrap.com/docs/5.3/layout/grid/).
+use Aksara\Controllers\BaseController;
 
-&nbsp;
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->columnSize('title', 'col-md-4');
 
-### Read Also
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The generated table, form, or read view uses the configured field behavior when the response is prepared.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Field names must match table columns, selected aliases, relation aliases, or mock fields.
+* Most field configuration methods accept a single field/value pair or an associative array for bulk configuration.
+
+### Common Mistakes
+* Using a field name that is not present in the selected data.
+* Expecting the method to output HTML immediately instead of configuring the renderer.
+
+### Related Methods
 * [fieldSize](./fieldSize)
 * [modalSize](./modalSize)

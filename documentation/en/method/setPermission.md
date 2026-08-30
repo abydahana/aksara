@@ -1,30 +1,74 @@
-Your contribution's needed!
+`setPermission()` enforces module and method permissions. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`setPermission()` enforces module and method permissions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it near the beginning of a controller method to configure how Core handles the current request.
 
 ### Reference
-`setPermission($foo, $bar)`
+`setPermission(array|string $permissiveGroup = [], ?string $redirect = null)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$permissiveGroup` | `array|string` | No | `[]` | Allowed group IDs as an array or comma-separated string. Use `0` to allow every group. |
+| `$redirect` | `?string` | No | `null` | Optional redirect URL when access is denied. |
 
-&nbsp;
+### Return Value
+`static|Response`
 
-### Usage Sample
-`$this->setPermission('foo', 'bar');`
+Returns the current controller instance when access is allowed, or an Aksara/CodeIgniter response when access is denied or redirected.
 
-`$this->setPermission('baz', 'qux');`
+### Behavior
+`setPermission()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->setPermission([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->setPermission([1, 2]);
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->setTitle(phrase('Orders'))
+    ->setIcon('mdi mdi-cart-outline')
+    ->setPermission();
+```
 
-### Read Also
-* [fieldPrepend](./fieldPrepend)
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->setPermission([1, 2]);
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The controller stores the configuration and applies it later in the current request lifecycle.
+
+### Notes
+* Call configuration methods before `setPermission()` or `render()` when those steps depend on the configured value.
+* Order matters: call `parentModule()` and `setMethod()` before `setPermission()` when needed.
+
+### Common Mistakes
+* Calling the method after the permission or render step that already needed it.
+* Spreading related configuration across distant parts of the controller.
+
+### Related Methods
+* [validToken](./validToken)
+* [allowTokenFrom](./allowTokenFrom)
+* [permitUpsert](./permitUpsert)
+* [allowPublicFormSubmission](./allowPublicFormSubmission)
+* [restrictOnDemo](./restrictOnDemo)

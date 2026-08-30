@@ -1,30 +1,78 @@
-Kontribusi kalian dibutuhkan!
+`permitUpsert()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`permitUpsert()` mengizinkan alur update membuat record baru ketika target tidak ditemukan. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan di awal method controller ketika modul perlu perilaku permission, token, upload, database, debug, form publik, atau integrasi khusus.
 
 ### Referensi
-`permitUpsert($foo, $bar)`
+`permitUpsert(bool $return = true): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$return` | `bool` | Tidak | `true` | Flag boolean untuk mengaktifkan atau mematikan fitur. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->permitUpsert('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->permitUpsert('baz', 'qux');`
+### Perilaku
+`permitUpsert()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->permitUpsert([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->permitUpsert();
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->permitUpsert();
+$this->setPermission([1, 2])
+    ->setTitle(phrase('Pesanan'))
+    ->setUploadPath('pesanan');
 
-### Baca Juga
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->permitUpsert();
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Request saat ini memakai state Core tersebut saat permission, validasi, rendering, atau integrasi diproses.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Urutan konfigurasi bisa berpengaruh; panggil sebelum method yang bergantung pada state tersebut.
+* Batasi pengecualian public form dan token hanya pada route yang membutuhkannya.
+
+### Kesalahan Umum
+* Menaruh konfigurasi setelah `setPermission()`, validasi, atau `render()` ketika step tersebut sudah membutuhkannya.
+* Membuat pengecualian public/token terlalu luas.
+
+### Metode Terkait
+* [setPermission](./setPermission)
+* [allowPublicFormSubmission](./allowPublicFormSubmission)
+* [allowTokenFrom](./allowTokenFrom)
+* [validToken](./validToken)
+* [setUploadPath](./setUploadPath)
 * [render](./render)

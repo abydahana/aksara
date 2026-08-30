@@ -1,32 +1,79 @@
-Your contribution's needed!
+`addDropdown()` adds dropdown row actions to a CRUD table. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`addDropdown()` adds dropdown row actions to a CRUD table. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when the default generated interface needs extra controls, actions, filters, or layout behavior.
 
 ### Reference
-`addDropdown($foo, $bar)`
+`addDropdown(string $url, string $label, ?string $class = null, ?string $icon = null, ?array $parameter = [], bool $newTab = false, ?string $attribution = null)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$url` | `string` | Yes | `` | Target URL or route for the action. |
+| `$label` | `string` | Yes | `` | Human-readable label. |
+| `$class` | `?string` | No | `null` | CSS class list. |
+| `$icon` | `?string` | No | `null` | Icon class. |
+| `$parameter` | `?array` | No | `[]` | Route or query parameters passed to the action. |
+| `$newTab` | `bool` | No | `false` | Open target in a new browser tab when true. |
+| `$attribution` | `?string` | No | `null` | Additional raw attributes for the generated element. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->addDropdown('foo', 'bar');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-`$this->addDropdown('baz', 'qux');`
+### Behavior
+`addDropdown()` stores UI configuration for the generated interface. The renderer reads that configuration later and places the control in the correct table, toolbar, filter, grid, or form location.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->addDropdown([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->addDropdown('orders/invoice', phrase('Invoice'), 'btn btn-sm btn-outline-secondary', 'mdi mdi-file-document-outline', ['order_id' => 'order_id'], true);
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 'mdi mdi-chart-bar')
+    ->addButton('orders/read', phrase('View'), 'btn btn-sm btn-outline-secondary', 'mdi mdi-eye', ['order_id' => 'order_id']);
+```
 
-### Read Also
-* [addDropdown](./addDropdown)
-* [addFilter](./addFilter)
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->addDropdown('orders/invoice', phrase('Invoice'), 'btn btn-sm btn-outline-secondary', 'mdi mdi-file-document-outline', ['order_id' => 'order_id'], true);
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The generated interface includes or changes the configured control without requiring a custom view.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Use `phrase()` for visible labels so the interface remains translatable.
+* Action parameters can reference row fields so generated buttons point to the current record.
+
+### Common Mistakes
+* Hard-coding labels that should be translated with `phrase()`.
+* Forgetting row parameters for actions that need the current record ID.
+
+### Related Methods
+* [addButton](./addButton)
 * [addToolbar](./addToolbar)
+* [addSubmitButton](./addSubmitButton)
+* [setButton](./setButton)
+* [unsetToolbar](./unsetToolbar)

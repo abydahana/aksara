@@ -1,33 +1,82 @@
-Kontribusi kalian dibutuhkan!
+`havingGroupEnd()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`havingGroupEnd()` menutup grup kondisi HAVING. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilasi query akhir, tanpa keluar dari pipeline CRUD dan response Core.
 
 ### Referensi
-`havingGroupEnd($foo, $bar)`
+`havingGroupEnd(): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| Tidak ada | - | - | - | Metode ini tidak menerima parameter. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->havingGroupEnd('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->havingGroupEnd('baz', 'qux');`
+### Perilaku
+`havingGroupEnd()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query. Panggilan pembuka dan penutup grup harus seimbang.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->havingGroupEnd([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->havingGroupStart()->having('total_amount >', 100000)->orHaving('total_item >', 5)->havingGroupEnd();
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->select('orders.order_id, orders.order_number, orders.status')
+    ->groupStart()
+        ->where('orders.status', 'lunas')
+        ->orWhere('orders.status', 'pending')
+    ->groupEnd()
+    ->orderBy('orders.created_at', 'DESC');
 
-### Baca Juga
-* [havingGroupStart](./havingGroupStart)
-* [orHavingGroupStart](./orHavingGroupStart)
-* [notHavingGroupStart](./notHavingGroupStart)
-* [orNotHavingGroupStart](./orNotHavingGroupStart)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->havingGroupStart()->having('total_amount >', 100000)->orHaving('total_item >', 5)->havingGroupEnd();
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Query akhir menyertakan klausa atau state yang dikonfigurasi sebelum row diserialisasi untuk tabel, dokumen, atau response API.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Metode ini mengonfigurasi query controller; ini berbeda dari memanggil API model secara langsung.
+
+### Kesalahan Umum
+* Memanggil method setelah `render()`, karena query sudah dikompilasi.
+* Menonaktifkan escaping untuk input dari request.
+* Lupa menutup grup WHERE atau HAVING yang sudah dibuka.
+
+### Metode Terkait
+* [select](./select)
+* [join](./join)
+* [where](./where)
+* [orWhere](./orWhere)
+* [whereIn](./whereIn)
+* [like](./like)
+* [groupBy](./groupBy)
+* [having](./having)

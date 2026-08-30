@@ -1,31 +1,81 @@
-Metode ini digunakan untuk men-sortir urutan yang ditampilkan pada kolom tabel.
+`columnOrder()` adalah Core method yang tersedia di dalam controller Aksara.
+
+### Tujuan
+`columnOrder()` mengatur urutan field pada tampilan tabel. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tetapi field tertentu perlu label, layout, validasi, relasi, visibility, atau renderer khusus.
 
 ### Referensi
-`columnOrder($columns)`
+`columnOrder(string|array $params = []): static`
 
-**Parameter**
-* **$columns** [`mixed`] *daftar kolom yang diprioritaskan pada urutan pertama.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$params` | `string|array` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-**Tabel awal:**
-kolom_1 | kolom_2 | kolom_3
------------- | ------------- | -------------
-Konten kolom_1 | Konten kolom_2 | Konten kolom_3
-Konten lain kolom_1 | Konten lain kolom_2 | Konten lain kolom_3
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-**Tambahkan metode:**
-`$this->columnOrder('kolom_3, kolom_1, kolom_2');`
+### Perilaku
+`columnOrder()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
-**Hasil tabel:**
-kolom_3 | kolom_1 | kolom_2
------------- | ------------- | -------------
-Konten kolom_3 | Konten kolom_1 | Konten kolom_2
-Konten lain kolom_3 | Konten lain kolom_1 | Konten lain kolom_2
+### Contoh Dasar
+```php
+$this->columnOrder('order_number, customer_name, status, created_at');
 
-&nbsp;
+return $this->render('orders');
+```
 
-### Baca Juga
-* [fieldOrder](./fieldOrder)
-* [viewOrder](./viewOrder)
+### Contoh Lanjutan
+```php
+$this->columnOrder('order_number, customer_name, status, created_at');
+$this->setAlias('order_number', phrase('Nomor Pesanan'))
+    ->setValidation('status', 'required|in_list[draft,lunas,batal]')
+    ->fieldOrder('order_number, customer_id, status, notes');
+
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->columnOrder('order_number, customer_name, status, created_at');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Tabel, read view, form, dan payload API terformat memakai metadata field yang sudah diperbarui.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Nama field harus cocok dengan kolom terpilih, alias, alias relasi, atau field virtual dari `addField()`.
+* Gunakan `phrase()` untuk label, heading, placeholder, dan teks lain yang terlihat pengguna.
+
+### Kesalahan Umum
+* Memakai nama field yang tidak ada di data terpilih.
+* Menulis label atau option tanpa `phrase()` padahal teks terlihat pengguna.
+* Mengira metode ini langsung mencetak HTML, padahal hanya mengatur renderer.
+
+### Metode Terkait
+* [setField](./setField)
+* [addField](./addField)
+* [setRelation](./setRelation)
+* [setValidation](./setValidation)
+* [setAlias](./setAlias)
+* [setPlaceholder](./setPlaceholder)
+* [setPrimary](./setPrimary)
+* [unsetField](./unsetField)

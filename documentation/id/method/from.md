@@ -1,24 +1,81 @@
-Metode ini jarang digunakan karena pada fungsinya, metode ini digunakan untuk menjalankan service latar belakang yang menjalankan `query builder`. Fungsi dari metode ini adalah untuk mendefinisikan dari mana table yang akan diambil untuk diproses datanya.
+`from()` adalah Core method yang tersedia di dalam controller Aksara.
 
-> [!NOTE]
-> Metode tidak perlu digunakan jika parameter dipanggil dalam metode `render()`
+### Tujuan
+`from()` mengatur tabel utama query. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
 
-&nbsp;
+### Kapan Digunakan
+Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilasi query akhir, tanpa keluar dari pipeline CRUD dan response Core.
 
 ### Referensi
-`from($table_name)`
+`from(string $table): static`
 
-**Parameter**
-* **$table_name** [`string`] *nama table database.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$table` | `string` | Ya | - | Nama tabel, dapat memakai alias jika metode mendukungnya. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->from('foo');`
+### Perilaku
+`from()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
 
-&nbsp;
+### Contoh Dasar
+```php
+$this->from('orders');
 
-### Baca Juga
-* [table](./table)
-* [fromSubquery](./fromSubquery)
+return $this->render('orders');
+```
+
+### Contoh Lanjutan
+```php
+$this->from('orders');
+$this->join('customers', 'customers.customer_id = orders.customer_id', 'left')
+    ->where('orders.deleted_at', null)
+    ->orderBy('orders.created_at', 'DESC')
+    ->limit(25);
+
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->from('orders');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Query akhir menyertakan klausa atau state yang dikonfigurasi sebelum row diserialisasi untuk tabel, dokumen, atau response API.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Metode ini mengonfigurasi query controller; ini berbeda dari memanggil API model secara langsung.
+
+### Kesalahan Umum
+* Memanggil method setelah `render()`, karena query sudah dikompilasi.
+* Menonaktifkan escaping untuk input dari request.
+* Lupa menutup grup WHERE atau HAVING yang sudah dibuka.
+
+### Metode Terkait
+* [select](./select)
+* [join](./join)
+* [where](./where)
+* [orWhere](./orWhere)
+* [whereIn](./whereIn)
+* [like](./like)
+* [groupBy](./groupBy)
+* [having](./having)

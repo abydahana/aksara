@@ -1,31 +1,71 @@
-Kontribusi kalian dibutuhkan!
+`validToken()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`validToken()` memvalidasi token CSRF yang dikirim atau konteks token API yang dipercaya. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan di awal method controller ketika modul perlu perilaku permission, token, upload, database, debug, form publik, atau integrasi khusus.
 
 ### Referensi
-`validToken($foo, $bar)`
+`validToken(?string $token, string|array $allowedUris = []): bool`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$token` | `?string` | Ya | - | Token CSRF atau token API yang dikirim. |
+| `$allowedUris` | `string|array` | Tidak | `[]` | URI atau daftar URI yang tokennya boleh diterima. |
 
-&nbsp;
+### Nilai Kembali
+`bool`
 
-### Contoh Penggunaan
-`$this->validToken('foo', 'bar');`
+Mengembalikan `true` ketika pemeriksaan berhasil dan `false` ketika gagal.
 
-`$this->validToken('baz', 'qux');`
+### Perilaku
+`validToken()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->validToken([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$valid = $this->validToken($this->request->getPost('_token'));
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$token = $this->request->getPost('_token');
 
-### Baca Juga
-* [formCallback](./formCallback)
-* [validateForm](./validateForm)
+if (! $this->validToken($token, ['pesanan/create'])) {
+    return throw_exception(403, phrase('Token keamanan tidak valid.'));
+}
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $valid = $this->validToken($this->request->getPost('_token'));
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Request saat ini memakai state Core tersebut saat permission, validasi, rendering, atau integrasi diproses.
+
+### Catatan
+* Urutan konfigurasi bisa berpengaruh; panggil sebelum method yang bergantung pada state tersebut.
+* Batasi pengecualian public form dan token hanya pada route yang membutuhkannya.
+
+### Kesalahan Umum
+* Menaruh konfigurasi setelah `setPermission()`, validasi, atau `render()` ketika step tersebut sudah membutuhkannya.
+* Membuat pengecualian public/token terlalu luas.
+
+### Metode Terkait
+* [allowTokenFrom](./allowTokenFrom)
+* [allowPublicFormSubmission](./allowPublicFormSubmission)
+* [setPermission](./setPermission)

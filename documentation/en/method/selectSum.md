@@ -1,36 +1,80 @@
-Your contribution's needed!
+`selectSum()` adds a SUM aggregate column. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`selectSum()` adds a SUM aggregate column. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when a controller needs to shape the generated dataset before calling `render()` without creating a separate custom query flow.
 
 ### Reference
-`selectSum($foo, $bar)`
+`selectSum(string $column, ?string $alias = null)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$column` | `string` | Yes | `` | Column name or column list. |
+| `$alias` | `?string` | No | `null` | Displayed label or SQL alias. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->selectSum('foo', 'bar');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-`$this->selectSum('baz', 'qux');`
+### Behavior
+`selectSum()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->selectSum([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->selectSum('order_items.subtotal', 'grand_total');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->select('orders.order_id, orders.order_number, customers.customer_name')
+    ->join('customers', 'customers.customer_id = orders.customer_id', 'left')
+    ->where('orders.deleted_at', null)
+    ->orderBy('orders.created_at', 'DESC')
+    ->limit(25);
 
-### Read Also
-* [distinct](./distinct)
+return $this->render('orders');
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->selectSum('order_items.subtotal', 'grand_total');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The final generated query includes this instruction before rows are serialized and rendered. API responses use the same prepared query.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Call this before `render()` so the query instruction is available during query compilation.
+
+### Common Mistakes
+* Calling the method after `render()`, because the query has already been compiled.
+
+### Related Methods
 * [select](./select)
-* [selectAvg](./selectAvg)
 * [selectCount](./selectCount)
-* [selectMax](./selectMax)
 * [selectMin](./selectMin)
+* [selectMax](./selectMax)
+* [selectAvg](./selectAvg)
 * [selectSubquery](./selectSubquery)
+* [unsetSelect](./unsetSelect)
+* [distinct](./distinct)

@@ -1,34 +1,80 @@
-Your contribution's needed!
+`orWhere()` adds OR WHERE conditions. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`orWhere()` adds OR WHERE conditions. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when a controller needs to shape the generated dataset before calling `render()` without creating a separate custom query flow.
 
 ### Reference
-`orWhere($foo, $bar)`
+`orWhere(string|array $field = [], mixed $value = '', bool $escape = true)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$field` | `string|array` | No | `[]` | Field name, field list, or associative field configuration. |
+| `$value` | `mixed` | No | `''` | Value assigned to the given key or field. |
+| `$escape` | `bool` | No | `true` | Whether the database layer should escape identifiers and values. |
 
-&nbsp;
+### Return Value
+`static`
 
-### Usage Sample
-`$this->orWhere('foo', 'bar');`
+Returns the current controller instance so it can be chained with other Core methods.
 
-`$this->orWhere('baz', 'qux');`
+### Behavior
+`orWhere()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->orWhere([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->orWhere('orders.status', 'pending');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->select('orders.order_id, orders.order_number, customers.customer_name')
+    ->join('customers', 'customers.customer_id = orders.customer_id', 'left')
+    ->where('orders.deleted_at', null)
+    ->orderBy('orders.created_at', 'DESC')
+    ->limit(25);
 
-### Read Also
+return $this->render('orders');
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->orWhere('orders.status', 'pending');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The final generated query includes this instruction before rows are serialized and rendered. API responses use the same prepared query.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Call this before `render()` so the query instruction is available during query compilation.
+* Leave `$escape` enabled unless the expression has already been validated and intentionally needs raw SQL behavior.
+
+### Common Mistakes
+* Calling the method after `render()`, because the query has already been compiled.
+* Disabling escaping for untrusted request input.
+
+### Related Methods
 * [where](./where)
-* [orWhereIn](./orWhereIn)
-* [orWhereNotIn](./orWhereNotIn)
 * [whereIn](./whereIn)
+* [orWhereIn](./orWhereIn)
 * [whereNotIn](./whereNotIn)
+* [orWhereNotIn](./orWhereNotIn)

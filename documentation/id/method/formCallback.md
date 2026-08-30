@@ -1,26 +1,79 @@
-Metode ini digunakan ketika akan melakukan validasi formulir menggunakan validasi pribadi. Artinya tidak menggunakan validasi yang secara default diberikan oleh framework. Pada kasus tertentu, apabila ingin mendapatkan suatu pengembalian yang rumit dari permintaan formulir, maka metode ini akan diperlukan.
+`formCallback()` adalah Core method yang tersedia di dalam controller Aksara.
+
+### Tujuan
+`formCallback()` mendaftarkan callback form khusus untuk alur validasi. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan di awal method controller ketika modul perlu perilaku permission, token, upload, database, debug, form publik, atau integrasi khusus.
 
 ### Referensi
-`formCallback($callback)`
+`formCallback(string $callback): static`
 
-**Parameter**
-* **$callback** [`string`] *metode yang akan dipanggil dan dijalankan.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$callback` | `string` | Ya | - | Nama protected callback method di controller. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->formCallback('foo');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-Pada contoh di atas, Anda harus membuat public method bernama `validasi` misal seperti berikut:
+### Perilaku
+`formCallback()` mengubah state runtime Core untuk request saat ini. Letakkan sebelum method yang bergantung padanya, terutama sebelum `setPermission()`, validasi, atau `render()`.
+
+### Contoh Dasar
 ```php
-public function foo()
+$this->formCallback('validasiPesanan');
+
+return $this->render('orders');
+```
+
+### Contoh Lanjutan
+```php
+$this->formCallback('validasiPesanan');
+$this->setPermission([1, 2])
+    ->setTitle(phrase('Pesanan'))
+    ->setUploadPath('pesanan');
+
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
 {
-    // Statement untuk menjalankan dan mengembalikan validasi
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->formCallback('validasiPesanan');
+
+        return $this->render('orders');
+    }
 }
 ```
 
-&nbsp;
+### Hasil
+Request saat ini memakai state Core tersebut saat permission, validasi, rendering, atau integrasi diproses.
 
-### Baca Juga
-* [validateForm](./validateForm)
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Urutan konfigurasi bisa berpengaruh; panggil sebelum method yang bergantung pada state tersebut.
+* Batasi pengecualian public form dan token hanya pada route yang membutuhkannya.
+
+### Kesalahan Umum
+* Menaruh konfigurasi setelah `setPermission()`, validasi, atau `render()` ketika step tersebut sudah membutuhkannya.
+* Membuat pengecualian public/token terlalu luas.
+
+### Metode Terkait
+* [setPermission](./setPermission)
+* [allowPublicFormSubmission](./allowPublicFormSubmission)
+* [allowTokenFrom](./allowTokenFrom)
 * [validToken](./validToken)
+* [permitUpsert](./permitUpsert)
+* [setUploadPath](./setUploadPath)
+* [render](./render)

@@ -1,30 +1,74 @@
-Your contribution's needed!
+`renderTable()` formats rows for the table renderer. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`renderTable()` formats rows for the table renderer. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when you need to extend the Core CRUD flow while keeping Aksara validation, hooks, formatting, and response handling.
 
 ### Reference
-`renderTable($foo, $bar)`
+`renderTable(array $data)`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$data` | `array` | Yes | `` | Data row, rows, or submitted values. |
 
-&nbsp;
+### Return Value
+`array`
 
-### Usage Sample
-`$this->renderTable('foo', 'bar');`
+Returns an array prepared for the table renderer. In API mode, Core may return the serialized array directly when formatted output is not requested.
 
-`$this->renderTable('baz', 'qux');`
+### Behavior
+`renderTable()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->renderTable([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$rows = $this->model->get('orders')->result();
+$table = $this->renderTable($rows);
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$rows = $this->model->getWhere('orders', ['status' => 'paid'])->result();
+$table = $this->renderTable($rows);
 
-### Read Also
-* [fieldPrepend](./fieldPrepend)
+return $this->setOutput('preview', $table)->render();
+```
+
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function preview()
+    {
+        $rows = $this->model->get('orders')->result();
+        $table = $this->renderTable($rows);
+
+        return $this->setOutput('preview', $table)->render();
+    }
+}
+```
+
+### Result
+The Core pipeline returns the documented value while preserving Aksara validation, hook, permission, audit, and response behavior where applicable.
+
+### Notes
+* These methods are usually called by `render()` internally, but can be useful for advanced modules.
+* Keep direct calls close to the surrounding CRUD logic so the response flow is easy to audit.
+
+### Common Mistakes
+* Bypassing Core validation or hooks unintentionally by writing directly to the database.
+* Returning raw arrays when the caller expects an Aksara response object.
+
+### Related Methods
+* [render](./render)
+* [renderRead](./renderRead)
+* [renderForm](./renderForm)
+* [serialize](./serialize)
+* [serializeRow](./serializeRow)
+* [validateForm](./validateForm)

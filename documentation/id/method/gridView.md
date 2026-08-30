@@ -1,19 +1,84 @@
-Metode `gridView` digunakan untuk membuat tampilan halaman CRUD ke dalam format grid (kotak). Format grid biasanya digunakan untuk mengelola table yang berkaitan dengan gambar.
+`gridView()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Contoh untuk tampilan table yang telah diformat dalam tampilan grid dapat ditemukan di bawah modul CMS > Galeri.
+### Tujuan
+`gridView()` menampilkan data tabel dalam layout grid menggunakan field thumbnail. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
 
 ### Referensi
-`gridView($thumbnail, $hyperlink, $parameter, $newTab)`
+`gridView(string $thumbnail, ?string $hyperlink = null, array $parameter = [], bool $newTab = false): static`
 
-**Parameter**
-* **$thumbnail** [`string`] *kolom dari table yang digunakan sebagai string penyimpan gambar;*
-* **$hyperlink** [`string`] *target halaman (slug) yang dituju saat grid diklik;*
-* **$parameter** [`array`] *kunci query string yang akan digunakan sebagai primary key;*
-* **$newTab** [`boolean`] *pilihan untuk membuka link pada jendela baru.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$thumbnail` | `string` | Ya | - | Field sumber thumbnail pada grid view. |
+| `$hyperlink` | `?string` | Tidak | `null` | URL tujuan opsional untuk setiap item grid. |
+| `$parameter` | `array` | Tidak | `[]` | Parameter tambahan untuk renderer, URL, atau query. |
+| `$newTab` | `bool` | Tidak | `false` | Menentukan apakah action dibuka di tab baru. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
+
+### Perilaku
+`gridView()` menyimpan konfigurasi interface pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
+
+### Contoh Dasar
 ```php
-$this->gridView('gallery_images', 'galleries', ['gallery_slug' => 'gallery_slug'], true);
+$this->gridView('thumbnail', 'pesanan/read', ['order_id' => 'order_id']);
+
+return $this->render('orders');
 ```
+
+### Contoh Lanjutan
+```php
+$this->gridView('thumbnail', 'pesanan/read', ['order_id' => 'order_id']);
+$this->addToolbar('pesanan/laporan', phrase('Laporan'), 'btn btn-outline-primary', 'mdi mdi-chart-bar')
+    ->setIcon('mdi mdi-cart')
+    ->setTitle(phrase('Pesanan'));
+
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->gridView('thumbnail', 'pesanan/read', ['order_id' => 'order_id']);
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Gunakan `phrase()` untuk label yang terlihat agar UI tetap dapat diterjemahkan.
+* Panggil konfigurasi UI sebelum `render()` agar renderer dapat membacanya.
+
+### Kesalahan Umum
+* Menulis label hard-code yang seharusnya memakai `phrase()`.
+* Menambahkan action baris tanpa parameter primary key yang dibutuhkan URL tujuan.
+* Memanggil metode terlalu lambat setelah output dibuat.
+
+### Metode Terkait
+* [setTitle](./setTitle)
+* [setIcon](./setIcon)
+* [addToolbar](./addToolbar)
+* [addButton](./addButton)
+* [addDropdown](./addDropdown)
+* [addSubmitButton](./addSubmitButton)
+* [setButton](./setButton)
+* [unsetToolbar](./unsetToolbar)

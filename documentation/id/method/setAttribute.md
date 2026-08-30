@@ -1,32 +1,82 @@
-Kontribusi kalian dibutuhkan!
+`setAttribute()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`setAttribute()` menambahkan attribute mentah ke kontrol field. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tetapi field tertentu perlu label, layout, validasi, relasi, visibility, atau renderer khusus.
 
 ### Referensi
-`setAttribute($foo, $bar)`
+`setAttribute(string|array $params = [], ?string $value = null): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$params` | `string|array` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$value` | `?string` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->setAttribute('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->setAttribute('baz', 'qux');`
+### Perilaku
+`setAttribute()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->setAttribute([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->setAttribute('amount', 'min="0" step="1000"');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->setAttribute('amount', 'min="0" step="1000"');
+$this->setAlias('order_number', phrase('Nomor Pesanan'))
+    ->setValidation('status', 'required|in_list[draft,lunas,batal]')
+    ->fieldOrder('order_number, customer_id, status, notes');
 
-### Baca Juga
-* [addClass](./addClass)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->setAttribute('amount', 'min="0" step="1000"');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Tabel, read view, form, dan payload API terformat memakai metadata field yang sudah diperbarui.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Nama field harus cocok dengan kolom terpilih, alias, alias relasi, atau field virtual dari `addField()`.
+* Gunakan `phrase()` untuk label, heading, placeholder, dan teks lain yang terlihat pengguna.
+
+### Kesalahan Umum
+* Memakai nama field yang tidak ada di data terpilih.
+* Menulis label atau option tanpa `phrase()` padahal teks terlihat pengguna.
+* Mengira metode ini langsung mencetak HTML, padahal hanya mengatur renderer.
+
+### Metode Terkait
+* [setField](./setField)
+* [addField](./addField)
+* [setRelation](./setRelation)
+* [setValidation](./setValidation)
+* [setAlias](./setAlias)
 * [setPlaceholder](./setPlaceholder)
-* [setTooltip](./setTooltip)
+* [setPrimary](./setPrimary)
+* [unsetField](./unsetField)

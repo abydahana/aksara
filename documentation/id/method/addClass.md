@@ -1,38 +1,82 @@
-Ada kalanya untuk menjalankan suatu trigger javascript, memerlukan suatu *class identity* unik pada element tertentu. Pada kasusn pemanggilan metode `addClass` di sini, Anda akan menambahkan ekstra class pada bidang input.
+`addClass()` adalah Core method yang tersedia di dalam controller Aksara.
+
+### Tujuan
+`addClass()` menambahkan class CSS ke field form yang dihasilkan. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
 
 ### Referensi
+`addClass(string|array $params = [], ?string $value = null): static`
 
-`addClass($field, $class_name)`
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$params` | `string|array` | Tidak | `[]` | Nilai, daftar nilai, atau pasangan key/value yang diterima metode ini. |
+| `$value` | `?string` | Tidak | `null` | Nilai untuk field, option, kondisi, atau kontrol yang dibuat. |
 
-**Parameter**
-* **$field** [`mixed`] *nama kolom inputan / field;*
-* **$class_name** [`string`] *class yang akan ditambahkan.*
+### Nilai Kembali
+`static`
 
-&nbsp;
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-### Contoh Penggunaan
+### Perilaku
+`addClass()` menyimpan konfigurasi interface pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
-`$this->addClass('foo', 'bar');`
-
-`$this->addClass('baz', 'qux');`
-
-Pemanggilan metode di atas akan menambah class CSS pada kolom input dan akan menghasilkan contoh output seperti berikut:
-
-`<input name="foo" class="bar" />`
-
-`<input name="baz" class="qux" />`
-
-**Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:**
+### Contoh Dasar
 ```php
-$this->addClass([
-    'nama_lengkap' => 'extra-class',
-    'alamat' => 'another-class'
-]);
+$this->addClass('status', 'select2');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->addClass('status', 'select2');
+$this->addToolbar('pesanan/laporan', phrase('Laporan'), 'btn btn-outline-primary', 'mdi mdi-chart-bar')
+    ->setIcon('mdi mdi-cart')
+    ->setTitle(phrase('Pesanan'));
 
-### Baca Juga
-* [setAttribute](./setAttribute)
-* [setPlaceholder](./setPlaceholder)
-* [setTooltip](./setTooltip)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->addClass('status', 'select2');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Gunakan `phrase()` untuk label yang terlihat agar UI tetap dapat diterjemahkan.
+* Panggil konfigurasi UI sebelum `render()` agar renderer dapat membacanya.
+
+### Kesalahan Umum
+* Menulis label hard-code yang seharusnya memakai `phrase()`.
+* Menambahkan action baris tanpa parameter primary key yang dibutuhkan URL tujuan.
+* Memanggil metode terlalu lambat setelah output dibuat.
+
+### Metode Terkait
+* [setTitle](./setTitle)
+* [setIcon](./setIcon)
+* [addToolbar](./addToolbar)
+* [addButton](./addButton)
+* [addDropdown](./addDropdown)
+* [addSubmitButton](./addSubmitButton)
+* [setButton](./setButton)
+* [unsetToolbar](./unsetToolbar)

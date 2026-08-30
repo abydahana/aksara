@@ -1,30 +1,68 @@
-Your contribution's needed!
+`getMethod()` returns the active Core method name. It is used inside an Aksara controller as part of the Core method API.
 
-Please update this page through GitHub using this standard format.
+### Purpose
+`getMethod()` returns the active Core method name. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it near the beginning of a controller method to configure how Core handles the current request.
 
 ### Reference
-`getMethod($foo, $bar)`
+`getMethod()`
 
-**Parameter**
-* **$foo** [`string`] *the detail related to the variable;*
-* **$bar** [`string`] *the detail related to the variable.*
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| None | - | - | - | This method does not accept parameters. |
 
-&nbsp;
+### Return Value
+`string`
 
-### Usage Sample
-`$this->getMethod('foo', 'bar');`
+Returns the active Core method name resolved from the current request.
 
-`$this->getMethod('baz', 'qux');`
+### Behavior
+`getMethod()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
-**You can use this method in groups as below:**
+### Basic Usage
 ```php
-$this->getMethod([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+if ('create' === $this->getMethod()) {
+    $this->setTitle(phrase('Create Order'));
+}
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->setTitle(phrase('Orders'))
+    ->setIcon('mdi mdi-cart-outline')
+    ->setPermission();
+```
 
-### Read Also
-* [setMethod](./setMethod)
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->getMethod();
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The controller stores the configuration and applies it later in the current request lifecycle.
+
+### Notes
+* Call configuration methods before `setPermission()` or `render()` when those steps depend on the configured value.
+
+### Common Mistakes
+* Calling the method after the permission or render step that already needed it.
+* Spreading related configuration across distant parts of the controller.
+
+### Related Methods
+* [render](./render)

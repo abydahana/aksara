@@ -1,38 +1,72 @@
-Ada kalanya untuk menjalankan suatu trigger javascript, memerlukan suatu *class identity* unik pada element tertentu. Pada kasusn pemanggilan metode `addClass` di sini, Anda akan menambahkan ekstra class pada bidang input.
+`addClass()` adds CSS classes to generated form fields. It is used inside an Aksara controller as part of the Core method API.
+
+### Purpose
+`addClass()` adds CSS classes to generated form fields. It lets a controller customize Aksara Core behavior while keeping the request inside the built-in CRUD, rendering, permission, validation, and response pipeline.
+
+### When to Use
+Use it when the default generated interface needs extra controls, actions, filters, or layout behavior.
 
 ### Reference
+`addClass(string|array $params = [], ?string $value = null)`
 
-`addClass($field, $class_name)`
+### Parameters
+| Parameter | Type | Required | Default | Description |
+|---|---|---:|---|---|
+| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$value` | `?string` | No | `null` | Value assigned to the given key or field. |
 
-**Parameter**
-* **$field** [`mixed`] *nama kolom inputan / field;*
-* **$class_name** [`string`] *class yang akan ditambahkan.*
+### Return Value
+`static`
 
-&nbsp;
+Returns the current controller instance so it can be chained with other Core methods.
 
-### Usage Sample
+### Behavior
+`addClass()` stores UI configuration for the generated interface. The renderer reads that configuration later and places the control in the correct table, toolbar, filter, grid, or form location.
 
-`$this->addClass('foo', 'bar');`
-
-`$this->addClass('baz', 'qux');`
-
-Pemanggilan metode di atas akan menambah class CSS pada kolom input dan akan menghasilkan contoh output seperti berikut:
-
-`<input name="foo" class="bar" />`
-
-`<input name="baz" class="qux" />`
-
-**Anda juga dapat menggunakan metode ini secara berkelompok, misalnya:**
+### Basic Usage
 ```php
-$this->addClass([
-    'nama_lengkap' => 'extra-class',
-    'alamat' => 'another-class'
-]);
+$this->addClass('email', 'text-lowercase');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Advanced Usage
+```php
+$this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 'mdi mdi-chart-bar')
+    ->addButton('orders/read', phrase('View'), 'btn btn-sm btn-outline-secondary', 'mdi mdi-eye', ['order_id' => 'order_id']);
+```
 
-### Read Also
+### Complete Example
+```php
+namespace Modules\Orders\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Orders extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Orders'))
+            ->addClass('email', 'text-lowercase');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Result
+The generated interface includes or changes the configured control without requiring a custom view.
+
+### Notes
+* This method is chainable and returns the current controller instance.
+* Use `phrase()` for visible labels so the interface remains translatable.
+* Action parameters can reference row fields so generated buttons point to the current record.
+
+### Common Mistakes
+* Hard-coding labels that should be translated with `phrase()`.
+* Forgetting row parameters for actions that need the current record ID.
+
+### Related Methods
 * [setAttribute](./setAttribute)
 * [setPlaceholder](./setPlaceholder)
 * [setTooltip](./setTooltip)

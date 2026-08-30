@@ -1,36 +1,83 @@
-Kontribusi kalian dibutuhkan!
+`select()` adalah Core method yang tersedia di dalam controller Aksara.
 
-Silakan perbarui halaman ini melalui GitHub dengan menggunakan format standar berikut dilengkapi dengan kalimat pembukaan.
+### Tujuan
+`select()` menambahkan kolom ke daftar SELECT. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+
+### Kapan Digunakan
+Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilasi query akhir, tanpa keluar dari pipeline CRUD dan response Core.
 
 ### Referensi
-`select($foo, $bar)`
+`select(string|array $column, bool $escape = true): static`
 
-**Parameter**
-* **$foo** [`string`] *keterangan terkait variabel;*
-* **$bar** [`string`] *keterangan terkait variabel.*
+### Parameter
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---:|---|---|
+| `$column` | `string|array` | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
+| `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |
 
-&nbsp;
+### Nilai Kembali
+`static`
 
-### Contoh Penggunaan
-`$this->select('foo', 'bar');`
+Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
-`$this->select('baz', 'qux');`
+### Perilaku
+`select()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
 
-**Anda juga dapat menggunakan metode ini secara berkelompok seperti berikut:**
+### Contoh Dasar
 ```php
-$this->select([
-    'foo' => 'bar',
-    'baz' => 'qux'
-]);
+$this->select('orders.order_id, orders.order_number, orders.status');
+
+return $this->render('orders');
 ```
 
-&nbsp;
+### Contoh Lanjutan
+```php
+$this->select('orders.order_id, orders.order_number, orders.status');
+$this->join('customers', 'customers.customer_id = orders.customer_id', 'left')
+    ->where('orders.deleted_at', null)
+    ->orderBy('orders.created_at', 'DESC')
+    ->limit(25);
 
-### Baca Juga
-* [distinct](./distinct)
-* [selectAvg](./selectAvg)
+return $this->render('orders');
+```
+
+### Contoh Lengkap
+```php
+namespace Modules\Pesanan\Controllers;
+
+use Aksara\Controllers\BaseController;
+
+class Pesanan extends BaseController
+{
+    public function index()
+    {
+        $this->setTitle(phrase('Pesanan'))
+            ->select('orders.order_id, orders.order_number, orders.status');
+
+        return $this->render('orders');
+    }
+}
+```
+
+### Hasil
+Query akhir menyertakan klausa atau state yang dikonfigurasi sebelum row diserialisasi untuk tabel, dokumen, atau response API.
+
+### Catatan
+* Metode ini chainable dan biasanya dipanggil sebelum `render()`.
+* Metode ini mengonfigurasi query controller; ini berbeda dari memanggil API model secara langsung.
+* Biarkan escaping aktif kecuali ekspresi SQL mentah memang disengaja dan sudah dipercaya.
+
+### Kesalahan Umum
+* Memanggil method setelah `render()`, karena query sudah dikompilasi.
+* Menonaktifkan escaping untuk input dari request.
+* Lupa menutup grup WHERE atau HAVING yang sudah dibuka.
+
+### Metode Terkait
 * [selectCount](./selectCount)
-* [selectMax](./selectMax)
-* [selectMin](./selectMin)
-* [selectSubquery](./selectSubquery)
 * [selectSum](./selectSum)
+* [selectMin](./selectMin)
+* [selectMax](./selectMax)
+* [selectAvg](./selectAvg)
+* [selectSubquery](./selectSubquery)
+* [unsetSelect](./unsetSelect)
+* [distinct](./distinct)
