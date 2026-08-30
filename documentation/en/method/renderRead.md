@@ -12,7 +12,7 @@ Use it when you need to extend the Core CRUD flow while keeping Aksara validatio
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$data` | `array|object` | Yes | `` | Data row, rows, or submitted values. |
+| `$data` | `array\|object` | Yes | - | Data row, rows, or submitted values. |
 
 ### Return Value
 `array`
@@ -40,9 +40,9 @@ return $this->setOutput('preview', $view)->render();
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function preview()
     {

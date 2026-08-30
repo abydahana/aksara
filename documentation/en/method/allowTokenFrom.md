@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$uris` | `string|array` | No | `[]` | URI or URI list accepted as token sources. |
+| `$uris` | `string\|array` | No | `[]` | URI or URI list accepted as token sources. |
 
 ### Return Value
 `static`
@@ -40,9 +40,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

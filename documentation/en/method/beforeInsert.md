@@ -44,9 +44,9 @@ protected function beforeInsert()
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     protected function beforeInsert()
     {

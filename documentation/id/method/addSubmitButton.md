@@ -1,10 +1,10 @@
-`addSubmitButton()` adalah Core method yang tersedia di dalam controller Aksara.
+`addSubmitButton()` menambahkan tombol di dekat tombol submit form.
 
 ### Tujuan
 `addSubmitButton()` menambahkan tombol di dekat tombol submit form. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
 
 ### Kapan Digunakan
-Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
+Gunakan ketika antarmuka bawaan perlu metadata halaman, aksi, tombol, filter, layout, atau output tambahan tanpa membuat view khusus.
 
 ### Referensi
 `addSubmitButton(?string $name, ?string $value, string $label, ?string $class = null, ?string $icon = null, ?string $attribution = null): static`
@@ -19,13 +19,13 @@ Gunakan ketika interface bawaan perlu metadata halaman, action, tombol, filter, 
 | `$icon` | `?string` | Tidak | `null` | Class ikon untuk kontrol yang dibuat. |
 | `$attribution` | `?string` | Tidak | `null` | Attribute mentah tambahan untuk elemen yang dibuat. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
 
 ### Perilaku
-`addSubmitButton()` menyimpan konfigurasi interface pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
+`addSubmitButton()` menyimpan konfigurasi antarmuka pada controller. Renderer aktif membacanya untuk tombol, filter, heading, layout, variable theme, atau payload output.
 
 ### Contoh Dasar
 ```php
@@ -48,9 +48,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {
@@ -63,7 +63,7 @@ class Pesanan extends BaseController
 ```
 
 ### Hasil
-Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
+Antarmuka atau payload output bawaan mengikuti konfigurasi tanpa perlu view khusus.
 
 ### Catatan
 * Metode ini chainable dan biasanya dipanggil sebelum `render()`.
@@ -72,7 +72,7 @@ Interface atau payload output bawaan mengikuti konfigurasi tanpa perlu view khus
 
 ### Kesalahan Umum
 * Menulis label hard-code yang seharusnya memakai `phrase()`.
-* Menambahkan action baris tanpa parameter primary key yang dibutuhkan URL tujuan.
+* Menambahkan aksi baris tanpa parameter primary key yang dibutuhkan URL tujuan.
 * Memanggil metode terlalu lambat setelah output dibuat.
 
 ### Metode Terkait

@@ -1,4 +1,4 @@
-`distinct()` adalah Core method yang tersedia di dalam controller Aksara.
+`distinct()` mengaktifkan atau mematikan DISTINCT pada query.
 
 ### Tujuan
 `distinct()` mengaktifkan atau mematikan DISTINCT pada query. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 |---|---|---:|---|---|
 | `$flag` | `bool` | Tidak | `true` | Flag boolean untuk mengaktifkan atau mematikan fitur. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -44,9 +44,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

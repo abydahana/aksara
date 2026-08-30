@@ -1,4 +1,4 @@
-`join()` adalah Core method yang tersedia di dalam controller Aksara.
+`join()` menambahkan klausa JOIN ke query.
 
 ### Tujuan
 `join()` menambahkan klausa JOIN ke query. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,10 +14,10 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 |---|---|---:|---|---|
 | `$table` | `string` | Ya | - | Nama tabel, dapat memakai alias jika metode mendukungnya. |
 | `$condition` | `string` | Ya | - | Ekspresi kondisi JOIN. |
-| `$type` | `string` | Tidak | `''` | Tipe field, tipe join, tipe renderer, atau tipe action sesuai metode. |
+| `$type` | `string` | Tidak | `''` | Tipe field, tipe join, tipe renderer, atau tipe aksi sesuai metode. |
 | `$escape` | `bool` | Tidak | `true` | Menentukan apakah layer database melakukan escaping identifier dan nilai. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -47,9 +47,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

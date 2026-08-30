@@ -12,8 +12,8 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$primaryKey` | `?string` | Yes | `` | Related table key or local primary key field. |
-| `$orderKey` | `?string` | Yes | `` | Column used to persist row order. |
+| `$primaryKey` | `?string` | Yes | - | Related table key or local primary key field. |
+| `$orderKey` | `?string` | Yes | - | Column used to persist row order. |
 
 ### Return Value
 `static`
@@ -40,9 +40,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

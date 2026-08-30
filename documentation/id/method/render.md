@@ -1,7 +1,7 @@
-`render()` adalah Core method yang tersedia di dalam controller Aksara.
+`render()` menjalankan controller menjadi halaman, JSON API, dokumen, atau aksi CRUD.
 
 ### Tujuan
-`render()` menjalankan controller menjadi halaman, JSON API, dokumen, atau action CRUD. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
+`render()` menjalankan controller menjadi halaman, JSON API, dokumen, atau aksi CRUD. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
 
 ### Kapan Digunakan
 Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, validasi, atau CRUD Core secara langsung. Modul biasa umumnya cukup memanggil `render()`.
@@ -15,13 +15,13 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 | `$table` | `?string` | Tidak | `null` | Nama tabel, dapat memakai alias jika metode mendukungnya. |
 | `$view` | `?string` | Tidak | `null` | Path view khusus untuk mengganti view bawaan. |
 
-### Nilai Kembali
+### Return
 `mixed`
 
 Mengembalikan response akhir untuk request aktif: halaman, JSON, redirect, dokumen, atau response exception sesuai konteks.
 
 ### Perilaku
-`render()` adalah dispatcher utama. Method ini memeriksa permission, membangun query, menangani action CRUD/export/print/pdf, memvalidasi form, memformat API, lalu mengembalikan response theme aktif.
+`render()` adalah dispatcher utama. Method ini memeriksa permission, membangun query, menangani aksi CRUD/export/print/pdf, memvalidasi form, memformat API, lalu mengembalikan response theme aktif.
 
 ### Contoh Dasar
 ```php
@@ -42,9 +42,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

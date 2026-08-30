@@ -1,4 +1,4 @@
-`allowPublicFormSubmission()` adalah Core method yang tersedia di dalam controller Aksara.
+`allowPublicFormSubmission()` mengizinkan form publik submit melalui pipeline CRUD Core.
 
 ### Tujuan
 `allowPublicFormSubmission()` mengizinkan form publik submit melalui pipeline CRUD Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 |---|---|---:|---|---|
 | `$return` | `bool` | Tidak | `true` | Flag boolean untuk mengaktifkan atau mematikan fitur. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -43,9 +43,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

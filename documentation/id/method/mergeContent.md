@@ -1,4 +1,4 @@
-`mergeContent()` adalah Core method yang tersedia di dalam controller Aksara.
+`mergeContent()` menggabungkan beberapa nilai menjadi satu blok konten.
 
 ### Tujuan
 `mergeContent()` menggabungkan beberapa nilai menjadi satu blok konten. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -16,7 +16,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 | `$alias` | `?string` | Tidak | `null` | Alias untuk ekspresi select atau subquery. |
 | `$callback` | `?string` | Tidak | `null` | Nama protected callback method di controller. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -45,9 +45,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

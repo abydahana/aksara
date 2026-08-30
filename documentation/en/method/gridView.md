@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$thumbnail` | `string` | Yes | `` | Image or file field used as the grid thumbnail. |
+| `$thumbnail` | `string` | Yes | - | Image or file field used as the grid thumbnail. |
 | `$hyperlink` | `?string` | No | `null` | Optional route used when a grid item is clicked. |
 | `$parameter` | `array` | No | `[]` | Route or query parameters passed to the action. |
 | `$newTab` | `bool` | No | `false` | Open target in a new browser tab when true. |
@@ -42,9 +42,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

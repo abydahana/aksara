@@ -12,7 +12,7 @@ Use it near the beginning of a controller method to configure how Core handles t
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | `string\|array` | No | `[]` | String value or associative array of values, depending on the method. |
 | `$value` | `mixed` | No | `[]` | Value assigned to the given key or field. |
 
 ### Return Value
@@ -41,9 +41,9 @@ $this->setTitle(phrase('Orders'))
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

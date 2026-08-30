@@ -12,7 +12,7 @@ Use it when the generated table, form, or read view is mostly correct but one or
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$params` | `string|array` | No | `[]` | String value or associative array of values, depending on the method. |
+| `$params` | `string\|array` | No | `[]` | String value or associative array of values, depending on the method. |
 | `$value` | `array` | No | `[]` | Value assigned to the given key or field. |
 
 ### Return Value
@@ -41,9 +41,9 @@ $this->setAlias(['created_at' => phrase('Created'), 'updated_at' => phrase('Upda
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

@@ -1,4 +1,4 @@
-`serializeRow()` adalah Core method yang tersedia di dalam controller Aksara.
+`serializeRow()` menormalisasi satu row menjadi metadata field, konten, nilai, dan validasi.
 
 ### Tujuan
 `serializeRow()` menormalisasi satu row menjadi metadata field, konten, nilai, dan validasi. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,12 +12,12 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$data` | `array|object` | Ya | - | Satu row object atau array yang akan dinormalisasi. |
+| `$data` | `array\|object` | Ya | - | Satu row object atau array yang akan dinormalisasi. |
 | `$fieldData` | `?array` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 | `$mockFields` | `?array` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 | `$fieldNames` | `?array` | Tidak | `null` | Nilai yang digunakan oleh metode ini. |
 
-### Nilai Kembali
+### Return
 `array`
 
 Mengembalikan payload Core terstruktur untuk renderer atau response API.
@@ -43,9 +43,9 @@ return $this->setOutput('preview', $row)->render();
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

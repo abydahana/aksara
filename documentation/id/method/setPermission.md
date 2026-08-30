@@ -1,4 +1,4 @@
-`setPermission()` adalah Core method yang tersedia di dalam controller Aksara.
+`setPermission()` menjalankan pemeriksaan akses modul dan pembatasan grup.
 
 ### Tujuan
 `setPermission()` menjalankan pemeriksaan akses modul dan pembatasan grup. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,10 +12,10 @@ Gunakan di awal method controller ketika modul perlu perilaku permission, token,
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$permissiveGroup` | `array|string` | Tidak | `[]` | ID grup yang diizinkan. Gunakan `0` untuk mengizinkan semua grup. |
-| `$redirect` | `?string` | Tidak | `null` | Tujuan redirect saat akses ditolak atau action selesai. |
+| `$permissiveGroup` | `array\|string` | Tidak | `[]` | ID grup yang diizinkan. Gunakan `0` untuk mengizinkan semua grup. |
+| `$redirect` | `?string` | Tidak | `null` | Tujuan redirect saat akses ditolak atau aksi selesai. |
 
-### Nilai Kembali
+### Return
 `static|Response`
 
 Mengembalikan controller ketika akses diizinkan, atau response Aksara/CodeIgniter ketika akses ditolak atau dialihkan.
@@ -44,9 +44,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

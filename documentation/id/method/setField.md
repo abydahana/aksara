@@ -1,4 +1,4 @@
-`setField()` adalah Core method yang tersedia di dalam controller Aksara.
+`setField()` mengatur tipe renderer dan parameter khusus field.
 
 ### Tujuan
 `setField()` mengatur tipe renderer dan parameter khusus field. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,15 +12,15 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$field` | `string|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
-| `$type` | `string|array|null` | Tidak | `null` | Tipe renderer seperti `text`, `textarea`, `wysiwyg`, `image`, `select`, `boolean`, atau `custom`. |
-| `$parameter` | `array|string|null` | Tidak | `null` | Parameter tambahan untuk renderer, URL, atau query. |
+| `$field` | `string\|array` | Tidak | `[]` | Nama field, daftar field dipisah koma, atau map field asosiatif. |
+| `$type` | `string\|array\|null` | Tidak | `null` | Tipe renderer seperti `text`, `textarea`, `wysiwyg`, `image`, `select`, `boolean`, atau `custom`. |
+| `$parameter` | `array\|string\|null` | Tidak | `null` | Parameter tambahan untuk renderer, URL, atau query. |
 | `$alpha` | `mixed` | Tidak | `null` | Parameter renderer tambahan. |
 | `$beta` | `mixed` | Tidak | `null` | Parameter renderer tambahan. |
 | `$charlie` | `mixed` | Tidak | `null` | Parameter renderer tambahan. |
 | `$delta` | `?string` | Tidak | `null` | Parameter renderer tambahan. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -49,9 +49,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

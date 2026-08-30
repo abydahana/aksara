@@ -1,4 +1,4 @@
-`setRelation()` adalah Core method yang tersedia di dalam controller Aksara.
+`setRelation()` mengubah field menjadi pilihan relasi atau sumber autocomplete.
 
 ### Tujuan
 `setRelation()` mengubah field menjadi pilihan relasi atau sumber autocomplete. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -22,7 +22,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 | `$limit` | `int` | Tidak | `0` | Jumlah maksimum row. |
 | `$translate` | `bool` | Tidak | `false` | Menentukan apakah output dilewatkan ke fungsi translasi. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -51,9 +51,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

@@ -1,4 +1,4 @@
-`selectMax()` adalah Core method yang tersedia di dalam controller Aksara.
+`selectMax()` menambahkan agregasi MAX ke daftar SELECT.
 
 ### Tujuan
 `selectMax()` menambahkan agregasi MAX ke daftar SELECT. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -15,7 +15,7 @@ Gunakan ketika controller perlu membentuk dataset sebelum `render()` mengompilas
 | `$column` | `string` | Ya | - | Nama kolom, ekspresi kolom, daftar kolom dipisah koma, atau array kolom. |
 | `$alias` | `?string` | Tidak | `null` | Alias untuk ekspresi select atau subquery. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -45,9 +45,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

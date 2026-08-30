@@ -12,7 +12,7 @@ Use it when you need to extend the Core CRUD flow while keeping Aksara validatio
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$data` | `array|object` | Yes | `` | Data row, rows, or submitted values. |
+| `$data` | `array\|object` | Yes | - | Data row, rows, or submitted values. |
 | `$fieldData` | `?array` | No | `null` | Compiled field metadata. |
 | `$mockFields` | `?array` | No | `null` | Mock field metadata. |
 | `$fieldNames` | `?array` | No | `null` | Compiled field-name list. |
@@ -43,9 +43,9 @@ return $this->setOutput('preview', $row)->render();
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function preview()
     {

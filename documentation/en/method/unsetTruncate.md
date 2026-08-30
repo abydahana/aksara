@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$field` | `string|array` | Yes | `` | Field name, field list, or associative field configuration. |
+| `$field` | `string\|array` | Yes | - | Field name, field list, or associative field configuration. |
 
 ### Return Value
 `static`
@@ -39,9 +39,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

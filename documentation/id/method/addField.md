@@ -1,4 +1,4 @@
-`addField()` adalah Core method yang tersedia di dalam controller Aksara.
+`addField()` menambahkan field virtual yang tidak ada secara fisik di schema tabel.
 
 ### Tujuan
 `addField()` menambahkan field virtual yang tidak ada secara fisik di schema tabel. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -12,10 +12,10 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 ### Parameter
 | Parameter | Tipe | Wajib | Default | Keterangan |
 |---|---|---:|---|---|
-| `$name` | `string|array` | Ya | - | Nama field virtual atau array asosiatif `field => type`. |
-| `$type` | `string` | Tidak | `'varchar'` | Tipe field, tipe join, tipe renderer, atau tipe action sesuai metode. |
+| `$name` | `string\|array` | Ya | - | Nama field virtual atau array asosiatif `field => type`. |
+| `$type` | `string` | Tidak | `'varchar'` | Tipe field, tipe join, tipe renderer, atau tipe aksi sesuai metode. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -44,9 +44,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

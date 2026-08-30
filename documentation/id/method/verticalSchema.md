@@ -1,4 +1,4 @@
-`verticalSchema()` adalah Core method yang tersedia di dalam controller Aksara.
+`verticalSchema()` mengaktifkan mode schema vertikal berbasis key-value.
 
 ### Tujuan
 `verticalSchema()` mengaktifkan mode schema vertikal berbasis key-value. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -16,7 +16,7 @@ Gunakan ketika tabel, read view, atau form create/update bawaan sudah cukup, tet
 | `$valueColumn` | `string` | Ya | - | Kolom penyimpan nilai pada schema vertikal. |
 | `$typeColumn` | `?string` | Tidak | `'type'` | Kolom opsional penyimpan tipe nilai pada schema vertikal. |
 
-### Nilai Kembali
+### Return
 `static`
 
 Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan method Core lain sebelum `render()`.
@@ -45,9 +45,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function index()
     {

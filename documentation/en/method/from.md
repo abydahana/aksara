@@ -12,7 +12,7 @@ Use it when a controller needs to shape the generated dataset before calling `re
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$table` | `string` | Yes | `` | Database table name. |
+| `$table` | `string` | Yes | - | Database table name. |
 
 ### Return Value
 `static`
@@ -44,9 +44,9 @@ return $this->render('orders');
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {

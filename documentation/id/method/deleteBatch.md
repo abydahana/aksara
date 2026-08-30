@@ -1,4 +1,4 @@
-`deleteBatch()` adalah Core method yang tersedia di dalam controller Aksara.
+`deleteBatch()` menghapus row yang dikirim secara batch melalui pipeline CRUD Core.
 
 ### Tujuan
 `deleteBatch()` menghapus row yang dikirim secara batch melalui pipeline CRUD Core. Metode ini menjaga kustomisasi modul tetap berada di alur controller Core bawaan.
@@ -14,7 +14,7 @@ Gunakan untuk modul lanjutan yang perlu menyentuh pipeline render, serialisasi, 
 |---|---|---:|---|---|
 | `$table` | `?string` | Tidak | `null` | Nama tabel, dapat memakai alias jika metode mendukungnya. |
 
-### Nilai Kembali
+### Return
 `object|null`
 
 Mengembalikan response Aksara yang menjelaskan hasil delete batch, atau `null` bila alur tidak memiliki response eksplisit.
@@ -38,9 +38,9 @@ return $result;
 ```php
 namespace Modules\Pesanan\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Pesanan extends BaseController
+class Pesanan extends Core
 {
     public function proses()
     {

@@ -12,7 +12,7 @@ Use it when the default generated interface needs extra controls, actions, filte
 ### Parameters
 | Parameter | Type | Required | Default | Description |
 |---|---|---:|---|---|
-| `$methods` | `string|array` | Yes | `` | Toolbar method key or list of keys to remove. |
+| `$methods` | `string\|array` | Yes | - | Toolbar method key or list of keys to remove. |
 
 ### Return Value
 `static`
@@ -39,9 +39,9 @@ $this->addToolbar('orders/report', phrase('Report'), 'btn btn-outline-primary', 
 ```php
 namespace Modules\Orders\Controllers;
 
-use Aksara\Controllers\BaseController;
+use Aksara\Laboratory\Core;
 
-class Orders extends BaseController
+class Orders extends Core
 {
     public function index()
     {
