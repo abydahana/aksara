@@ -27,6 +27,7 @@ Returns the current controller instance so it can be chained with other Core met
 `like()` records a query instruction on the controller. Core applies that instruction when `render()` compiles the final query. It does not execute a database query by itself.
 
 > [!WARNING]
+>
 > Avoid feeding unsanitized search text into raw LIKE expressions. Let Core/database escaping handle request input.
 
 ### Basic Usage

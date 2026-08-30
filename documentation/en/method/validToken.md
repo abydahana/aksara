@@ -24,6 +24,7 @@ Returns `true` when the submitted token is accepted for the current route or all
 `validToken()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!CAUTION]
+>
 > Do not bypass token validation for browser form submissions. API clients have their own token path, but normal POST requests should keep CSRF protection enabled.
 
 ### Basic Usage

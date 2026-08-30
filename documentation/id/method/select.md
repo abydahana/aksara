@@ -24,6 +24,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `select()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
 
 > [!WARNING]
+>
 > Biarkan `$escape` aktif kecuali ekspresi SELECT adalah SQL mentah yang sudah dipercaya.
 
 ### Contoh Dasar

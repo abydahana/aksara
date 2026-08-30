@@ -31,6 +31,7 @@ Returns the current controller instance so it can be chained with other Core met
 `setRelation()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!NOTE]
+>
 > Relation output uses `{{ table.column }}` placeholders. Include every column needed by the display template.
 
 ### Basic Usage

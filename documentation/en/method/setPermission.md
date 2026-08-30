@@ -24,6 +24,7 @@ Returns the current controller instance when access is allowed, or an Aksara/Cod
 `setPermission()` marks the request for Core permission checking. The check uses the active module, method, and group at the time this method is called.
 
 > [!IMPORTANT]
+>
 > Call `setPermission()` after `parentModule()` or `setMethod()` when those methods are needed, because permission is checked using the module and method that are active at call time.
 
 ### Basic Usage

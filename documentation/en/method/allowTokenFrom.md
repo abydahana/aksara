@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `allowTokenFrom()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!WARNING]
+>
 > Only allow tokens from routes that intentionally share the same form flow. A broad allowed URI list weakens CSRF isolation.
 
 ### Basic Usage

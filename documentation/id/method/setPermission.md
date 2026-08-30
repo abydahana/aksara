@@ -24,6 +24,7 @@ Mengembalikan controller ketika akses diizinkan, atau response Aksara/CodeIgnite
 `setPermission()` menandai request agar melewati pemeriksaan permission Core. Pemeriksaan memakai module, method, dan group yang aktif saat method ini dipanggil.
 
 > [!IMPORTANT]
+>
 > Panggil `setPermission()` setelah `parentModule()` atau `setMethod()` bila keduanya dibutuhkan, karena permission dicek memakai modul dan method yang aktif saat itu.
 
 ### Contoh Dasar

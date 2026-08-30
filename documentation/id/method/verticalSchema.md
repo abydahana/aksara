@@ -25,6 +25,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `verticalSchema()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
 > [!IMPORTANT]
+>
 > Gunakan hanya untuk tabel key-value. Tabel relasional normal sebaiknya tetap memakai alur berbasis kolom biasa.
 
 ### Contoh Dasar

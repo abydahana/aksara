@@ -28,6 +28,7 @@ Returns the current controller instance so it can be chained with other Core met
 `databaseConfig()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!NOTE]
+>
 > This changes the database connection used by the Core model for the current controller flow; it does not rewrite global database configuration.
 
 ### Basic Usage

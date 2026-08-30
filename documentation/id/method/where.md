@@ -25,6 +25,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `where()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query.
 
 > [!WARNING]
+>
 > Biarkan `$escape` aktif untuk nilai dari request. Kondisi SQL mentah sebaiknya dibatasi untuk ekspresi yang dipercaya.
 
 ### Contoh Dasar

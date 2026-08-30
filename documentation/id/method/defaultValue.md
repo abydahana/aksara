@@ -24,6 +24,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `defaultValue()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
 > [!NOTE]
+>
 > `defaultValue()` memengaruhi nilai yang tampil di form. Gunakan `setDefault()` bila Core harus menulis nilai saat create atau update.
 
 ### Contoh Dasar

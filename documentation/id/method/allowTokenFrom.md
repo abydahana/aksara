@@ -23,6 +23,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `allowTokenFrom()` menambahkan URI sumber token yang boleh diterima oleh validasi token pada request ini.
 
 > [!WARNING]
+>
 > Izinkan token dari route lain hanya bila route tersebut memang berbagi alur form yang sama. Daftar URI yang terlalu luas melemahkan isolasi CSRF.
 
 ### Contoh Dasar

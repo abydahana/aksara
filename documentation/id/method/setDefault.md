@@ -24,6 +24,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `setDefault()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
 > [!NOTE]
+>
 > `setDefault()` menulis nilai ke data yang disiapkan. Gunakan `defaultValue()` bila nilai hanya perlu tampil di UI form.
 
 ### Contoh Dasar

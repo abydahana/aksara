@@ -23,6 +23,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `havingGroupStart()` menyimpan instruksi query di state persiapan Core. Instruksi diterapkan saat `render()` membangun query akhir; pemanggilan metode ini saja tidak mengeksekusi query. Panggilan pembuka dan penutup grup harus seimbang.
 
 > [!NOTE]
+>
 > Setiap grup HAVING harus ditutup dengan `havingGroupEnd()` sebelum query dirender.
 
 ### Contoh Dasar

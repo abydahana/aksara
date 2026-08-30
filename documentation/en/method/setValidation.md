@@ -24,6 +24,7 @@ Returns the current controller instance so it can be chained with other Core met
 `setValidation()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!IMPORTANT]
+>
 > Validation rules are applied during Core form processing. Keep rules aligned with field types, especially for upload, relation, password, and date fields.
 
 ### Basic Usage

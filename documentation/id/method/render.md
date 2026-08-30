@@ -24,6 +24,7 @@ Mengembalikan response akhir untuk request aktif: halaman, JSON, redirect, dokum
 `render()` adalah dispatcher utama. Method ini memeriksa permission, membangun query, menangani aksi CRUD/export/print/pdf, memvalidasi form, memformat API, lalu mengembalikan response theme aktif.
 
 > [!IMPORTANT]
+>
 > `render()` adalah titik saat Core mengompilasi konfigurasi, query, validasi, aksi CRUD, dan output. Letakkan konfigurasi sebelum method ini.
 
 ### Contoh Dasar

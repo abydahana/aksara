@@ -28,6 +28,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `databaseConfig()` mengganti konfigurasi koneksi database yang dipakai model Core pada request controller ini.
 
 > [!NOTE]
+>
 > Ini mengubah koneksi database yang dipakai model Core pada alur controller saat ini; bukan mengubah konfigurasi database global.
 
 ### Contoh Dasar

@@ -23,6 +23,7 @@ Returns the current controller instance so it can be chained with other Core met
 `setUploadPath()` stores request-level configuration on the controller. Call it before the permission, rendering, or form-processing step that depends on it.
 
 > [!WARNING]
+>
 > Keep upload paths module-specific and avoid paths controlled by user input.
 
 ### Basic Usage

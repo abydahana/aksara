@@ -24,6 +24,7 @@ Returns the current controller instance so it can be chained with other Core met
 `defaultValue()` updates field metadata used by the renderer. The generated output changes when the table, read, or form view is rendered.
 
 > [!NOTE]
+>
 > `defaultValue()` affects the displayed form value. Use `setDefault()` when Core must write the value during create or update.
 
 ### Basic Usage

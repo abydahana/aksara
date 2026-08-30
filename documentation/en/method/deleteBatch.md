@@ -23,6 +23,7 @@ Returns an Aksara response object describing the batch delete result, or `null` 
 `deleteBatch()` runs inside the Core data/rendering pipeline. Depending on the method, it may format data, validate input, execute a CRUD operation, or return an Aksara response.
 
 > [!CAUTION]
+>
 > Batch delete reads posted items. Validate the calling route and permissions before exposing this flow.
 
 ### Basic Usage

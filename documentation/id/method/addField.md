@@ -24,6 +24,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `addField()` memperbarui metadata field yang dibaca renderer tabel, read, form, API, dan dokumen. Efeknya muncul saat `render()` melakukan serialisasi dan menyiapkan response.
 
 > [!NOTE]
+>
 > Field virtual berguna untuk tampilan atau data schema vertikal, tetapi bukan kolom fisik kecuali model atau schema menyediakan penyimpanannya.
 
 ### Contoh Dasar

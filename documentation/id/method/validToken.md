@@ -24,6 +24,7 @@ Mengembalikan `true` ketika pemeriksaan berhasil dan `false` ketika gagal.
 `validToken()` membandingkan token yang dikirim dengan token route saat ini atau URI lain yang diizinkan.
 
 > [!CAUTION]
+>
 > Jangan melewati validasi token untuk submit form dari browser. API client punya jalur token sendiri, tetapi request POST normal sebaiknya tetap memakai proteksi CSRF.
 
 ### Contoh Dasar

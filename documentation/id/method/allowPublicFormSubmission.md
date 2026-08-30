@@ -23,6 +23,7 @@ Mengembalikan instance controller saat ini, sehingga dapat dirangkai dengan meth
 `allowPublicFormSubmission()` mengizinkan submit form publik tetap melewati validasi dan persiapan data Core tanpa permission penuh.
 
 > [!WARNING]
+>
 > Gunakan hanya untuk form publik yang memang harus submit lewat Core. Validasi, token, dan target penulisan tetap harus dibatasi.
 
 ### Contoh Dasar
