@@ -458,10 +458,13 @@ class Updater extends Core
                 throw new \RuntimeException(phrase('Update canceled! Malicious or unsafe PHP code was detected in the update package.'));
             }
 
-            $packageFiles = $this->_collectManifestPackageFiles($stagingPath, $manifest);
+            $packageFiles = array_values(array_filter(
+                $this->_collectManifestPackageFiles($stagingPath, $manifest),
+                fn ($path) => ! $this->_shouldSkipPackageFile($path, ROOTPATH)
+            ));
             $existingFiles = array_values(array_filter($packageFiles, fn ($path) => is_file(ROOTPATH . $path)));
 
-            if (! $this->_createUpdateBackup($backupPath, $manifest)) {
+            if (! $this->_createUpdateBackup($backupPath, $packageFiles)) {
                 throw new \RuntimeException(phrase('Update canceled due to inability to write the backup file!'));
             }
 
@@ -927,8 +930,9 @@ class Updater extends Core
         for ($i = 0, $count = $zip->numFiles; $i < $count; $i++) {
             $entryName = $zip->getNameIndex($i);
             $entryPath = $this->_normalizeRelativePath($entryName);
+            $isDirectory = is_string($entryName) && str_ends_with(str_replace('\\', '/', $entryName), '/');
 
-            if (false === $entryName || ! $entryPath || ! $this->_isSafeZipEntry($entryName) || ! $this->_isManifestPathAllowed($entryPath, $manifest)) {
+            if (false === $entryName || ! $entryPath || ! $this->_isSafeZipEntry($entryName) || ! $this->_isManifestPathAllowed($entryPath, $manifest, $isDirectory)) {
                 return false;
             }
 
@@ -971,9 +975,9 @@ class Updater extends Core
     }
 
     /**
-     * Create backup for paths the signed manifest may replace.
+     * Create backup for existing files the package may replace.
      */
-    private function _createUpdateBackup(string $backupPath, object $manifest): bool
+    private function _createUpdateBackup(string $backupPath, array $packageFiles): bool
     {
         $zip = new ZipArchive();
         $added = [];
@@ -982,27 +986,16 @@ class Updater extends Core
             return false;
         }
 
-        foreach ($this->_manifestAllowedPaths($manifest) as $path) {
-            $absolutePath = ROOTPATH . rtrim($path, '/');
+        foreach ($packageFiles as $path) {
+            $path = $this->_normalizeRelativePath($path);
 
-            if (str_ends_with($path, '/')) {
-                if (! is_dir($absolutePath)) {
-                    continue;
-                }
+            if (! $path || isset($added[$path])) {
+                continue;
+            }
 
-                foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($absolutePath, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-                    if ($file->isDir()) {
-                        continue;
-                    }
+            $absolutePath = ROOTPATH . $path;
 
-                    $relativePath = $this->_normalizeRelativePath(str_replace(ROOTPATH, '', $file->getRealPath()));
-
-                    if ($relativePath && $this->_isManifestPathAllowed($relativePath, $manifest) && ! isset($added[$relativePath])) {
-                        $zip->addFile($file->getRealPath(), $relativePath);
-                        $added[$relativePath] = true;
-                    }
-                }
-            } elseif (is_file($absolutePath) && ! isset($added[$path])) {
+            if (is_file($absolutePath)) {
                 $zip->addFile($absolutePath, $path);
                 $added[$path] = true;
             }
@@ -1031,6 +1024,10 @@ class Updater extends Core
                 throw new \RuntimeException(phrase('Unable to extract your update package. Zip entry failed security validation.'));
             }
 
+            if ($this->_shouldSkipPackageFile($relativePath, $destination)) {
+                continue;
+            }
+
             $targetPath = $destination . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
             $targetDirectory = dirname($targetPath);
 
@@ -1046,6 +1043,30 @@ class Updater extends Core
         }
 
         return $copied;
+    }
+
+    /**
+     * Preserve locally modified starter modules, uploads, and runtime writable files.
+     */
+    private function _shouldSkipPackageFile(string $relativePath, string $destination): bool
+    {
+        if ($this->_pathMatchesRule($relativePath, 'modules/Home/')) {
+            return is_dir($destination . 'modules' . DIRECTORY_SEPARATOR . 'Home');
+        }
+
+        if ($this->_pathMatchesRule($relativePath, 'public/uploads/')) {
+            return is_file($destination . str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
+        }
+
+        if (! $this->_pathMatchesRule($relativePath, 'writable/')) {
+            return false;
+        }
+
+        if ($this->_pathMatchesRule($relativePath, 'writable/translations/')) {
+            return is_dir($destination . 'writable' . DIRECTORY_SEPARATOR . 'translations');
+        }
+
+        return is_file($destination . str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
     }
 
     /**
@@ -1090,12 +1111,10 @@ class Updater extends Core
                 '.env',
                 '.git/',
                 'config.php',
-                'modules/',
+                'composer.lock',
                 'node_modules/',
                 'package-lock.json',
-                'public/uploads/',
-                'vendor/',
-                'writable/'
+                'vendor/'
             ],
             $this->_normalizeManifestRules($manifest->apply->blocked_paths ?? [])
         )));
@@ -1124,7 +1143,7 @@ class Updater extends Core
     /**
      * Check whether a relative path is allowed and not blocked.
      */
-    private function _isManifestPathAllowed(string $path, object $manifest): bool
+    private function _isManifestPathAllowed(string $path, object $manifest, bool $allowDirectoryAncestor = false): bool
     {
         $path = $this->_normalizeRelativePath($path);
 
@@ -1141,6 +1160,16 @@ class Updater extends Core
         foreach ($this->_manifestAllowedPaths($manifest) as $rule) {
             if ($this->_pathMatchesRule($path, $rule)) {
                 return true;
+            }
+        }
+
+        if ($allowDirectoryAncestor) {
+            $directory = rtrim($path, '/') . '/';
+
+            foreach ($this->_manifestAllowedPaths($manifest) as $rule) {
+                if (str_starts_with(rtrim($rule, '/') . '/', $directory)) {
+                    return true;
+                }
             }
         }
 
