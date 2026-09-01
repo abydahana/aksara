@@ -19,7 +19,7 @@
                                     </div>
                                     <h5 class="card-title text-break mb-0">
                                         <a href="https://ipinfo.io/<?= htmlspecialchars($val->ip) ?>" target="_blank" class="text-decoration-underline">
-                                            <?= htmlspecialchars($val->ip) ?>
+                                            <?= htmlspecialchars($val->ip) ?> <i class="mdi mdi-launch"></i>
                                         </a>
                                     </h5>
                                 </div>
