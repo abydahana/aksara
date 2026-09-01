@@ -18,7 +18,9 @@
                                         <?= phrase('IP Address') ?>
                                     </div>
                                     <h5 class="card-title text-break mb-0">
-                                        <?= htmlspecialchars($val->ip) ?>
+                                        <a href="https://ipinfo.io/<?= htmlspecialchars($val->ip) ?>" target="_blank" class="text-decoration-underline">
+                                            <?= htmlspecialchars($val->ip) ?>
+                                        </a>
                                     </h5>
                                 </div>
                                 <span class="badge bg-danger-subtle text-danger rounded-pill">
