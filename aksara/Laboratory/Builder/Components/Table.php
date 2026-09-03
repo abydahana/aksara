@@ -204,13 +204,17 @@ class Table
     {
         // Template for Status Badge
         $component = <<<EOF
-        <span class="badge {% if value %} bg-success {% else %} bg-danger {% endif %}">
-            {% if value %}
-                {{ phrase('Active') }}
-            {% else %}
-                {{ phrase('Inactive') }}
-            {% endif %}
-        </span>
+        {% if value is same as(true) or value is same as(false) or value in [0, 1, '0', '1'] %}
+            <span class="badge {% if value %}bg-success{% else %}bg-danger{% endif %}">
+                {% if value %}
+                    {{ phrase('Active') }}
+                {% else %}
+                    {{ phrase('Inactive') }}
+                {% endif %}
+            </span>
+        {% else %}
+            {{ content | raw }}
+        {% endif %}
         EOF;
 
         return [
