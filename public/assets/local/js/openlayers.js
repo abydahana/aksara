@@ -207,8 +207,145 @@ function _makeTileSource(url) {
   }
 }
 
+function _extractGeoJsonCenter(raw) {
+  if (!raw) return null;
+  let data = raw;
+  if (typeof data === 'string') {
+    let trimmed = data.trim();
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        data = JSON.parse(trimmed);
+      } catch (e) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  if (Array.isArray(data)) {
+    if (data.length === 2 && typeof data[0] === 'number' && typeof data[1] === 'number') {
+      return null;
+    }
+  } else if (typeof data.lat !== 'undefined' && typeof data.lng !== 'undefined') {
+    return null;
+  }
+
+  const isGeoJson = Array.isArray(data)
+    ? data.length > 0 && typeof data[0] === 'object' && data[0] !== null && (data[0].type || data[0].geometry)
+    : data.type === 'FeatureCollection' ||
+      data.type === 'Feature' ||
+      Array.isArray(data.features) ||
+      (data.geometry && typeof data.geometry === 'object') ||
+      ['Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon', 'GeometryCollection'].includes(data.type);
+
+  if (!isGeoJson) {
+    return null;
+  }
+
+  // 1. Attempt using OpenLayers GeoJSON reader (WGS84 EPSG:4326)
+  try {
+    if (typeof ol !== 'undefined' && ol.format && ol.format.GeoJSON) {
+      const geojsonFormat = new ol.format.GeoJSON();
+      let featuresArray = [];
+      if (Array.isArray(data)) {
+        featuresArray = geojsonFormat.readFeatures({
+          type: 'FeatureCollection',
+          features: data
+        });
+      } else if (data.type === 'FeatureCollection' || Array.isArray(data.features)) {
+        featuresArray = geojsonFormat.readFeatures(data);
+      } else if (data.type === 'Feature' || data.geometry) {
+        featuresArray = geojsonFormat.readFeatures({
+          type: 'FeatureCollection',
+          features: [data.geometry ? data : { type: 'Feature', geometry: data }]
+        });
+      } else if (data.type) {
+        featuresArray = geojsonFormat.readFeatures({
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: data,
+              properties: {}
+            }
+          ]
+        });
+      }
+
+      if (featuresArray && featuresArray.length > 0) {
+        let extent = ol.extent.createEmpty();
+        let hasGeom = false;
+        featuresArray.forEach(function (f) {
+          if (f && f.getGeometry()) {
+            ol.extent.extend(extent, f.getGeometry().getExtent());
+            hasGeom = true;
+          }
+        });
+        if (hasGeom && !ol.extent.isEmpty(extent)) {
+          let center = ol.extent.getCenter(extent);
+          if (center && center.length >= 2 && isFinite(center[0]) && isFinite(center[1])) {
+            if (Math.abs(center[0]) > 180 || Math.abs(center[1]) > 90) {
+              center = ol.proj.toLonLat(center);
+            }
+            return [center[0], center[1]];
+          }
+        }
+      }
+    }
+  } catch (e) {
+    // Proceed to fallback
+  }
+
+  // 2. Fallback: manual coordinate traversal
+  let coords = [];
+  function collectCoords(item) {
+    if (!item) return;
+    if (Array.isArray(item)) {
+      if (item.length >= 2 && typeof item[0] === 'number' && typeof item[1] === 'number') {
+        coords.push([item[0], item[1]]);
+      } else {
+        for (let i = 0; i < item.length; i++) {
+          collectCoords(item[i]);
+        }
+      }
+    } else if (typeof item === 'object') {
+      if (item.coordinates) collectCoords(item.coordinates);
+      if (item.geometry) collectCoords(item.geometry);
+      if (item.features) collectCoords(item.features);
+      if (item.geometries) collectCoords(item.geometries);
+    }
+  }
+
+  collectCoords(data);
+  if (coords.length > 0) {
+    let minX = coords[0][0],
+      maxX = coords[0][0];
+    let minY = coords[0][1],
+      maxY = coords[0][1];
+    for (let i = 1; i < coords.length; i++) {
+      if (coords[i][0] < minX) minX = coords[i][0];
+      if (coords[i][0] > maxX) maxX = coords[i][0];
+      if (coords[i][1] < minY) minY = coords[i][1];
+      if (coords[i][1] > maxY) maxY = coords[i][1];
+    }
+    let center = [(minX + maxX) / 2, (minY + maxY) / 2];
+    if (typeof ol !== 'undefined' && ol.proj && (Math.abs(center[0]) > 180 || Math.abs(center[1]) > 90)) {
+      center = ol.proj.toLonLat(center);
+    }
+    return center;
+  }
+
+  return null;
+}
+
 const openlayers = (function () {
   return {
+    extractGeoJsonCenter: _extractGeoJsonCenter,
     render: function (_this) {
       /**
        * Render map
@@ -265,7 +402,40 @@ const openlayers = (function () {
       iconPattern = context.data('icon') ? context.data('icon') : null;
       iconScale = context.data('icon-scale') ? context.data('icon-scale') : null;
 
+      // Extract center if data-map-center is GeoJSON format
+      let mapCenterData = context.data('map-center');
+      let extractedMapCenter = _extractGeoJsonCenter(mapCenterData);
+      if (extractedMapCenter) {
+        context.data('map-center', extractedMapCenter);
+        context.attr('data-map-center', JSON.stringify(extractedMapCenter));
+      }
+
+      // Also extract center if data-coordinate is GeoJSON format
+      let coordinateData = context.data('coordinate');
+      let extractedCoordCenter = _extractGeoJsonCenter(coordinateData);
+      if (extractedCoordCenter) {
+        context.data('coordinate', extractedCoordCenter);
+        context.attr('data-coordinate', JSON.stringify(extractedCoordCenter));
+      }
+
       lngLat = context.data('coordinate') ? context.data('coordinate') : context.data('map-center') ? context.data('map-center') : [];
+      if (typeof lngLat === 'string') {
+        let trimmed = lngLat.trim();
+        if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+          try {
+            lngLat = JSON.parse(trimmed);
+          } catch (e) {
+            // Keep as is
+          }
+        } else if (trimmed.includes(',')) {
+          let parts = trimmed.split(',').map(function (v) {
+            return parseFloat(v.trim());
+          });
+          if (parts.length >= 2 && isFinite(parts[0]) && isFinite(parts[1])) {
+            lngLat = Math.abs(parts[0]) > 90 || Math.abs(parts[1]) <= 90 ? [parts[0], parts[1]] : [parts[1], parts[0]];
+          }
+        }
+      }
       lngLat = lngLat && (typeof lngLat.lng !== 'undefined' && typeof lngLat.lat !== 'undefined' ? [lngLat.lng, lngLat.lat] : typeof lngLat[0] !== 'undefined' && typeof lngLat[1] !== 'undefined' ? [lngLat[0], lngLat[1]] : [107.0825363, -6.2355892]);
       colorscheme = typeof lngLat.colorscheme !== 'undefined' ? lngLat.colorscheme : '#ff0000';
 
