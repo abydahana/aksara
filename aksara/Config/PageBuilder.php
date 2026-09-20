@@ -792,7 +792,7 @@ class PageBuilder extends BaseConfig
                                             'id' => 'about_col_1',
                                             'props' => ['size' => ['md' => 6]],
                                             'children' => [
-                                                ['type' => 'image', 'id' => 'about_img', 'props' => ['src' => 'https://via.placeholder.com/600x400']]
+                                                ['type' => 'image', 'id' => 'about_img', 'props' => ['src' => 'https://placeholder.photo/600x400']]
                                             ]
                                         ],
                                         [
