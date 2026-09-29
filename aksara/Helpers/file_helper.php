@@ -122,7 +122,7 @@ if (! function_exists('get_image')) {
 
         $method = substr(uri_string(), strrpos(uri_string(), '/') + 1);
 
-        if ((in_array(service('request')->getGet('method'), ['print', 'embed', 'pdf', 'download']) || 'document' == service('request')->getGet('r')) && 'print' != $method && 'embed' != $method) {
+        if (in_array($method, ['print', 'embed', 'pdf', 'download']) || in_array(service('request')->getGet('method'), ['print', 'embed', 'pdf', 'download']) || 'document' == service('request')->getGet('r')) {
             $type = pathinfo(ROOTPATH . $image, PATHINFO_EXTENSION);
             $data = file_get_contents($image);
             return 'data:image/' . $type . ';base64,' . base64_encode($data);
