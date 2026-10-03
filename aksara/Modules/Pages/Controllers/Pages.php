@@ -44,7 +44,7 @@ class Pages extends Core
                     $this->_table,
                     [
                         'status' => 1,
-                        'language_id' => get_userdata('language_id')
+                        'language_id' => (int) (get_userdata('language_id') ?: 1)
                     ],
                     8
                 )
@@ -55,7 +55,7 @@ class Pages extends Core
             ->orWhere('pages.page_id', $this->request->getGet('page_id') ?? 0)
             ->groupEnd()
             ->where('status', 1)
-            ->orderBy('(CASE WHEN pages.language_id = ' . get_userdata('language_id') . ' THEN 1 ELSE 2 END)', 'ASC')
+            ->orderBy('(CASE WHEN pages.language_id = ' . (int) (get_userdata('language_id') ?: 1) . ' THEN 1 ELSE 2 END)', 'ASC')
             ->limit(1)
 
             ->render($this->_table, 'index');

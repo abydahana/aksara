@@ -27,7 +27,7 @@ class Category extends Core
     {
         parent::__construct();
 
-        $this->_languageId = get_userdata('language_id') ?? get_setting('app_language') ?? 1;
+        $this->_languageId = (int) (is_numeric(get_userdata('language_id')) && get_userdata('language_id') > 0 ? get_userdata('language_id') : (is_numeric(get_setting('app_language')) && get_setting('app_language') > 0 ? get_setting('app_language') : 1));
     }
 
     public function index($slug = null)

@@ -6856,30 +6856,35 @@ abstract class Core extends Controller
     /**
      * Sets the application language based on user session, browser preference, or system default.
      */
-    private function _setLanguage(?string $languageId = null): void
+    private function _setLanguage(int|string|null $languageId = null): void
     {
         helper('cookie');
 
         // Try to recover language from cookie if session is not set (e.g., after logout)
         if (! $languageId && get_cookie('aksara_language')) {
             $languageId = get_cookie('aksara_language');
-            set_userdata('language_id', $languageId);
+        }
+
+        // If languageId is a language code string (e.g., "en", "id"), resolve its integer ID
+        if ($languageId && ! is_numeric($languageId)) {
+            $langRow = $this->model->select('id')->getWhere('app_languages', ['code' => $languageId], 1)->row();
+            $languageId = $langRow->id ?? null;
         }
 
         // Check if session language ID is not set.
-        if (! $languageId) {
+        if (! $languageId || (int) $languageId <= 0) {
             // Determine Initial Fallback Language ID
             $appLanguage = get_setting('app_language');
 
             if (get_setting('force_system_language') && ! get_userdata('is_logged')) {
                 // Force system language if user hasn't explicitly chosen one
-                $languageId = ($appLanguage > 0 ? $appLanguage : 1);
+                $languageId = ($appLanguage > 0 ? (int) $appLanguage : 1);
             } else {
                 // Get browser accepted locales (e.g., "en-US,en;q=0.9,id;q=0.8").
                 $locales = explode(',', (Services::request()->getServer('HTTP_ACCEPT_LANGUAGE') ?: 'en-us'));
                 $languages = $this->model->getWhere('app_languages', ['status' => 1])->result();
 
-                $languageId = ($appLanguage > 0 ? $appLanguage : 1); // fallback
+                $languageId = ($appLanguage > 0 ? (int) $appLanguage : 1); // fallback
 
                 // Match Browser Locale to Available Languages
                 foreach ($languages as $language) {
@@ -6887,21 +6892,23 @@ abstract class Core extends Controller
 
                     foreach ($locales as $loc) {
                         if (in_array(strtolower(trim($loc)), $items)) {
-                            $languageId = $language->id;
+                            $languageId = (int) $language->id;
 
                             break 2; // Found match, break both loops.
                         }
                     }
                 }
             }
-
-            // Store the determined language ID in the user session.
-            set_userdata('language_id', $languageId);
         }
+
+        $languageId = (int) $languageId;
+
+        // Store the determined language ID in the user session.
+        set_userdata('language_id', $languageId);
 
         // Persist the active language to cookie to survive login/logout session wipes
         if (! headers_sent()) {
-            set_cookie('aksara_language', $languageId, SESSION_EXPIRATION);
+            set_cookie('aksara_language', (string) $languageId, SESSION_EXPIRATION);
         }
 
         // Get the language code (e.g., 'en', 'id') from the determined ID.
