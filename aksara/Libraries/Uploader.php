@@ -216,18 +216,22 @@ class Uploader
         $tempPath = dirname($filePath) . DIRECTORY_SEPARATOR . uniqid('image_', true) . '.' . $extension;
 
         try {
-            Services::image('gd')
+            Services::image('gd', null, false)
                 ->withFile($filePath)
                 ->save($tempPath);
 
-            if (! $this->isSafeImage($tempPath, $extension, null, $allowedExtensions)) {
-                unlink($tempPath);
+            if (! is_file($tempPath) || ! getimagesize($tempPath)) {
+                if (is_file($tempPath)) {
+                    unlink($tempPath);
+                }
 
                 return false;
             }
 
             return rename($tempPath, $filePath);
         } catch (Throwable $e) {
+            log_message('error', '[Uploader] Image sanitization failed: ' . $e->getMessage());
+
             if (is_file($tempPath)) {
                 unlink($tempPath);
             }
