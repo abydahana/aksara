@@ -321,6 +321,10 @@ if (! function_exists('phrase')) {
      */
     function phrase(string $phrase, ?array $replacement = [], bool $checking = false): string
     {
+        static $cached_phrases = [];
+        static $cached_language = null;
+        static $processed_cache = [];
+
         mb_internal_encoding('UTF-8');
 
         // Since type hint is string, we just check for numeric string or empty
@@ -339,87 +343,118 @@ if (! function_exists('phrase')) {
         $phrase = preg_replace('/\s+/', ' ', $phrase);
         $phrase = trim($phrase);
 
-        // 1. Determine Language
-        $language = get_userdata('language');
+        if ($cached_language) {
+            $language = $cached_language;
+        } else {
+            // 1. Determine Language
+            $language = get_userdata('language');
 
-        if (! $language) {
-            try {
+            if (! $language) {
                 $model = new Model();
-                $appLanguage = get_setting('app_language');
-                $languageId = (get_userdata('language_id') ? get_userdata('language_id') : ($appLanguage > 0 ? $appLanguage : 1));
+                $app_language = get_setting('app_language');
+                $language_id = (get_userdata('language_id') ? get_userdata('language_id') : ($app_language > 0 ? $app_language : 1));
 
                 $language = $model->select('code')
                 ->getWhere(
                     'app_languages',
                     [
-                        'id' => $languageId
+                        'id' => $language_id
                     ]
                 )
                 ->row('code');
-            } catch (\Throwable $e) {
-                log_message('error', 'Unable to retrieve language code: ' . $e->getMessage());
+            }
+
+            $cached_language = $language ?: 'en';
+            $language = $cached_language;
+        }
+
+        // Return from memory cache if already translated and not checking
+        if (isset($processed_cache[$language][$phrase]) && ! $checking) {
+            $translated_phrase = $processed_cache[$language][$phrase];
+            if ($replacement) {
+                foreach ($replacement as $keyword => $replace) {
+                    $translated_phrase = preg_replace("/\{\{(\s+)?(" . preg_quote($keyword, '/') . ")(\s+)?\}\}/", $replace, $translated_phrase);
+                }
+            }
+            return $translated_phrase;
+        }
+
+        // 2. File Handling
+        $translation_file = WRITEPATH . 'translations' . DIRECTORY_SEPARATOR . $language . '.json';
+
+        if (! isset($cached_phrases[$language])) {
+            if (! file_exists($translation_file)) {
+                if (! is_dir(WRITEPATH . 'translations')) {
+                    try {
+                        mkdir(WRITEPATH . 'translations', 0755, true);
+                        file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    } catch (\Throwable $e) {
+                        log_message('error', '[TRANSLATION] ' . $e->getMessage());
+                    }
+                } elseif (is_writable(WRITEPATH . 'translations')) {
+                    try {
+                        file_put_contents($translation_file, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    } catch (\Throwable $e) {
+                        log_message('error', '[TRANSLATION] ' . $e->getMessage());
+                    }
+                }
+                $cached_phrases[$language] = [];
+            } else {
+                try {
+                    $buffer = file_get_contents($translation_file);
+                    $cached_phrases[$language] = (is_json($buffer) ? json_decode($buffer, true) : []);
+                } catch (\Throwable $e) {
+                    $cached_phrases[$language] = [];
+                }
+            }
+
+            if (! is_array($cached_phrases[$language])) {
+                $cached_phrases[$language] = [];
             }
         }
 
-        try {
-            // 2. Process Translation
-            $phrases = load_translations($language);
+        $phrases = &$cached_phrases[$language];
 
+        try {
+            // 3. Process Translation
             if (! isset($phrases[$phrase]) && ! $checking) {
                 // Only append new phrase if checking is false
-                $translationFile = translation_file($language, translation_scope_from_trace());
-                $scopedPhrases = [];
-
-                if (file_exists($translationFile)) {
-                    $scopedBuffer = file_get_contents($translationFile);
-                    $scopedPhrases = json_decode($scopedBuffer ?: '[]', true);
-                }
-
-                if (! is_array($scopedPhrases)) {
-                    $scopedPhrases = [];
-                }
-
-                $scopedPhrases[$phrase] = $phrase;
                 $phrases[$phrase] = $phrase;
 
                 // Sort phrases by key
-                ksort($scopedPhrases);
+                ksort($phrases);
 
-                if (! is_dir(dirname($translationFile))) {
-                    mkdir(dirname($translationFile), 0755, true);
-                }
-
-                if ((! file_exists($translationFile) && is_writable(dirname($translationFile))) || is_writable($translationFile)) {
+                if (file_exists($translation_file) && is_writable($translation_file)) {
                     // No translation exists
-                    $jsonContent = json_encode(
-                        $scopedPhrases,
+                    $json_content = json_encode(
+                        $phrases,
                         JSON_PRETTY_PRINT |
                         JSON_UNESCAPED_SLASHES |
                         JSON_UNESCAPED_UNICODE
                     );
 
                     // Create new translation file
-                    file_put_contents($translationFile, $jsonContent, LOCK_EX);
-                    clear_translations_cache($language);
+                    file_put_contents($translation_file, $json_content, LOCK_EX);
                 }
             }
 
             if ($checking) {
                 // Only check, use existing translation
-                $phrasesReversed = array_reverse($phrases, true);
-                $phrasesUpper = array_change_key_case($phrasesReversed, CASE_UPPER);
-                $upperPhrase = strtoupper($phrase);
-                $translatedPhrase = (isset($phrasesUpper[$upperPhrase]) ? $phrasesUpper[$upperPhrase] : $phrase);
+                $phrases_reversed = array_reverse($phrases, true);
+                $phrases_upper = array_change_key_case($phrases_reversed, CASE_UPPER);
+                $upper_phrase = strtoupper($phrase);
+                $translated_phrase = (isset($phrases_upper[$upper_phrase]) ? $phrases_upper[$upper_phrase] : $phrase);
             } else {
                 // Try to using existing or appended phrase
-                $translatedPhrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
+                $translated_phrase = (isset($phrases[$phrase]) ? $phrases[$phrase] : $phrase);
             }
 
             // Typographical beautification
-            $translatedPhrase = preg_replace('/"([^"]+)"/', '“$1”', $translatedPhrase);
-            $translatedPhrase = str_replace(['`', "'"], '’', $translatedPhrase);
+            $translated_phrase = preg_replace('/"([^"]+)"/', '“$1”', $translated_phrase);
+            $translated_phrase = str_replace(['`', "'"], '’', $translated_phrase);
 
-            $phrase = $translatedPhrase;
+            $processed_cache[$language][$phrase] = $translated_phrase;
+            $phrase = $translated_phrase;
         } catch (\Throwable $e) {
             log_message('error', '[TRANSLATION] ' . $e->getMessage());
         }
