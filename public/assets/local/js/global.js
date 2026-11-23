@@ -449,20 +449,10 @@ $(document).ready(function () {
           let index = 0;
 
           $.each(response.message, function (key, val) {
-            context.find(':input[name=' + key + ']').addClass('is-invalid');
-            context
-              .find(':input[name=' + key + ']')
-              .prev('.input-group-text')
-              .addClass('border-danger');
-            context
-              .find(':input[name=' + key + ']')
-              .next('.input-group-text')
-              .addClass('border-danger');
-            context
-              .find(':input[name=' + key + ']')
-              .next('.select2-container')
-              .find('.select2-selection')
-              .addClass('border-danger');
+            context.find(':input[name="' + key + '"]').addClass('is-invalid');
+            context.find(':input[name="' + key + '"]').prev('.input-group-text').addClass('border-danger');
+            context.find(':input[name="' + key + '"]').next('.input-group-text').addClass('border-danger');
+            context.find(':input[name="' + key + '"]').next('.select2-container').find('.select2-selection').addClass('border-danger');
             $('<p class="my-1' + (index ? ' border-top border-warning' : '') + '">' + val + '</p>').appendTo(context.find('[data-role=validation-callback]'));
 
             index++;
@@ -1343,10 +1333,10 @@ $(document).ready(function () {
           $(response.content).addClass('dropdown-content mt-3').appendTo($(this).closest('.form-group'));
         } else if (typeof response.fields !== 'undefined' && typeof response.fields === 'object') {
           $.each(response.fields, function (key, val) {
-            if ($('input[name=' + key + ']').length) {
-              $('input[name=' + key + ']').val(val);
-            } else if ($('textarea[name=' + key + ']').length) {
-              $('textarea[name=' + key + ']').val(val);
+            if ($('input[name="' + key + '"]').length) {
+              $('input[name="' + key + '"]').val(val)
+            } else if ($('textarea[name="' + key + '"]').length) {
+              $('textarea[name="' + key + '"]').val(val)
             }
           });
         }
